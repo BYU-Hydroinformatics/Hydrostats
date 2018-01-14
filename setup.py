@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from distutils.core import setup
+from setuptools import setup
 setup(
   name = 'hydrostats',
   packages = ['hydrostats'], # this must be the same as the name above
