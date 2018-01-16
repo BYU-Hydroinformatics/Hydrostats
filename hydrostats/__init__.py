@@ -279,6 +279,7 @@ def sga(forecasted_array, observed_array):
 
 
 def h1(forecasted_array, observed_array, type='mean'):
+    """H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array - observed_array) / observed_array
@@ -293,6 +294,7 @@ def h1(forecasted_array, observed_array, type='mean'):
 
 
 def h2(forecasted_array, observed_array, type='mean'):
+    """H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array - observed_array) / forecasted_array
@@ -307,6 +309,7 @@ def h2(forecasted_array, observed_array, type='mean'):
 
 
 def h3(forecasted_array, observed_array, type='mean'):
+    """H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array - observed_array) / (0.5 * (forecasted_array + observed_array))
@@ -321,6 +324,7 @@ def h3(forecasted_array, observed_array, type='mean'):
 
 
 def h4(forecasted_array, observed_array, type='mean'):
+    """H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array - observed_array) / np.sqrt(forecasted_array * observed_array)
@@ -335,6 +339,7 @@ def h4(forecasted_array, observed_array, type='mean'):
 
 
 def h5(forecasted_array, observed_array, type='mean'):
+    """H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array - observed_array) / \
@@ -350,6 +355,7 @@ def h5(forecasted_array, observed_array, type='mean'):
 
 
 def h6(forecasted_array, observed_array, type='mean', k=1):
+    """H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array / observed_array - 1) / \
@@ -365,6 +371,7 @@ def h6(forecasted_array, observed_array, type='mean', k=1):
 
 
 def h7(forecasted_array, observed_array, type='mean', k=1):
+    """H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array / observed_array - 1) / (forecasted_array / observed_array).min()
@@ -379,6 +386,7 @@ def h7(forecasted_array, observed_array, type='mean', k=1):
 
 
 def h8(forecasted_array, observed_array, type='mean', k=1):
+    """H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array / observed_array - 1) / (forecasted_array / observed_array).max()
@@ -406,6 +414,7 @@ def h8(forecasted_array, observed_array, type='mean', k=1):
 
 
 def h10(forecasted_array, observed_array, type='mean', k=1):
+    """H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = np.log(forecasted_array) - np.log(observed_array)
@@ -420,6 +429,7 @@ def h10(forecasted_array, observed_array, type='mean', k=1):
 
 
 def all_metrics(forecasted_array, observed_array):
+    """Takes two numpy arrays and returns a pandas dataframe with all of the metrics included."""
     metrics_list = ['Mean Error', 'Mean Absolute Error', 'Mean Squared Error', 'Eclidean Distance',
                     'Normalized Eclidean Distance', 'Root Mean Square Error', 'Root Mean Squared Log Error',
                     'Mean Absolute Scaled Error', 'R^2', 'Anomoly Correlation Coefficient',
@@ -500,68 +510,6 @@ def all_metrics(forecasted_array, observed_array):
 
     return pd.DataFrame(np.column_stack([metrics_list, metrics_array]), columns=['Metrics', 'Values'])
 
-""" ###################################################################################################################
-    ##############                         Moving on from the Metrics Section                           ###############
-    ################################################################################################################"""
-
-
-def merge_data(predicted_file_path, recorded_file_path):
-    """Takes two csv files that have been formatted with 1 row as a header with date in the first column and
-        streamflow values in the second column and combines them into a pandas dataframe with datetime type for the
-        dates and float type for the streamflow value"""
-
-    # Importing data into a data-frame
-    df_recorded = pd.read_csv('asaraghat_karnali_recorded_data.txt', delimiter=",", header=None, names=['recorded '
-                                                                                                        'streamflow'],
-                              index_col=0, infer_datetime_format=True, skiprows=1)
-    df_predicted = pd.read_csv('asaraghat_karnali_interim_data.csv', delimiter=",", header=None, names=['predicted '
-                                                                                                        'streamflow'],
-                               index_col=0, infer_datetime_format=True, skiprows=1)
-    # Converting the index to datetime type
-    df_recorded.index = pd.to_datetime(df_recorded.index, infer_datetime_format=True)
-    df_predicted.index = pd.to_datetime(df_predicted.index, infer_datetime_format=True)
-    # Joining the two dataframes
-    return pd.DataFrame.join(df_predicted, df_recorded).dropna()
-
-
-def daily_average(merged_data):
-    """Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and
-        calculates the daily average streamflow over the course of the data. Please note that this function assumes
-        that the column for predicted streamflow is labeled 'predicted streamflow' and the column for recorded
-        streamflow is labeled 'recorded streamflow.' Returns a dataframe with the date format as MM/DD in the index
-        and the two columns of the data averaged"""
-    # Calculating the daily average from the database
-    return merged_data.groupby(merged_data.index.strftime("%m/%d")).mean()
-
-
-def daily_std_error(merged_data):
-    """Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and
-        calculates the daily standard error of the streamflow over the course of the data. Please note that this
-        function assumes that the column for predicted streamflow is labeled 'predicted streamflow' and the column for
-        recorded streamflow is labeled 'recorded streamflow.' Returns a dataframe with the date format as MM/DD in the
-        index and the two columns of the data averaged"""
-    # Calculating the daily average from the database
-    return merged_data.groupby(merged_data.index.strftime("%m/%d")).sem()
-
-
-def monthly_average(merged_data):
-    """Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and
-        calculates the monthly average streamflow over the course of the data. Please note that this function assumes
-        that the column for predicted streamflow is labeled 'predicted streamflow' and the column for recorded
-        streamflow is labeled 'recorded streamflow.' Returns a dataframe with the date format as MM in the index
-        and the two columns of the data averaged"""
-    # Calculating the daily average from the database
-    return merged_data.groupby(merged_data.index.strftime("%m")).mean()
-
-
-def monthly_std_error(merged_data):
-    """Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and
-        calculates the monthly standard error of the streamflow over the course of the data. Please note that this
-        function assumes that the column for predicted streamflow is labeled 'predicted streamflow' and the column for
-        recorded streamflow is labeled 'recorded streamflow.' Returns a dataframe with the date format as MM in the
-        index and the two columns of the data averaged"""
-    # Calculating the daily average from the database
-    return merged_data.groupby(merged_data.index.strftime("%m")).sem()
 
 
 def remove_nan(forecasted_array, observed_array):
