@@ -1,5 +1,4 @@
 from hydrostats import *
-import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
@@ -20,8 +19,8 @@ def plot(merged_data_df, legend=False, metrics=[], grid=False):
     if grid:
         plt.grid(True)
     if metrics:
-        forecasted_array = merged_df['predicted streamflow'].as_matrix()
-        observed_array = merged_df['recorded streamflow'].as_matrix()
+        forecasted_array = merged_data_df['predicted streamflow'].as_matrix()
+        observed_array = merged_data_df['recorded streamflow'].as_matrix()
         function_list = [me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smap1, smap2, d, d1, dr,
                          drel, dmod, M, R, E, Emod, Erel, E_1, sa, sc, sid, sga
                          ]
@@ -41,15 +40,6 @@ def plot(merged_data_df, legend=False, metrics=[], grid=False):
         formatted_selected_metrics = ''
         for i in selected_metrics:
             formatted_selected_metrics += i + '\n'
-        print(formatted_selected_metrics)
-        if np.max(forecasted_array) > np.max(observed_array):
-            height = np.max(forecasted_array)
-        else:
-            height = np.max(observed_array)
-        left, width = .25, .5
-        bottom, height = .25, .5
-        right = left + width
-        top = bottom + height
         font = {'family': 'sans-serif',
                 'weight': 'normal',
                 'size': 14}
