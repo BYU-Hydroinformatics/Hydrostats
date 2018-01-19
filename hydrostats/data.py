@@ -7,10 +7,10 @@ def merge_data(predicted_file_path, recorded_file_path):
         dates and float type for the streamflow value"""
 
     # Importing data into a data-frame
-    df_recorded = pd.read_csv('asaraghat_karnali_recorded_data.txt', delimiter=",", header=None, names=['recorded '
+    df_recorded = pd.read_csv(recorded_file_path , delimiter=",", header=None, names=['recorded '
                                                                                                         'streamflow'],
                               index_col=0, infer_datetime_format=True, skiprows=1)
-    df_predicted = pd.read_csv('asaraghat_karnali_interim_data.csv', delimiter=",", header=None, names=['predicted '
+    df_predicted = pd.read_csv(predicted_file_path, delimiter=",", header=None, names=['predicted '
                                                                                                         'streamflow'],
                                index_col=0, infer_datetime_format=True, skiprows=1)
     # Converting the index to datetime type
