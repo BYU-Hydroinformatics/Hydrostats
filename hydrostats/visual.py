@@ -13,8 +13,8 @@ def plot(merged_data_df, legend=False, metrics=[], grid=False):
     plt.xlabel('Date', fontsize=18)
     plt.xticks(fontsize=14, rotation=45)
     if legend:
-        sim = mpatches.Patch(color='red', label='Observed Streamflow')
-        obs = mpatches.Patch(color='blue', label='Forecasted Streamflow')
+        sim = mpatches.Patch(color='red', label='Forecaster Streamflow')
+        obs = mpatches.Patch(color='blue', label='Observed Streamflow')
         plt.legend(handles=[sim, obs])
     if grid:
         plt.grid(True)
@@ -43,6 +43,6 @@ def plot(merged_data_df, legend=False, metrics=[], grid=False):
         font = {'family': 'sans-serif',
                 'weight': 'normal',
                 'size': 14}
-        plt.text(-0.35, 0.75, formatted_selected_metrics, ha='left', va='center', transform=ax.transAxes, fontdict=font)
+        plt.text(-0.35, 1.0, formatted_selected_metrics, ha='left', va='top', transform=ax.transAxes, fontdict=font)
         plt.subplots_adjust(left=0.25)
     plt.show()
