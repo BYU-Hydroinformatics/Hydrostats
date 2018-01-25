@@ -58,3 +58,28 @@ def monthly_std_error(merged_data):
         index and the two columns of the data averaged"""
     # Calculating the daily average from the database
     return merged_data.groupby(merged_data.index.strftime("%m")).sem()
+
+
+def remove_nan_df(merged_dataframe):
+    """Drops rows with Nan, zero, negative, and inf values from a pandas dataframe"""
+    # Drops Zeros and negatives
+    merged_dataframe = merged_dataframe.loc[~(merged_dataframe <= 0).any(axis=1)]
+    # Replaces infinites with nans
+    merged_dataframe = merged_dataframe.replace([np.inf, -np.inf], np.nan)
+    # Drops Nan
+    merged_dataframe = merged_dataframe.dropna()
+    return merged_dataframe
+
+
+def seasonal_period(merged_dataframe, period, numpy=False):
+    """Returns the seasonal period specified for the time series, can return either a pandas dataframe or two numpy
+    arrays"""
+    merged_dataframe.index = merged_dataframe.index.strftime('%m-%d')
+    start = period[0]
+    end = period[1]
+    merged_dataframe = merged_dataframe.loc[(merged_dataframe.index >= start) &
+                                            (merged_dataframe.index <= end)]
+    if numpy:
+        return merged_dataframe.iloc[:, 0].as_matrix(), merged_dataframe.iloc[:, 1].as_matrix()
+    else:
+        return merged_dataframe
