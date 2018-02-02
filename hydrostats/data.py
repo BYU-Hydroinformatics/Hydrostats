@@ -1,18 +1,16 @@
 import pandas as pd
 
 
-def merge_data(predicted_file_path, recorded_file_path):
+def merge_data(predicted_file_path, recorded_file_path, column_names=['Simulated', 'Observed']):
     """Takes two csv files that have been formatted with 1 row as a header with date in the first column and
         streamflow values in the second column and combines them into a pandas dataframe with datetime type for the
         dates and float type for the streamflow value"""
 
     # Importing data into a data-frame
-    df_recorded = pd.read_csv(recorded_file_path , delimiter=",", header=None, names=['recorded '
-                                                                                                        'streamflow'],
-                              index_col=0, infer_datetime_format=True, skiprows=1)
-    df_predicted = pd.read_csv(predicted_file_path, delimiter=",", header=None, names=['predicted '
-                                                                                                        'streamflow'],
+    df_predicted = pd.read_csv(predicted_file_path, delimiter=",", header=None, names=[column_names[0]],
                                index_col=0, infer_datetime_format=True, skiprows=1)
+    df_recorded = pd.read_csv(recorded_file_path , delimiter=",", header=None, names=[column_names[1]],
+                              index_col=0, infer_datetime_format=True, skiprows=1)
     # Converting the index to datetime type
     df_recorded.index = pd.to_datetime(df_recorded.index, infer_datetime_format=True)
     df_predicted.index = pd.to_datetime(df_predicted.index, infer_datetime_format=True)
@@ -71,12 +69,14 @@ def remove_nan_df(merged_dataframe):
     return merged_dataframe
 
 
-def seasonal_period(merged_dataframe, period, numpy=False):
-    """Returns the seasonal period specified for the time series, can return either a pandas dataframe or two numpy
-    arrays"""
+def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False):
+    """Returns the seasonal period specified for the time series, between the specified time range. Can return either a
+    pandas dataframe or two numpy arrays"""
+    if time_range:
+        merged_dataframe = merged_dataframe.loc[time_range[0] : time_range[1]]
     merged_dataframe.index = merged_dataframe.index.strftime('%m-%d')
-    start = period[0]
-    end = period[1]
+    start = daily_period[0]
+    end = daily_period[1]
     merged_dataframe = merged_dataframe.loc[(merged_dataframe.index >= start) &
                                             (merged_dataframe.index <= end)]
     if numpy:
