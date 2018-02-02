@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
   name = 'hydrostats',
   packages = ['hydrostats'], # this must be the same as the name above
-  version = '0.37',
+  version = '0.38',
   description = 'Error metrics for use in comparison studies, specifically for use in the field of hydrology',
   author = 'Wade Roberts',
   author_email = 'waderoberts123@gmail.com',
@@ -18,6 +18,8 @@ setup(
           'numpy',
           'numexpr',
           'pandas',
-          'matplotlib'
+          'matplotlib',
+          'scipy',
+          'sympy',
       ]
 )
