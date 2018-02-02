@@ -1,4 +1,5 @@
 import pandas as pd
+from numpy import inf, nan
 
 
 def merge_data(predicted_file_path, recorded_file_path, column_names=['Simulated', 'Observed']):
@@ -63,7 +64,7 @@ def remove_nan_df(merged_dataframe):
     # Drops Zeros and negatives
     merged_dataframe = merged_dataframe.loc[~(merged_dataframe <= 0).any(axis=1)]
     # Replaces infinites with nans
-    merged_dataframe = merged_dataframe.replace([np.inf, -np.inf], np.nan)
+    merged_dataframe = merged_dataframe.replace([inf, -inf], nan)
     # Drops Nan
     merged_dataframe = merged_dataframe.dropna()
     return merged_dataframe
