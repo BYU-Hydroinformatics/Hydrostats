@@ -187,11 +187,24 @@ def M(forecasted_array, observed_array):
 def R(forecasted_array, observed_array):
     """Returns the Mielke-Berry R value. Mielke PW Jr, Berry KJ. 2001. Permutation Methods: A Distance Function Approach.
     Springer-Verlag: New York; 352."""
-    assert len(observed_array) == len(forecasted_array)
+    # Removing Nan Values
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
-    forecasted_array2D = forecasted_array[:, None]
-    total = ne.evaluate('sum(abs(forecasted_array2D - observed_array))')
-    return 1 - (mae(forecasted_array, observed_array) * forecasted_array.size ** 2 / total)
+
+    @njit(parallel=True)
+    def numba_loop(forecasted_array, observed_array):
+        """Using numba for the double for loop"""
+        assert len(observed_array) == len(forecasted_array)
+        size = len(forecasted_array)
+        total = 0.
+        for i in prange(size):
+            observed = observed_array[i]
+            for j in prange(size):
+                total += abs(forecasted_array[j] - observed)
+        return total, size
+
+    # Using NumPy for the vectorized calculations
+    total, size = numba_loop(forecasted_array, observed_array)
+    return 1 - (mae(forecasted_array, observed_array) * size ** 2 / total)
 
 
 def E(forecasted_array, observed_array):
