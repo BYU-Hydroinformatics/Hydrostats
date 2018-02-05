@@ -6,7 +6,7 @@ Created on Dec 28 12:16:32 2017
 """
 import numpy as np
 import pandas as pd
-import numexpr as ne
+from numba import njit, prange
 import warnings
 
 """####################################################################################################################
