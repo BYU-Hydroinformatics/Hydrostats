@@ -36,7 +36,7 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, forc
         plt.xlabel(labels[0], fontsize=18)
         plt.ylabel(labels[1], fontsize=18)
     if title:
-        plt.title(title)
+        plt.title(title, fontsize=20)
     if legend:
         sim = mpatches.Patch(color='red', label=legend[0])
         obs = mpatches.Patch(color='blue', label=legend[1])
