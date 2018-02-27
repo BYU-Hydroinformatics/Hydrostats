@@ -7,7 +7,7 @@ import sympy as sp
 import scipy.stats as stats
 
 
-def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, force_x=None, labels=None):
+def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, force_x=None, labels=None, savefigure=None):
     """Daily means you want to plot daily values, in which we need to space the x ticks
     legend - put a list of the two legend values [sim, obs]
     metrics - include the metrics you want placed on the graph
@@ -70,7 +70,10 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, forc
                 'size': 14}
         plt.text(-0.35, 0.75, formatted_selected_metrics, ha='left', va='center', transform=ax.transAxes, fontdict=font)
         plt.subplots_adjust(left=0.25)
-    plt.show()
+    if savefigure:
+        plt.savefig(savefigure)
+    else:
+        plt.show()
 
     
 def hist(merged_data_df, legend, bins, grid=False, title=None, labels=None, savefigure=None):
