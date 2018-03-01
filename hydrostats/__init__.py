@@ -17,35 +17,40 @@ import warnings
 
 
 def me(forecasted_array, observed_array):
-    """Returns the mean error of two 1 dimensional arrays"""
+    """Returns the mean error of two 1 dimensional arrays
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return (forecasted_array - observed_array).mean()
 
 
 def mae(forecasted_array, observed_array):
-    """Returns the Mean Absolute Error"""
+    """Returns the Mean Absolute Error
+    arguments: arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return (np.absolute(forecasted_array - observed_array)).mean()
 
 
 def mse(forecasted_array, observed_array):
-    """Returns the Mean Squared Error"""
+    """Returns the Mean Squared Error
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return ((forecasted_array - observed_array) ** 2).mean()
 
 
 def ed(forecasted_array, observed_array):
-    """Returns the Euclidean Distance"""
+    """Returns the Euclidean Distance
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return np.sqrt(((observed_array - forecasted_array) ** 2).sum())
 
 
 def ned(forecasted_array, observed_array):
-    """Returns the Normalized Euclidean Distance"""
+    """Returns the Normalized Euclidean Distance
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return np.sqrt(
@@ -53,7 +58,8 @@ def ned(forecasted_array, observed_array):
 
 
 def rmse(forecasted_array, observed_array):
-    """Returns the Root mean squared error"""
+    """Returns the Root mean squared error
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return np.sqrt(((forecasted_array - observed_array) ** 2).mean())
@@ -61,7 +67,8 @@ def rmse(forecasted_array, observed_array):
 
 def rmsle(forecasted_array, observed_array):
     """"Return the Root Mean Square Log Error. Note that to calculate the log values, each value in the observed and
-    forecasted array is increased by one unit in order to avoid run-time errors and nan values."""
+    forecasted array is increased by one unit in order to avoid run-time errors and nan values.
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return np.sqrt(np.mean(np.power(np.log1p(forecasted_array) - np.log1p(observed_array), 2)))
@@ -69,7 +76,8 @@ def rmsle(forecasted_array, observed_array):
 
 def mase(forecasted_array, observed_array, m=1):
     """Returns the Mean Absolute Scaled Error, the default period for m (seasonal period) is 1.
-    Using the default assumes that the data is non-seasonal"""
+    Using the default assumes that the data is non-seasonal
+    arguments: forecasted array, observed array, m where m is the seasonal period"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     start = m
@@ -79,7 +87,8 @@ def mase(forecasted_array, observed_array, m=1):
 
 
 def r_squared(forecasted_array, observed_array):
-    """Returns the Coefficient of Determination"""
+    """Returns the Coefficient of Determination
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return (((observed_array - observed_array.mean()) * (forecasted_array - forecasted_array.mean())).sum()) ** 2 / \
@@ -88,7 +97,8 @@ def r_squared(forecasted_array, observed_array):
 
 
 def acc(forecasted_array, observed_array):
-    """Returns the Anomaly Correlation Coefficient."""
+    """Returns the Anomaly Correlation Coefficient.
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return np.dot((forecasted_array - forecasted_array.mean()), (observed_array - observed_array.mean())) / \
@@ -96,21 +106,24 @@ def acc(forecasted_array, observed_array):
 
 
 def mape(forecasted_array, observed_array):
-    """Returns the Mean Absolute Percentage Error. The answer is a percentage"""
+    """Returns the Mean Absolute Percentage Error. The answer is a percentage
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return np.mean(np.abs(forecasted_array - observed_array) / np.abs(observed_array)) * 100
 
 
 def mapd(forecasted_array, observed_array):
-    """Returns the Mean Absolute Percentage Deviation."""
+    """Returns the Mean Absolute Percentage Deviation.
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return (np.sum(np.abs(forecasted_array - observed_array))) / np.abs(observed_array.sum())
 
 
 def smap1(forecasted_array, observed_array):
-    """Returns the Symmetric Mean Absolute Percentage Error (1)."""
+    """Returns the Symmetric Mean Absolute Percentage Error (1).
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return (100 / forecasted_array.size) * np.sum(np.abs(forecasted_array - observed_array) /
@@ -118,7 +131,8 @@ def smap1(forecasted_array, observed_array):
 
 
 def smap2(forecasted_array, observed_array):
-    """Returns the Symmetric Mean Absolute Percentage Error (2)."""
+    """Returns the Symmetric Mean Absolute Percentage Error (2).
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     num = np.sum(np.abs(forecasted_array - observed_array))
@@ -127,7 +141,8 @@ def smap2(forecasted_array, observed_array):
 
 
 def d(forecasted_array, observed_array):
-    """Returns the Index of Agreement (d)."""
+    """Returns the Index of Agreement (d).
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return 1 - (np.sum((observed_array - forecasted_array) ** 2) /
@@ -136,7 +151,8 @@ def d(forecasted_array, observed_array):
 
 
 def d1(forecasted_array, observed_array):
-    """Returns the Index of Agreement (d1)."""
+    """Returns the Index of Agreement (d1).
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     num = np.sum(np.abs(forecasted_array - observed_array))
@@ -145,7 +161,8 @@ def d1(forecasted_array, observed_array):
 
 
 def dr(forecasted_array, observed_array):
-    """Returns the Refined Index of Agreement."""
+    """Returns the Refined Index of Agreement.
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     if np.abs(forecasted_array - observed_array).sum() <= 2 * np.abs(forecasted_array - forecasted_array.mean()).sum():
@@ -157,7 +174,8 @@ def dr(forecasted_array, observed_array):
 
 
 def drel(forecasted_array, observed_array):
-    """Returns the Relative Index of Agreement"""
+    """Returns the Relative Index of Agreement.
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return 1 - (np.sum(((observed_array - forecasted_array) / observed_array) ** 2) /
@@ -166,7 +184,8 @@ def drel(forecasted_array, observed_array):
 
 
 def dmod(forecasted_array, observed_array, j=1):
-    """Returns the modified index of agreement, with j=1 as the default."""
+    """Returns the modified index of agreement, with j=1 as the default.
+    arguments: forecasted array, observed array, j"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return (1 - (np.sum((np.abs(observed_array - forecasted_array)) ** j)) /
@@ -176,7 +195,8 @@ def dmod(forecasted_array, observed_array, j=1):
 
 def M(forecasted_array, observed_array):
     """Returns Watterson's M value. Watterson IG. 1996. Non-dimensional measures of climate model performance.
-    International Journal of Climatology 16: 379–391."""
+    International Journal of Climatology 16: 379–391.
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return (2 / np.pi) * np.arcsin(1 - mse(forecasted_array, observed_array) /
@@ -186,7 +206,8 @@ def M(forecasted_array, observed_array):
 
 def R(forecasted_array, observed_array):
     """Returns the Mielke-Berry R value. Mielke PW Jr, Berry KJ. 2001. Permutation Methods: A Distance Function Approach.
-    Springer-Verlag: New York; 352."""
+    Springer-Verlag: New York; 352.
+    arguments: forecasted array, observed array"""
     # Removing Nan Values
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
 
@@ -207,33 +228,36 @@ def R(forecasted_array, observed_array):
     return 1 - (mae(forecasted_array, observed_array) * size ** 2 / total)
 
 
-def E(forecasted_array, observed_array):
+def NSE(forecasted_array, observed_array):
     """Returns the Nash-Sutcliffe Efficiency value (Nash JE, Sutcliffe JV. 1970. River flow forecasting through
-    conceptual models part I—A discussion of principles. Journal of Hydrology 10(3): 282–290.)"""
+    conceptual models part I—A discussion of principles. Journal of Hydrology 10(3): 282–290.)
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return 1 - (
             np.sum((forecasted_array - observed_array) ** 2) / np.sum((observed_array - observed_array.mean()) ** 2))
 
 
-def Emod(forecasted_array, observed_array, j=1):
+def NSEmod(forecasted_array, observed_array, j=1):
     """Returns the modified Nash-Sutcliffe Efficiency value
     (Krause, P., Boyle, D. P., and Base, F.: Comparison of different efficiency criteria for hydrological model
     assessment, Adv. Geosci., 5, 89-97, 2005
     Legates, D. R., and G. J. McCabe Jr. (1999), Evaluating the Use of "Goodness-of-Fit"
-    Measures in Hydrologic and Hydroclimatic Model Validation, Water Resour. Res., 35(1), 233-241)"""
+    Measures in Hydrologic and Hydroclimatic Model Validation, Water Resour. Res., 35(1), 233-241)
+    arguments: forecasted array, observed array, j"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return 1 - (np.sum(np.abs(observed_array - forecasted_array) ** j) / np.sum(
         np.abs(observed_array - np.mean(observed_array)) ** j))
 
 
-def Erel(forecasted_array, observed_array):
+def NSErel(forecasted_array, observed_array):
     """Returns the relative Nash-Sutcliffe Efficiency value
     (Krause, P., Boyle, D. P., and Base, F.: Comparison of different efficiency criteria for hydrological model
     assessment, Adv. Geosci., 5, 89-97, 2005
     Legates, D. R., and G. J. McCabe Jr. (1999), Evaluating the Use of "Goodness-of-Fit"
-    Measures in Hydrologic and Hydroclimatic Model Validation, Water Resour. Res., 35(1), 233-241)"""
+    Measures in Hydrologic and Hydroclimatic Model Validation, Water Resour. Res., 35(1), 233-241)
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return 1 - (np.sum(((observed_array - forecasted_array) / observed_array) ** 2) /
@@ -242,7 +266,8 @@ def Erel(forecasted_array, observed_array):
 
 def E_1(forecasted_array, observed_array):
     """Returns the Legate-McCabe index. Legates DR, McCabe GJ Jr. 1999. Evaluating the use of “goodness-of-fit” measures
-    in hydrologic and hydroclimatic model validation. Water Resources Research 35(1): 233–241."""
+    in hydrologic and hydroclimatic model validation. Water Resources Research 35(1): 233–241.
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return 1 - (np.sum(np.abs(observed_array - forecasted_array)) / np.sum(
@@ -251,7 +276,8 @@ def E_1(forecasted_array, observed_array):
 
 def sa(forecasted_array, observed_array):
     """Returns the spectral angle. Robila, S.A.; Gershman, A. In Spectral matching accuracy in processing hyperspectral
-    data, Signals, Circuits and Systems, 2005. ISSCS 2005. International Symposium on, 2005; IEEE: pp 163-166."""
+    data, Signals, Circuits and Systems, 2005. ISSCS 2005. International Symposium on, 2005; IEEE: pp 163-166.
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return np.arccos(np.dot(forecasted_array, observed_array) /
@@ -261,7 +287,8 @@ def sa(forecasted_array, observed_array):
 def sc(forecasted_array, observed_array):
     """Returns the spectral Correlation. Robila, S.A.; Gershman, A. In Spectral matching accuracy in processing
     hyperspectral data, Signals, Circuits and Systems, 2005. ISSCS 2005. International Symposium on,
-    2005; IEEE: pp 163-166."""
+    2005; IEEE: pp 163-166.
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return np.arccos(np.dot((observed_array - observed_array.mean()), (forecasted_array - forecasted_array.mean())) /
@@ -270,6 +297,8 @@ def sc(forecasted_array, observed_array):
 
 
 def sid(forecasted_array, observed_array):
+    """Returns the ___
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     first = (observed_array / np.mean(observed_array)) - (forecasted_array / np.mean(forecasted_array))
@@ -279,6 +308,8 @@ def sid(forecasted_array, observed_array):
 
 
 def sga(forecasted_array, observed_array):
+    """Returns the spectral gradient angle
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     SGx = observed_array[1:] - observed_array[:observed_array.size - 1]
@@ -292,7 +323,8 @@ def sga(forecasted_array, observed_array):
 
 
 def h1(forecasted_array, observed_array, type='mean'):
-    """H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
+    """H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
+    arguments: forecasted array, observed array, type where the three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array - observed_array) / observed_array
@@ -307,7 +339,8 @@ def h1(forecasted_array, observed_array, type='mean'):
 
 
 def h2(forecasted_array, observed_array, type='mean'):
-    """H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
+    """H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
+    arguments: forecasted array, observed array, type where the three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array - observed_array) / forecasted_array
@@ -322,7 +355,8 @@ def h2(forecasted_array, observed_array, type='mean'):
 
 
 def h3(forecasted_array, observed_array, type='mean'):
-    """H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
+    """H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
+    arguments: forecasted array, observed array, type where the three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array - observed_array) / (0.5 * (forecasted_array + observed_array))
@@ -337,7 +371,8 @@ def h3(forecasted_array, observed_array, type='mean'):
 
 
 def h4(forecasted_array, observed_array, type='mean'):
-    """H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
+    """H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
+    arguments: forecasted array, observed array, type where the three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array - observed_array) / np.sqrt(forecasted_array * observed_array)
@@ -352,7 +387,8 @@ def h4(forecasted_array, observed_array, type='mean'):
 
 
 def h5(forecasted_array, observed_array, type='mean'):
-    """H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
+    """H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
+    arguments: forecasted array, observed array, type where the three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array - observed_array) / \
@@ -368,7 +404,8 @@ def h5(forecasted_array, observed_array, type='mean'):
 
 
 def h6(forecasted_array, observed_array, type='mean', k=1):
-    """H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
+    """H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
+    arguments: forecasted array, observed array, type where the three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array / observed_array - 1) / \
@@ -384,7 +421,8 @@ def h6(forecasted_array, observed_array, type='mean', k=1):
 
 
 def h7(forecasted_array, observed_array, type='mean', k=1):
-    """H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
+    """H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
+    arguments: forecasted array, observed array, type where the three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array / observed_array - 1) / (forecasted_array / observed_array).min()
@@ -399,7 +437,8 @@ def h7(forecasted_array, observed_array, type='mean', k=1):
 
 
 def h8(forecasted_array, observed_array, type='mean', k=1):
-    """H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
+    """H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
+    arguments: forecasted array, observed array, type where the three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = (forecasted_array / observed_array - 1) / (forecasted_array / observed_array).max()
@@ -427,7 +466,8 @@ def h8(forecasted_array, observed_array, type='mean', k=1):
 
 
 def h10(forecasted_array, observed_array, type='mean', k=1):
-    """H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985). Three types are mean, absolute, and rmhe."""
+    """H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
+    arguments: forecasted array, observed array, type where the three types are mean, absolute, and rmhe."""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     h = np.log(forecasted_array) - np.log(observed_array)
@@ -484,9 +524,9 @@ def all_metrics(forecasted_array, observed_array):
     metrics_array[18] = dmod(forecasted_array, observed_array)
     metrics_array[19] = M(forecasted_array, observed_array)
     metrics_array[20] = R(forecasted_array, observed_array)
-    metrics_array[21] = E(forecasted_array, observed_array)
-    metrics_array[22] = Emod(forecasted_array, observed_array)
-    metrics_array[23] = Erel(forecasted_array, observed_array)
+    metrics_array[21] = NSE(forecasted_array, observed_array)
+    metrics_array[22] = NSEmod(forecasted_array, observed_array)
+    metrics_array[23] = NSErel(forecasted_array, observed_array)
     metrics_array[24] = E_1(forecasted_array, observed_array)
     metrics_array[25] = sa(forecasted_array, observed_array)
     metrics_array[26] = sc(forecasted_array, observed_array)
@@ -526,6 +566,7 @@ def all_metrics(forecasted_array, observed_array):
 
 
 def remove_nan(forecasted_array, observed_array):
+    """Removes the nan, negative, and inf values in two numpy arrays"""
     warnings.filterwarnings("ignore")
     # logical array of nans and infs for simulated
     simLog = np.logical_and(~np.isnan(forecasted_array), ~np.isinf(forecasted_array))
