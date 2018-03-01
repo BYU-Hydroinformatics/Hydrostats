@@ -26,7 +26,7 @@ def me(forecasted_array, observed_array):
 
 def mae(forecasted_array, observed_array):
     """Returns the Mean Absolute Error
-    arguments: arguments: forecasted array, observed array"""
+    arguments: forecasted array, observed array"""
     assert len(observed_array) == len(forecasted_array)
     forecasted_array, observed_array = remove_nan(forecasted_array, observed_array)
     return (np.absolute(forecasted_array - observed_array)).mean()
