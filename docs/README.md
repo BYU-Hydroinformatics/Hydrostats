@@ -2,12 +2,6 @@
 
 [Documentation Editing Guide](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet "Github Markdown Cheatsheet")
 
-pandas.DataFrame
-
-class pandas.DataFrame(data=None, index=None, columns=None, dtype=None, copy=False)[source]
-
-    Two-dimensional size-mutable, potentially heterogeneous tabular data structure with labeled axes (rows and columns). Arithmetic operations align on both row and column labels. Can be thought of as a dict-like container for Series objects. The primary pandas data structure
-
 ### hydrostats.me
 
 #### class hydrostats.me(forecasted_array, observed_array) [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L19 "Source Code")
@@ -19,3 +13,16 @@ The ME measures the difference between the simulated data and the observed data 
 | :-------------   |:-------------|
 | forecasted_array| A 1D array of forecasted data from the time series. |
 | observed_array| A 1D array of observed data from the time series.|
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.me(sim, obs)
+
+print s
