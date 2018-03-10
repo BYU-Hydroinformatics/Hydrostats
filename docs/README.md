@@ -5,7 +5,7 @@
 # Contents
 
 ## Metrics:
-[mean_error](###hydrostatsme)
+[mean_error](#hydrostatsme)
 
 ### hydrostats.me
 
