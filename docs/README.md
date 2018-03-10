@@ -1,15 +1,14 @@
 # Welcome to Hydrostats
 
+[Documentation Editing Guide](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet "Github Markdown Cheatsheet")
+
 # Contents
 
 ## Metrics:
-(https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L19 "Source Code")
-
-[Documentation Editing Guide](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet "Github Markdown Cheatsheet")
+[mean_error](###hydrostats.me)
 
 ### hydrostats.me
 
-[mean_error](###mean_error)
 #### class hydrostats.me(forecasted_array, observed_array) [source] (https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L19 "Source Code")
 
 #### Mean Error (ME) 
