@@ -1,11 +1,15 @@
-# Welcome to Hydrostats
-
 [Documentation Editing Guide](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet "Github Markdown Cheatsheet")
 
 # Contents
 
 ## Metrics:
-[mean_error](#hydrostatsme)
+[Mean Error](#hydrostatsme)
+
+## Data Management:
+
+## Visualization
+
+# Metrics
 
 ### hydrostats.me
 
