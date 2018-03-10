@@ -25,5 +25,3 @@ obs = np.random.rand(10)
 
 hs.me(sim, obs)
 ```
-
-Hello
