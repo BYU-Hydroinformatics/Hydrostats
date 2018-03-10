@@ -9,7 +9,7 @@
 
 ### hydrostats.me
 
-[mean_error](#mean_error)
+[mean_error](###mean_error)
 #### class hydrostats.me(forecasted_array, observed_array) [source] (https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L19 "Source Code")
 
 #### Mean Error (ME) 
