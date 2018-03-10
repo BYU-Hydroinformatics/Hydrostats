@@ -17,5 +17,5 @@ The ME measures the difference between the simulated data and the observed data 
 
 | Parameters      |               |
 | :-------------   |:-------------|
-| forecasted_array:| A 1D array of forecasted data from the time series. |
-| observed_array:| A 1D array of observed data from the time series.|
+| forecasted_array| A 1D array of forecasted data from the time series. |
+| observed_array| A 1D array of observed data from the time series.|
