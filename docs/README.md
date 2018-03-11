@@ -61,8 +61,29 @@ The ME measures the difference between the simulated data and the observed data 
 
 | Parameters       |               |
 | :-------------   |:-------------|
-| merged_data_df   | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be Simulated Data and Observed Data going from left to right. |
-| observed_array   | A 1D array of observed data from the time series.|
+| merged_data_df (Required Input) | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be Simulated Data and Observed Data going from left to right. |
+| legend (Default=None) | Adds a Legend in the 'best' location determined by the software. The entries must be in the form of a list. (e.g. ['Simulated Data', 'Predicted Data']|
+| metrics (Default=None)  | Adds Metrics to the left side of the Plot. Any Metric from the Hydrostats Library can be added to the plot as the name of the function. The entries must be in a list. (e.g. |['me', 'mae'] would plot the Mean Error and the Mean Absolute Error on the left side of the plot.| 
+| grid (Default=False) | Takes a boolean type input and adds a grid to the plot. |
+| title (Default=None) | Takes a string type input and adds a title to the hydrograph. |
+| force_x (Default=None) | Takes a boolean type input. If True, the x-axis ticks will be staggered every 20 ticks. This is a useful feature when plotting daily averages. |
+| labels (Default=None) | Takes a list of two string type objects and adds them as x-axis labels and y-axis labels, respectively.|
+| savefigure (Default=None) | Takes a string type input and will save the plot the the specified path as a filetype specified by the user. 
+Available Filetypes: 
+- Postscript (.ps) 
+- Encapsulated Postscript (.eps)
+- Portable Document Format (.pdf)
+- PGF code for LaTeX (.pgf
+- Portable Network Graphics (.png)
+- Raw RGBA bitmap (.raw)
+- Raw RGBA bitmap (.rgba)
+- Scalable Vector Graphics (.svg) 
+- Scalable Vector Graphics (.svgz)
+- Joint Photographic Experts Group (.jpg, .jpeg)
+- Tagged Image File Format (.tif, .tiff) |
+
+
+
 
 #### Example
 
