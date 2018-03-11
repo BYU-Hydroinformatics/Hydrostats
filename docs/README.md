@@ -16,7 +16,7 @@
 + Finding Monthly Standard Error
 
 ## Visualization
-+ Hydrograph
++ [Hydrograph](#hydrostatsvisualplot)
 + Histogram
 + Scatter Plot
 + Quantile-Quantile Plot
