@@ -69,6 +69,7 @@ The ME measures the difference between the simulated data and the observed data 
 | force_x (Default=None) | Takes a boolean type input. If True, the x-axis ticks will be staggered every 20 ticks. This is a useful feature when plotting daily averages. |
 | labels (Default=None) | Takes a list of two string type objects and adds them as x-axis labels and y-axis labels, respectively.|
 | savefigure (Default=None) | Takes a string type input and will save the plot the the specified path as a filetype specified by the user. | 
+
 Available Filetypes with savefig: 
 - Postscript (.ps) 
 - Encapsulated Postscript (.eps)
