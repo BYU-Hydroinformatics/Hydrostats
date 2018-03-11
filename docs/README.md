@@ -51,6 +51,32 @@ hs.me(sim, obs)
 
 # Data Management
 
+### hydrostats.data.merge_data(
+
+#### class hydrostats.data.merge_data(predicted_file_path, recorded_file_path, column_names=['Simulated', 'Observed']): 
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L5 "Source Code")
+
+#### Merge Data 
+The merge data function takes two csv input files and merges them together based on their datetime index. 
+
+| Parameters       |               |
+| :-------------   |:-------------|
+| predicted_file_path (Required Input) | A string type input that has the path to the predicted data file. |
+| recorded_file_path (Required Input) | A string type input that has the path to the recorded data file. |
+| Column Names (Default=['Simulated', 'Observed']) | A list of two string type inputs specifying the column names of the two columns in the dataframe created.|
+#### Example
+
+```python
+In [1]: import pandas as pd
+        
+        df_merged = hd.merge_data(r'/path/to/predicted.csv/, r'/path/to/recorded.csv/)
+
+        df_merged
+Out [1] 
+```
+
+# Visualization
+
 ### hydrostats.visual.plot
 
 #### class hydrostats.visual.plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, force_x=None, labels=None, savefigure=None): 
@@ -97,7 +123,4 @@ obs = np.random.rand(10)
 
 hs.me(sim, obs)
 ```
-
-# Visualization
-
 
