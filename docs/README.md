@@ -60,10 +60,11 @@ hs.me(sim, obs)
 The merge data function takes two csv input files and merges them together based on their datetime index. 
 
 | Parameters       |               |
-| :-------------   |:-------------|
+| :-------------   |:------------- |
 | predicted_file_path (Required Input) | A string type input that has the path to the predicted data file. |
 | recorded_file_path (Required Input) | A string type input that has the path to the recorded data file. |
-| Column Names (Default=['Simulated', 'Observed']) | A list of two string type inputs specifying the column names of the two columns in the dataframe created.|
+| column_names (Default=['Simulated', 'Observed']) | A list of two string type inputs specifying the column names of the two columns in the dataframe created.|
+
 #### Example
 
 ```python
