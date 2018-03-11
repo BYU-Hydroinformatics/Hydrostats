@@ -51,7 +51,7 @@ hs.me(sim, obs)
 
 # Data Management
 
-### hydrostats.data.merge_data(
+### hydrostats.data.merge_data
 
 #### class hydrostats.data.merge_data(predicted_file_path, recorded_file_path, column_names=['Simulated', 'Observed']): 
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L5 "Source Code")
@@ -67,12 +67,40 @@ The merge data function takes two csv input files and merges them together based
 #### Example
 
 ```python
-In [1]: import pandas as pd
+In  [1]: import pandas as pd
         
-        df_merged = hd.merge_data(r'/path/to/predicted.csv/', r'/path/to/recorded.csv/')
+         df_merged = hd.merge_data(r'/path/to/predicted.csv/', r'/path/to/recorded.csv/')
 
-        df_merged
-Out [1] 
+         df_merged
+Out [1]: 
+```
+### hydrostats.data.seasonal_period
+
+#### class hydrostats.data.seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False): 
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L73 "Source Code")
+
+#### Seasonal Period 
+The merge data function takes a pandas dataframe with two columns of predicted data and observed data and returns a seasonal period of data based on user input. 
+
+| Parameters       |               |
+| :-------------   |:-------------|
+| merged_dataframe (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a dateime index. |
+| daily_period (Required Input) | A list of strings that contains the seasonal period that the user wants to capture (e.g. ['05-01', '07-01']). |
+| time_range (Default=None) | An optional input of a list of two string type options specifying a date-range for the seasonal period. (e.g. ['1980-01-01', '1987-12-31'])|
+| Numpy (Default=False) | An optional input of boolean type. If specified as true the function will return two numpy arrays rather than a pandas dataframe.|
+#### Example
+
+```python
+In  [1]: import hydrostats.data as hd
+         import pandas as pd
+         import numpy as np
+         
+         example_df = pd.DataFrame(np.random.rand(1000, 2), index=pd.date_range('1990-01-01', periods=1000), freq='1D')
+       
+         df_seasonal = hd.seasonal_period(example_df, daily_period=['05-01', 'o5-04'])
+         
+         df_seasonal
+Out [1]:
 ```
 
 # Visualization
