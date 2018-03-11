@@ -97,7 +97,34 @@ In  [1]: import hydrostats.data as hd
          
          example_df = pd.DataFrame(np.random.rand(1000, 2), index=pd.date_range('1990-01-01', periods=1000), freq='1D')
        
-         df_seasonal = hd.seasonal_period(example_df, daily_period=['05-01', 'o5-04'])
+         df_seasonal = hd.seasonal_period(example_df, daily_period=['05-01', '05-04'])
+         
+         df_seasonal
+Out [1]:
+```
+
+### hydrostats.data.daily_average
+
+#### class hydrostats.data.daily_average(merged_data): 
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L22 "Source Code")
+
+#### Daily Average
+The daily average function takes a pandas dataframe and calculates daily averages of the time series. If the frequency of the time series is not daily, then it will still take the daily averages of all of the values that day.  
+
+| Parameters       |               |
+| :-------------   |:-------------|
+| merged_data (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a dateime index. |
+
+#### Example
+
+```python
+In  [1]: import hydrostats.data as hd
+         import pandas as pd
+         import numpy as np
+         
+         example_df = pd.DataFrame(np.random.rand(1000, 2), index=pd.date_range('1990-01-01', periods=1000), freq='1D')
+       
+         df_daily_avg = hd.daily_average(example_df)
          
          df_seasonal
 Out [1]:
