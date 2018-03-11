@@ -69,7 +69,7 @@ The merge data function takes two csv input files and merges them together based
 ```python
 In [1]: import pandas as pd
         
-        df_merged = hd.merge_data(r'/path/to/predicted.csv/, r'/path/to/recorded.csv/)
+        df_merged = hd.merge_data(r'/path/to/predicted.csv/', r'/path/to/recorded.csv/')
 
         df_merged
 Out [1] 
