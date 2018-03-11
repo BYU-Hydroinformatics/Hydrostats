@@ -8,9 +8,9 @@
 +
 
 ## Data Management:
-+ Merging Data
-+ Finding Seasonal Periods
-+ Finding Daily Averages
++ [Merging Data](#hydrostatsdatamerge_data)
++ [Finding Seasonal Periods](#hydrostatsdataseasonal_period)
++ [Finding Daily Averages](#hydrostatsdatadaily_average)
 + Finding Daily Standard Error
 + Finding Monthly Averages
 + Finding Monthly Standard Error
