@@ -67,8 +67,8 @@ The merge data function takes two csv input files and merges them together based
 | recorded_file_path (Required Input)  | A string type input that has the path to the recorded data file. |
 | interpolate (Default=None)           | A string type input that must be either 'predicted' or 'recorded'. If the parameter is set to 'predicted', the predicted values will be interpolated to match up with the recorded values, and vice versa. |
 | column_names (Default=['Simulated', 'Observed']) | A list of two string type inputs specifying the column names of the two columns in the dataframe created.|
-| predicted_tz (Default=None) | A string type input that lists the time zone of the predicted data. Must be selected from the time zones available (see list in appendix).|
-| recorded_tz (Default=None) | A string type input that lists the time zone of the recorded data. Must be selected from the time zones available (see list in appendix).|
+| predicted_tz (Default=None) | A string type input that lists the time zone of the predicted data. Must be selected from the time zones available (see [List of Available Timezones](#available-timezones) in appendix).|
+| recorded_tz (Default=None) | A string type input that lists the time zone of the recorded data. Must be selected from the time zones available (see [List of Available Timezones](#available-timezones) in appendix).|
 
 #### Example
 
@@ -135,6 +135,36 @@ In  [1]: import hydrostats.data as hd
          
          df_seasonal
 Out [1]:
+```
+
+### hydrostats.data.daily_std_error
+
+#### class hydrostats.data.daily_std_error(merged_data):
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L240 "Source Code")
+
+#### Daily Standard Error
+The daily standard error function takes a pandas dataframe and calculates daily standard error of the time series. If the frequency of the time series is not daily, then it will still take the daily averages of all of the values that day.  
+
+| Parameters       |               |
+| :-------------   |:-------------|
+| merged_data (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a dateime index. |
+
+#### Example
+
+```python
+import hydrostats.data as hd
+import pandas as pd
+import numpy as np
+
+# Seed for reproducibility
+np.random.seed(589859043)
+
+example_df = pd.DataFrame(np.random.rand(1000, 2), index=pd.date_range('1990-01-01', periods=1000, freq='1D'),
+                          columns=['Simulated', 'Observed'])
+
+df_standard_error = hd.daily_std_error(example_df)
+
+print(df_standard_error)
 ```
 
 # Visualization
