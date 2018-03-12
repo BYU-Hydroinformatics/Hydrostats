@@ -83,12 +83,13 @@ Out [1]:
 #### Seasonal Period 
 The merge data function takes a pandas dataframe with two columns of predicted data and observed data and returns a seasonal period of data based on user input. 
 
-| Parameters       |               |
-| :-------------   |:-------------|
+| Parameters                        |              |
+| :---------------------------------|:-------------|
 | merged_dataframe (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a dateime index. |
-| daily_period (Required Input) | A list of strings that contains the seasonal period that the user wants to capture (e.g. ['05-01', '07-01']). |
-| time_range (Default=None) | An optional input of a list of two string type options specifying a date-range for the seasonal period. (e.g. ['1980-01-01', '1987-12-31'])|
-| Numpy (Default=False) | An optional input of boolean type. If specified as true the function will return two numpy arrays rather than a pandas dataframe.|
+| daily_period (Required Input)     | A list of strings that contains the seasonal period that the user wants to capture (e.g. ['05-01', '07-01']). |
+| time_range (Default=None)         | An optional input of a list of two string type options specifying a date-range for the seasonal period. (e.g. ['1980-01-01', '1987-12-31'])|
+| Numpy (Default=False)             | An optional input of boolean type. If specified as true the function will return two numpy arrays rather than a pandas dataframe.|
+
 #### Example
 
 ```python
