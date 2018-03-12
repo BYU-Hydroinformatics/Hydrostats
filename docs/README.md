@@ -11,7 +11,7 @@
 + [Merging Data](#hydrostatsdatamerge_data)
 + [Finding Seasonal Periods](#hydrostatsdataseasonal_period)
 + [Finding Daily Averages](#hydrostatsdatadaily_average)
-+ [Finding Daily Standard Error](hydrostatsdatadaily_std_error)
++ [Finding Daily Standard Error](#hydrostatsdatadaily_std_error)
 + [Finding Monthly Averages](#hydrostatsdatamonthly_average)
 + [Finding Monthly Standard Error](#hydrostatsdatamonthly_std_error)
 
@@ -59,7 +59,24 @@ hs.me(sim, obs)
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L5 "Source Code")
 
 #### Merge Data 
-The merge data function takes two csv input files and merges them together based on their datetime index. 
+Takes two csv files that have been formatted with 1 row as a header with date in the first column and
+streamflow values in the second column and combines them into a pandas dataframe with datetime type for the
+dates and float type for the streamflow value. Please note that the only acceptable time deltas are 15min,
+30min, 45min, and any number of hours in between.
+
+There are three scenarios to consider when merging your data:
+
+The first scenario is that the timezones and the spacing of the time series matches (eg. 1 Day). In this case,
+you will want to leave the predicted_tz, recorded_tz, and interpolate arguments empty, and the function will
+simply join the two csv's into a dataframe.
+
+The second scenario is that you have two time series with matching time zones but not matching spacing. In this
+case you will want to leave the predicted_tz and recorded_tz empty, and use the interpolate argument to tell the
+function which time series you would like to interpolate to match the other time series.
+
+The third scenario is that you have two time series with different time zones and possibly different spacings.
+In this case you will want to fill in the predicted_tz, recorded_tz, and interpolate arguments. This will then
+take timezones into account when interpolating the selected time series.
 
 | Parameters       |               |
 | :------------------------------------|:------------- |
@@ -73,13 +90,31 @@ The merge data function takes two csv input files and merges them together based
 #### Example
 
 ```python
-In  [1]: import pandas as pd
-        
-         df_merged = hd.merge_data(r'/path/to/predicted.csv/', r'/path/to/recorded.csv/')
+import hydrostats.data as hd
+import pandas as pd
+import numpy as np
 
-         df_merged
-Out [1]: 
+sim_freq = '2H'
+obs_freq = '45min'
+sim_tz = 'Asia/Kathmandu'
+obs_tz = 'UTC'
+
+# Seed for reproducibility
+np.random.seed(589859043)
+
+sim_index = pd.date_range('2018-01-01', periods=100, freq=sim_freq)
+obs_index = pd.date_range('2018-01-01', periods=100, freq=obs_freq)
+
+sim = pd.DataFrame(data=np.random.rand(100), index=sim_index)
+obs = pd.DataFrame(data=np.random.rand(100), index=obs_index)
+
+sim.to_csv('sim.csv', index_label='Datetime')
+obs.to_csv('obs.csv', index_label='Datetime')
+
+print(hd.merge_data('sim.csv', 'obs.csv', interpolate='simulated', column_names=['Simulated', 'Observed'],
+                    predicted_tz=sim_tz, recorded_tz=obs_tz))
 ```
+
 ### hydrostats.data.seasonal_period
 
 #### class hydrostats.data.seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False): 
@@ -98,16 +133,15 @@ The merge data function takes a pandas dataframe with two columns of predicted d
 #### Example
 
 ```python
-In  [1]: import hydrostats.data as hd
-         import pandas as pd
-         import numpy as np
-         
-         example_df = pd.DataFrame(np.random.rand(1000, 2), index=pd.date_range('1990-01-01', periods=1000), freq='1D')
-       
-         df_seasonal = hd.seasonal_period(example_df, daily_period=['05-01', '05-04'])
-         
-         df_seasonal
-Out [1]:
+import hydrostats.data as hd
+import pandas as pd
+import numpy as np
+
+example_df = pd.DataFrame(np.random.rand(1000, 2), index=pd.date_range('1990-01-01', periods=1000), freq='1D')
+
+df_seasonal = hd.seasonal_period(example_df, daily_period=['05-01', '05-04'])
+
+df_seasonal
 ```
 
 ### hydrostats.data.daily_average
@@ -125,16 +159,15 @@ The daily average function takes a pandas dataframe and calculates daily average
 #### Example
 
 ```python
-In  [1]: import hydrostats.data as hd
-         import pandas as pd
-         import numpy as np
-         
-         example_df = pd.DataFrame(np.random.rand(1000, 2), index=pd.date_range('1990-01-01', periods=1000), freq='1D')
-       
-         df_daily_avg = hd.daily_average(example_df)
-         
-         df_seasonal
-Out [1]:
+import hydrostats.data as hd
+import pandas as pd
+import numpy as np
+
+example_df = pd.DataFrame(np.random.rand(1000, 2), index=pd.date_range('1990-01-01', periods=1000), freq='1D')
+
+df_daily_avg = hd.daily_average(example_df)
+
+df_seasonal
 ```
 
 ### hydrostats.data.daily_std_error
