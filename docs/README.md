@@ -22,7 +22,7 @@
 + Quantile-Quantile Plot
 
 ## Appendix
-+ [List of Available Timezones](#availabletimezones)
++ [List of Available Timezones](#available-timezones)
 
 # Metrics
 
