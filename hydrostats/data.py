@@ -3,8 +3,7 @@ from numpy import inf, nan
 import math
 
 
-def merge_data(predicted_file_path, recorded_file_path, column_names=['Simulated', 'Observed']):
-    def merge_data(predicted_file_path, recorded_file_path, interpolate=None, column_names=['Simulated', 'Observed'],
+def merge_data(predicted_file_path, recorded_file_path, interpolate=None, column_names=['Simulated', 'Observed'],
                predicted_tz=None, recorded_tz=None, interp_type='pchip'):
     """Takes two csv files that have been formatted with 1 row as a header with date in the first column and
         streamflow values in the second column and combines them into a pandas dataframe with datetime type for the
