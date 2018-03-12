@@ -11,9 +11,9 @@
 + [Merging Data](#hydrostatsdatamerge_data)
 + [Finding Seasonal Periods](#hydrostatsdataseasonal_period)
 + [Finding Daily Averages](#hydrostatsdatadaily_average)
-+ Finding Daily Standard Error
-+ Finding Monthly Averages
-+ Finding Monthly Standard Error
++ [Finding Daily Standard Error](hydrostatsdatadaily_std_error)
++ [Finding Monthly Averages](#hydrostatsdatamonthly_average)
++ [Finding Monthly Standard Error](#hydrostatsdatamonthly_std_error)
 
 ## Visualization
 + [Hydrograph](#hydrostatsvisualplot)
@@ -143,7 +143,7 @@ Out [1]:
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L240 "Source Code")
 
 #### Daily Standard Error
-The daily standard error function takes a pandas dataframe and calculates daily standard error of the time series. If the frequency of the time series is not daily, then it will still take the daily averages of all of the values that day.  
+The daily standard error function takes a pandas dataframe and calculates daily standard error of the time series. If the frequency of the time series is not daily, then it will still take the daily standard error of all of the values that day.  
 
 | Parameters       |               |
 | :-------------   |:-------------|
@@ -165,6 +165,66 @@ example_df = pd.DataFrame(np.random.rand(1000, 2), index=pd.date_range('1990-01-
 df_standard_error = hd.daily_std_error(example_df)
 
 print(df_standard_error)
+```
+
+### hydrostats.data.monthly_average
+
+#### class hydrostats.data.monthly_average(merged_data):
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L250 "Source Code")
+
+#### Monthly Average
+The monthly average function takes a pandas dataframe and calculates monthly averages of the time series.  
+
+| Parameters       |               |
+| :-------------   |:-------------|
+| merged_data (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a dateime index. |
+
+#### Example
+
+```python
+import hydrostats.data as hd
+import pandas as pd
+import numpy as np
+
+# Seed for reproducibility
+np.random.seed(589859043)
+
+example_df = pd.DataFrame(np.random.rand(1000, 2), index=pd.date_range('1990-01-01', periods=1000, freq='1D'),
+                          columns=['Simulated', 'Observed'])
+
+df_monthly_avg = hd.monthly_average(example_df)
+
+print(df_monthly_avg)
+```
+
+### hydrostats.data.monthly_std_error
+
+#### class hydrostats.data.monthly_std_error(merged_data):
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L260 "Source Code")
+
+#### Monthly Standard Error
+The monthly standard error function takes a pandas dataframe and calculates monthly standard error of the time series.
+
+| Parameters       |               |
+| :-------------   |:-------------|
+| merged_data (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a dateime index. |
+
+#### Example
+
+```python
+import hydrostats.data as hd
+import pandas as pd
+import numpy as np
+
+# Seed for reproducibility
+np.random.seed(589859043)
+
+example_df = pd.DataFrame(np.random.rand(1000, 2), index=pd.date_range('1990-01-01', periods=1000, freq='1D'),
+                          columns=['Simulated', 'Observed'])
+
+df_monthly_std_error = hd.monthly_average(example_df)
+
+print(df_monthly_std_error)
 ```
 
 # Visualization
