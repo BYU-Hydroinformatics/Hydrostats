@@ -26,7 +26,8 @@
 
 # Metrics
 
-### hydrostats.me
+hydrostats.me
+-------------
 
 #### class hydrostats.me(forecasted_array, observed_array) 
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L19 "Source Code")
@@ -53,7 +54,8 @@ hs.me(sim, obs)
 
 # Data Management
 
-### hydrostats.data.merge_data
+hydrostats.data.merge_data
+--------------------------
 
 #### class hydrostats.data.merge_data(predicted_file_path, recorded_file_path, column_names=['Simulated', 'Observed']): 
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L5 "Source Code")
@@ -115,7 +117,8 @@ print(hd.merge_data('sim.csv', 'obs.csv', interpolate='simulated', column_names=
                     predicted_tz=sim_tz, recorded_tz=obs_tz))
 ```
 
-### hydrostats.data.seasonal_period
+hydrostats.data.seasonal_period
+-------------------------------
 
 #### class hydrostats.data.seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False): 
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L73 "Source Code")
@@ -144,7 +147,8 @@ df_seasonal = hd.seasonal_period(example_df, daily_period=['05-01', '05-04'])
 df_seasonal
 ```
 
-### hydrostats.data.daily_average
+hydrostats.data.daily_average
+-----------------------------
 
 #### class hydrostats.data.daily_average(merged_data): 
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L22 "Source Code")
@@ -170,7 +174,8 @@ df_daily_avg = hd.daily_average(example_df)
 df_seasonal
 ```
 
-### hydrostats.data.daily_std_error
+hydrostats.data.daily_std_error
+-------------------------------
 
 #### class hydrostats.data.daily_std_error(merged_data):
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L240 "Source Code")
@@ -200,7 +205,8 @@ df_standard_error = hd.daily_std_error(example_df)
 print(df_standard_error)
 ```
 
-### hydrostats.data.monthly_average
+hydrostats.data.monthly_average
+-------------------------------
 
 #### class hydrostats.data.monthly_average(merged_data):
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L250 "Source Code")
@@ -230,7 +236,8 @@ df_monthly_avg = hd.monthly_average(example_df)
 print(df_monthly_avg)
 ```
 
-### hydrostats.data.monthly_std_error
+hydrostats.data.monthly_std_error
+---------------------------------
 
 #### class hydrostats.data.monthly_std_error(merged_data):
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L260 "Source Code")
@@ -262,7 +269,8 @@ print(df_monthly_std_error)
 
 # Visualization
 
-### hydrostats.visual.plot
+hydrostats.visual.plot
+----------------------
 
 #### class hydrostats.visual.plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, force_x=None, labels=None, savefigure=None): 
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/visual.py#L10 "Source Code")
