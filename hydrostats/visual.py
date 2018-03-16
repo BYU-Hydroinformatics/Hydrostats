@@ -9,7 +9,7 @@ import calendar
 
 def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None,
          savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False):
-    """A function that will plot a time series and
+    """A function that will plot a simulated and observed data vs time and show metrics to the left of the plot if specified.
     Arguments:
     merged_data_df - A pandas dataframe with a datetime type index, and two columns of simulated and observed data of
     float type, respectively.
