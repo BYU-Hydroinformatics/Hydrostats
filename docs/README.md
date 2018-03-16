@@ -278,6 +278,8 @@ hydrostats.visual.plot
 #### Time Series Plot
 The time series plot is a function that is available for viewing two times series plotted side by side vs. time. Goodness of fit metrics can also be viewed on the plot to compare the two time series.  
 
+<br>
+
 | Parameters       |               |
 | :---------------------------------   |:-------------|
 | merged_data_df (Required Input)      | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be Simulated Data and Observed Data going from left to right. |
