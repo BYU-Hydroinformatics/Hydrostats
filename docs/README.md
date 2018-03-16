@@ -329,7 +329,7 @@ The time series plot is a function that is available for viewing two times serie
 - [Linestyles](https://matplotlib.org/gallery/lines_bars_and_markers/line_styles_reference.html#line-style-reference)
 - [Marker Styles](https://matplotlib.org/api/markers_api.html#markers)
 
-Available Filetypes with savefig: 
+#### Available Filetypes with savefig: 
 - Postscript (.ps) 
 - Encapsulated Postscript (.eps)
 - Portable Document Format (.pdf)
