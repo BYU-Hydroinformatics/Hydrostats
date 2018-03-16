@@ -333,7 +333,7 @@ The time series plot is a function that is available for viewing two times serie
 - Postscript (.ps) 
 - Encapsulated Postscript (.eps)
 - Portable Document Format (.pdf)
-- PGF code for LaTeX (.pgf
+- PGF code for LaTeX (.pgf)
 - Portable Network Graphics (.png)
 - Raw RGBA bitmap (.raw)
 - Raw RGBA bitmap (.rgba)
