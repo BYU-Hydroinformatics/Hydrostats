@@ -272,22 +272,60 @@ print(df_monthly_std_error)
 hydrostats.visual.plot
 ----------------------
 
-#### class hydrostats.visual.plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, force_x=None, labels=None, savefigure=None): 
+#### class hydrostats.visual.plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None, savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False):
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/visual.py#L10 "Source Code")
 
-#### Mean Error (ME) 
-The ME measures the difference between the simulated data and the observed data (Fisher, 1920).  For the mean error, a smaller number indicates a better fit to the original data. Note that if the error is in the form of random noise, the mean error will be very small, which can skew the accuracy of this metric. ME is cumulative and will be small even if there are large positive and negative errors that balance.  
+#### Time Series Plot
+The time series plot is a function that is available for viewing two times series plotted side by side vs. time. Goodness of fit metrics can also be viewed on the plot to compare the two time series.  
 
 | Parameters       |               |
-| :-------------   |:-------------|
-| merged_data_df (Required Input) | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be Simulated Data and Observed Data going from left to right. |
-| legend (Default=None) | Adds a Legend in the 'best' location determined by the software. The entries must be in the form of a list. (e.g. ['Simulated Data', 'Predicted Data']|
-| metrics (Default=None)  | Adds Metrics to the left side of the Plot. Any Metric from the Hydrostats Library can be added to the plot as the name of the function. The entries must be in a list. (e.g. |['me', 'mae'] would plot the Mean Error and the Mean Absolute Error on the left side of the plot.| 
-| grid (Default=False) | Takes a boolean type input and adds a grid to the plot. |
-| title (Default=None) | Takes a string type input and adds a title to the hydrograph. |
-| force_x (Default=None) | Takes a boolean type input. If True, the x-axis ticks will be staggered every 20 ticks. This is a useful feature when plotting daily averages. |
-| labels (Default=None) | Takes a list of two string type objects and adds them as x-axis labels and y-axis labels, respectively.|
-| savefigure (Default=None) | Takes a string type input and will save the plot the the specified path as a filetype specified by the user. | 
+| :---------------------------------   |:-------------|
+| merged_data_df (Required Input)      | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be Simulated Data and Observed Data going from left to right. |
+| legend (Default=None)                | Adds a Legend in the 'best' location determined by matplotlib. The entries must be in the form of a list. (e.g. ['Simulated Data', 'Predicted Data']|
+| metrics (Default=None)               | Adds Metrics to the left side of the Plot. Any Metric from the Hydrostats Library can be added to the plot as the name of the function. The entries must be in a list. (e.g. |['ME', 'MASE'] would plot the Mean Error and the Mean Absolute Scaled Error on the left side of the plot.| 
+| grid (Default=False)                 | Takes a boolean type input and adds a grid to the plot. |
+| title (Default=None)                 | Takes a string type input and adds a title to the hydrograph. |
+| x_season (Default=None)              | Takes a boolean type input. If True, the x-axis ticks will be staggered every 20 ticks. This is a useful feature when plotting daily averages. |
+| labels (Default=None)                | Takes a list of two string type objects and adds them as x-axis labels and y-axis labels, respectively.|
+| savefigure (Default=None)            | Takes a string type input and will save the plot the the specified path as a filetype specified by the user. | 
+| linestyles (Default=['ro', 'b^'])    | Takes a list of two string type inputs and will change the linestyle of the predicted and recorded data, respectively (see below for a guide to linestyles). |
+| tight_xlim (Default=False)           | Takes a boolean type input indicating of a tight xlim is desired. |
+
+#### Available metrics to add to the left side of the plot:
+- ME (Mean Error)
+- MAE (Mean Absolute Error)
+- MSE (Mean Squared Error)
+- ED (Eclidean Distance)
+- NED (Normalized Eclidean Distance)
+- RMSE (Root Mean Square Error)
+- RMSLE (Root Mean Squared Log Error)
+- MASE (Mean Absolute Scaled Error)
+- R^2 (Coefficient of Determination)
+- ACC (Anomoly Correlation Coefficient)
+- MAPE (Mean Absolute Percentage Error)
+- MAPD (Mean Absolute Percentage Deviation)
+- SMAP1 (Symmetric Mean Absolute Percentage Error (1))
+- SMAP2 (Symmetric Mean Absolute Percentage Error (2))
+- D (Index of Agreement (d))
+- D1 (Index of Agreement (d1))
+- DR (Index of Agreement Refined (dr))
+- D-Rel (Relative Index of Agreement)
+- D-Mod (Modified Index of Agreement)
+- M (Watterson's M)
+- R (Mielke-Berry R)
+- E (Nash-Sutcliffe Efficiency)
+- E-Mod (Modified Nash-Sutcliffe Efficiency)
+- E-Rel (Relative Nash-Sutcliffe Efficiency)
+- E_1 (Legate-McCabe Index)
+- SA (Spectral Angle)
+- SC (Spectral Correlation)
+- SID (Spectral Information Divergence)
+- SGA (Spectral Gradient Angle)
+
+#### Available linestyle options in matplotlib documentation (can be combined e.g. 'r-' is a red solid line, 'r^' is red triangle up markers)
+[Colors](https://matplotlib.org/2.0.2/api/colors_api.html#colors)
+[Linestyles](https://matplotlib.org/gallery/lines_bars_and_markers/line_styles_reference.html#line-style-reference)
+[Marker Styles](https://matplotlib.org/api/markers_api.html#markers)
 
 Available Filetypes with savefig: 
 - Postscript (.ps) 
@@ -302,19 +340,27 @@ Available Filetypes with savefig:
 - Joint Photographic Experts Group (.jpg, .jpeg)
 - Tagged Image File Format (.tif, .tiff)
 
-
-
-
 #### Example
 
 ```python
-import hydrostats as hs
-import numpy as np
+import hydrostats.visual as hv
+import hydrostats.data as hd
 
-sim = np.arange(10)
-obs = np.random.rand(10)
-
-hs.me(sim, obs)
+# Looping through sin wave curves and plotting ten plots of daily averages
+for i in range(10):
+    # Setting the variables for the sign waves
+    x = np.linspace(1, 10, 1000)
+    sim = np.sin(x)
+    obs = np.sin(x) * 0.1 * i
+    # Creating an example time series dataframe
+    example_df = pd.DataFrame(np.column_stack((sim, obs)),
+                              index=pd.date_range('1990-01-01', periods=1000, freq='1D'))
+    # Finding the daily averages of the time series
+    example_df = hd.daily_average(example_df)
+    # Plotting the Sin waves with the arguments specified
+    plot(example_df, legend=['Simulated Data', 'Observed Data'], linestyles=['r', 'k'],
+         x_season=True, metrics=['ME', 'MAE', 'R^2'], title='Hydrograph Monthly Averages',
+         labels=['Datetime', 'Streamflow'], savefigure=str(i) + '.png', tight_xlim=False)
 ```
 
 # Appendix
