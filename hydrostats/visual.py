@@ -29,10 +29,15 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
     removed."""
     fig = plt.figure(num=1, figsize=(12, 8), dpi=80, facecolor='w', edgecolor='k')
     ax = fig.add_subplot(111)
-    plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], linestyles[0], markersize=2,
-             label=legend[0])
-    plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], linestyles[1], markersize=2,
-             label=legend[1])
+    if legend:
+        plt.legend()
+        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], linestyles[0], markersize=2,
+                 label=legend[0])
+        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], linestyles[1], markersize=2,
+                 label=legend[1])
+    else:
+        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], linestyles[0], markersize=2)
+        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], linestyles[1], markersize=2)
     if tight_xlim:
         plt.xlim(merged_data_df.index[0], merged_data_df.index[-1])
     if x_season:
@@ -57,8 +62,7 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
                       'size': 20,
                       }
         ax.set_title(label=title, fontdict=title_dict, pad=25)
-    if legend:
-        plt.legend()
+
     if grid:
         plt.grid(True)
     if metrics:
