@@ -325,9 +325,9 @@ The time series plot is a function that is available for viewing two times serie
 - SGA (Spectral Gradient Angle)
 
 #### Available linestyle options in matplotlib documentation (can be combined e.g. 'r-' is a red solid line, 'r^' is red triangle up markers)
-[Colors](https://matplotlib.org/2.0.2/api/colors_api.html#colors)
-[Linestyles](https://matplotlib.org/gallery/lines_bars_and_markers/line_styles_reference.html#line-style-reference)
-[Marker Styles](https://matplotlib.org/api/markers_api.html#markers)
+- [Colors](https://matplotlib.org/2.0.2/api/colors_api.html#colors)
+- [Linestyles](https://matplotlib.org/gallery/lines_bars_and_markers/line_styles_reference.html#line-style-reference)
+- [Marker Styles](https://matplotlib.org/api/markers_api.html#markers)
 
 Available Filetypes with savefig: 
 - Postscript (.ps) 
