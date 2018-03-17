@@ -99,27 +99,94 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
         plt.show()
 
     
-def hist(merged_data_df, legend, bins, grid=False, title=None, labels=None, savefigure=None):
+def hist(merged_data_df, num_bins, z_norm=False, legend=None, grid=False, title=None, labels=None,
+         savefigure=None, prob_dens=False):
     """Bins needs to be a numpy array"""
+    # Getting the fig and axis handles
     fig, ax1 = plt.subplots(figsize=(12, 7))
+
+    # Creating a simulated and observed data array
     sim = merged_data_df.iloc[:, 0].as_matrix()
     obs = merged_data_df.iloc[:, 1].as_matrix()
-    ax1.hist(sim, bins, alpha=0.5, label=legend[0], edgecolor='black', linewidth=0.5)
-    ax1.hist(obs, bins, alpha=0.5, label=legend[1], edgecolor='black', linewidth=0.5)
+
+    if z_norm:
+        # Calculating the Z Scores for the simulated data
+        sim_mean = np.mean(sim)
+        sim_std_dev = np.std(sim)
+        # The z scores override sim from before because we are plotting the Z scores
+        sim = ((sim - sim_mean) / sim_std_dev)
+
+        # Calculating the Z Scores for the observed data
+        obs_mean = np.mean(obs)
+        obs_std_dev = np.std(obs)
+        # The z scores override obs from before because we are plotting the Z scores
+        obs = ((obs - obs_mean) / obs_std_dev)
+
+        # Finding the maximum and minimum Z scores
+        sim_max = np.max(sim)
+        sim_min = np.min(sim)
+        obs_max = np.max(obs)
+        obs_min = np.min(obs)
+
+        total_max = np.max([sim_max, obs_max])
+        total_min = np.min([sim_min, obs_min])
+
+        # Creating the bins based on the max and min
+        bins = np.linspace(total_min - 0.01, total_max + 0.01, num_bins)
+    else:
+        # Calculating the max and min of both data sets
+        sim_max = np.max(sim)
+        sim_min = np.min(sim)
+        obs_max = np.max(obs)
+        obs_min = np.min(obs)
+
+        total_max = np.max([sim_max, obs_max])
+        total_min = np.min([sim_min, obs_min])
+
+        # Creating the bins based on the max and min
+        bins = np.linspace(total_min - 0.01, total_max + 0.01, num_bins)
+
+    if legend is None:
+        # Plotting the data without the legend
+        ax1.hist(sim, bins, alpha=0.5, edgecolor='black', linewidth=0.5, density=prob_dens)
+        ax1.hist(obs, bins, alpha=0.5, edgecolor='black', linewidth=0.5, density=prob_dens)
+    else:
+        # Plotting the data with the legend
+        ax1.hist(sim, bins, alpha=0.5, label=legend[0], edgecolor='black', linewidth=0.5, density=prob_dens)
+        ax1.hist(obs, bins, alpha=0.5, label=legend[1], edgecolor='black', linewidth=0.5, density=prob_dens)
+        ax1.legend(framealpha=1)
+
+    # Setting the x and y tick size
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
+
+    # Creating a grid
     if grid:
         plt.grid(True)
+
+    # Creating a title
     if title:
-        plt.title(title, fontsize=20)
+        title_dict = {'family': 'sans-serif',
+                      'color': 'black',
+                      'weight': 'normal',
+                      'size': 20,
+                      }
+        ax1.set_title(label=title, fontdict=title_dict, pad=15)
+
+    # Creating x and y axis labels
     if labels:
         plt.xlabel(labels[0], fontsize=18)
         plt.ylabel(labels[1], fontsize=18)
-    ax1.legend(loc='upper right', framealpha=1)
+
+    # Assuring a tight layout
     plt.tight_layout()
+
     if savefigure:
+        # Saving the figure
         plt.savefig(savefigure)
+        plt.close()
     else:
+        # Showing the figure
         plt.show()
 
       
