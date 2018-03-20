@@ -57,7 +57,7 @@ hs.me(sim, obs)
 hydrostats.data.merge_data
 --------------------------
 
-#### class hydrostats.data.merge_data(predicted_file_path, recorded_file_path, column_names=['Simulated', 'Observed']): 
+#### class hydrostats.data.merge_data(predicted_file_path, recorded_file_path, interpolate=None, column_names=['Simulated', 'Observed'], predicted_tz=None, recorded_tz=None, interp_type='pchip'): 
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L5 "Source Code")
 
 #### Merge Data 
