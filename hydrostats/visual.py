@@ -1,5 +1,5 @@
 from hydrostats import me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smap1, smap2, d, d1, dr, \
-    drel, dmod, M, R, NSE, NSEmod, NSErel, E_1, sa, sc, sid, sga
+    drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga
 import numpy as np
 import matplotlib.pyplot as plt
 import sympy as sp
