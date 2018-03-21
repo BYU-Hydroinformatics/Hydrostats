@@ -101,7 +101,6 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
     
 def hist(merged_data_df, num_bins, z_norm=False, legend=None, grid=False, title=None, labels=None,
          savefigure=None, prob_dens=False):
-    """Bins needs to be a numpy array"""
     # Getting the fig and axis handles
     fig, ax1 = plt.subplots(figsize=(12, 7))
 
