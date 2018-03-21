@@ -251,8 +251,8 @@ def dmod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=Non
                     np.abs(observed_array - np.mean(observed_array))) ** j))
 
 
-def M(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-      remove_zero=False):
+def watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """Returns Watterson's M value. Watterson IG. 1996. Non-dimensional measures of climate model performance.
     International Journal of Climatology 16: 379–391.
     arguments: simulated array, observed array"""
@@ -406,6 +406,16 @@ def sga(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
     a = np.dot(sgx, sgy)
     b = np.linalg.norm(sgx) * np.linalg.norm(sgy)
     return np.arccos(a / b)
+
+
+# def sga(forecasted_array, observed_array):
+#     """Returns the spectral gradient angle
+#     arguments: forecasted array, observed array"""
+#     assert len(observed_array) == len(forecasted_array)
+#     forecasted_array, observed_array = remove_values(forecasted_array, observed_array)
+#     SGx = observed_array[1:] - observed_array[:observed_array.size - 1]
+#     SGy = forecasted_array[1:] - forecasted_array[:forecasted_array.size - 1]
+#     return sa(SGx, SGy)
 
 
 """ ###################################################################################################################
@@ -640,7 +650,7 @@ def all_metrics(simulated_array, observed_array, mase_m=1, dmod_j = 1, nse_mod_j
     metrics_array[16] = dr(simulated_array, observed_array)
     metrics_array[17] = drel(simulated_array, observed_array)
     metrics_array[18] = dmod(simulated_array, observed_array, j=dmod_j)
-    metrics_array[19] = M(simulated_array, observed_array)
+    metrics_array[19] = watt_m(simulated_array, observed_array)
     metrics_array[20] = mb_r(simulated_array, observed_array)
     metrics_array[21] = nse(simulated_array, observed_array)
     metrics_array[22] = nse_mod(simulated_array, observed_array, j=nse_mod_j)
