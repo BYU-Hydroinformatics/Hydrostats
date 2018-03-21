@@ -69,12 +69,11 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
         forecasted_array = merged_data_df.iloc[:, 0].as_matrix()
         observed_array = merged_data_df.iloc[:, 1].as_matrix()
         function_list = [me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smap1, smap2, d, d1, dr,
-                         drel, dmod, M, R, NSE, NSEmod, NSErel, E_1, sa, sc, sid, sga
+                         drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga
                          ]
         function_list_str = ['ME', 'MAE', 'MSE', 'ED', 'NED', 'RMSE', 'RMSLE', 'MASE', 'R^2', 'ACC', 'MAPE',
-                             'MAPD', 'SMAP1', 'SMAP2', 'D', 'D1', 'DR', 'D-Rel', 'D-Mod', 'M', 'R', 'E', 'E-Mod',
-                             'E-Rel', 'E_1', 'SA', 'SC', 'SID', 'SGA'
-                             ]
+                             'MAPD', 'SMAP1', 'SMAP2', 'D', 'D1', 'DR', 'D-Rel', 'D-Mod', 'M', 'R', 'NSE', 'NSE-Mod',
+                             'NSE-Rel', 'E_1', 'SA', 'SC', 'SID', 'SGA']
         assert isinstance(metrics, list)
         for metric in metrics:
             assert metric in function_list_str
@@ -189,11 +188,13 @@ def hist(merged_data_df, num_bins, z_norm=False, legend=None, grid=False, title=
         plt.show()
 
       
-def scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=None, savefigure=None):
-    plt.figure(figsize=(12, 7))
+def scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=False, savefigure=None, marker_style='ko',
+            metrics=None):
+    fig = plt.figure(num=1, figsize=(12, 8), dpi=80, facecolor='w', edgecolor='k')
+    ax = fig.add_subplot(111)
     sim = merged_data_df.iloc[:, 0].as_matrix()
     obs = merged_data_df.iloc[:, 1].as_matrix()
-    plt.plot(sim, obs, 'ko')
+    plt.plot(sim, obs, marker_style)
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
     if grid:
@@ -208,7 +209,7 @@ def scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=None, 
         p = np.polyfit(sim, obs, 1)
         f = np.poly1d(p)
 
-        # calculate new x's and y's
+        # Calculating new x's and y's
         x_new = np.linspace(0, sim.max(), sim.size)
         y_new = f(x_new)
 
@@ -220,8 +221,36 @@ def scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=None, 
         # Plotting the best fit line with the equation as a legend in latex
         plt.plot(x_new, y_new, 'k', label="${}$".format(eq_latex))
         plt.legend(fontsize=12)
+    if metrics is not None:
+        forecasted_array = merged_data_df.iloc[:, 0].as_matrix()
+        observed_array = merged_data_df.iloc[:, 1].as_matrix()
+        function_list = [me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smap1, smap2, d, d1, dr,
+                         drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga
+                         ]
+        function_list_str = ['ME', 'MAE', 'MSE', 'ED', 'NED', 'RMSE', 'RMSLE', 'MASE', 'R^2', 'ACC', 'MAPE',
+                             'MAPD', 'SMAP1', 'SMAP2', 'D', 'D1', 'DR', 'D-Rel', 'D-Mod', 'M', 'R', 'NSE', 'NSE-Mod',
+                             'NSE-Rel', 'E_1', 'SA', 'SC', 'SID', 'SGA']
+        assert isinstance(metrics, list)
+        for metric in metrics:
+            assert metric in function_list_str
+        index = []
+        for metric in metrics:
+            index.append(function_list_str.index(metric))
+        selected_metrics = []
+        for i in index:
+            selected_metrics.append(function_list_str[i] + '=' +
+                                    str(round(function_list[i](sim, obs), 3)))
+        formatted_selected_metrics = ''
+        for i in selected_metrics:
+            formatted_selected_metrics += i + '\n'
+        font = {'family': 'sans-serif',
+                'weight': 'normal',
+                'size': 14}
+        plt.text(-0.35, 0.75, formatted_selected_metrics, ha='left', va='center', transform=ax.transAxes, fontdict=font)
+        plt.subplots_adjust(left=0.25)
     if savefigure:
         plt.savefig(savefigure)
+        plt.close()
     else:
         plt.show()
         
