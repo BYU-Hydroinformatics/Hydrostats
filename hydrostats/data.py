@@ -280,14 +280,26 @@ def remove_nan_df(merged_dataframe):
 
 def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False):
     """Returns the seasonal period specified for the time series, between the specified time range. Can return either a
-    pandas dataframe or two numpy arrays"""
+    pandas DataFrame or two numpy arrays"""
     if time_range:
-        merged_dataframe = merged_dataframe.loc[time_range[0] : time_range[1]]
-    merged_dataframe.index = merged_dataframe.index.strftime('%m-%d')
+        # Setting the time range
+        merged_dataframe = merged_dataframe.loc[time_range[0]: time_range[1]]
+    
+    # Setting a placeholder for the datetime string values
+    merged_dataframe['placeholder'] = pd.Series(merged_dataframe.index, index=merged_dataframe.index)
+    merged_dataframe['placeholder'] = merged_dataframe.index.strftime('%m-%d')
+    
+    # Setting the start and end of the seasonal period
     start = daily_period[0]
     end = daily_period[1]
-    merged_dataframe = merged_dataframe.loc[(merged_dataframe.index >= start) &
-                                            (merged_dataframe.index <= end)]
+  
+    # Getting the seasonal period
+    merged_dataframe = merged_dataframe.loc[(merged_dataframe['placeholder'] >= start) &
+                                            (merged_dataframe['placeholder'] <= end)]
+    
+    # Dropping the placeholder
+    merged_dataframe = merged_dataframe.drop(columns=['placeholder'])
+
     if numpy:
         return merged_dataframe.iloc[:, 0].as_matrix(), merged_dataframe.iloc[:, 1].as_matrix()
     else:
