@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import sympy as sp
 import scipy.stats as stats
 import calendar
+import statsmodels.graphics.gofplots as sm
 
 
 def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None,
