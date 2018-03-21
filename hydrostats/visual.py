@@ -255,31 +255,24 @@ def scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=False,
         plt.show()
         
         
-def qq_plot(merged_data_df, grid=False, title=None, labels=None, savefigure=None, rvalue=None):
-    fig = plt.figure(figsize=(12, 7))
-    ax = fig.add_subplot(111)
-    measurements = merged_data_df.iloc[:, 0] - merged_data_df.iloc[:, 1]
-    (osm, osr), (slope, intercept, r) = stats.probplot(measurements, dist="norm")
-    print(osm, osr, slope, intercept, r)
-    plt.plot(osm, osr, 'bo', osm, slope * osm + intercept, 'r-')
-    if rvalue:
-        xmin = np.min(osm)
-        xmax = np.max(osm)
-        ymin = np.min(measurements)
-        ymax = np.max(measurements)
-        posx = xmin + 0.70 * (xmax - xmin)
-        posy = ymin + 0.01 * (ymax - ymin)
-        plt.text(posx, posy, "$R^2=%1.4f$" % r**2)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
-    if grid:
-        ax.grid(True)
-    if title:
-        ax.set_title(title, fontsize=20)
-    if labels:
-        ax.set_xlabel(labels[0], fontsize=18)
-        ax.set_ylabel(labels[1], fontsize=18)
-    if savefigure:
-        plt.savefig(savefigure)
+def qqplot(merged_df, labels=['X Quantiles', 'Y Quantiles'], line=None, savefig=None, title=None, grid=None):
+    # Pulling the data from the dataframe
+    sim = merged_df.iloc[:, 0].as_matrix()
+    obs = merged_df.iloc[:, 1].as_matrix()
+
+    # Making a probability plot for simulated and observed
+    pp_sim = sm.ProbPlot(sim)
+    pp_obs = sm.ProbPlot(obs)
+    sm.qqplot_2samples(pp_obs, pp_sim, line=line, xlabel=labels[0], ylabel=labels[1])
+
+    if title is not None:
+        plt.title(title)
+
+    if grid is not None:
+        plt.grid()
+
+    if savefig is not None:
+        plt.savefig(savefig)
+        plt.close()
     else:
         plt.show()
