@@ -83,6 +83,31 @@ obs = np.random.rand(10)
 
 hs.rmse(sim, obs)
 ```
+hydrostats.rmsle
+-------------
+
+#### class hydrostats.rmse(forecasted_array, observed_array) 
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L81 "Source Code")
+
+#### Root Mean Square of Log Error (RMSLE) 
+The RMSLE measures the difference between the logged simulated data and the logged observed data.  For the RMSLE, a smaller number indicates a better fit to the original data. The RMSLE removes the biases towards larger numbers by removing outliers within the log transformation of the data. 
+
+| Parameters      |               |
+| :-------------   |:-------------|
+| forecasted_array| A 1D array of forecasted data from the time series. |
+| observed_array| A 1D array of observed data from the time series.|
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.rmsle(sim, obs)
+```
 
 # Data Management
 
