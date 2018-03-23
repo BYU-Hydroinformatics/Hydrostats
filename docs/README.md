@@ -86,7 +86,7 @@ hs.rmse(sim, obs)
 hydrostats.rmsle
 -------------
 
-#### class hydrostats.rmse(forecasted_array, observed_array) 
+#### class hydrostats.rmsle(forecasted_array, observed_array) 
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L81 "Source Code")
 
 #### Root Mean Square of Log Error (RMSLE) 
