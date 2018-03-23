@@ -7,10 +7,9 @@
 + [Root Mean Square Error](#hydrostatsrmse)
 + [Root Mean Square of Log Error](#hydrostatsrmsle)
 + [Anomaly Correlation Coefficient](#hydrostatsacc)
-+ [R^2 Coefficient]
-+ [Spectral Angle]
++ [R^2 Coefficient](#hydrostatsr2)
++ [Spectral Angle](#hydrostatssa)
 + [Nash-Sutcliffe Efficiency](#hydrostatsnse)
-+ [Mean Difference]
 + Mean Absolute Error
 + Etc...
 
@@ -157,6 +156,56 @@ sim = np.arange(10)
 obs = np.random.rand(10)
 
 hs.acc(sim, obs)
+```
+hydrostats.r2
+-------------
+
+#### class hydrostats.r_squared(forecasted_array, observed_array) 
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L109 "Source Code")
+
+#### R^2 Coefficient
+The R^2 Coefficient, or coefficient of determination, is used to determine the correlation between two datasets.  An R^2 coefficient of 1.0 signifies perfect correlation between the two data sets. The R^2 coefficient is sensitive to timing changes between the two data sets. 
+
+| Parameters      |               |
+| :-------------   |:-------------|
+| forecasted_array| A 1D array of forecasted data from the time series. |
+| observed_array| A 1D array of observed data from the time series.|
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.r_squared(sim, obs)
+```
+hydrostats.sa
+-------------
+
+#### class hydrostats.sa(forecasted_array, observed_array) 
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L353 "Source Code")
+
+#### Spectral Angle Coefficient
+The spectral angle coefficient is used to determine the differences between the shapes of two time series.  It determines the angle of difference between the gradients between any two points.  Because it measures the shape of the time series, rather than the magnitude, it is not sensitve to changes in magnitude or timing shifts.  
+
+| Parameters      |               |
+| :-------------   |:-------------|
+| forecasted_array| A 1D array of forecasted data from the time series. |
+| observed_array| A 1D array of observed data from the time series.|
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.sa(sim, obs)
 ```
 
 # Data Management
