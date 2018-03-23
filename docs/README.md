@@ -82,7 +82,7 @@ sim = np.arange(10)
 obs = np.random.rand(10)
 
 hs.rmse(sim, obs)
-
+```
 
 # Data Management
 
