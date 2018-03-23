@@ -4,6 +4,13 @@
 
 ## Metrics:
 + [Mean Error](#hydrostatsme)
++ [Root Mean Square Error](#hydrostatsrmse)
++ [Root Mean Square of Log Error]
++ [Anomaly Correlation Coefficient]
++ [R^2 Coefficient]
++ [Spectral Angle]
++ [Nash-Sutcliffe Efficiency]
++ [Mean Difference]
 + Mean Absolute Error
 + Etc...
 
@@ -51,6 +58,31 @@ obs = np.random.rand(10)
 
 hs.me(sim, obs)
 ```
+hydrostats.rmse
+-------------
+
+#### class hydrostats.rmse(forecasted_array, observed_array) 
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L70 "Source Code")
+
+#### Root Mean Square Error (RMSE) 
+The RMSE measures the difference between the simulated data and the observed data.  For the RMSE, a smaller number indicates a better fit to the original data. The RMSE is biased towards large values, and is the most common metric used to describe error. 
+
+| Parameters      |               |
+| :-------------   |:-------------|
+| forecasted_array| A 1D array of forecasted data from the time series. |
+| observed_array| A 1D array of observed data from the time series.|
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.rmse(sim, obs)
+
 
 # Data Management
 
