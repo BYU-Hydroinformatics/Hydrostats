@@ -5,7 +5,7 @@
 ## Metrics:
 + [Mean Error](#hydrostatsme)
 + [Root Mean Square Error](#hydrostatsrmse)
-+ [Root Mean Square of Log Error]
++ [Root Mean Square of Log Error](#hydrostatsrmsle)
 + [Anomaly Correlation Coefficient]
 + [R^2 Coefficient]
 + [Spectral Angle]
