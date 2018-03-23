@@ -6,10 +6,10 @@
 + [Mean Error](#hydrostatsme)
 + [Root Mean Square Error](#hydrostatsrmse)
 + [Root Mean Square of Log Error](#hydrostatsrmsle)
-+ [Anomaly Correlation Coefficient]
++ [Anomaly Correlation Coefficient](#hydrostatsacc)
 + [R^2 Coefficient]
 + [Spectral Angle]
-+ [Nash-Sutcliffe Efficiency]
++ [Nash-Sutcliffe Efficiency](#hydrostatsnse)
 + [Mean Difference]
 + Mean Absolute Error
 + Etc...
@@ -107,6 +107,56 @@ sim = np.arange(10)
 obs = np.random.rand(10)
 
 hs.rmsle(sim, obs)
+```
+hydrostats.nse
+-------------
+
+#### class hydrostats.nse(forecasted_array, observed_array) 
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L295 "Source Code")
+
+#### Nash-Sutcliffe Efficiency (NSE)
+The NSE is used widely for hydrologic validation and calibration.  It is sensitive to outliers, and the distribution of the datapoints must be normalized (usually with a log transformation) before analysis can be done.  A NSE value of 1.0 means that there is no error in the dataset, whereas a negative value shows that the average of the observed data would serve as a better model than the predicted data. 
+
+| Parameters      |               |
+| :-------------   |:-------------|
+| forecasted_array| A 1D array of forecasted data from the time series. |
+| observed_array| A 1D array of observed data from the time series.|
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.nse(sim, obs)
+```
+hydrostats.acc
+-------------
+
+#### class hydrostats.acc(forecasted_array, observed_array) 
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L122 "Source Code")
+
+#### Anomaly Correlation Coefficient (ACC)
+The ACC is used to define any correlation (positive or negative) between two data sets.  It ignores any potential biases due to large or small values.  An ACC value of 1.0 corresponds to a perfect one-to-one positive correlation, an ACC value of -1.0 corresponds to a perfect one-to-one negative correlation, and an ACC value of 0 corresponds to no correlation between the datasets. 
+
+| Parameters      |               |
+| :-------------   |:-------------|
+| forecasted_array| A 1D array of forecasted data from the time series. |
+| observed_array| A 1D array of observed data from the time series.|
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.acc(sim, obs)
 ```
 
 # Data Management
