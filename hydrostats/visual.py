@@ -9,7 +9,7 @@ import statsmodels.graphics.gofplots as sm
 
 
 def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None,
-         savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False):
+         savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False, fig_size=(10, 6), text_adjust=[-0.35, 0.75]):
     """A function that will plot a simulated and observed data vs time and show metrics to the left of the plot if specified.
     Arguments:
     merged_data_df - A pandas dataframe with a datetime type index, and two columns of simulated and observed data of
@@ -28,14 +28,14 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
     options.
     tight_xlim - A boolean type input indicating if the user would like the gap in the x limits of the graph to be
     removed."""
-    fig = plt.figure(num=1, figsize=(12, 8), dpi=80, facecolor='w', edgecolor='k')
+    fig = plt.figure(num=1, figsize=fig_size, dpi=80, facecolor='w', edgecolor='k')
     ax = fig.add_subplot(111)
     if legend:
-        plt.legend()
         plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], linestyles[0], markersize=2,
                  label=legend[0])
         plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], linestyles[1], markersize=2,
                  label=legend[1])
+        plt.legend(fontsize=18)
     else:
         plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], linestyles[0], markersize=2)
         plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], linestyles[1], markersize=2)
@@ -66,6 +66,9 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
 
     if grid:
         plt.grid(True)
+
+    plt.tight_layout()
+
     if metrics:
         forecasted_array = merged_data_df.iloc[:, 0].as_matrix()
         observed_array = merged_data_df.iloc[:, 1].as_matrix()
@@ -83,22 +86,24 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
             index.append(function_list_str.index(metric))
         selected_metrics = []
         for i in index:
-            selected_metrics.append(function_list_str[i] + '=' + str(round(function_list[i](forecasted_array, observed_array), 3)))
+            selected_metrics.append(
+                function_list_str[i] + '=' + str(round(function_list[i](forecasted_array, observed_array), 3)))
         formatted_selected_metrics = ''
         for i in selected_metrics:
             formatted_selected_metrics += i + '\n'
         font = {'family': 'sans-serif',
                 'weight': 'normal',
                 'size': 14}
-        plt.text(-0.35, 0.75, formatted_selected_metrics, ha='left', va='center', transform=ax.transAxes, fontdict=font)
-        plt.subplots_adjust(left=0.25)
+        plt.text(text_adjust[0], text_adjust[1], formatted_selected_metrics, ha='left', va='center',
+                 transform=ax.transAxes, fontdict=font, bbox={'facecolor': 'grey', 'alpha': 0.5, 'pad': 10})
+        plt.subplots_adjust(left=0.27)
     if savefigure:
         plt.savefig(savefigure)
         plt.close()
     else:
         plt.show()
 
-    
+
 def hist(merged_data_df, num_bins, z_norm=False, legend=None, grid=False, title=None, labels=None,
          savefigure=None, prob_dens=False):
     # Getting the fig and axis handles
@@ -188,7 +193,7 @@ def hist(merged_data_df, num_bins, z_norm=False, legend=None, grid=False, title=
         # Showing the figure
         plt.show()
 
-      
+
 def scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=False, savefigure=None, marker_style='ko',
             metrics=None):
     fig = plt.figure(num=1, figsize=(12, 8), dpi=80, facecolor='w', edgecolor='k')
@@ -254,8 +259,8 @@ def scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=False,
         plt.close()
     else:
         plt.show()
-        
-        
+
+
 def qqplot(merged_df, labels=['X Quantiles', 'Y Quantiles'], line=None, savefig=None, title=None, grid=None):
     # Pulling the data from the dataframe
     sim = merged_df.iloc[:, 0].as_matrix()
