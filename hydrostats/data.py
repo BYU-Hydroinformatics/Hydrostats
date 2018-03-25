@@ -186,19 +186,19 @@ def merge_data(predicted_file_path, recorded_file_path, interpolate=None, column
 
         if interpolate == 'recorded':
             # Checking if the time zone is a half hour off of UTC
-            if int(df_predicted.index[0].strftime('%z')[-2:]) == 30 or\
+            if int(df_predicted.index[0].strftime('%z')[-2:]) == 30 or \
                     int(df_recorded.index[0].strftime('%z')[-2:]) == 30:
                 # Checking if the time delta is either 15 minutes or 45 minutes
                 if td_tuple_predicted[0] * 24 == 0.25 or td_tuple_predicted[0] * 24 == 0.75:
                     # Making a new index of quarter hour time spacing for interpolation
                     recorded_index_interpolate = pd.date_range(df_recorded.index[0], df_recorded.index[-1],
-                                                                freq='15min', tz=recorded_tz)
+                                                               freq='15min', tz=recorded_tz)
                     # Reindexing and interpolating the dataframe to match the observed data
                     df_recorded = df_recorded.reindex(recorded_index_interpolate).interpolate(interp_type)
                 else:
                     # Making a new index of half hour time spacing for interpolation
                     recorded_index_interpolate = pd.date_range(df_recorded.index[0], df_recorded.index[-1],
-                                                                freq='30min', tz=recorded_tz)
+                                                               freq='30min', tz=recorded_tz)
                     # Reindexing and interpolating the dataframe to match the observed data
                     df_recorded = df_recorded.reindex(recorded_index_interpolate).interpolate(interp_type)
             else:
@@ -208,19 +208,19 @@ def merge_data(predicted_file_path, recorded_file_path, interpolate=None, column
                         int(df_recorded.index[0].strftime('%z')[-2:]) == 45:
                     # Making a new index of quarter hour time spacing for interpolation
                     recorded_index_interpolate = pd.date_range(df_recorded.index[0], df_recorded.index[-1],
-                                                                freq='15min', tz=recorded_tz)
+                                                               freq='15min', tz=recorded_tz)
                     # Reindexing and interpolating the dataframe to match the observed data
                     df_recorded = df_recorded.reindex(recorded_index_interpolate).interpolate(interp_type)
                 elif td_tuple_predicted[0] * 24 == 0.5:
                     # Making a new index of half hour time spacing for interpolation
                     recorded_index_interpolate = pd.date_range(df_recorded.index[0], df_recorded.index[-1],
-                                                                freq='30min', tz=recorded_tz)
+                                                               freq='30min', tz=recorded_tz)
                     # Reindexing and interpolating the dataframe to match the observed data
                     df_recorded = df_recorded.reindex(recorded_index_interpolate).interpolate(interp_type)
                 else:
                     # Making a new index of half hour time spacing for interpolation
                     recorded_index_interpolate = pd.date_range(df_recorded.index[0], df_recorded.index[-1],
-                                                                freq='1H', tz=recorded_tz)
+                                                               freq='1H', tz=recorded_tz)
                     # Reindexing and interpolating the dataframe to match the observed data
                     df_recorded = df_recorded.reindex(recorded_index_interpolate).interpolate(interp_type)
 
@@ -229,42 +229,57 @@ def merge_data(predicted_file_path, recorded_file_path, interpolate=None, column
 
 def daily_average(merged_data):
     """Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and
-        calculates the daily average streamflow over the course of the data. Please note that this function assumes
-        that the column for predicted streamflow is labeled 'predicted streamflow' and the column for recorded
-        streamflow is labeled 'recorded streamflow.' Returns a dataframe with the date format as MM/DD in the index
-        and the two columns of the data averaged"""
+        calculates the daily average streamflow over the course of the data. Returns a dataframe with the date
+        format as MM/DD in the index and the two columns of the data averaged"""
     # Calculating the daily average from the database
-    return merged_data.groupby(merged_data.index.strftime("%m/%d")).mean()
+    a = merged_data.groupby(merged_data.index.strftime("%m/%d"))
+    return a.mean()
 
 
 def daily_std_error(merged_data):
     """Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and
-        calculates the daily standard error of the streamflow over the course of the data. Please note that this
-        function assumes that the column for predicted streamflow is labeled 'predicted streamflow' and the column for
-        recorded streamflow is labeled 'recorded streamflow.' Returns a dataframe with the date format as MM/DD in the
-        index and the two columns of the data averaged"""
+        calculates the daily standard error of the streamflow over the course of the data. Returns a dataframe with
+        the date format as MM/DD in the index and the two columns of the data's standard error"""
     # Calculating the daily average from the database
-    return merged_data.groupby(merged_data.index.strftime("%m/%d")).sem()
+    a = merged_data.groupby(merged_data.index.strftime("%m/%d"))
+    return a.sem()
+
+
+def daily_std_dev(merged_data):
+    """Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and
+        calculates the daily standard deviation of the streamflow over the course of the data. Returns a dataframe with
+        the date format as MM/DD in the index and the two columns of the data's standard deviation"""
+    # Calculating the daily average from the database
+    a = merged_data.groupby(merged_data.index.strftime("%m/%d"))
+    return a.std()
 
 
 def monthly_average(merged_data):
     """Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and
-        calculates the monthly average streamflow over the course of the data. Please note that this function assumes
-        that the column for predicted streamflow is labeled 'predicted streamflow' and the column for recorded
-        streamflow is labeled 'recorded streamflow.' Returns a dataframe with the date format as MM in the index
-        and the two columns of the data averaged"""
+        calculates the monthly average streamflow over the course of the data. Returns a dataframe with the date
+        format as MM in the index and the two columns of the data averaged"""
     # Calculating the daily average from the database
-    return merged_data.groupby(merged_data.index.strftime("%m")).mean()
+    a = merged_data.groupby(merged_data.index.strftime("%m"))
+    return a.mean()
 
 
 def monthly_std_error(merged_data):
     """Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and
-        calculates the monthly standard error of the streamflow over the course of the data. Please note that this
-        function assumes that the column for predicted streamflow is labeled 'predicted streamflow' and the column for
-        recorded streamflow is labeled 'recorded streamflow.' Returns a dataframe with the date format as MM in the
-        index and the two columns of the data averaged"""
+        calculates the monthly standard error of the streamflow over the course of the data. Returns a dataframe
+        with the date format as MM in the index and the two columns of the data's standard error"""
     # Calculating the daily average from the database
-    return merged_data.groupby(merged_data.index.strftime("%m")).sem()
+    a = merged_data.groupby(merged_data.index.strftime("%m"))
+    return a.sem()
+
+
+def monthly_std_dev(merged_data):
+    """Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and
+        calculates the monthly standard deviation of the streamflow over the course of the data.
+        Returns a dataframe with the date format as MM in the index and the two columns of the data's standard
+        deviation"""
+    # Calculating the daily average from the database
+    a = merged_data.groupby(merged_data.index.strftime("%m"))
+    return a.std()
 
 
 def remove_nan_df(merged_dataframe):
@@ -284,19 +299,19 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
     if time_range:
         # Setting the time range
         merged_dataframe = merged_dataframe.loc[time_range[0]: time_range[1]]
-    
+
     # Setting a placeholder for the datetime string values
     merged_dataframe['placeholder'] = pd.Series(merged_dataframe.index, index=merged_dataframe.index)
     merged_dataframe['placeholder'] = merged_dataframe.index.strftime('%m-%d')
-    
+
     # Setting the start and end of the seasonal period
     start = daily_period[0]
     end = daily_period[1]
-  
+
     # Getting the seasonal period
     merged_dataframe = merged_dataframe.loc[(merged_dataframe['placeholder'] >= start) &
                                             (merged_dataframe['placeholder'] <= end)]
-    
+
     # Dropping the placeholder
     merged_dataframe = merged_dataframe.drop(columns=['placeholder'])
 
