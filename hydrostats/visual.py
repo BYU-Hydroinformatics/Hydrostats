@@ -35,7 +35,7 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
                  label=legend[0])
         plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], linestyles[1], markersize=2,
                  label=legend[1])
-        plt.legend(fontsize=18)
+        plt.legend(fontsize=14)
     else:
         plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], linestyles[0], markersize=2)
         plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], linestyles[1], markersize=2)
@@ -95,7 +95,7 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
                 'weight': 'normal',
                 'size': 14}
         plt.text(text_adjust[0], text_adjust[1], formatted_selected_metrics, ha='left', va='center',
-                 transform=ax.transAxes, fontdict=font, bbox={'facecolor': 'grey', 'alpha': 0.5, 'pad': 10})
+                 transform=ax.transAxes, fontdict=font)
         plt.subplots_adjust(left=0.27)
     if savefigure:
         plt.savefig(savefigure)
