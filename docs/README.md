@@ -12,7 +12,7 @@
 + [Root Mean Square Error](#hydrostatsrmse)
 + [Root Mean Squared Log Error](#hydrostatsrmsle)
 + [Mean Absolute Scaled Error](#hydrostatsmase)
-+ [Coefficient of Determination (R^2)](#hydrostatsrsquared)
++ [Coefficient of Determination (R^2)](#hydrostatsr_squared)
 + [Anomoly Correlation Coefficient](#hydrostatsacc)
 + [Mean Absolute Percentage Error](#hydrostatsmape)
 + [Mean Absolute Percentage Deviation](#hydrostatsmapd)
