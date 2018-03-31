@@ -26,13 +26,13 @@
 + [Watterson's M](#hydrostatswatt_m)
 + [Mielke-Berry R](#hydrostatsmb_r)
 + [Nash-Sutcliffe Efficiency](#hydrostatsnse)
-+ [Modified Nash-Sutcliffe Efficiency](#hydrostatsnsemod)
-+ [Relative Nash-Sutcliffe Efficiency](#hydrostatsnserel)
-+ [Legate-McCabe Index](#hydrostatslmindex)
++ [Modified Nash-Sutcliffe Efficiency](#hydrostatsnse_mod)
++ [Relative Nash-Sutcliffe Efficiency](#hydrostatsnse_rel)
++ [Legate-McCabe Index](#hydrostatslm_index)
 + [Spectral Angle](#hydrostatssa)
 + [Spectral Correlation](#hydrostatssc)
 + [Spectral Information Divergence](#hydrostatssid)
-+ [Spectral Gradient Angle](#hydrostatsga)
++ [Spectral Gradient Angle](#hydrostatssga)
 
 ## H - Metrics
 
