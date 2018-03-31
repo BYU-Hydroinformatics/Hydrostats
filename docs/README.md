@@ -474,6 +474,223 @@ obs = np.random.rand(10)
 hs.smap1(sim, obs)
 ```
 
+hydrostats.smap2
+-------------
+
+#### class hydrostats.smap2(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)    
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L172 "Source Code")
+
+#### Symmetric Mean Absolute Percentage Error (2) (SMAP2)
+Returns the Symmetric Mean Absolute Percentage Error (2).
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.smap2(sim, obs)
+```
+
+hydrostats.d
+-------------
+
+#### class hydrostats.d(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)    
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L185 "Source Code")
+
+#### Index of Agreement (D)
+Returns the Index of Agreement (d).
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.d(sim, obs)
+```
+
+hydrostats.d1
+-------------
+
+#### class hydrostats.d1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)    
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L199 "Source Code")
+
+#### Index of Agreement (D1)
+Returns the Index of Agreement (d1).
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.d1(sim, obs)
+```
+
+hydrostats.dr
+-------------
+
+#### class hydrostats.dr(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)    
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L212 "Source Code")
+
+#### Index of Agreement (DR)
+Returns the refined Index of Agreement (dr).
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.dr(sim, obs)
+```
+
+hydrostats.drel
+-------------
+
+#### class hydrostats.drel(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)    
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L228 "Source Code")
+
+#### Index of Agreement (DREL)
+Returns the relative Index of Agreement.
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.drel(sim, obs)
+```
+
+hydrostats.dmod
+-------------
+
+#### class hydrostats.dmod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)    
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L241 "Source Code")
+
+#### Index of Agreement (DMOD)
+Returns the modified Index of Agreement.
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| j = 1            | Integer input indicating the j values desired. | 
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.dmod(sim, obs)
+```
+
+hydrostats.watt_m
+-------------
+
+#### class hydrostats.watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L241 "Source Code")
+
+#### Index of Agreement (DMOD)
+Returns Watterson's M value [1]. 
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| j = 1            | Integer input indicating the j values desired. | 
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.dmod(sim, obs)
+```
+
+#### References
++ [1] Watterson IG. 1996. Non-dimensional measures of climate model performance.
+    International Journal of Climatology 16: 379–391
+
+
 hydrostats.nse
 -------------
 
