@@ -659,16 +659,15 @@ hydrostats.watt_m
 -------------
 
 #### class hydrostats.watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
-[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L241 "Source Code")
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L254 "Source Code")
 
-#### Index of Agreement (DMOD)
+#### Watterson's M (M)
 Returns Watterson's M value [1]. 
 
 | Parameters       |              |
 | :-------------   |:-------------|
 | forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
 | observed_array   | 1D Numpy array input of observed data from the time series.     |
-| j = 1            | Integer input indicating the j values desired. | 
 | replace_nan=None | Float input indicating what value to replace NaN values with. |
 | replace_inf=None | Float input indicating what value to replace Inf values with. |
 | remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
@@ -687,23 +686,58 @@ hs.dmod(sim, obs)
 ```
 
 #### References
-+ [1] Watterson IG. 1996. Non-dimensional measures of climate model performance.
-    International Journal of Climatology 16: 379–391
++ [1] Watterson IG. 1996. Non-dimensional measures of climate model performance. International Journal of Climatology 16: 379–391.
 
+hydrostats.mb_r
+-------------
+
+#### class hydrostats.watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L268 "Source Code")
+
+#### Mielke-Berry R (R)
+Returns the Mielke-Berry R value [1]. 
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.dmod(sim, obs)
+```
+
+#### References
++ [1] Mielke PW Jr, Berry KJ. 2001. Permutation Methods: A Distance Function Approach. Springer-Verlag: New York; 352.
 
 hydrostats.nse
 -------------
 
-#### class hydrostats.nse(forecasted_array, observed_array) 
+#### class hydrostats.nse(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False) 
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L295 "Source Code")
 
 #### Nash-Sutcliffe Efficiency (NSE)
-The NSE is used widely for hydrologic validation and calibration.  It is sensitive to outliers, and the distribution of the datapoints must be normalized (usually with a log transformation) before analysis can be done.  A NSE value of 1.0 means that there is no error in the dataset, whereas a negative value shows that the average of the observed data would serve as a better model than the predicted data. 
+The NSE [1] is used widely for hydrologic validation and calibration.  It is sensitive to outliers, and the distribution of the datapoints must be normalized (usually with a log transformation) before analysis can be done.  A NSE value of 1.0 means that there is no error in the dataset, whereas a negative value shows that the average of the observed data would serve as a better model than the predicted data. 
 
-| Parameters      |               |
+| Parameters       |              |
 | :-------------   |:-------------|
-| forecasted_array| A 1D array of forecasted data from the time series. |
-| observed_array| A 1D array of observed data from the time series.|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
 
 #### Example
 
@@ -717,19 +751,128 @@ obs = np.random.rand(10)
 hs.nse(sim, obs)
 ```
 
+#### References
++ [1] Nash JE, Sutcliffe JV. 1970. River flow forecasting through conceptual models part I—A discussion of principles. Journal of Hydrology 10(3): 282–290.
+
+hydrostats.nse_mod
+-------------
+
+#### class hydrostats.nse_mod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L308 "Source Code")
+
+#### Modified Nash-Sutcliffe Efficiency (MNSE)
+Returns the modified Nash-Sutcliffe Efficiency value [1, 2].
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| j = 1            | Integer input indicating the desired j value. |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.nse_mod(sim, obs)
+```
+
+#### References
++ [1] Krause, P., Boyle, D. P., and Base, F.: Comparison of different efficiency criteria for hydrological model assessment, Adv. Geosci., 5, 89-97, 2005.
++ [2] Legates, D. R., and G. J. McCabe Jr. (1999), Evaluating the Use of "Goodness-of-Fit" Measures in Hydrologic and Hydroclimatic Model Validation, Water Resour. Res., 35(1), 233-241.
+
+hydrostats.nse_rel
+-------------
+
+#### class hydrostats.nse_rel(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L324 "Source Code")
+
+#### Relative Nash-Sutcliffe Efficiency (RELNSE)
+Returns the relative Nash-Sutcliffe Efficiency value [1, 2].
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.nse_rel(sim, obs)
+```
+
+#### References
++ [1] Krause, P., Boyle, D. P., and Base, F.: Comparison of different efficiency criteria for hydrological model assessment, Adv. Geosci., 5, 89-97, 2005.
++ [2] Legates, D. R., and G. J. McCabe Jr. (1999), Evaluating the Use of "Goodness-of-Fit" Measures in Hydrologic and Hydroclimatic Model Validation, Water Resour. Res., 35(1), 233-241.
+
+hydrostats.lm_index
+-------------
+
+#### class hydrostats.lm_index(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L340 "Source Code")
+
+#### Legate-McCabe Index (LMINDX)
+Returns the Legate-McCabe index [1].
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.lm_index(sim, obs)
+```
+
+#### References
++ [1] Legates DR, McCabe GJ Jr. 1999. Evaluating the use of “goodness-of-fit” measures in hydrologic and hydroclimatic model validation. Water Resources Research 35(1): 233–241.
+
 hydrostats.sa
 -------------
 
-#### class hydrostats.sa(forecasted_array, observed_array) 
+#### class hydrostats.sa(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L353 "Source Code")
 
-#### Spectral Angle Coefficient
-The spectral angle coefficient is used to determine the differences between the shapes of two time series.  It determines the angle of difference between the gradients between any two points.  Because it measures the shape of the time series, rather than the magnitude, it is not sensitve to changes in magnitude or timing shifts.  
+#### Spectral Angle Coefficient (SA)
+The spectral angle coefficient [1] is used to determine the differences between the shapes of two time series.  It determines the angle of difference between the gradients between any two points.  Because it measures the shape of the time series, rather than the magnitude, it is not sensitve to changes in magnitude or timing shifts.  
 
-| Parameters      |               |
+| Parameters       |              |
 | :-------------   |:-------------|
-| forecasted_array| A 1D array of forecasted data from the time series. |
-| observed_array| A 1D array of observed data from the time series.|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
 
 #### Example
 
@@ -741,6 +884,102 @@ sim = np.arange(10)
 obs = np.random.rand(10)
 
 hs.sa(sim, obs)
+```
+
+#### References
++ [1] Robila, S.A.; Gershman, A. In Spectral matching accuracy in processing hyperspectral data, Signals, Circuits and Systems, 2005. ISSCS 2005. International Symposium on, 2005; IEEE: pp 163-166.
+
+hydrostats.sc
+-------------
+
+#### class hydrostats.sc(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L367 "Source Code")
+
+#### Spectral Correlation (SC)
+Returns the Spectral Correlation [1].
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.sa(sim, obs)
+```
+
+#### References
++ [1] Robila, S.A.; Gershman, A. In Spectral matching accuracy in processing hyperspectral data, Signals, Circuits and Systems, 2005. ISSCS 2005. International Symposium on, 2005; IEEE: pp 163-166.
+
+hydrostats.sid
+-------------
+
+#### class hydrostats.sid(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L382 "Source Code")
+
+#### Spectral Information Divergence (SID)
+Returns the Spectral Information Divergence.
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.sid(sim, obs)
+```
+
+hydrostats.sga
+-------------
+
+#### class hydrostats.sga(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L396 "Source Code")
+
+#### Spectral Gradient Angle (SGA)
+Returns the spectral gradient angle.
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.sga(sim, obs)
 ```
 
 # Data Management
