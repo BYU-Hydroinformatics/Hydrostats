@@ -3,15 +3,66 @@
 # Contents
 
 ## Metrics:
+
 + [Mean Error](#hydrostatsme)
++ [Mean Absolute Error](#hydrostatsmae)
++ [Mean Squared Error](#hydrostatsmse)
++ [Eclidean Distance](#hydrostatsme)
++ [Normalized Eclidean Distance](#hydrostatsed)
 + [Root Mean Square Error](#hydrostatsrmse)
-+ [Root Mean Square of Log Error](#hydrostatsrmsle)
-+ [Anomaly Correlation Coefficient](#hydrostatsacc)
-+ [R^2 Coefficient](#hydrostatsr2)
-+ [Spectral Angle](#hydrostatssa)
++ [Root Mean Squared Log Error](#hydrostatsrmsle)
++ [Mean Absolute Scaled Error](#hydrostatsmase)
++ [Coefficient of Determination (R^2)](#hydrostatsr2)
++ [Anomoly Correlation Coefficient](#hydrostatsacc)
++ [Mean Absolute Percentage Error](#hydrostatsmape)
++ [Mean Absolute Percentage Deviation](#hydrostatsmapd)
++ [Symmetric Mean Absolute Percentage Error (1)](#hydrostatssmap1)
++ [Symmetric Mean Absolute Percentage Error (2)](#hydrostatssmap2)
++ [Index of Agreement (d)](#hydrostatsd)
++ [Index of Agreement (d1)](#hydrostatsd1)
++ [Index of Agreement Refined (dr)](#hydrostatsdr)
++ [Relative Index of Agreement](#hydrostatsdrel)
++ [Modified Index of Agreement](#hydrostatsdmod)
++ [Watterson's M](#hydrostatswatt_m)
++ [Mielke-Berry R](#hydrostatsmb_r)
 + [Nash-Sutcliffe Efficiency](#hydrostatsnse)
-+ Mean Absolute Error
-+ Etc...
++ [Modified Nash-Sutcliffe Efficiency](#hydrostatsnsemod)
++ [Relative Nash-Sutcliffe Efficiency](#hydrostatsnserel)
++ [Legate-McCabe Index](#hydrostatslmindex)
++ [Spectral Angle](#hydrostatssa)
++ [Spectral Correlation](#hydrostatssc)
++ [Spectral Information Divergence](#hydrostatssid)
++ [Spectral Gradient Angle](#hydrostatsga)
+
+## H - Metrics
+
++ [H1 - Mean]
++ [H1 - Absolute]
++ [H1 - Root]
++ [H2 - Mean]
++ [H2 - Absolute]
++ [H2 - Root]
++ [H3 - Mean]
++ [H3 - Absolute]
++ [H3 - Root]
++ [H4 - Mean]
++ [H4 - Absolute]
++ [H4 - Root]
++ [H5 - Mean]
++ [H5 - Absolute]
++ [H5 - Root]
++ [H6 - Mean]
++ [H6 - Absolute]
++ [H6 - Root]
++ [H7 - Mean]
++ [H7 - Absolute]
++ [H7 - Root]
++ [H8 - Mean]
++ [H8 - Absolute]
++ [H8 - Root]
++ [H10 - Mean]
++ [H10 - Absolute]
++ [H10 - Root]
 
 ## Data Management:
 + [Merging Data](#hydrostatsdatamerge_data)
@@ -35,16 +86,20 @@
 hydrostats.me
 -------------
 
-#### class hydrostats.me(forecasted_array, observed_array) 
-[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L19 "Source Code")
+#### class hydrostats.me(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L13 "Source Code")
 
 #### Mean Error (ME) 
 The ME measures the difference between the simulated data and the observed data (Fisher, 1920).  For the mean error, a smaller number indicates a better fit to the original data. Note that if the error is in the form of random noise, the mean error will be very small, which can skew the accuracy of this metric. ME is cumulative and will be small even if there are large positive and negative errors that balance.  
 
-| Parameters      |               |
+| Parameters       |              |
 | :-------------   |:-------------|
-| forecasted_array| A 1D array of forecasted data from the time series. |
-| observed_array| A 1D array of observed data from the time series.|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
 
 #### Example
 
@@ -57,19 +112,144 @@ obs = np.random.rand(10)
 
 hs.me(sim, obs)
 ```
+
+hydrostats.mae
+-------------
+
+#### class hydrostats.mae(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L13 "Source Code")
+
+#### Mean Absolute Error (MAE) 
+The ME measures the absolute difference between the simulated data and the observed data. For the mean abolute error, a smaller number indicates a better fit to the original data.  
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.mae(sim, obs)
+```
+
+hydrostats.mse
+-------------
+
+#### class hydrostats.mse(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L35 "Source Code")
+
+#### Mean Squared Error (MSE) 
+The MSE measures the squared difference between the simulated data and the observed data.  For the mean squared error, a smaller number indicates a better fit to the original data.  
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.mse(sim, obs)
+```
+
+hydrostats.ed
+-------------
+
+#### class hydrostats.ed(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L46 "Source Code")
+
+#### Euclidean Distance (ED) 
+The ED function returns the Euclidean Distance error metric.  
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.ed(sim, obs)
+```
+
+hydrostats.ned
+-------------
+
+#### class hydrostats.ned(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L57 "Source Code")
+
+#### Normalized Euclidean Distance (NED) 
+The NED function returns the Normalized Euclidean Distance error metric.  
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.ed(sim, obs)
+```
+
 hydrostats.rmse
 -------------
 
-#### class hydrostats.rmse(forecasted_array, observed_array) 
+#### class hydrostats.rmse(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False) 
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L70 "Source Code")
 
 #### Root Mean Square Error (RMSE) 
-The RMSE measures the difference between the simulated data and the observed data.  For the RMSE, a smaller number indicates a better fit to the original data. The RMSE is biased towards large values, and is the most common metric used to describe error. 
+The RMSE measures the difference between the simulated data and the observed data.  For the RMSE, a smaller number indicates a better fit to the original data. The RMSE is biased towards large values and outliers, and is one of the most common metric used to describe error. 
 
-| Parameters      |               |
+| Parameters       |              |
 | :-------------   |:-------------|
-| forecasted_array| A 1D array of forecasted data from the time series. |
-| observed_array| A 1D array of observed data from the time series.|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
 
 #### Example
 
@@ -82,19 +262,24 @@ obs = np.random.rand(10)
 
 hs.rmse(sim, obs)
 ```
+
 hydrostats.rmsle
 -------------
 
-#### class hydrostats.rmsle(forecasted_array, observed_array) 
+#### class hydrostats.rmsle(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)  
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L81 "Source Code")
 
 #### Root Mean Square of Log Error (RMSLE) 
 The RMSLE measures the difference between the logged simulated data and the logged observed data.  For the RMSLE, a smaller number indicates a better fit to the original data. The RMSLE removes the biases towards larger numbers by removing outliers within the log transformation of the data. 
 
-| Parameters      |               |
+| Parameters       |              |
 | :-------------   |:-------------|
-| forecasted_array| A 1D array of forecasted data from the time series. |
-| observed_array| A 1D array of observed data from the time series.|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
 
 #### Example
 
@@ -107,6 +292,188 @@ obs = np.random.rand(10)
 
 hs.rmsle(sim, obs)
 ```
+
+hydrostats.mase
+-------------
+
+#### class hydrostats.mase(simulated_array, observed_array, m=1, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)  
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L93 "Source Code")
+
+#### Mean Absolute Scaled Error (MASE) 
+Returns the mean absolute scaled error metric 
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| m = 1            | Integer input indicating the seasonal period m. |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.mase(sim, obs, m=2)
+```
+
+hydrostats.r_squared
+-------------
+
+#### class hydrostats.r_squared(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)   
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L109 "Source Code")
+
+#### R^2 Coefficient
+The R^2 Coefficient, or coefficient of determination, is used to determine the linear correlation between two datasets.  An R^2 coefficient of 1.0 signifies perfect linear correlation between the two data sets. An R^2 coefficient of 0 signifies no linear correlation. The R^2 coefficient is sensitive to timing changes between the two data sets as well as outliers. 
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.r_squared(sim, obs)
+```
+
+hydrostats.acc
+-------------
+
+#### class hydrostats.acc(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)    
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L122 "Source Code")
+
+#### Anomaly Correlation Coefficient (ACC)
+The ACC is used to define any correlation (positive or negative) between two data sets.  It ignores any potential biases due to large or small values.  An ACC value of 1.0 corresponds to a perfect one-to-one positive correlation, an ACC value of -1.0 corresponds to a perfect one-to-one negative correlation, and an ACC value of 0 corresponds to no correlation between the datasets. 
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.acc(sim, obs)
+```
+
+hydrostats.mape
+-------------
+
+#### class hydrostats.mape(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)    
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L136 "Source Code")
+
+#### Mean Absolute Percentage Error (MAPE)
+Returns the mean absolute percentage error metric value.
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.mape(sim, obs)
+```
+
+hydrostats.mapd
+-------------
+
+#### class hydrostats.mapd(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)    
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L147 "Source Code")
+
+#### Mean Absolute Percentage Deviation (MAPE)
+Returns the Mean Absolute Percentage Deviation.
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.mapd(sim, obs)
+```
+
+hydrostats.smap1
+-------------
+
+#### class hydrostats.smap1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)    
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L158 "Source Code")
+
+#### Symmetric Mean Absolute Percentage Error (1) (SMAP1)
+Returns the Symmetric Mean Absolute Percentage Error (1).
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.smap1(sim, obs)
+```
+
 hydrostats.nse
 -------------
 
@@ -132,56 +499,7 @@ obs = np.random.rand(10)
 
 hs.nse(sim, obs)
 ```
-hydrostats.acc
--------------
 
-#### class hydrostats.acc(forecasted_array, observed_array) 
-[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L122 "Source Code")
-
-#### Anomaly Correlation Coefficient (ACC)
-The ACC is used to define any correlation (positive or negative) between two data sets.  It ignores any potential biases due to large or small values.  An ACC value of 1.0 corresponds to a perfect one-to-one positive correlation, an ACC value of -1.0 corresponds to a perfect one-to-one negative correlation, and an ACC value of 0 corresponds to no correlation between the datasets. 
-
-| Parameters      |               |
-| :-------------   |:-------------|
-| forecasted_array| A 1D array of forecasted data from the time series. |
-| observed_array| A 1D array of observed data from the time series.|
-
-#### Example
-
-```python
-import hydrostats as hs
-import numpy as np
-
-sim = np.arange(10)
-obs = np.random.rand(10)
-
-hs.acc(sim, obs)
-```
-hydrostats.r2
--------------
-
-#### class hydrostats.r_squared(forecasted_array, observed_array) 
-[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L109 "Source Code")
-
-#### R^2 Coefficient
-The R^2 Coefficient, or coefficient of determination, is used to determine the correlation between two datasets.  An R^2 coefficient of 1.0 signifies perfect correlation between the two data sets. The R^2 coefficient is sensitive to timing changes between the two data sets. 
-
-| Parameters      |               |
-| :-------------   |:-------------|
-| forecasted_array| A 1D array of forecasted data from the time series. |
-| observed_array| A 1D array of observed data from the time series.|
-
-#### Example
-
-```python
-import hydrostats as hs
-import numpy as np
-
-sim = np.arange(10)
-obs = np.random.rand(10)
-
-hs.r_squared(sim, obs)
-```
 hydrostats.sa
 -------------
 
