@@ -1,6 +1,6 @@
 [Documentation Editing Guide](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet "Github Markdown Cheatsheet")
 
-![Coefficient of Determination](/docs/pictures/R_squared.gif?raw=true "Coefficient of Determination")
+![Coefficient of Determination](/docs/pictures/R_squared.gif?raw=true)
 # Contents
 
 ## Metrics:
@@ -91,6 +91,9 @@ hydrostats.me
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L13 "Source Code")
 
 #### Mean Error (ME) 
+
+![Mean Error](/docs/pictures/ME.png?raw=true)
+
 The ME measures the difference between the simulated data and the observed data (Fisher, 1920).  For the mean error, a smaller number indicates a better fit to the original data. Note that if the error is in the form of random noise, the mean error will be very small, which can skew the accuracy of this metric. ME is cumulative and will be small even if there are large positive and negative errors that balance.  
 
 | Parameters       |              |
@@ -121,6 +124,9 @@ hydrostats.mae
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L13 "Source Code")
 
 #### Mean Absolute Error (MAE) 
+
+![Mean Absolute Error](/docs/pictures/MAE.png?raw=true)
+
 The ME measures the absolute difference between the simulated data and the observed data. For the mean abolute error, a smaller number indicates a better fit to the original data.  
 
 | Parameters       |              |
@@ -151,6 +157,9 @@ hydrostats.mse
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L35 "Source Code")
 
 #### Mean Squared Error (MSE) 
+
+![Mean Squared Error](/docs/pictures/MSE.png?raw=true)
+
 The MSE measures the squared difference between the simulated data and the observed data.  For the mean squared error, a smaller number indicates a better fit to the original data.  
 
 | Parameters       |              |
