@@ -1,6 +1,5 @@
 [Documentation Editing Guide](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet "Github Markdown Cheatsheet")
 
-![Coefficient of Determination](/docs/pictures/R_squared.gif?raw=true)
 # Contents
 
 ## Metrics:
