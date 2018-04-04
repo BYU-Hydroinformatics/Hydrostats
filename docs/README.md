@@ -34,11 +34,18 @@
 + [Spectral Information Divergence](#hydrostatssid)
 + [Spectral Gradient Angle](#hydrostatssga)
 
-## H - Metrics
+## [H - Metrics]
 
-+ [H1 - Mean]
-+ [H1 - Absolute]
-+ [H1 - Root]
++ [H1](#hydrostatsh1)
++ [H2](#hydrostatsh2)
++ [H3](#hydrostatsh3)
++ [H4](#hydrostatsh4)
++ [H5](#hydrostatsh5)
++ [H6](#hydrostatsh6)
++ [H7](#hydrostatsh7)
++ [H8](#hydrostatsh8)
++ [H10](#hydrostatsh10)
+
 + [H2 - Mean]
 + [H2 - Absolute]
 + [H2 - Root]
@@ -1033,6 +1040,302 @@ sim = np.arange(10)
 obs = np.random.rand(10)
 
 hs.sga(sim, obs)
+```
+
+# H Metrics - Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)
+Tornqvist et al. (1985) argue that the log-difference or log-percent-diffence are the most appropriate measure of relative change because they are semetric and have several other properies. They present 10 different potential measures of change, 9 are included in hydrostats. They use H<sub>1</sub> through H<sub>10</sub> for an error measure. 
+
+For a goodness-of-fit, each of these could be made into a goodness of fit metric. The three goodness of fit metrics used in the paper are shown below:
+
+![H Types](/docs/pictures/H_Types.png?raw=true)
+
+hydrostats.h1
+-------------
+
+#### class hydrostats.h1(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L382 "Source Code")
+
+#### H1
+
+![H1](/docs/pictures/H1.png?raw=true)
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| h_type='mean'    | Text input indicating the type of metric you want to use on the H values. Possible arguments are 'mean', 'absolute', and 'rmhe'.|
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.h1(sim, obs, type='absolute')
+```
+
+hydrostats.h2
+-------------
+
+#### class hydrostats.h2(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L382 "Source Code")
+
+#### H2
+
+![H2](/docs/pictures/H2.png?raw=true)
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| h_type='mean'    | Text input indicating the type of metric you want to use on the H values. Possible arguments are 'mean', 'absolute', and 'rmhe'.|
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.h2(sim, obs, type='absolute')
+```
+
+hydrostats.h3
+-------------
+
+#### class hydrostats.h3(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L382 "Source Code")
+
+#### H3
+
+![H3](/docs/pictures/H3.png?raw=true)
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| h_type='mean'    | Text input indicating the type of metric you want to use on the H values. Possible arguments are 'mean', 'absolute', and 'rmhe'. |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.h3(sim, obs, type='absolute')
+```
+
+hydrostats.h4
+-------------
+
+#### class hydrostats.h4(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L382 "Source Code")
+
+#### H4
+
+![H4](/docs/pictures/H4.png?raw=true)
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| h_type='mean'    | Text input indicating the type of metric you want to use on the H values. Possible arguments are 'mean', 'absolute', and 'rmhe'. |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.h4(sim, obs, type='absolute')
+```
+
+hydrostats.h5
+-------------
+
+#### class hydrostats.h5(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L382 "Source Code")
+
+#### H5
+
+![H5](/docs/pictures/H5.png?raw=true)
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| h_type='mean'    | Text input indicating the type of metric you want to use on the H values. Possible arguments are 'mean', 'absolute', and 'rmhe'. |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.h5(sim, obs, type='absolute')
+```
+
+hydrostats.h6
+-------------
+
+#### class hydrostats.h6(simulated_array, observed_array, h_type='mean', k=1, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L382 "Source Code")
+
+#### H6
+
+![H6](/docs/pictures/H6.png?raw=true)
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| h_type='mean'    | Text input indicating the type of metric you want to use on the H values. Possible arguments are 'mean', 'absolute', and 'rmhe'. |
+| k=1              | Integer input indicating the k value. |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.h6(sim, obs, type='absolute')
+```
+
+hydrostats.h7
+-------------
+
+#### class hydrostats.h7(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L382 "Source Code")
+
+#### H7
+
+![H7](/docs/pictures/H7.png?raw=true)
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| h_type='mean'    | Text input indicating the type of metric you want to use on the H values. Possible arguments are 'mean', 'absolute', and 'rmhe'. |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.h7(sim, obs, type='absolute')
+```
+
+hydrostats.h8
+-------------
+
+#### class hydrostats.h8(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L382 "Source Code")
+
+#### H8
+
+![H8](/docs/pictures/H8.png?raw=true)
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| h_type='mean'    | Text input indicating the type of metric you want to use on the H values. Possible arguments are 'mean', 'absolute', and 'rmhe'. |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.h8(sim, obs, type='absolute')
+```
+
+hydrostats.h10
+-------------
+
+#### class hydrostats.h10(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L382 "Source Code")
+
+#### H10
+
+![H10](/docs/pictures/H10.png?raw=true)
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
+| observed_array   | 1D Numpy array input of observed data from the time series.     |
+| h_type='mean'    | Text input indicating the type of metric you want to use on the H values. Possible arguments are 'mean', 'absolute', and 'rmhe'. |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.h10(sim, obs, type='absolute')
 ```
 
 # Data Management
