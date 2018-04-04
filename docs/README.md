@@ -191,6 +191,8 @@ hydrostats.ed
 #### Euclidean Distance (ED) 
 The ED function returns the Euclidean Distance error metric.  
 
+![Euclidean Distance](/docs/pictures/ED.png?raw=true)
+
 | Parameters       |              |
 | :-------------   |:-------------|
 | forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
@@ -220,6 +222,8 @@ hydrostats.ned
 
 #### Normalized Euclidean Distance (NED) 
 The NED function returns the Normalized Euclidean Distance error metric.  
+
+![Normalized Euclidean Distance](/docs/pictures/NED.png?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -251,6 +255,8 @@ hydrostats.rmse
 #### Root Mean Square Error (RMSE) 
 The RMSE measures the difference between the simulated data and the observed data.  For the RMSE, a smaller number indicates a better fit to the original data. The RMSE is biased towards large values and outliers, and is one of the most common metric used to describe error. 
 
+![Root Mean Square Error](/docs/pictures/RMSE.png?raw=true)
+
 | Parameters       |              |
 | :-------------   |:-------------|
 | forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
@@ -281,6 +287,8 @@ hydrostats.rmsle
 #### Root Mean Square of Log Error (RMSLE) 
 The RMSLE measures the difference between the logged simulated data and the logged observed data.  For the RMSLE, a smaller number indicates a better fit to the original data. The RMSLE removes the biases towards larger numbers by removing outliers within the log transformation of the data. 
 
+![Root Mean Square Log Error](/docs/pictures/RMSLE.png?raw=true)
+
 | Parameters       |              |
 | :-------------   |:-------------|
 | forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
@@ -310,6 +318,8 @@ hydrostats.mase
 
 #### Mean Absolute Scaled Error (MASE) 
 Returns the mean absolute scaled error metric 
+
+![Mean Absolute Scaled Error](/docs/pictures/MASE.png?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -342,6 +352,8 @@ hydrostats.r_squared
 #### R^2 Coefficient
 The R^2 Coefficient, or coefficient of determination, is used to determine the linear correlation between two datasets.  An R^2 coefficient of 1.0 signifies perfect linear correlation between the two data sets. An R^2 coefficient of 0 signifies no linear correlation. The R^2 coefficient is sensitive to timing changes between the two data sets as well as outliers. 
 
+![Coefficient of Determination](/docs/pictures/r_squared.png?raw=true)
+
 | Parameters       |              |
 | :-------------   |:-------------|
 | forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
@@ -371,6 +383,8 @@ hydrostats.acc
 
 #### Anomaly Correlation Coefficient (ACC)
 The ACC is used to define any correlation (positive or negative) between two data sets.  It ignores any potential biases due to large or small values.  An ACC value of 1.0 corresponds to a perfect one-to-one positive correlation, an ACC value of -1.0 corresponds to a perfect one-to-one negative correlation, and an ACC value of 0 corresponds to no correlation between the datasets. 
+
+![Anomaly Correlation Coefficient](/docs/pictures/ACC.png?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -402,6 +416,8 @@ hydrostats.mape
 #### Mean Absolute Percentage Error (MAPE)
 Returns the mean absolute percentage error metric value.
 
+![Mean Absolute Percentage Error](/docs/pictures/MAPE.png?raw=true)
+
 | Parameters       |              |
 | :-------------   |:-------------|
 | forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
@@ -429,8 +445,10 @@ hydrostats.mapd
 #### class hydrostats.mapd(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)    
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L147 "Source Code")
 
-#### Mean Absolute Percentage Deviation (MAPE)
+#### Mean Absolute Percentage Deviation (MAPD)
 Returns the Mean Absolute Percentage Deviation.
+
+![Mean Absolute Percentage Deviation](/docs/pictures/MAPD.png?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -462,6 +480,8 @@ hydrostats.smap1
 #### Symmetric Mean Absolute Percentage Error (1) (SMAP1)
 Returns the Symmetric Mean Absolute Percentage Error (1).
 
+![Symmetric Mean Absolute Percentage Error (1)](/docs/pictures/SMAP1.png?raw=true)
+
 | Parameters       |              |
 | :-------------   |:-------------|
 | forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
@@ -491,6 +511,8 @@ hydrostats.smap2
 
 #### Symmetric Mean Absolute Percentage Error (2) (SMAP2)
 Returns the Symmetric Mean Absolute Percentage Error (2).
+
+![Symmetric Mean Absolute Percentage Error (2)](/docs/pictures/SMAP2.png?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -522,6 +544,8 @@ hydrostats.d
 #### Index of Agreement (D)
 Returns the Index of Agreement (d).
 
+![Index of Agreement](/docs/pictures/D.png?raw=true)
+
 | Parameters       |              |
 | :-------------   |:-------------|
 | forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
@@ -549,8 +573,10 @@ hydrostats.d1
 #### class hydrostats.d1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)    
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L199 "Source Code")
 
-#### Index of Agreement (D1)
+#### Index of Agreement (1) (D1)
 Returns the Index of Agreement (d1).
+
+![Index of Agreement (1)](/docs/pictures/D1.png?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -581,6 +607,8 @@ hydrostats.dr
 
 #### Index of Agreement (DR)
 Returns the refined Index of Agreement (dr).
+
+![Index of Agreement (DR)](/docs/pictures/D_r.png?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -673,6 +701,8 @@ hydrostats.watt_m
 #### Watterson's M (M)
 Returns Watterson's M value [1]. 
 
+![Watterson's M](/docs/pictures/M.png?raw=true)
+
 | Parameters       |              |
 | :-------------   |:-------------|
 | forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
@@ -700,11 +730,13 @@ hs.dmod(sim, obs)
 hydrostats.mb_r
 -------------
 
-#### class hydrostats.watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+#### class hydrostats.mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L268 "Source Code")
 
 #### Mielke-Berry R (R)
 Returns the Mielke-Berry R value [1]. 
+
+![Mielke-Berry R](/docs/pictures/R.png?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -724,7 +756,7 @@ import numpy as np
 sim = np.arange(10)
 obs = np.random.rand(10)
 
-hs.dmod(sim, obs)
+hs.mb_r(sim, obs)
 ```
 
 #### References
@@ -738,6 +770,8 @@ hydrostats.nse
 
 #### Nash-Sutcliffe Efficiency (NSE)
 The NSE [1] is used widely for hydrologic validation and calibration.  It is sensitive to outliers, and the distribution of the datapoints must be normalized (usually with a log transformation) before analysis can be done.  A NSE value of 1.0 means that there is no error in the dataset, whereas a negative value shows that the average of the observed data would serve as a better model than the predicted data. 
+
+![Nash-Sutcliffe Efficiency](/docs/pictures/NSE.png?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -841,6 +875,8 @@ hydrostats.lm_index
 #### Legate-McCabe Index (LMINDX)
 Returns the Legate-McCabe index [1].
 
+![Legate-McCabe Index](/docs/pictures/E1.png?raw=true)
+
 | Parameters       |              |
 | :-------------   |:-------------|
 | forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
@@ -873,6 +909,8 @@ hydrostats.sa
 
 #### Spectral Angle Coefficient (SA)
 The spectral angle coefficient [1] is used to determine the differences between the shapes of two time series.  It determines the angle of difference between the gradients between any two points.  Because it measures the shape of the time series, rather than the magnitude, it is not sensitve to changes in magnitude or timing shifts.  
+
+![Spectral Angle Coefficient](/docs/pictures/SA.png?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -907,6 +945,8 @@ hydrostats.sc
 #### Spectral Correlation (SC)
 Returns the Spectral Correlation [1].
 
+![Spectral Correlation](/docs/pictures/SC.png?raw=true)
+
 | Parameters       |              |
 | :-------------   |:-------------|
 | forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
@@ -940,6 +980,8 @@ hydrostats.sid
 #### Spectral Information Divergence (SID)
 Returns the Spectral Information Divergence.
 
+![Spectral Information Divergence](/docs/pictures/SID.png?raw=true)
+
 | Parameters       |              |
 | :-------------   |:-------------|
 | forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
@@ -969,6 +1011,8 @@ hydrostats.sga
 
 #### Spectral Gradient Angle (SGA)
 Returns the spectral gradient angle.
+
+![Spectral Gradient Angle](/docs/pictures/SGA.png?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
