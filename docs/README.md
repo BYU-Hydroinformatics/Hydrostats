@@ -416,7 +416,7 @@ hydrostats.mape
 #### Mean Absolute Percentage Error (MAPE)
 Returns the mean absolute percentage error metric value.
 
-![Mean Absolute Percentage Error](/docs/pictures/MAPE.png?raw=true)
+![Mean Absolute Percentage Error](/docs/pictures/MAPE.PNG?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
