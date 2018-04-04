@@ -34,7 +34,7 @@
 + [Spectral Information Divergence](#hydrostatssid)
 + [Spectral Gradient Angle](#hydrostatssga)
 
-## [H - Metrics](h-metrics---methods-from-tornqvist-l-vartia-p-and-vartia-yo-1985)
+## [H - Metrics](#h-metrics---methods-from-tornqvist-l-vartia-p-and-vartia-yo-1985)
 
 + [H1](#hydrostatsh1)
 + [H2](#hydrostatsh2)
