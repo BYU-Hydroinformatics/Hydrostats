@@ -46,31 +46,6 @@
 + [H8](#hydrostatsh8)
 + [H10](#hydrostatsh10)
 
-+ [H2 - Mean]
-+ [H2 - Absolute]
-+ [H2 - Root]
-+ [H3 - Mean]
-+ [H3 - Absolute]
-+ [H3 - Root]
-+ [H4 - Mean]
-+ [H4 - Absolute]
-+ [H4 - Root]
-+ [H5 - Mean]
-+ [H5 - Absolute]
-+ [H5 - Root]
-+ [H6 - Mean]
-+ [H6 - Absolute]
-+ [H6 - Root]
-+ [H7 - Mean]
-+ [H7 - Absolute]
-+ [H7 - Root]
-+ [H8 - Mean]
-+ [H8 - Absolute]
-+ [H8 - Root]
-+ [H10 - Mean]
-+ [H10 - Absolute]
-+ [H10 - Root]
-
 ## Data Management:
 + [Merging Data](#hydrostatsdatamerge_data)
 + [Finding Seasonal Periods](#hydrostatsdataseasonal_period)
