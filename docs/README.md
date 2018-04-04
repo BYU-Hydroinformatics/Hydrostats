@@ -124,7 +124,7 @@ hydrostats.mae
 
 #### Mean Absolute Error (MAE) 
 
-![Mean Absolute Error](/docs/pictures/MAE.png?raw=true)
+![Mean Absolute Error](/docs/pictures/MAE.PNG?raw=true)
 
 The ME measures the absolute difference between the simulated data and the observed data. For the mean abolute error, a smaller number indicates a better fit to the original data.  
 
@@ -191,7 +191,7 @@ hydrostats.ed
 #### Euclidean Distance (ED) 
 The ED function returns the Euclidean Distance error metric.  
 
-![Euclidean Distance](/docs/pictures/ED.png?raw=true)
+![Euclidean Distance](/docs/pictures/ED.PNG?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -255,7 +255,7 @@ hydrostats.rmse
 #### Root Mean Square Error (RMSE) 
 The RMSE measures the difference between the simulated data and the observed data.  For the RMSE, a smaller number indicates a better fit to the original data. The RMSE is biased towards large values and outliers, and is one of the most common metric used to describe error. 
 
-![Root Mean Square Error](/docs/pictures/RMSE.png?raw=true)
+![Root Mean Square Error](/docs/pictures/RMSE.PNG?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -287,7 +287,7 @@ hydrostats.rmsle
 #### Root Mean Square of Log Error (RMSLE) 
 The RMSLE measures the difference between the logged simulated data and the logged observed data.  For the RMSLE, a smaller number indicates a better fit to the original data. The RMSLE removes the biases towards larger numbers by removing outliers within the log transformation of the data. 
 
-![Root Mean Square Log Error](/docs/pictures/RMSLE.png?raw=true)
+![Root Mean Square Log Error](/docs/pictures/RMSLE.PNG?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -319,7 +319,7 @@ hydrostats.mase
 #### Mean Absolute Scaled Error (MASE) 
 Returns the mean absolute scaled error metric 
 
-![Mean Absolute Scaled Error](/docs/pictures/MASE.png?raw=true)
+![Mean Absolute Scaled Error](/docs/pictures/MASE.PNG?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -448,7 +448,7 @@ hydrostats.mapd
 #### Mean Absolute Percentage Deviation (MAPD)
 Returns the Mean Absolute Percentage Deviation.
 
-![Mean Absolute Percentage Deviation](/docs/pictures/MAPD.png?raw=true)
+![Mean Absolute Percentage Deviation](/docs/pictures/MAPD.PNG?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -512,7 +512,7 @@ hydrostats.smap2
 #### Symmetric Mean Absolute Percentage Error (2) (SMAP2)
 Returns the Symmetric Mean Absolute Percentage Error (2).
 
-![Symmetric Mean Absolute Percentage Error (2)](/docs/pictures/SMAP2.png?raw=true)
+![Symmetric Mean Absolute Percentage Error (2)](/docs/pictures/SMAP2.PNG?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -576,7 +576,7 @@ hydrostats.d1
 #### Index of Agreement (1) (D1)
 Returns the Index of Agreement (d1).
 
-![Index of Agreement (1)](/docs/pictures/D1.png?raw=true)
+![Index of Agreement (1)](/docs/pictures/D1.PNG?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -701,7 +701,7 @@ hydrostats.watt_m
 #### Watterson's M (M)
 Returns Watterson's M value [1]. 
 
-![Watterson's M](/docs/pictures/M.png?raw=true)
+![Watterson's M](/docs/pictures/M.PNG?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -771,7 +771,7 @@ hydrostats.nse
 #### Nash-Sutcliffe Efficiency (NSE)
 The NSE [1] is used widely for hydrologic validation and calibration.  It is sensitive to outliers, and the distribution of the datapoints must be normalized (usually with a log transformation) before analysis can be done.  A NSE value of 1.0 means that there is no error in the dataset, whereas a negative value shows that the average of the observed data would serve as a better model than the predicted data. 
 
-![Nash-Sutcliffe Efficiency](/docs/pictures/NSE.png?raw=true)
+![Nash-Sutcliffe Efficiency](/docs/pictures/NSE.PNG?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -945,7 +945,7 @@ hydrostats.sc
 #### Spectral Correlation (SC)
 Returns the Spectral Correlation [1].
 
-![Spectral Correlation](/docs/pictures/SC.png?raw=true)
+![Spectral Correlation](/docs/pictures/SC.PNG?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -1012,7 +1012,7 @@ hydrostats.sga
 #### Spectral Gradient Angle (SGA)
 Returns the spectral gradient angle.
 
-![Spectral Gradient Angle](/docs/pictures/SGA.png?raw=true)
+![Spectral Gradient Angle](/docs/pictures/SGA.PNG?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
