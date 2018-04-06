@@ -2,7 +2,9 @@
 
 # Contents
 
-## Metrics:
+## [Notes for Math Notation]()
+
+## Metrics
 
 + [Mean Error](#hydrostatsme)
 + [Mean Absolute Error](#hydrostatsmae)
@@ -62,6 +64,12 @@
 
 ## Appendix
 + [List of Available Timezones](#available-timezones)
+
+
+
+![Math Notation](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/Math_Notation.PNG?raw=true)
+
+
 
 # Metrics
 
