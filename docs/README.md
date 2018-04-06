@@ -622,6 +622,8 @@ hydrostats.drel
 #### Index of Agreement (DREL)
 Returns the relative Index of Agreement.
 
+![Index of Agreement (DREL)](/docs/pictures/DR.PNG?raw=true)
+
 | Parameters       |              |
 | :-------------   |:-------------|
 | forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
@@ -651,6 +653,8 @@ hydrostats.dmod
 
 #### Index of Agreement (DMOD)
 Returns the modified Index of Agreement.
+
+![Index of Agreement (DMOD)](/docs/pictures/DM.PNG?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -788,6 +792,8 @@ hydrostats.nse_mod
 #### Modified Nash-Sutcliffe Efficiency (MNSE)
 Returns the modified Nash-Sutcliffe Efficiency value [1, 2].
 
+![Modified Nash-Sutcliffe Efficiency (MNSE)](/docs/pictures/NSE_MOD.PNG?raw=true)
+
 | Parameters       |              |
 | :-------------   |:-------------|
 | forecasted_array | 1D Numpy array input of forecasted data from the time series.   |
@@ -822,6 +828,8 @@ hydrostats.nse_rel
 
 #### Relative Nash-Sutcliffe Efficiency (RELNSE)
 Returns the relative Nash-Sutcliffe Efficiency value [1, 2].
+
+![Relative Nash-Sutcliffe Efficiency (RELNSE)](/docs/pictures/NSE_REL.PNG?raw=true)
 
 | Parameters       |              |
 | :-------------   |:-------------|
