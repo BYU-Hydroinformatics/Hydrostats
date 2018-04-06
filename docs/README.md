@@ -2,8 +2,6 @@
 
 # Contents
 
-## [Notes for Math Notation]()
-
 ## Metrics
 
 + [Mean Error](#hydrostatsme)
@@ -66,11 +64,6 @@
 + [List of Available Timezones](#available-timezones)
 
 
-
-![Math Notation](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/Math_Notation.PNG?raw=true)
-
-
-
 # Metrics
 
 hydrostats.me
@@ -82,6 +75,7 @@ hydrostats.me
 #### Mean Error (ME) 
 
 ![Mean Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/ME.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 The ME measures the difference between the simulated data and the observed data (Fisher, 1920).  For the mean error, a smaller number indicates a better fit to the original data. Note that if the error is in the form of random noise, the mean error will be very small, which can skew the accuracy of this metric. ME is cumulative and will be small even if there are large positive and negative errors that balance.  
 
@@ -115,6 +109,7 @@ hydrostats.mae
 #### Mean Absolute Error (MAE) 
 
 ![Mean Absolute Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MAE.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 The ME measures the absolute difference between the simulated data and the observed data. For the mean abolute error, a smaller number indicates a better fit to the original data.  
 
@@ -148,6 +143,7 @@ hydrostats.mse
 #### Mean Squared Error (MSE) 
 
 ![Mean Squared Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MSE.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 The MSE measures the squared difference between the simulated data and the observed data.  For the mean squared error, a smaller number indicates a better fit to the original data.  
 
@@ -182,6 +178,7 @@ hydrostats.ed
 The ED function returns the Euclidean Distance error metric.  
 
 ![Euclidean Distance](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/ED.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -214,6 +211,7 @@ hydrostats.ned
 The NED function returns the Normalized Euclidean Distance error metric.  
 
 ![Normalized Euclidean Distance](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/NED.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -246,6 +244,7 @@ hydrostats.rmse
 The RMSE measures the difference between the simulated data and the observed data.  For the RMSE, a smaller number indicates a better fit to the original data. The RMSE is biased towards large values and outliers, and is one of the most common metric used to describe error. 
 
 ![Root Mean Square Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/RMSE.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -278,6 +277,7 @@ hydrostats.rmsle
 The RMSLE measures the difference between the logged simulated data and the logged observed data.  For the RMSLE, a smaller number indicates a better fit to the original data. The RMSLE removes the biases towards larger numbers by removing outliers within the log transformation of the data. 
 
 ![Root Mean Square Log Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/RMSLE.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -310,6 +310,7 @@ hydrostats.mase
 Returns the mean absolute scaled error metric 
 
 ![Mean Absolute Scaled Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MASE.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -343,6 +344,7 @@ hydrostats.r_squared
 The R^2 Coefficient, or coefficient of determination, is used to determine the linear correlation between two datasets.  An R^2 coefficient of 1.0 signifies perfect linear correlation between the two data sets. An R^2 coefficient of 0 signifies no linear correlation. The R^2 coefficient is sensitive to timing changes between the two data sets as well as outliers. 
 
 ![Coefficient of Determination](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/r_squared.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -375,6 +377,7 @@ hydrostats.acc
 The ACC is used to define any correlation (positive or negative) between two data sets.  It ignores any potential biases due to large or small values.  An ACC value of 1.0 corresponds to a perfect one-to-one positive correlation, an ACC value of -1.0 corresponds to a perfect one-to-one negative correlation, and an ACC value of 0 corresponds to no correlation between the datasets. 
 
 ![Anomaly Correlation Coefficient](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/ACC.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -407,6 +410,7 @@ hydrostats.mape
 Returns the mean absolute percentage error metric value.
 
 ![Mean Absolute Percentage Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MAPE.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -439,6 +443,7 @@ hydrostats.mapd
 Returns the Mean Absolute Percentage Deviation.
 
 ![Mean Absolute Percentage Deviation](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MAPD.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -471,6 +476,7 @@ hydrostats.smap1
 Returns the Symmetric Mean Absolute Percentage Error (1).
 
 ![Symmetric Mean Absolute Percentage Error (1)](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SMAP1.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -503,6 +509,7 @@ hydrostats.smap2
 Returns the Symmetric Mean Absolute Percentage Error (2).
 
 ![Symmetric Mean Absolute Percentage Error (2)](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SMAP2.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -535,6 +542,7 @@ hydrostats.d
 Returns the Index of Agreement (d).
 
 ![Index of Agreement](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/D.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -567,6 +575,7 @@ hydrostats.d1
 Returns the Index of Agreement (d1).
 
 ![Index of Agreement (1)](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/D1.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -599,6 +608,7 @@ hydrostats.dr
 Returns the refined Index of Agreement (dr).
 
 ![Index of Agreement (DR)](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/D_r.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -631,6 +641,7 @@ hydrostats.drel
 Returns the relative Index of Agreement.
 
 ![Index of Agreement (DREL)](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/DR.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -663,6 +674,7 @@ hydrostats.dmod
 Returns the modified Index of Agreement.
 
 ![Index of Agreement (DMOD)](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/DM.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -696,6 +708,7 @@ hydrostats.watt_m
 Returns Watterson's M value [1]. 
 
 ![Watterson's M](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/M.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -731,6 +744,7 @@ hydrostats.mb_r
 Returns the Mielke-Berry R value [1]. 
 
 ![Mielke-Berry R](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/R.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -766,6 +780,7 @@ hydrostats.nse
 The NSE [1] is used widely for hydrologic validation and calibration.  It is sensitive to outliers, and the distribution of the datapoints must be normalized (usually with a log transformation) before analysis can be done.  A NSE value of 1.0 means that there is no error in the dataset, whereas a negative value shows that the average of the observed data would serve as a better model than the predicted data. 
 
 ![Nash-Sutcliffe Efficiency](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/NSE.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -801,6 +816,7 @@ hydrostats.nse_mod
 Returns the modified Nash-Sutcliffe Efficiency value [1, 2].
 
 ![Modified Nash-Sutcliffe Efficiency (MNSE)](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/NSE_MOD.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -838,6 +854,7 @@ hydrostats.nse_rel
 Returns the relative Nash-Sutcliffe Efficiency value [1, 2].
 
 ![Relative Nash-Sutcliffe Efficiency (RELNSE)](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/NSE_REL.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -874,6 +891,7 @@ hydrostats.lm_index
 Returns the Legate-McCabe index [1].
 
 ![Legate-McCabe Index](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/E1.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -909,6 +927,7 @@ hydrostats.sa
 The spectral angle coefficient [1] is used to determine the differences between the shapes of two time series.  It determines the angle of difference between the gradients between any two points.  Because it measures the shape of the time series, rather than the magnitude, it is not sensitve to changes in magnitude or timing shifts.  
 
 ![Spectral Angle Coefficient](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SA.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -944,6 +963,7 @@ hydrostats.sc
 Returns the Spectral Correlation [1].
 
 ![Spectral Correlation](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SC.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -979,6 +999,7 @@ hydrostats.sid
 Returns the Spectral Information Divergence.
 
 ![Spectral Information Divergence](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SID.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -1011,6 +1032,7 @@ hydrostats.sga
 Returns the spectral gradient angle.
 
 ![Spectral Gradient Angle](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SGA.PNG?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -1049,6 +1071,7 @@ hydrostats.h1
 #### H1
 
 ![H1](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H1.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -1081,6 +1104,7 @@ hydrostats.h2
 #### H2
 
 ![H2](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H2.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -1113,6 +1137,7 @@ hydrostats.h3
 #### H3
 
 ![H3](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H3.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -1145,6 +1170,7 @@ hydrostats.h4
 #### H4
 
 ![H4](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H4.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -1177,6 +1203,7 @@ hydrostats.h5
 #### H5
 
 ![H5](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H5.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -1209,6 +1236,7 @@ hydrostats.h6
 #### H6
 
 ![H6](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H6.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -1242,6 +1270,7 @@ hydrostats.h7
 #### H7
 
 ![H7](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H7.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -1274,6 +1303,7 @@ hydrostats.h8
 #### H8
 
 ![H8](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H8.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -1306,6 +1336,7 @@ hydrostats.h10
 #### H10
 
 ![H10](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H10.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 | Parameters       |              |
 | :-------------   |:-------------|
