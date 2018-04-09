@@ -3,228 +3,243 @@ from numpy import inf, nan
 import math
 
 
-def merge_data(predicted_file_path, recorded_file_path, interpolate=None, column_names=['Simulated', 'Observed'],
-               predicted_tz=None, recorded_tz=None, interp_type='pchip'):
-    """Takes two csv files that have been formatted with 1 row as a header with date in the first column and
-        streamflow values in the second column and combines them into a pandas dataframe with datetime type for the
-        dates and float type for the streamflow value. Please note that the only acceptable time deltas are 15min,
-        30min, 45min, and any number of hours in between.
+class hydrostatsError(Exception):
+    pass
+
+
+def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpolate=None,
+               column_names=['Simulated', 'Observed'], simulated_tz=None, observed_tz=None, interp_type='pchip'):
+    """Takes two csv files or two pandas dataframes that have been formatted with 1 row as a header with date in the
+    first column and streamflow values in the second column and combines them into a pandas dataframe with datetime type
+     for the dates and float type for the streamflow value. Please note that the only acceptable time deltas are 15min,
+    30min, 45min, and any number of hours in between.
 
         There are three scenarios to consider when merging your data.
 
         The first scenario is that the timezones and the spacing of the time series matches (eg. 1 Day). In this case,
-        you will want to leave the predicted_tz, recorded_tz, and interpolate arguments empty, and the function will
+        you will want to leave the simulated_tz, observed_tz, and interpolate arguments empty, and the function will
         simply join the two csv's into a dataframe.
 
         The second scenario is that you have two time series with matching time zones but not matching spacing. In this
-        case you will want to leave the predicted_tz and recorded_tz empty, and use the interpolate argument to tell the
+        case you will want to leave the simulated_tz and observed_tz empty, and use the interpolate argument to tell the
         function which time series you would like to interpolate to match the other time series.
 
         The third scenario is that you have two time series with different time zones and possibly different spacings.
-        In this case you will want to fill in the predicted_tz, recorded_tz, and interpolate arguments. This will then
+        In this case you will want to fill in the simulated_tz, observed_tz, and interpolate arguments. This will then
         take timezones into account when interpolating the selected time series.
         """
-    if predicted_tz is None and recorded_tz:
-
-        print('Either Both Timezones are required or neither')
-
-    elif predicted_tz and recorded_tz is None:
-
-        print('Either Both Timezones are required or neither')
-
-    elif predicted_tz is None and recorded_tz is None and interpolate is None:
-        """Scenario 1"""
-
+    # Reading the data into dataframes if from file
+    if sim_fpath and obs_fpath is not None:
         # Importing data into a data-frame
-        df_predicted = pd.read_csv(predicted_file_path, delimiter=",", header=None, names=[column_names[0]],
-                                   index_col=0, infer_datetime_format=True, skiprows=1)
-        df_recorded = pd.read_csv(recorded_file_path, delimiter=",", header=None, names=[column_names[1]],
-                                  index_col=0, infer_datetime_format=True, skiprows=1)
+        sim_df = pd.read_csv(sim_fpath, delimiter=",", header=None, names=[column_names[0]],
+                             index_col=0, infer_datetime_format=True, skiprows=1)
+        obs_df = pd.read_csv(obs_fpath, delimiter=",", header=None, names=[column_names[1]],
+                             index_col=0, infer_datetime_format=True, skiprows=1)
         # Converting the index to datetime type
-        df_recorded.index = pd.to_datetime(df_recorded.index, infer_datetime_format=True)
-        df_predicted.index = pd.to_datetime(df_predicted.index, infer_datetime_format=True)
+        obs_df.index = pd.to_datetime(obs_df.index, infer_datetime_format=True)
+        sim_df.index = pd.to_datetime(sim_df.index, infer_datetime_format=True)
 
-        return pd.DataFrame.join(df_predicted, df_recorded).dropna()
+    elif sim_df is not None and obs_df is not None:
+        # Overriding the column names to match the column name input
+        sim_df.columns = sim_df.columns.astype(str)
+        sim_df.columns.values[0] = column_names[0]
+        obs_df.columns = obs_df.columns.astype(str)
+        obs_df.columns.values[0] = column_names[1]
 
-    elif predicted_tz is None and recorded_tz is None and interpolate:
+        # Checking to make sure that both dataframes have datetime indices if they are not read from file.
+        if sim_df.index.dtype == "datetime64[ns]" and obs_df.index.dtype == "datetime64[ns]":
+            pass
+        else:
+            obs_df.index = pd.to_datetime(obs_df.index, infer_datetime_format=True)
+            sim_df.index = pd.to_datetime(sim_df.index, infer_datetime_format=True)
+
+    else:
+        raise hydrostatsError('either sim_fpath and obs_fpath or sim_df and obs_df are required inputs.')
+
+    # Checking to see if the necessary arguments in the function are fulfilled
+    if simulated_tz is None and observed_tz:
+
+        raise hydrostatsError('Either Both Timezones are required or neither')
+
+    elif simulated_tz and observed_tz is None:
+
+        raise hydrostatsError('Either Both Timezones are required or neither')
+
+    elif simulated_tz is None and observed_tz is None and interpolate is None:
+        """Scenario 1"""
+        # Merging and joining the two dataframes
+        return pd.DataFrame.join(sim_df, obs_df).dropna()
+
+    elif simulated_tz is None and observed_tz is None and interpolate:
         """Scenario 2"""
 
-        # Importing data into a data-frame
-        df_predicted = pd.read_csv(predicted_file_path, delimiter=",", header=None, names=[column_names[0]],
-                                   index_col=0, infer_datetime_format=True, skiprows=1)
-        df_recorded = pd.read_csv(recorded_file_path, delimiter=",", header=None, names=[column_names[1]],
-                                  index_col=0, infer_datetime_format=True, skiprows=1)
-        # Converting the index to datetime type
-        df_recorded.index = pd.to_datetime(df_recorded.index, infer_datetime_format=True)
-        df_predicted.index = pd.to_datetime(df_predicted.index, infer_datetime_format=True)
-
-        if interpolate == 'predicted':
+        if interpolate == 'simulated':
             # Condition for a half hour time delta
-            if (df_recorded.index[1] - df_recorded.index[0]).seconds / 3600 == 0.5:
+            if (obs_df.index[1] - obs_df.index[0]).seconds / 3600 == 0.5:
                 # Making a new index of half hour time spacing for interpolation
-                predicted_index_interpolate = pd.date_range(df_predicted.index[0], df_predicted.index[-1],
-                                                            freq='30min', tz=predicted_tz)
+                simulated_index_interpolate = pd.date_range(sim_df.index[0], sim_df.index[-1],
+                                                            freq='30min', tz=simulated_tz)
                 # Reindexing and interpolating the dataframe to match the observed data
-                df_predicted = df_predicted.reindex(predicted_index_interpolate).interpolate(interp_type)
-            elif (df_recorded.index[1] - df_recorded.index[0]).seconds / 3600 == 0.25 or \
-                    (df_recorded.index[1] - df_recorded.index[0]).seconds / 3600 == 0.75:
+                sim_df = sim_df.reindex(simulated_index_interpolate).interpolate(interp_type)
+            elif (obs_df.index[1] - obs_df.index[0]).seconds / 3600 == 0.25 or \
+                    (obs_df.index[1] - obs_df.index[0]).seconds / 3600 == 0.75:
                 # Making a new index of quarter hour time spacing for interpolation
-                predicted_index_interpolate = pd.date_range(df_predicted.index[0], df_predicted.index[-1],
-                                                            freq='15min', tz=predicted_tz)
+                simulated_index_interpolate = pd.date_range(sim_df.index[0], sim_df.index[-1],
+                                                            freq='15min', tz=simulated_tz)
                 # Reindexing and interpolating the dataframe to match the observed data
-                df_predicted = df_predicted.reindex(predicted_index_interpolate).interpolate(interp_type)
+                sim_df = sim_df.reindex(simulated_index_interpolate).interpolate(interp_type)
             else:
                 # Making a new index of one hour time spacing for interpolation
-                predicted_index_interpolate = pd.date_range(df_predicted.index[0], df_predicted.index[-1],
-                                                            freq='1H', tz=predicted_tz)
+                simulated_index_interpolate = pd.date_range(sim_df.index[0], sim_df.index[-1],
+                                                            freq='1H', tz=simulated_tz)
                 # Reindexing and interpolating the dataframe to match the observed data
-                df_predicted = df_predicted.reindex(predicted_index_interpolate).interpolate(interp_type)
+                sim_df = sim_df.reindex(simulated_index_interpolate).interpolate(interp_type)
 
-        if interpolate == 'recorded':
+        if interpolate == 'observed':
 
             # Condition for a half hour time delta
-            if (df_predicted.index[1] - df_predicted.index[0]).seconds / 3600 == 0.5:
+            if (sim_df.index[1] - sim_df.index[0]).seconds / 3600 == 0.5:
 
                 # Making a new index of half hour time spacing for interpolation
-                recorded_index_interpolate = pd.date_range(df_recorded.index[0], df_recorded.index[-1],
-                                                           freq='30min', tz=recorded_tz)
+                observed_index_interpolate = pd.date_range(obs_df.index[0], obs_df.index[-1],
+                                                           freq='30min', tz=observed_tz)
                 # Reindexing and interpolating the dataframe to match the observed data
-                df_recorded = df_recorded.reindex(recorded_index_interpolate).interpolate(interp_type)
+                obs_df = obs_df.reindex(observed_index_interpolate).interpolate(interp_type)
 
-            elif (df_predicted.index[1] - df_predicted.index[0]).seconds / 3600 == 0.25 or \
-                    (df_predicted.index[1] - df_predicted.index[0]).seconds / 3600 == 0.75:
+            elif (sim_df.index[1] - sim_df.index[0]).seconds / 3600 == 0.25 or \
+                    (sim_df.index[1] - sim_df.index[0]).seconds / 3600 == 0.75:
 
                 # Making a new index of quarter hour time spacing for interpolation
-                recorded_index_interpolate = pd.date_range(df_recorded.index[0], df_recorded.index[-1],
-                                                           freq='15min', tz=recorded_tz)
+                observed_index_interpolate = pd.date_range(obs_df.index[0], obs_df.index[-1],
+                                                           freq='15min', tz=observed_tz)
                 # Reindexing and interpolating the dataframe to match the observed data
-                df_recorded = df_recorded.reindex(recorded_index_interpolate).interpolate(interp_type)
+                obs_df = obs_df.reindex(observed_index_interpolate).interpolate(interp_type)
 
             else:
                 # Making a new index of one hour time spacing for interpolation
-                recorded_index_interpolate = pd.date_range(df_recorded.index[0], df_recorded.index[-1],
-                                                           freq='1H', tz=recorded_tz)
+                observed_index_interpolate = pd.date_range(obs_df.index[0], obs_df.index[-1],
+                                                           freq='1H', tz=observed_tz)
                 # Reindexing and interpolating the dataframe to match the observed data
-                df_recorded = df_recorded.reindex(recorded_index_interpolate).interpolate(interp_type)
+                obs_df = obs_df.reindex(observed_index_interpolate).interpolate(interp_type)
 
-        return pd.DataFrame.join(df_predicted, df_recorded).dropna()
+        return pd.DataFrame.join(sim_df, obs_df).dropna()
 
-    elif predicted_tz and recorded_tz and interpolate:
+    elif simulated_tz and observed_tz and interpolate:
         """Scenario 3"""
 
-        # Importing data into a data-frame
-        df_predicted = pd.read_csv(predicted_file_path, delimiter=",", header=None, names=[column_names[0]],
-                                   index_col=0, infer_datetime_format=True, skiprows=1)
-        df_recorded = pd.read_csv(recorded_file_path, delimiter=",", header=None, names=[column_names[1]],
-                                  index_col=0, infer_datetime_format=True, skiprows=1)
-        # Converting the index to datetime type
-        df_predicted.index = pd.to_datetime(df_predicted.index, infer_datetime_format=True)
-        df_recorded.index = pd.to_datetime(df_recorded.index, infer_datetime_format=True)
-
-        # finding the frequency of the timeseries for observed and predicted
-        td_predicted = (df_predicted.index[1] - df_predicted.index[0]).days + \
-                       ((df_predicted.index[1] - df_predicted.index[0]).seconds / 3600) / 24
-        td_recorded = (df_recorded.index[1] - df_recorded.index[0]).days + \
-                      ((df_recorded.index[1] - df_recorded.index[0]).seconds / 3600) / 24
+        # Finding the frequency of the timeseries for observed and simulated
+        td_simulated = (sim_df.index[1] - sim_df.index[0]).days + \
+                       ((sim_df.index[1] - sim_df.index[0]).seconds / 3600) / 24
+        td_observed = (obs_df.index[1] - obs_df.index[0]).days + \
+                      ((obs_df.index[1] - obs_df.index[0]).seconds / 3600) / 24
 
         # converting the time delta to a tuple with days and hours
-        td_tuple_predicted = math.modf(td_predicted)
-        td_tuple_recorded = math.modf(td_recorded)
+        td_tuple_simulated = math.modf(td_simulated)
+        td_tuple_observed = math.modf(td_observed)
 
         # Converting the time delta to a frequency
-        freq_predicted = str(td_tuple_predicted[1]) + 'D' + str(td_tuple_predicted[0] * 24) + 'H'
-        freq_recorded = str(td_tuple_recorded[1]) + 'D' + str(td_tuple_recorded[0] * 24) + 'H'
+        freq_simulated = str(td_tuple_simulated[1]) + 'D' + str(td_tuple_simulated[0] * 24) + 'H'
+        freq_observed = str(td_tuple_observed[1]) + 'D' + str(td_tuple_observed[0] * 24) + 'H'
 
         # Making a new index for reindexing the time series
-        predicted_df_new_index = pd.date_range(df_predicted.index[0], df_predicted.index[-1],
-                                               freq=freq_predicted, tz=predicted_tz)
-        recorded_df_new_index = pd.date_range(df_recorded.index[0], df_recorded.index[-1],
-                                              freq=freq_recorded, tz=recorded_tz)
+        simulated_df_new_index = pd.date_range(sim_df.index[0], sim_df.index[-1],
+                                               freq=freq_simulated, tz=simulated_tz)
+        observed_df_new_index = pd.date_range(obs_df.index[0], obs_df.index[-1],
+                                              freq=freq_observed, tz=observed_tz)
 
         # Changing the time series index to reflect the changes in the timezones
-        df_predicted.index = predicted_df_new_index
-        df_recorded.index = recorded_df_new_index
+        sim_df.index = simulated_df_new_index
+        obs_df.index = observed_df_new_index
 
-        if interpolate == 'predicted':
+        if interpolate == 'simulated':
             # Checking if the time zone is a half hour off of UTC
-            if int(df_recorded.index[0].strftime('%z')[-2:]) == 30:
+            if int(obs_df.index[0].strftime('%z')[-2:]) == 30:
                 # Checking if the time delta is either 15 minutes or 45 minutes
-                if td_tuple_recorded[0] * 24 == 0.25 or td_tuple_predicted[0] * 24 == 0.75:
+                if td_tuple_observed[0] * 24 == 0.25 or td_tuple_simulated[0] * 24 == 0.75:
                     # Making a new index of quarter hour time spacing for interpolation
-                    predicted_index_interpolate = pd.date_range(df_predicted.index[0], df_predicted.index[-1],
-                                                                freq='15min', tz=predicted_tz)
+                    simulated_index_interpolate = pd.date_range(sim_df.index[0], sim_df.index[-1],
+                                                                freq='15min', tz=simulated_tz)
                     # Reindexing and interpolating the dataframe to match the observed data
-                    df_predicted = df_predicted.reindex(predicted_index_interpolate).interpolate(interp_type)
+                    sim_df = sim_df.reindex(simulated_index_interpolate).interpolate(interp_type)
+
                 else:
                     # Making a new index of half hour time spacing for interpolation
-                    predicted_index_interpolate = pd.date_range(df_predicted.index[0], df_predicted.index[-1],
-                                                                freq='30min', tz=predicted_tz)
+                    simulated_index_interpolate = pd.date_range(sim_df.index[0], sim_df.index[-1],
+                                                                freq='30min', tz=simulated_tz)
                     # Reindexing and interpolating the dataframe to match the observed data
-                    df_predicted = df_predicted.reindex(predicted_index_interpolate).interpolate(interp_type)
+                    sim_df = sim_df.reindex(simulated_index_interpolate).interpolate(interp_type)
+
             else:
                 # Checking if the time delta is either 15 minutes or 45 minutes
-                if td_tuple_recorded[0] * 24 == 0.25 or td_tuple_recorded[0] * 24 == 0.75 or \
-                        int(df_recorded.index[0].strftime('%z')[-2:]) == 45 or \
-                        int(df_predicted.index[0].strftime('%z')[-2:]) == 45:
+                if td_tuple_observed[0] * 24 == 0.25 or td_tuple_observed[0] * 24 == 0.75 or \
+                        int(obs_df.index[0].strftime('%z')[-2:]) == 45 or \
+                        int(sim_df.index[0].strftime('%z')[-2:]) == 45:
                     # Making a new index of quarter hour time spacing for interpolation
-                    predicted_index_interpolate = pd.date_range(df_predicted.index[0], df_predicted.index[-1],
-                                                                freq='15min', tz=predicted_tz)
+                    simulated_index_interpolate = pd.date_range(sim_df.index[0], sim_df.index[-1],
+                                                                freq='15min', tz=simulated_tz)
                     # Reindexing and interpolating the dataframe to match the observed data
-                    df_predicted = df_predicted.reindex(predicted_index_interpolate).interpolate(interp_type)
-                elif td_tuple_recorded[0] * 24 == 0.5:
-                    # Making a new index of half hour time spacing for interpolation
-                    predicted_index_interpolate = pd.date_range(df_predicted.index[0], df_predicted.index[-1],
-                                                                freq='30min', tz=predicted_tz)
-                    # Reindexing and interpolating the dataframe to match the observed data
-                    df_predicted = df_predicted.reindex(predicted_index_interpolate).interpolate(interp_type)
-                else:
-                    # Making a new index of half hour time spacing for interpolation
-                    predicted_index_interpolate = pd.date_range(df_predicted.index[0], df_predicted.index[-1],
-                                                                freq='1H', tz=predicted_tz)
-                    # Reindexing and interpolating the dataframe to match the observed data
-                    df_predicted = df_predicted.reindex(predicted_index_interpolate).interpolate(interp_type)
+                    sim_df = sim_df.reindex(simulated_index_interpolate).interpolate(interp_type)
 
-        if interpolate == 'recorded':
-            # Checking if the time zone is a half hour off of UTC
-            if int(df_predicted.index[0].strftime('%z')[-2:]) == 30 or \
-                    int(df_recorded.index[0].strftime('%z')[-2:]) == 30:
-                # Checking if the time delta is either 15 minutes or 45 minutes
-                if td_tuple_predicted[0] * 24 == 0.25 or td_tuple_predicted[0] * 24 == 0.75:
-                    # Making a new index of quarter hour time spacing for interpolation
-                    recorded_index_interpolate = pd.date_range(df_recorded.index[0], df_recorded.index[-1],
-                                                               freq='15min', tz=recorded_tz)
+                elif td_tuple_observed[0] * 24 == 0.5:
+                    # Making a new index of half hour time spacing for interpolation
+                    simulated_index_interpolate = pd.date_range(sim_df.index[0], sim_df.index[-1],
+                                                                freq='30min', tz=simulated_tz)
                     # Reindexing and interpolating the dataframe to match the observed data
-                    df_recorded = df_recorded.reindex(recorded_index_interpolate).interpolate(interp_type)
+                    sim_df = sim_df.reindex(simulated_index_interpolate).interpolate(interp_type)
+
                 else:
                     # Making a new index of half hour time spacing for interpolation
-                    recorded_index_interpolate = pd.date_range(df_recorded.index[0], df_recorded.index[-1],
-                                                               freq='30min', tz=recorded_tz)
+                    simulated_index_interpolate = pd.date_range(sim_df.index[0], sim_df.index[-1],
+                                                                freq='1H', tz=simulated_tz)
                     # Reindexing and interpolating the dataframe to match the observed data
-                    df_recorded = df_recorded.reindex(recorded_index_interpolate).interpolate(interp_type)
+                    sim_df = sim_df.reindex(simulated_index_interpolate).interpolate(interp_type)
+
+        if interpolate == 'observed':
+            # Checking if the time zone is a half hour off of UTC
+            if int(sim_df.index[0].strftime('%z')[-2:]) == 30 or \
+                    int(obs_df.index[0].strftime('%z')[-2:]) == 30:
+
+                # Checking if the time delta is either 15 minutes or 45 minutes
+                if td_tuple_simulated[0] * 24 == 0.25 or td_tuple_simulated[0] * 24 == 0.75:
+                    # Making a new index of quarter hour time spacing for interpolation
+                    observed_index_interpolate = pd.date_range(obs_df.index[0], obs_df.index[-1],
+                                                               freq='15min', tz=observed_tz)
+                    # Reindexing and interpolating the dataframe to match the observed data
+                    obs_df = obs_df.reindex(observed_index_interpolate).interpolate(interp_type)
+
+                else:
+                    # Making a new index of half hour time spacing for interpolation
+                    observed_index_interpolate = pd.date_range(obs_df.index[0], obs_df.index[-1],
+                                                               freq='30min', tz=observed_tz)
+                    # Reindexing and interpolating the dataframe to match the observed data
+                    obs_df = obs_df.reindex(observed_index_interpolate).interpolate(interp_type)
+
             else:
                 # Checking if the time delta is either 15 minutes or 45 minutes
-                if td_tuple_predicted[0] * 24 == 0.25 or td_tuple_predicted[0] * 24 == 0.75 or \
-                        int(df_predicted.index[0].strftime('%z')[-2:]) == 45 or \
-                        int(df_recorded.index[0].strftime('%z')[-2:]) == 45:
+                if td_tuple_simulated[0] * 24 == 0.25 or td_tuple_simulated[0] * 24 == 0.75 or \
+                        int(sim_df.index[0].strftime('%z')[-2:]) == 45 or \
+                        int(obs_df.index[0].strftime('%z')[-2:]) == 45:
                     # Making a new index of quarter hour time spacing for interpolation
-                    recorded_index_interpolate = pd.date_range(df_recorded.index[0], df_recorded.index[-1],
-                                                               freq='15min', tz=recorded_tz)
+                    observed_index_interpolate = pd.date_range(obs_df.index[0], obs_df.index[-1],
+                                                               freq='15min', tz=observed_tz)
                     # Reindexing and interpolating the dataframe to match the observed data
-                    df_recorded = df_recorded.reindex(recorded_index_interpolate).interpolate(interp_type)
-                elif td_tuple_predicted[0] * 24 == 0.5:
+                    obs_df = obs_df.reindex(observed_index_interpolate).interpolate(interp_type)
+
+                elif td_tuple_simulated[0] * 24 == 0.5:
                     # Making a new index of half hour time spacing for interpolation
-                    recorded_index_interpolate = pd.date_range(df_recorded.index[0], df_recorded.index[-1],
-                                                               freq='30min', tz=recorded_tz)
+                    observed_index_interpolate = pd.date_range(obs_df.index[0], obs_df.index[-1],
+                                                               freq='30min', tz=observed_tz)
                     # Reindexing and interpolating the dataframe to match the observed data
-                    df_recorded = df_recorded.reindex(recorded_index_interpolate).interpolate(interp_type)
+                    obs_df = obs_df.reindex(observed_index_interpolate).interpolate(interp_type)
+
                 else:
                     # Making a new index of half hour time spacing for interpolation
-                    recorded_index_interpolate = pd.date_range(df_recorded.index[0], df_recorded.index[-1],
-                                                               freq='1H', tz=recorded_tz)
+                    observed_index_interpolate = pd.date_range(obs_df.index[0], obs_df.index[-1],
+                                                               freq='1H', tz=observed_tz)
                     # Reindexing and interpolating the dataframe to match the observed data
-                    df_recorded = df_recorded.reindex(recorded_index_interpolate).interpolate(interp_type)
+                    obs_df = obs_df.reindex(observed_index_interpolate).interpolate(interp_type)
 
-        return pd.DataFrame.join(df_predicted, df_recorded).dropna()
+        return pd.DataFrame.join(sim_df, obs_df).dropna()
 
 
 def daily_average(merged_data):
