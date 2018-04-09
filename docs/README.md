@@ -1365,7 +1365,7 @@ hs.h10(sim, obs, type='absolute')
 hydrostats.data.merge_data
 --------------------------
 
-#### class hydrostats.data.merge_data(predicted_file_path, recorded_file_path, interpolate=None, column_names=['Simulated', 'Observed'], predicted_tz=None, recorded_tz=None, interp_type='pchip'): 
+#### class hydrostats.data.merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpolate=None,          column_names=['Simulated', 'Observed'], simulated_tz=None, observed_tz=None, interp_type='pchip'): 
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/data.py#L5 "Source Code")
 
 #### Merge Data 
@@ -1390,12 +1390,14 @@ take timezones into account when interpolating the selected time series.
 
 | Parameters       |               |
 | :------------------------------------|:------------- |
-| predicted_file_path (Required Input) | A string type input that has the path to the predicted data file. |
-| recorded_file_path (Required Input)  | A string type input that has the path to the recorded data file. |
-| interpolate (Default=None)           | A string type input that must be either 'predicted' or 'recorded'. If the parameter is set to 'predicted', the predicted values will be interpolated to match up with the recorded values, and vice versa. |
+| sim_fpath=None | A string type input that has the path to the predicted data file. |
+| obs_fpath=None | A string type input that has the path to the recorded data file. |
+| sim_df=None    | A pandas dataframe type input with one column of simulated data and a datetime type index. |
+| obs_df=None    | A pandas dataframe type input with one column of observed data and a datetime type index. |
+| interpolate (Default=None)           | A string type input that must be either 'predicted' or 'observed'. If the parameter is set to 'predicted', the predicted values will be interpolated to match up with the recorded values, and vice versa. |
 | column_names (Default=['Simulated', 'Observed']) | A list of two string type inputs specifying the column names of the two columns in the dataframe created.|
-| predicted_tz (Default=None) | A string type input that lists the time zone of the predicted data. Must be selected from the time zones available (see [List of Available Timezones](#available-timezones) in appendix).|
-| recorded_tz (Default=None) | A string type input that lists the time zone of the recorded data. Must be selected from the time zones available (see [List of Available Timezones](#available-timezones) in appendix).|
+| simulated_tz (Default=None) | A string type input that lists the time zone of the predicted data. Must be selected from the time zones available (see [List of Available Timezones](#available-timezones) in appendix).|
+| observed_tz (Default=None) | A string type input that lists the time zone of the recorded data. Must be selected from the time zones available (see [List of Available Timezones](#available-timezones) in appendix).|
 
 #### Example
 
@@ -1418,11 +1420,8 @@ obs_index = pd.date_range('2018-01-01', periods=100, freq=obs_freq)
 sim = pd.DataFrame(data=np.random.rand(100), index=sim_index)
 obs = pd.DataFrame(data=np.random.rand(100), index=obs_index)
 
-sim.to_csv('sim.csv', index_label='Datetime')
-obs.to_csv('obs.csv', index_label='Datetime')
-
-print(hd.merge_data('sim.csv', 'obs.csv', interpolate='simulated', column_names=['Simulated', 'Observed'],
-                    predicted_tz=sim_tz, recorded_tz=obs_tz))
+print(hd.merge_data(sim_df=sim, obs_df=obs, interpolate='observed', column_names=['Simulated', 'Observed'],
+      simulated_tz=sim_tz, observed_tz=obs_tz, interp_type='pchip'))
 ```
 
 hydrostats.data.seasonal_period
