@@ -1,8 +1,11 @@
-[Documentation Editing Guide](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet "Github Markdown Cheatsheet")
+Hydrostats
+==========
 
-# Contents
 
-## Metrics
+
+## Contents
+
+### Metrics
 
 + [Mean Error](#hydrostatsme)
 + [Mean Absolute Error](#hydrostatsmae)
@@ -34,7 +37,7 @@
 + [Spectral Information Divergence](#hydrostatssid)
 + [Spectral Gradient Angle](#hydrostatssga)
 
-## [H - Metrics](#h-metrics---methods-from-tornqvist-l-vartia-p-and-vartia-yo-1985)
+### [H - Metrics](#h-metrics---methods-from-tornqvist-l-vartia-p-and-vartia-yo-1985)
 
 + [H1](#hydrostatsh1)
 + [H2](#hydrostatsh2)
@@ -46,7 +49,7 @@
 + [H8](#hydrostatsh8)
 + [H10](#hydrostatsh10)
 
-## Data Management:
+### Data Management:
 + [Merging Data](#hydrostatsdatamerge_data)
 + [Finding Seasonal Periods](#hydrostatsdataseasonal_period)
 + [Finding Daily Averages](#hydrostatsdatadaily_average)
@@ -54,13 +57,13 @@
 + [Finding Monthly Averages](#hydrostatsdatamonthly_average)
 + [Finding Monthly Standard Error](#hydrostatsdatamonthly_std_error)
 
-## Visualization
+### Visualization
 + [Hydrograph](#hydrostatsvisualplot)
 + Histogram
 + Scatter Plot
 + Quantile-Quantile Plot
 
-## Appendix
+### Appendix
 + [List of Available Timezones](#available-timezones)
 
 
