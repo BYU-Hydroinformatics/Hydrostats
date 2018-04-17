@@ -24,6 +24,6 @@ setup(
         'scipy >= 1.0.0',
         'sympy >= 1.1.1',
         'statsmodels',
-        'openpyxl' >= 2.5.2,
+        'openpyxl >= 2.5.2',
     ]
 )
