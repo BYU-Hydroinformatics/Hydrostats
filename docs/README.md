@@ -1582,7 +1582,7 @@ print(df_monthly_std_error)
 hydrostats.visual.plot
 ----------------------
 
-#### class hydrostats.visual.plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None, savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False):
+#### class hydrostats.visual.plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None, savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False, fig_size=(10, 6), text_adjust=[-0.35, 0.75]):
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/visual.py#L10 "Source Code")
 
 #### Time Series Plot
@@ -1592,16 +1592,18 @@ The time series plot is a function that is available for viewing two times serie
 
 | Parameters       |               |
 | :---------------------------------   |:-------------|
-| merged_data_df (Required Input)      | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be Simulated Data and Observed Data going from left to right. |
+| merged_data_df (Required Input)      | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be simulated Data and observed Data going from left to right. |
 | legend (Default=None)                | Adds a Legend in the 'best' location determined by matplotlib. The entries must be in the form of a list. (e.g. ['Simulated Data', 'Predicted Data']|
 | metrics (Default=None)               | Adds Metrics to the left side of the Plot. Any Metric from the Hydrostats Library can be added to the plot as the name of the function. The entries must be in a list. (e.g. |['ME', 'MASE'] would plot the Mean Error and the Mean Absolute Scaled Error on the left side of the plot.| 
 | grid (Default=False)                 | Takes a boolean type input and adds a grid to the plot. |
 | title (Default=None)                 | Takes a string type input and adds a title to the hydrograph. |
 | x_season (Default=None)              | Takes a boolean type input. If True, the x-axis ticks will be staggered every 20 ticks. This is a useful feature when plotting daily averages. |
 | labels (Default=None)                | Takes a list of two string type objects and adds them as x-axis labels and y-axis labels, respectively.|
-| savefigure (Default=None)            | Takes a string type input and will save the plot the the specified path as a filetype specified by the user. | 
+| savefigure (Default=None)            | Takes a string type input and will save the plot the the specified path as a filetype specified by the user. (eg. path/to/file.png) | 
 | linestyles (Default=['ro', 'b^'])    | Takes a list of two string type inputs and will change the linestyle of the predicted and recorded data, respectively (see below for a guide to linestyles). |
 | tight_xlim (Default=False)           | Takes a boolean type input indicating of a tight xlim is desired. |
+| fig_size=(10, 6)                     | Takes a tuple type input indicating the size of the figure created. |
+| text_adjust=[-0.35, 0.75]            | Takes a list type input indicating the relative position of the text [x-coordinate, y-coordinate]. |
 
 #### Available metrics to add to the left side of the plot:
 - ME (Mean Error)
@@ -1657,22 +1659,266 @@ The time series plot is a function that is available for viewing two times serie
 ```python
 import hydrostats.visual as hv
 import hydrostats.data as hd
+import numpy as np
+import pandas as pd
 
-# Looping through sin wave curves and plotting ten plots of daily averages
-for i in range(10):
-    # Setting the variables for the sign waves
-    x = np.linspace(1, 10, 1000)
-    sim = np.sin(x)
-    obs = np.sin(x) * 0.1 * i
-    # Creating an example time series dataframe
-    example_df = pd.DataFrame(np.column_stack((sim, obs)),
-                              index=pd.date_range('1990-01-01', periods=1000, freq='1D'))
-    # Finding the daily averages of the time series
-    example_df = hd.daily_average(example_df)
-    # Plotting the Sin waves with the arguments specified
-    plot(example_df, legend=['Simulated Data', 'Observed Data'], linestyles=['r', 'k'],
-         x_season=True, metrics=['ME', 'MAE', 'R^2'], title='Hydrograph Monthly Averages',
-         labels=['Datetime', 'Streamflow'], savefigure=str(i) + '.png', tight_xlim=False)
+# Seed for reproducibility
+np.random.seed(7850493)
+
+random_noise = (np.random.rand(10000) - 0.5) / 10 + 1
+
+# Creting synthetic simulated and observed data
+sim = np.sin(np.linspace(0, 5*np.pi, 10000)) * random_noise + 20
+obs = np.sin(np.linspace(0, 5*np.pi, 10000)) + 20
+
+time_index = pd.date_range('1980-01-01', periods=10000)
+df = pd.DataFrame(np.column_stack((sim, obs)), index=time_index, columns=['Synthetic Simulated Data', 'Synthetic Observed Data'])
+
+# Plotting a ~28 yr time series
+hv.plot(df, linestyles=['k-', 'r--'], title='28 Year Timeseries of Sin Curves', labels=['Datetime', 'Sin Values'],
+        legend=['Synthetic Simulated Data', 'Synthetic Observed Data'], metrics=['ME', 'R^2', 'NSE'], text_adjust=[-0.3, 0.80])
+
+# Now I can find daily averages and plot them, notice the x_seasonal argument was used to avoid cramped x ticks
+df = hd.daily_average(df)
+
+hv.plot(df, linestyles=['k-', 'r--'], title='Daily Averages of Sin Curves', labels=['Datetime', 'Sin Values'],
+        legend=['Synthetic Simulated Data', 'Synthetic Observed Data'], metrics=['ME', 'R^2', 'NSE'], text_adjust=[-0.3, 0.80], x_season=True)
+
+# Now I can save the plot I like (Daily Averages) with savefig argument
+hv.plot(df, linestyles=['k-', 'r--'], title='Daily Averages of Sin Curves', labels=['Datetime', 'Sin Values'],
+        legend=['Synthetic Simulated Data', 'Synthetic Observed Data'], metrics=['ME', 'R^2', 'NSE'], text_adjust=[-0.3, 0.80], x_season=True, savefigure='Daily_Averages.png')
+```
+
+hydrostats.visual.hist
+----------------------
+
+#### class hydrostats.visual.hist(merged_data_df, num_bins, z_norm=False, legend=None, grid=False, title=None, labels=None, savefigure=None, prob_dens=False):
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/visual.py#L112 "Source Code")
+
+#### Histogram Plot
+The histogram plot is a function that is available for comparing the histogram of two time series. Data can be Z-score normalized as well as fit in a probability density function.  
+
+<br>
+
+| Parameters       |               |
+| :---------------------------------   |:-------------|
+| merged_data_df (Required Input)      | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be simulated Data and observed Data going from left to right. |
+| num_bins (Required Input)            | An interger type input specifying the number of bins in the histogram. |
+| z_norm=False                         | A boolean type input specifying if the user wants to Z-score normalize the data. |
+| legend (Default=None)                | Adds a Legend in the 'best' location determined by matplotlib. The entries must be in the form of a list. (e.g. ['Simulated Data', 'Predicted Data']|
+| grid (Default=False)                 | Takes a boolean type input and adds a grid to the plot. |
+| title (Default=None)                 | Takes a string type input and adds a title to the hydrograph. |
+| labels (Default=None)                | Takes a list of two string type objects and adds them as x-axis labels and y-axis labels, respectively.|
+| savefigure (Default=None)            | Takes a string type input and will save the plot the the specified path as a filetype specified by the user. (eg. path/to/file.png) | 
+| prob_dens=False                      | Takes a boolean type input. If True, the first element of the return tuple will be the counts normalized to form a probability density, i.e., the area (or integral) under the histogram will sum to 1. |
+
+#### Available Filetypes with savefig: 
+- Postscript (.ps) 
+- Encapsulated Postscript (.eps)
+- Portable Document Format (.pdf)
+- PGF code for LaTeX (.pgf)
+- Portable Network Graphics (.png)
+- Raw RGBA bitmap (.raw)
+- Raw RGBA bitmap (.rgba)
+- Scalable Vector Graphics (.svg) 
+- Scalable Vector Graphics (.svgz)
+- Joint Photographic Experts Group (.jpg, .jpeg)
+- Tagged Image File Format (.tif, .tiff)
+
+#### Example
+
+```python
+import hydrostats.visual as hv
+import numpy as np
+import pandas as pd
+
+# Seed for reproducibility
+np.random.seed(7850493)
+
+random_noise = (np.random.rand(10000) - 0.5) / 10 + 1
+
+# Creting synthetic simulated and observed data
+sim = np.sin(np.linspace(0, 5*np.pi, 10000)) * random_noise + 20
+obs = np.sin(np.linspace(0, 5*np.pi, 10000)) + 20
+
+time_index = pd.date_range('1980-01-01', periods=10000)
+df = pd.DataFrame(np.column_stack((sim, obs)), index=time_index, columns=['Synthetic Simulated Data', 'Synthetic Observed Data'])
+
+# Plotting histograms for the ~28 yr time series
+hv.hist(df, num_bins=100, title='28 Year Histograms of Sin Curves', labels=['Bins', 'Frequency'],
+        legend=['Synthetic Simulated Data', 'Synthetic Observed Data'])
+
+# Now I can check for outliers by normalizing the data into Z-scores
+hv.hist(df, num_bins=100, title='28 Year Histograms of Sin Curves (Z-Score Normalized)', labels=['Bins', 'Frequency'],
+        legend=['Synthetic Simulated Data', 'Synthetic Observed Data'], z_norm=True)
+
+# Now I can save the first plot with the savefig argument
+hv.hist(df, num_bins=100, title='28 Year Histograms of Sin Curves (Z-Score Normalized)', labels=['Bins', 'Frequency'],
+        legend=['Synthetic Simulated Data', 'Synthetic Observed Data'], savefigure='Histogram.png')
+```
+
+hydrostats.visual.scatter
+----------------------
+
+#### class hydrostats.visual.scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=False, savefigure=None, marker_style='ko', metrics=None, log_scale=False, line45=False):
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/visual.py#L202 "Source Code")
+
+#### Scatter Plot
+The scatter plot is a function that is available for comparing the correlation of two datasets. Metrics can be added to the plot, as well as the use of a Log-Log scale for large time-series.  
+
+<br>
+
+| Parameters       |               |
+| :---------------------------------   |:-------------|
+| merged_data_df (Required Input)      | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be simulated Data and observed Data going from left to right. |
+| grid (Default=False)                 | Takes a boolean type input and adds a grid to the plot. |
+| title (Default=None)                 | Takes a string type input and adds a title to the hydrograph. |
+| labels (Default=None)                | Takes a list of two string type objects and adds them as x-axis labels and y-axis labels, respectively.|
+| best_fit=False                       | Boolean type input indicating if the user wants a best linear regression line on the graph with the equation for the line in the legend. |
+| savefigure (Default=None)            | Takes a string type input and will save the plot the the specified path as a filetype specified by the user. (eg. path/to/file.png) | 
+| marker_style='ko'                    | Takes a string type input and will change the markerstyle of the points on the scatter plot. |
+| metrics (Default=None)               | Adds Metrics to the left side of the Plot. Any Metric from the Hydrostats Library can be added to the plot as the name of the function. The entries must be in a list. (e.g. |['ME', 'MASE'] would plot the Mean Error and the Mean Absolute Scaled Error on the left side of the plot.| 
+| log_scale=False                      | Boolean type input indicating whether or not to use a log-log scale on the scatter plot. | 
+| line45=False                         | Boolean type input indicating whether or not to add a line with a slope of 1 to the plot. |
+
+#### Available metrics to add to the left side of the plot:
+- ME (Mean Error)
+- MAE (Mean Absolute Error)
+- MSE (Mean Squared Error)
+- ED (Eclidean Distance)
+- NED (Normalized Eclidean Distance)
+- RMSE (Root Mean Square Error)
+- RMSLE (Root Mean Squared Log Error)
+- MASE (Mean Absolute Scaled Error)
+- R^2 (Coefficient of Determination)
+- ACC (Anomoly Correlation Coefficient)
+- MAPE (Mean Absolute Percentage Error)
+- MAPD (Mean Absolute Percentage Deviation)
+- SMAP1 (Symmetric Mean Absolute Percentage Error (1))
+- SMAP2 (Symmetric Mean Absolute Percentage Error (2))
+- D (Index of Agreement (d))
+- D1 (Index of Agreement (d1))
+- DR (Index of Agreement Refined (dr))
+- D-Rel (Relative Index of Agreement)
+- D-Mod (Modified Index of Agreement)
+- M (Watterson's M)
+- R (Mielke-Berry R)
+- E (Nash-Sutcliffe Efficiency)
+- E-Mod (Modified Nash-Sutcliffe Efficiency)
+- E-Rel (Relative Nash-Sutcliffe Efficiency)
+- E_1 (Legate-McCabe Index)
+- SA (Spectral Angle)
+- SC (Spectral Correlation)
+- SID (Spectral Information Divergence)
+- SGA (Spectral Gradient Angle)
+
+#### Available Filetypes with savefig: 
+- Postscript (.ps) 
+- Encapsulated Postscript (.eps)
+- Portable Document Format (.pdf)
+- PGF code for LaTeX (.pgf)
+- Portable Network Graphics (.png)
+- Raw RGBA bitmap (.raw)
+- Raw RGBA bitmap (.rgba)
+- Scalable Vector Graphics (.svg) 
+- Scalable Vector Graphics (.svgz)
+- Joint Photographic Experts Group (.jpg, .jpeg)
+- Tagged Image File Format (.tif, .tiff)
+
+#### Example
+
+```python
+import hydrostats.visual as hv
+import numpy as np
+import pandas as pd
+
+# Seed for reproducibility
+np.random.seed(7850493)
+
+random_noise = (np.random.rand(10000) - 0.5) / 10 + 1
+
+# Creting synthetic simulated and observed data
+sim = np.sin(np.linspace(0, 5*np.pi, 10000)) * random_noise + 1
+obs = np.sin(np.linspace(0, 5*np.pi, 10000)) + 1
+
+time_index = pd.date_range('1980-01-01', periods=10000)
+df = pd.DataFrame(np.column_stack((sim, obs)), index=time_index, columns=['Synthetic Simulated Data', 'Synthetic Observed Data'])
+
+# Plotting a scatter plot for the ~28 yr time series
+hv.scatter(df, title='Scatter Plot for the Synthetic Data',
+           labels=['Synthetic Simulated Data', 'Synthetic Observed Data'], marker_style='bP',
+           metrics=['R^2'], line45=True)
+
+# Plotting with a log-log scale
+hv.scatter(df, title='Scatter Plot for the Synthetic Data (Log-Log Scale)',
+           labels=['Synthetic Simulated Data', 'Synthetic Observed Data'], marker_style='bP',
+           metrics=['R^2'], log_scale=True)
+
+# Now I can save the second plot with the savefig argument
+hv.scatter(df, title='Scatter Plot for the Synthetic Data (Log-Log Scale)',
+           labels=['Synthetic Simulated Data', 'Synthetic Observed Data'], marker_style='bP',
+           metrics=['R^2'], log_scale=True, savefigure='Scatter.png')
+```
+
+hydrostats.visual.qqplot
+----------------------
+
+#### class hydrostats.visual.qqplot(merged_df, labels=['X Quantiles', 'Y Quantiles'], line=None, savefig=None, title=None, grid=None):
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/visual.py#L202 "Source Code")
+
+#### QQ (Quantile Quantile Plot)
+The QQ plot is a function that is available for comparing the distribution of two datasets. When data falls along a linear regression line, it indicates that the data comes from the same distribution.  
+
+<br>
+
+| Parameters       |               |
+| :---------------------------------   |:-------------|
+| merged_data_df (Required Input)      | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be simulated Data and observed Data going from left to right. |
+| labels (Default=None)                | Takes a list of two string type objects and adds them as x-axis labels and y-axis labels, respectively.|
+| line=None                            |  - str {‘45’, ‘s’, ‘r’, q’} or None - Options for the reference line to which the data is compared: ‘45’ - 45-degree line, ‘s’ - standardized line, the expected order statistics are scaled by the standard deviation of the given sample and have the mean added to them, ‘r’ - A regression line is fit, ‘q’ - A line is fit through the quartiles, None - by default no reference line is added to the plot. |
+| savefigure (Default=None)            | Takes a string type input and will save the plot the the specified path as a filetype specified by the user. (eg. path/to/file.png) | 
+| title (Default=None)                 | Takes a string type input and adds a title to the hydrograph. |
+| grid (Default=False)                 | Takes a boolean type input and adds a grid to the plot. |
+
+#### Available Filetypes with savefig: 
+- Postscript (.ps) 
+- Encapsulated Postscript (.eps)
+- Portable Document Format (.pdf)
+- PGF code for LaTeX (.pgf)
+- Portable Network Graphics (.png)
+- Raw RGBA bitmap (.raw)
+- Raw RGBA bitmap (.rgba)
+- Scalable Vector Graphics (.svg) 
+- Scalable Vector Graphics (.svgz)
+- Joint Photographic Experts Group (.jpg, .jpeg)
+- Tagged Image File Format (.tif, .tiff)
+
+#### Example
+
+```python
+import hydrostats.visual as hv
+import numpy as np
+import pandas as pd
+
+# Seed for reproducibility
+np.random.seed(7850493)
+
+random_noise = (np.random.rand(100) - 0.5) / 5 + 1
+
+# Creting synthetic simulated and observed data
+sim = np.sin(np.linspace(0, 5*np.pi, 100)) * random_noise + 20
+obs = np.sin(np.linspace(0, 5*np.pi, 100)) + 20
+
+time_index = pd.date_range('1980-01-01', periods=100)
+df = pd.DataFrame(np.column_stack((sim, obs)), index=time_index, columns=['Synthetic Simulated Data', 'Synthetic Observed Data'])
+
+# Plotting a QQ Plot for the time series
+hv.qqplot(df, labels=['Simulated Quantiles', 'Observed Quantiles'], line='r', title='QQ Plot of Synthetic Data',
+          grid=True)
+
+# Saving the figure with savefig argument
+hv.qqplot(df, labels=['Simulated Quantiles', 'Observed Quantiles'], line='r', title='QQ Plot of Synthetic Data',
+          grid=True, savefig='QQ_Plot.png')
 ```
 
 # Appendix
