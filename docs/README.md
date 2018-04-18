@@ -1777,7 +1777,7 @@ The scatter plot is a function that is available for comparing the correlation o
 | best_fit=False                       | Boolean type input indicating if the user wants a best linear regression line on the graph with the equation for the line in the legend. |
 | savefigure (Default=None)            | Takes a string type input and will save the plot the the specified path as a filetype specified by the user. (eg. path/to/file.png) | 
 | marker_style='ko'                    | Takes a string type input and will change the markerstyle of the points on the scatter plot. |
-| metrics (Default=None)               | Adds Metrics to the left side of the Plot. Any Metric from the Hydrostats Library can be added to the plot as the name of the function. The entries must be in a list. (e.g. |['ME', 'MASE'] would plot the Mean Error and the Mean Absolute Scaled Error on the left side of the plot.| 
+| metrics (Default=None)               | Adds Metrics to the left side of the Plot. Any Metric from the Hydrostats Library can be added to the plot as the name of the function. The entries must be in a list. (e.g. ['ME', 'MASE'] would plot the Mean Error and the Mean Absolute Scaled Error on the left side of the plot.| 
 | log_scale=False                      | Boolean type input indicating whether or not to use a log-log scale on the scatter plot. | 
 | line45=False                         | Boolean type input indicating whether or not to add a line with a slope of 1 to the plot. |
 
