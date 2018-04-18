@@ -1,9 +1,14 @@
+# python 3.6
+# -*- coding: utf-8 -*-
+"""
+Created on Jan 5 3:25:56 2018
+@author: Wade Roberts
+"""
 from hydrostats import me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smap1, smap2, d, d1, dr, \
     drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga
 import numpy as np
 import matplotlib.pyplot as plt
 import sympy as sp
-import scipy.stats as stats
 import calendar
 import statsmodels.graphics.gofplots as sm
 
@@ -195,12 +200,20 @@ def hist(merged_data_df, num_bins, z_norm=False, legend=None, grid=False, title=
 
 
 def scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=False, savefigure=None, marker_style='ko',
-            metrics=None):
+            metrics=None, log_scale=False, line45=False):
     fig = plt.figure(num=1, figsize=(12, 8), dpi=80, facecolor='w', edgecolor='k')
     ax = fig.add_subplot(111)
     sim = merged_data_df.iloc[:, 0].as_matrix()
     obs = merged_data_df.iloc[:, 1].as_matrix()
-    plt.plot(sim, obs, marker_style)
+    max_both = max([np.max(sim), np.max(obs)])
+    if not log_scale:
+        plt.plot(sim, obs, marker_style)
+        if line45:
+            plt.plot(np.arange(0, int(max_both) + 1), np.arange(0, int(max_both) + 1), 'r--', label='45$^\circ$ Line')
+    else:
+        plt.loglog(sim, obs, marker_style)
+        if line45:
+            plt.plot(np.arange(1, int(max_both) + 1), np.arange(1, int(max_both) + 1), 'r--', label='45$^\circ$ Line')
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
     if grid:
@@ -226,7 +239,9 @@ def scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=False,
 
         # Plotting the best fit line with the equation as a legend in latex
         plt.plot(x_new, y_new, 'k', label="${}$".format(eq_latex))
-        plt.legend(fontsize=12)
+
+    plt.legend(fontsize=12)
+
     if metrics is not None:
         forecasted_array = merged_data_df.iloc[:, 0].as_matrix()
         observed_array = merged_data_df.iloc[:, 1].as_matrix()
