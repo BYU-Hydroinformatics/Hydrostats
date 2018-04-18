@@ -11,6 +11,7 @@ import warnings
 import calendar
 import hydrostats.data as hd
 import scipy.stats
+import matplotlib.pyplot as plt
 
 
 def me(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -601,7 +602,7 @@ def h10(simulated_array, observed_array, h_type='mean', replace_nan=None, replac
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    h = np.log(simulated_array) - np.log(observed_array)
+    h = np.log1p(simulated_array) - np.log1p(observed_array)
     if h_type == 'mean':
         return h.mean()
     elif h_type == 'absolute':
@@ -624,8 +625,8 @@ def g_mean_diff(simulated_array, observed_array, replace_nan=None, replace_inf=N
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    sim_log = np.log(simulated_array)
-    obs_log = np.log(observed_array)
+    sim_log = np.log1p(simulated_array)
+    obs_log = np.log1p(observed_array)
     return np.exp(scipy.stats.gmean(sim_log) - scipy.stats.gmean(obs_log))
 
 
@@ -635,7 +636,7 @@ def mean_var(simulated_array, observed_array, replace_nan=None, replace_inf=None
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    return np.var(np.log(observed_array) - np.log(simulated_array))
+    return np.var(np.log1p(observed_array) - np.log1p(simulated_array))
 
 
 def all_metrics(simulated_array, observed_array, mase_m=1, dmod_j=1, nse_mod_j=1, h6_k=1, replace_nan=None,
@@ -959,3 +960,123 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
     else:
         table_df_final.to_excel(to_excel, index_label='Datetime')
         table_df_final.to_csv(to_csv, index_label='Datetime')
+
+
+def time_lag(merged_dataframe, metric, interp_freq='6H', interp_type='pchip', shift_range=[-30, 30], mase_m=1, dmod_j=1,
+             nse_mod_j=1, h6_k=1, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False,
+             plot_title='Metric Values as Different Lags', ylabel='Metric Value', xlabel='Number of Lags',
+             save_fig=None, figsize=(10, 6)):
+    metrics_list = ['Mean Error', 'Mean Absolute Error', 'Mean Squared Error', 'Eclidean Distance',
+                    'Normalized Eclidean Distance', 'Root Mean Square Error', 'Root Mean Squared Log Error',
+                    'Mean Absolute Scaled Error', 'R^2', 'Anomoly Correlation Coefficient',
+                    'Mean Absolute Percentage Error', 'Mean Absolute Percentage Deviation',
+                    'Symmetric Mean Absolute Percentage Error (1)', 'Symmetric Mean Absolute Percentage Error (2)',
+                    'Index of Agreement (d)', 'Index of Agreement (d1)', 'Index of Agreement Refined (dr)',
+                    'Relative Index of Agreement', 'Modified Index of Agreement', "Watterson's M", 'Mielke-Berry R',
+                    'Nash-Sutcliffe Efficiency', 'Modified Nash-Sutcliffe Efficiency',
+                    'Relative Nash-Sutcliffe Efficiency',
+                    'Legate-McCabe Index', 'Spectral Angle', 'Spectral Correlation',
+                    'Spectral Information Divergence', 'Spectral Gradient Angle', 'H1 - Mean', 'H1 - Absolute',
+                    'H1 - Root', 'H2 - Mean', 'H2 - Absolute', 'H2 - Root', 'H3 - Mean', 'H3 - Absolute', 'H3 - Root',
+                    'H4 - Mean', 'H4 - Absolute', 'H4 - Root', 'H5 - Mean', 'H5 - Absolute', 'H5 - Root', 'H6 - Mean',
+                    'H6 - Absolute', 'H6 - Root', 'H7 - Mean', 'H7 - Absolute', 'H7 - Root', 'H8 - Mean',
+                    'H8 - Absolute', 'H8 - Root', 'H10 - Mean', 'H10 - Absolute', 'H10 - Root',
+                    'Geometric Mean Difference', 'Mean Variance']
+
+    function_list = [me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smap1, smap2, d, d1, dr,
+                     drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga, h1, h1, h1, h2, h2,
+                     h2, h3, h3, h3, h4, h4, h4, h5, h5, h5, h6, h6, h6, h7, h7, h7, h8, h8, h8, h10, h10, h10,
+                     g_mean_diff, mean_var]
+
+    # Finding the proper function to use for the selected metric
+    metric_index = metrics_list.index(metric)
+    func = function_list[metric_index]
+
+    # Making a new time index to be able to interpolate the time series to the required input
+    new_index = pd.date_range(merged_dataframe.index[0], merged_dataframe.index[-1], freq=interp_freq)
+
+    # Reindexing the dataframe and interpolating it
+    merged_dataframe = merged_dataframe.reindex(new_index)
+    merged_dataframe = merged_dataframe.interpolate(interp_type)
+
+    # Making arrays to compare the metric value at different time steps
+    sim_array = merged_dataframe.iloc[:, 0].values
+    obs_array = merged_dataframe.iloc[:, 1].values
+
+    sim_array, obs_array = remove_values(sim_array, obs_array, replace_nan=replace_nan, replace_inf=replace_inf,
+                                         remove_zero=remove_zero, remove_neg=remove_neg)
+
+    # Creating a list to append the values of shift to
+    shift_list = []
+
+    # Creating a list of all the time shifts specified by the user
+    lag_list = list(range(shift_range[0], shift_range[1] + 1))
+
+    # Looping through the list of lags and appending the metric value to the shift list
+    for i in lag_list:
+        sim_array_temp = np.roll(sim_array, i)
+
+        if metric_index == 7:
+            shift_list.append(func(sim_array_temp, obs_array, m=mase_m, replace_nan=replace_nan,
+                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif metric_index == 18:
+            shift_list.append(func(sim_array_temp, obs_array, j=dmod_j, replace_nan=replace_nan,
+                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif metric_index == 22:
+            shift_list.append(func(sim_array_temp, obs_array, j=nse_mod_j, replace_nan=replace_nan,
+                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif metric_index == 29 or metric_index == 32 or metric_index == 35 or metric_index == 38 or metric_index == 41 \
+                or metric_index == 47 or metric_index == 50 or metric_index == 53:
+            shift_list.append(func(sim_array_temp, obs_array, h_type='mean', replace_nan=replace_nan,
+                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif metric_index == 30 or metric_index == 33 or metric_index == 36 or metric_index == 39 or metric_index == 42 \
+                or metric_index == 48 or metric_index == 51 or metric_index == 54:
+            shift_list.append(func(sim_array_temp, obs_array, h_type='absolute', replace_nan=replace_nan,
+                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif metric_index == 31 or metric_index == 34 or metric_index == 37 or metric_index == 40 or metric_index == 43 \
+                or metric_index == 49 or metric_index == 52 or metric_index == 55:
+            shift_list.append(func(sim_array_temp, obs_array, h_type='rmhe', replace_nan=replace_nan,
+                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif metric_index == 44:
+            shift_list.append(func(sim_array_temp, obs_array, k=h6_k, h_type='mean', replace_nan=replace_nan,
+                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif metric_index == 45:
+            shift_list.append(func(sim_array_temp, obs_array, k=h6_k, h_type='absolute', replace_nan=replace_nan,
+                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif metric_index == 46:
+            shift_list.append(func(sim_array_temp, obs_array, k=h6_k, h_type='rmhe', replace_nan=replace_nan,
+                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        else:
+            shift_list.append(func(sim_array_temp, obs_array, replace_nan=replace_nan, replace_inf=replace_inf,
+                                   remove_neg=remove_neg, remove_zero=remove_zero))
+
+    fig = plt.figure(num=1, figsize=figsize, dpi=80, facecolor='w', edgecolor='k')
+    ax = fig.add_subplot(111)
+    plt.plot(lag_list, shift_list)
+    plt.title(plot_title, fontsize=18)
+    plt.xlabel(xlabel, fontsize=14)
+    plt.ylabel(ylabel, fontsize=14)
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+    plot_text = "Max: " + str(np.round(max(shift_list), 4)) + "\nMin: " + str(np.round(min(shift_list), 4))
+    font = {'family': 'sans-serif',
+            'weight': 'normal',
+            'size': 14}
+    plt.text(-0.35, 0.75, plot_text, ha='left', va='center', transform=ax.transAxes, fontdict=font)
+    plt.subplots_adjust(left=0.25)
+
+    if save_fig is None:
+        plt.show()
+    else:
+        plt.savefig(save_fig)
+        plt.close()
+
+    final_df = pd.DataFrame(shift_list, index=lag_list, columns=[metric + ' Value'])
+    final_df.index.name = 'Lag Number'
+
+    max_lag_value = max(shift_list)
+    max_lag_number = lag_list[shift_list.index(max(shift_list))]
+    min_lag_value = min(shift_list)
+    min_lag_number = lag_list[shift_list.index(min(shift_list))]
+
+    return final_df, max_lag_value, max_lag_number, min_lag_value, min_lag_number
