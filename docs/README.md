@@ -59,9 +59,9 @@ Hydrostats
 
 ### Visualization
 + [Hydrograph](#hydrostatsvisualplot)
-+ Histogram
-+ Scatter Plot
-+ Quantile-Quantile Plot
++ [Histogram](#hydrostatsvisualhist)
++ [Scatter Plot](#hydrostatsvisualscatter)
++ [Quantile-Quantile Plot](#hydrostatsvisualqqplot)
 
 ### Appendix
 + [List of Available Timezones](#available-timezones)
