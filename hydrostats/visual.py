@@ -37,13 +37,13 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
     ax = fig.add_subplot(111)
     if legend:
         plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], linestyles[0], markersize=2,
-                 label=legend[0])
+                 label=legend[0], alpha=0.5)
         plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], linestyles[1], markersize=2,
-                 label=legend[1])
+                 label=legend[1], alpha=0.5)
         plt.legend(fontsize=14)
     else:
-        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], linestyles[0], markersize=2)
-        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], linestyles[1], markersize=2)
+        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], linestyles[0], markersize=2, alpha=0.5)
+        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], linestyles[1], markersize=2, alpha=0.5)
     if tight_xlim:
         plt.xlim(merged_data_df.index[0], merged_data_df.index[-1])
     if x_season:
@@ -208,12 +208,10 @@ def scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=False,
     max_both = max([np.max(sim), np.max(obs)])
     if not log_scale:
         plt.plot(sim, obs, marker_style)
-        if line45:
-            plt.plot(np.arange(0, int(max_both) + 1), np.arange(0, int(max_both) + 1), 'r--', label='45$^\circ$ Line')
     else:
         plt.loglog(sim, obs, marker_style)
-        if line45:
-            plt.plot(np.arange(1, int(max_both) + 1), np.arange(1, int(max_both) + 1), 'r--', label='45$^\circ$ Line')
+    if line45:
+        plt.plot(np.arange(0, int(max_both) + 1), np.arange(0, int(max_both) + 1), 'r--', label='45$^\circ$ Line')
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
     if grid:
@@ -240,7 +238,8 @@ def scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=False,
         # Plotting the best fit line with the equation as a legend in latex
         plt.plot(x_new, y_new, 'k', label="${}$".format(eq_latex))
 
-    plt.legend(fontsize=12)
+    if line45 or best_fit:
+        plt.legend(fontsize=12)
 
     if metrics is not None:
         forecasted_array = merged_data_df.iloc[:, 0].as_matrix()
