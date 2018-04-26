@@ -1,3 +1,9 @@
+# python 3.6
+# -*- coding: utf-8 -*-
+"""
+Created on Jan 7 1:56:32 2018
+@author: Wade Roberts
+"""
 import pandas as pd
 from numpy import inf, nan
 import math
@@ -324,9 +330,12 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
     end = daily_period[1]
 
     # Getting the seasonal period
-    merged_dataframe = merged_dataframe.loc[(merged_dataframe['placeholder'] >= start) &
-                                            (merged_dataframe['placeholder'] <= end)]
-
+    if start < end:
+        merged_dataframe = merged_dataframe.loc[(merged_dataframe['placeholder'] >= start) &
+                                                (merged_dataframe['placeholder'] <= end)]
+    else:
+        merged_dataframe = merged_dataframe.loc[(merged_dataframe['placeholder'] >= start) |
+                                                (merged_dataframe['placeholder'] <= end)]
     # Dropping the placeholder
     merged_dataframe = merged_dataframe.drop(columns=['placeholder'])
 
