@@ -9,7 +9,7 @@ from numpy import inf, nan
 import math
 
 
-class hydrostatsError(Exception):
+class HydrostatsError(Exception):
     pass
 
 
@@ -60,23 +60,27 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
             sim_df.index = pd.to_datetime(sim_df.index, infer_datetime_format=True)
 
     else:
-        raise hydrostatsError('either sim_fpath and obs_fpath or sim_df and obs_df are required inputs.')
+        raise HydrostatsError('either sim_fpath and obs_fpath or sim_df and obs_df are required inputs.')
 
     # Checking to see if the necessary arguments in the function are fulfilled
-    if simulated_tz is None and observed_tz:
+    if simulated_tz is None and observed_tz is not None:
 
-        raise hydrostatsError('Either Both Timezones are required or neither')
+        raise HydrostatsError('Either Both Timezones are required or neither')
 
-    elif simulated_tz and observed_tz is None:
+    elif simulated_tz is not None and observed_tz is None:
 
-        raise hydrostatsError('Either Both Timezones are required or neither')
+        raise HydrostatsError('Either Both Timezones are required or neither')
+
+    elif simulated_tz is not None and observed_tz is not None and interpolate is None:
+
+        raise HydrostatsError("You must specify whether to interpolate the 'simulated' or 'observed' data.")
 
     elif simulated_tz is None and observed_tz is None and interpolate is None:
         """Scenario 1"""
         # Merging and joining the two dataframes
         return pd.DataFrame.join(sim_df, obs_df).dropna()
 
-    elif simulated_tz is None and observed_tz is None and interpolate:
+    elif simulated_tz is None and observed_tz is None and interpolate is not None:
         """Scenario 2"""
 
         if interpolate == 'simulated':
@@ -130,7 +134,7 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
 
         return pd.DataFrame.join(sim_df, obs_df).dropna()
 
-    elif simulated_tz and observed_tz and interpolate:
+    elif simulated_tz is not None and observed_tz is not None and interpolate is not None:
         """Scenario 3"""
 
         # Finding the frequency of the timeseries for observed and simulated
@@ -200,7 +204,7 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
                     # Reindexing and interpolating the dataframe to match the observed data
                     sim_df = sim_df.reindex(simulated_index_interpolate).interpolate(interp_type)
 
-        if interpolate == 'observed':
+        elif interpolate == 'observed':
             # Checking if the time zone is a half hour off of UTC
             if int(sim_df.index[0].strftime('%z')[-2:]) == 30 or \
                     int(obs_df.index[0].strftime('%z')[-2:]) == 30:
@@ -244,6 +248,8 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
                                                                freq='1H', tz=observed_tz)
                     # Reindexing and interpolating the dataframe to match the observed data
                     obs_df = obs_df.reindex(observed_index_interpolate).interpolate(interp_type)
+        else:
+            raise HydrostatsError("You must specify the interpolation argument to be either 'simulated' or 'observed'.")
 
         return pd.DataFrame.join(sim_df, obs_df).dropna()
 
