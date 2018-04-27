@@ -801,7 +801,14 @@ def remove_values(simulated_array, observed_array, replace_nan=None, replace_inf
 
 
 def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_j=1, nse_mod_j=1, h6_k=1,
-               replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False, to_csv=None, to_excel=None):
+               replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False, to_csv=None, to_excel=None,
+               location=None):
+    """Creates a table with metrics as specified by the user. Seasonal periods can also be specified in order to compare
+    different seasons and how well the simulated data matches the observed data. Has options to save the table to either
+    a csv or an excel workbook. Also has an option to add a column for the location of the data. See the official
+    documentation at https://waderoberts123.github.io/Hydrostats/ for a full explanation of all of the function
+    arguments as well as examples."""
+
     # Metrics list
     metrics_list = ['Mean Error', 'Mean Absolute Error', 'Mean Squared Error', 'Eclidean Distance',
                     'Normalized Eclidean Distance', 'Root Mean Square Error', 'Root Mean Squared Log Error',
@@ -840,13 +847,14 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
 
     # Creating an index list
     index_array = ['Full Time Series']
-    seasonal_periods_names = []
-    for i in seasonal_periods:
-        month_1 = calendar.month_name[int(i[0][:2])]
-        month_2 = calendar.month_name[int(i[1][:2])]
-        name = month_1 + i[0][2:] + ':' + month_2 + i[1][2:]
-        seasonal_periods_names.append(name)
-    index_array.extend(seasonal_periods_names)
+    if seasonal_periods is not None:
+        seasonal_periods_names = []
+        for i in seasonal_periods:
+            month_1 = calendar.month_name[int(i[0][:2])]
+            month_2 = calendar.month_name[int(i[1][:2])]
+            name = month_1 + i[0][2:] + ':' + month_2 + i[1][2:]
+            seasonal_periods_names.append(name)
+        index_array.extend(seasonal_periods_names)
 
     # Creating arrays for sim and obs with all the values
     sim_array = merged_dataframe.iloc[:, 0].values
@@ -948,6 +956,10 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
 
     table_df_final = pd.DataFrame(complete_metric_list, index=index_array, columns=metrics)
 
+    if location is not None:
+        col_values = [location for i in range(table_df_final.shape[0])]
+        table_df_final.insert(loc=0, column='Location', value=np.array(col_values))
+
     if to_csv is None and to_excel is None:
         return table_df_final
 
@@ -966,6 +978,11 @@ def time_lag(merged_dataframe, metric, interp_freq='6H', interp_type='pchip', sh
              nse_mod_j=1, h6_k=1, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False,
              plot_title='Metric Values as Different Lags', ylabel='Metric Value', xlabel='Number of Lags',
              save_fig=None, figsize=(10, 6)):
+    """Runs a time lag analysis to check for potential timing errors in datasets. Returns a dataframe with all of the
+    metric values at different time lag, as well as the max and min metric value throughout the time lag as well as the
+    position of the max and min time lag values. See the official documentation at
+    https://waderoberts123.github.io/Hydrostats/ for a full explanation of all of the function arguments as well
+    as examples."""
     metrics_list = ['Mean Error', 'Mean Absolute Error', 'Mean Squared Error', 'Eclidean Distance',
                     'Normalized Eclidean Distance', 'Root Mean Square Error', 'Root Mean Squared Log Error',
                     'Mean Absolute Scaled Error', 'R^2', 'Anomoly Correlation Coefficient',
