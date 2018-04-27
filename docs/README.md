@@ -49,6 +49,10 @@ Hydrostats
 + [H8](#hydrostatsh8)
 + [H10](#hydrostatsh10)
 
+### Making Tables and Time Lag Analysis
++ [Making Tables](#hydrostatsmake_table)
++ [Time Lag Analysis](#hydrostatstime_lag)
+
 ### Data Management:
 + [Merging Data](#hydrostatsdatamerge_data)
 + [Finding Seasonal Periods](#hydrostatsdataseasonal_period)
@@ -56,6 +60,7 @@ Hydrostats
 + [Finding Daily Standard Error](#hydrostatsdatadaily_std_error)
 + [Finding Monthly Averages](#hydrostatsdatamonthly_average)
 + [Finding Monthly Standard Error](#hydrostatsdatamonthly_std_error)
+
 
 ### Visualization
 + [Hydrograph](#hydrostatsvisualplot)
@@ -1363,6 +1368,44 @@ obs = np.random.rand(10)
 hs.h10(sim, obs, type='absolute')
 ```
 
+hydrostats.make_table
+---------------------
+
+#### class make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_j=1, nse_mod_j=1, h6_k=1, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False, to_csv=None, to_excel=None, location=None):
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L803 "Source Code")
+
+#### Make Table
+Creates a table with metrics as specified by the user. Seasonal periods can also be specified in order to compare different seasons and how well the simulated data matches the observed data. Has options to save the table to either a csv or an excel workbook. Also has an option to add a column for the location of the data.
+
+| Parameters                           |               |
+| :------------------------------------|:------------- |
+| merged_dataframe (required input) | A pandas dataframe input that has two columns of predicted data and observed data with a datetime index. |
+| metrics (required input)          | A list type input that a list of all the metrics that the user wants to calculate. |
+| seasonal_periods=None             | A list type input that specifies the seasonal periods that the user wants to analyze (e.g. [['06-01', '06-30'], ['08-12', '11-23']] would analyze the dates from June 1st to June 30th and also August 8th to November 23). Note that the entire time series is analyzed with the selected metrics by default. |
+| mase_m=1                          | Parameter for the mean absolute scaled error (mase) metric. |
+| dmod_j=1                          | Paremeter for the modified index of agreement (dmod) metric. |
+| nse_mod_j=1                       | Parameter for the modified Nash Sutcliffe (nse_mod) metric. |
+| h6_k=1                            | Parameter for the H6 (h6) metric. |
+| replace_nan=None                  | Float type input indicating if the user wants to fill nan values in the simulated and observed data with another number. |
+| replace_inf=None                  | Float type input indicating if the user wants to fill inf values in the simulated and observed data with another number. |
+| remove_neg=False                  | Boolean type input indicating if the user wants to remove the negative numbers in the simulated and observed data. |
+| remove_zero=False                 | Boolean type input indicating if the user wants to remove the zero values in the simulated and observed data. |
+| to_csv=None                       | String type input input with the filepath and file name of the csv that is written (e.g. r'/path/to/output_dir/file.csv'). |
+| to_excel=None                     | String type input input with the filepath and file name of the excel workbook that is written (e.g. r'/path/to/output_dir/file.xlsx'). |
+| location=None                     | String type input indicating the name of the location that will be created as a column in the dataframe that is created. Useful for creating a large table with different datasets. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.h10(sim, obs, type='absolute')
+```
+
 # Data Management
 
 hydrostats.data.merge_data
@@ -1438,7 +1481,7 @@ The merge data function takes a pandas dataframe with two columns of predicted d
 
 | Parameters                        |              |
 | :---------------------------------|:-------------|
-| merged_dataframe (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a dateime index. |
+| merged_dataframe (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a datetime index. |
 | daily_period (Required Input)     | A list of strings that contains the seasonal period that the user wants to capture (e.g. ['05-01', '07-01']). |
 | time_range (Default=None)         | An optional input of a list of two string type options specifying a date-range for the seasonal period. (e.g. ['1980-01-01', '1987-12-31'])|
 | Numpy (Default=False)             | An optional input of boolean type. If specified as true the function will return two numpy arrays rather than a pandas dataframe.|
@@ -1468,7 +1511,7 @@ The daily average function takes a pandas dataframe and calculates daily average
 
 | Parameters       |               |
 | :-------------   |:-------------|
-| merged_data (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a dateime index. |
+| merged_data (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a datetime index. |
 
 #### Example
 
@@ -1495,7 +1538,7 @@ The daily standard error function takes a pandas dataframe and calculates daily 
 
 | Parameters       |               |
 | :-------------   |:-------------|
-| merged_data (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a dateime index. |
+| merged_data (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a datetime index. |
 
 #### Example
 
@@ -1526,7 +1569,7 @@ The monthly average function takes a pandas dataframe and calculates monthly ave
 
 | Parameters       |               |
 | :-------------   |:-------------|
-| merged_data (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a dateime index. |
+| merged_data (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a datetime index. |
 
 #### Example
 
@@ -1557,7 +1600,7 @@ The monthly standard error function takes a pandas dataframe and calculates mont
 
 | Parameters       |               |
 | :-------------   |:-------------|
-| merged_data (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a dateime index. |
+| merged_data (Required Input) | A pandas dataframe input that has two columns of predicted data and observed data with a datetime index. |
 
 #### Example
 
