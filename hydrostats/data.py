@@ -328,10 +328,9 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
         merged_dataframe = merged_dataframe.loc[time_range[0]: time_range[1]]
 
     # Setting a placeholder for the datetime string values
-    merged_dataframe['placeholder'] = pd.Series(merged_dataframe.index, index=merged_dataframe.index)
-    merged_dataframe['placeholder'] = merged_dataframe.index.strftime('%m-%d')
+    merged_dataframe.insert(loc=0, column='placeholder', value=merged_dataframe.index.strftime('%m-%d'))
 
-    # Setting the start and end of the seasonal period
+    # getting the start and end of the seasonal period
     start = daily_period[0]
     end = daily_period[1]
 
