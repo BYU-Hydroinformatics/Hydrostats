@@ -63,7 +63,7 @@ Hydrostats
 
 
 ### Visualization
-+ [Hydrograph](#hydrostatsvisualplot)
++ [Time Series Plot](#hydrostatsvisualplot)
 + [Histogram](#hydrostatsvisualhist)
 + [Scatter Plot](#hydrostatsvisualscatter)
 + [Quantile-Quantile Plot](#hydrostatsvisualqqplot)
