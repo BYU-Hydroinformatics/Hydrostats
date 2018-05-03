@@ -1394,6 +1394,66 @@ Creates a table with metrics as specified by the user. Seasonal periods can also
 | to_excel=None                     | String type input input with the filepath and file name of the excel workbook that is written (e.g. r'/path/to/output_dir/file.xlsx'). |
 | location=None                     | String type input indicating the name of the location that will be created as a column in the dataframe that is created. Useful for creating a large table with different datasets. |
 
+#### List of Metric Names for the metrics Parameter
+- Mean Error
+- Mean Absolute Error
+- Mean Squared Error
+- Eclidean Distance
+- Normalized Eclidean Distance
+- Root Mean Square Error
+- Root Mean Squared Log Error
+- Mean Absolute Scaled Error
+- R^2
+- Anomoly Correlation Coefficient
+- Mean Absolute Percentage Error
+- Mean Absolute Percentage Deviation
+- Symmetric Mean Absolute Percentage Error (1)
+- Symmetric Mean Absolute Percentage Error (2)
+- Index of Agreement (d)
+- Index of Agreement (d1)
+- Index of Agreement Refined (dr)
+- Relative Index of Agreement
+- Modified Index of Agreement
+- Watterson's M
+- Mielke-Berry R
+- Nash-Sutcliffe Efficiency
+- Modified Nash-Sutcliffe Efficiency
+- Relative Nash-Sutcliffe Efficiency
+- Legate-McCabe Index
+- Spectral Angle
+- Spectral Correlation
+- Spectral Information Divergence
+- Spectral Gradient Angle
+- H1 - Mean
+- H1 - Absolute
+- H1 - Root
+- H2 - Mean
+- H2 - Absolute
+- H2 - Root
+- H3 - Mean
+- H3 - Absolute
+- H3 - Root
+- H4 - Mean
+- H4 - Absolute
+- H4 - Root
+- H5 - Mean
+- H5 - Absolute
+- H5 - Root
+- H6 - Mean
+- H6 - Absolute
+- H6 - Root
+- H7 - Mean
+- H7 - Absolute
+- H7 - Root
+- H8 - Mean
+- H8 - Absolute
+- H8 - Root
+- H10 - Mean
+- H10 - Absolute
+- H10 - Root
+- Geometric Mean Difference
+- Mean Variance
+
 #### Example
 
 ```python
@@ -1405,6 +1465,108 @@ obs = np.random.rand(10)
 
 hs.h10(sim, obs, type='absolute')
 ```
+
+hydrostats.time_lag
+---------------------
+
+#### class time_lag(merged_dataframe, metric, interp_freq='6H', interp_type='pchip', shift_range=[-30, 30], mase_m=1, dmod_j=1, nse_mod_j=1, h6_k=1, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False, plot_title='Metric Values as Different Lags', ylabel='Metric Value', xlabel='Number of Lags', save_fig=None, figsize=(10, 6)):
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L977 "Source Code")
+
+#### Time Lag Analysis
+Runs a time lag analysis to check for potential timing errors in datasets. Returns a dataframe with all of the metric values at different time lags, the maximum and minimum metric value throughout the time lag, and the index of the maximum and minimum time lag values.
+
+| Parameters                           |               |
+| :------------------------------------|:------------- |
+| merged_dataframe (required input) | A pandas dataframe input that has two columns of predicted data and observed data with a datetime index. |
+| metric (required input)           | A string type input with the metric that the user wants to calculate. (See a list of the metric names below). |
+| interp_freq='6H'                  | A string type input that specifies the frequency of the interpolation that the user wants.|
+| interp_type='pchip'               | Specifies the interpolation method that the user wants to use. (see the documentation for the interpolater used [here](http://pandas.pydata.org/pandas-docs/version/0.16.2/generated/pandas.DataFrame.interpolate.html) for a list of the methods. |
+| shift_range=[-30, 30]             | A list of two integer type inputs that specifies the range of the lag analysis, the default is [-30, 30], which will shift the 1st column array through the range of -30 to 30.
+| mase_m=1                          | Parameter for the mean absolute scaled error (mase) metric. |
+| dmod_j=1                          | Paremeter for the modified index of agreement (dmod) metric. |
+| nse_mod_j=1                       | Parameter for the modified Nash Sutcliffe (nse_mod) metric. |
+| h6_k=1                            | Parameter for the H6 (h6) metric. |
+| replace_nan=None                  | Float type input indicating if the user wants to fill nan values in the simulated and observed data with another number. |
+| replace_inf=None                  | Float type input indicating if the user wants to fill inf values in the simulated and observed data with another number. |
+| remove_neg=False                  | Boolean type input indicating if the user wants to remove the negative numbers in the simulated and observed data. |
+| remove_zero=False                 | Boolean type input indicating if the user wants to remove the zero values in the simulated and observed data. |
+| plot_title='Metric Values as Different Lags' | String type input that specifies the title of the plot that is generated.|
+| ylabel='Metric Value'             | String type input that specifies the y-axis label of the plot that is generated. |
+| xlabel='Number of Lags'           | String type input that specifies the x-axis label of the plot that is generated. |
+| save_fig=None                     | String type input indicating the path to the plot that will be saved on the users local machine (e.g. r'/path/to/output_dir/plot.png'). A list of available image types is below. |
+
+#### Available Filetypes with savefig: 
+- Postscript (.ps) 
+- Encapsulated Postscript (.eps)
+- Portable Document Format (.pdf)
+- PGF code for LaTeX (.pgf)
+- Portable Network Graphics (.png)
+- Raw RGBA bitmap (.raw)
+- Raw RGBA bitmap (.rgba)
+- Scalable Vector Graphics (.svg) 
+- Scalable Vector Graphics (.svgz)
+- Joint Photographic Experts Group (.jpg, .jpeg)
+- Tagged Image File Format (.tif, .tiff)
+
+#### Metric Names for the metric Parameter
+- Mean Error
+- Mean Absolute Error
+- Mean Squared Error
+- Eclidean Distance
+- Normalized Eclidean Distance
+- Root Mean Square Error
+- Root Mean Squared Log Error
+- Mean Absolute Scaled Error
+- R^2
+- Anomoly Correlation Coefficient
+- Mean Absolute Percentage Error
+- Mean Absolute Percentage Deviation
+- Symmetric Mean Absolute Percentage Error (1)
+- Symmetric Mean Absolute Percentage Error (2)
+- Index of Agreement (d)
+- Index of Agreement (d1)
+- Index of Agreement Refined (dr)
+- Relative Index of Agreement
+- Modified Index of Agreement
+- Watterson's M
+- Mielke-Berry R
+- Nash-Sutcliffe Efficiency
+- Modified Nash-Sutcliffe Efficiency
+- Relative Nash-Sutcliffe Efficiency
+- Legate-McCabe Index
+- Spectral Angle
+- Spectral Correlation
+- Spectral Information Divergence
+- Spectral Gradient Angle
+- H1 - Mean
+- H1 - Absolute
+- H1 - Root
+- H2 - Mean
+- H2 - Absolute
+- H2 - Root
+- H3 - Mean
+- H3 - Absolute
+- H3 - Root
+- H4 - Mean
+- H4 - Absolute
+- H4 - Root
+- H5 - Mean
+- H5 - Absolute
+- H5 - Root
+- H6 - Mean
+- H6 - Absolute
+- H6 - Root
+- H7 - Mean
+- H7 - Absolute
+- H7 - Root
+- H8 - Mean
+- H8 - Absolute
+- H8 - Root
+- H10 - Mean
+- H10 - Absolute
+- H10 - Root
+- Geometric Mean Difference
+- Mean Variance
 
 # Data Management
 
