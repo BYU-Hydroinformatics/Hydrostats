@@ -772,8 +772,8 @@ def remove_values(simulated_array, observed_array, replace_nan=None, replace_inf
 
     if remove_neg:
         # Finding the negative indices and combining them
-        sim_neg = simulated_array > 0
-        obs_neg = observed_array > 0
+        sim_neg = simulated_array >= 0
+        obs_neg = observed_array >= 0
         neg_indices = np.logical_and(sim_neg, obs_neg)
         # Removing the negative indices
         simulated_array = simulated_array[neg_indices]
