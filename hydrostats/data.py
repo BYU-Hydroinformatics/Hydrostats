@@ -323,12 +323,15 @@ def remove_nan_df(merged_dataframe):
 def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False):
     """Returns the seasonal period specified for the time series, between the specified time range. Can return either a
     pandas DataFrame or two numpy arrays"""
+    # Making a copy to avoid changing the original df
+    merged_df_copy = merged_dataframe.copy()
+
     if time_range:
         # Setting the time range
-        merged_dataframe = merged_dataframe.loc[time_range[0]: time_range[1]]
+        merged_df_copy = merged_df_copy.loc[time_range[0]: time_range[1]]
 
     # Setting a placeholder for the datetime string values
-    merged_dataframe.insert(loc=0, column='placeholder', value=merged_dataframe.index.strftime('%m-%d'))
+    merged_df_copy.insert(loc=0, column='placeholder', value=merged_df_copy.index.strftime('%m-%d'))
 
     # getting the start and end of the seasonal period
     start = daily_period[0]
@@ -336,15 +339,15 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
 
     # Getting the seasonal period
     if start < end:
-        merged_dataframe = merged_dataframe.loc[(merged_dataframe['placeholder'] >= start) &
-                                                (merged_dataframe['placeholder'] <= end)]
+        merged_df_copy = merged_df_copy.loc[(merged_df_copy['placeholder'] >= start) &
+                                                (merged_df_copy['placeholder'] <= end)]
     else:
-        merged_dataframe = merged_dataframe.loc[(merged_dataframe['placeholder'] >= start) |
-                                                (merged_dataframe['placeholder'] <= end)]
+        merged_df_copy = merged_df_copy.loc[(merged_df_copy['placeholder'] >= start) |
+                                                (merged_df_copy['placeholder'] <= end)]
     # Dropping the placeholder
-    merged_dataframe = merged_dataframe.drop(columns=['placeholder'])
+    merged_df_copy = merged_df_copy.drop(columns=['placeholder'])
 
     if numpy:
-        return merged_dataframe.iloc[:, 0].as_matrix(), merged_dataframe.iloc[:, 1].as_matrix()
+        return merged_df_copy.iloc[:, 0].values, merged_df_copy.iloc[:, 1].values
     else:
-        return merged_dataframe
+        return merged_df_copy
