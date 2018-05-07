@@ -3,7 +3,7 @@ Hydrostats
 
 ## Contents
 
-### [Mac OS X Installation Notes](#macosxinstallationnotes)
+### [Mac OS X Installation Notes](#mac-os-x-installation-notes)
 
 ### Metrics
 
