@@ -1,9 +1,9 @@
 Hydrostats
 ==========
 
-
-
 ## Contents
+
+### [Mac OSX Installation Notes](#hello)
 
 ### Metrics
 
@@ -71,6 +71,24 @@ Hydrostats
 ### Appendix
 + [List of Available Timezones](#available-timezones)
 
+# Mac OSX Installation Notes
+
+When installing hydrostats on Mac OSX operating system, you may get the following error when trying to run python scripts using hydrostats in an IDE such as PyCharm. 
+
+```python
+**RuntimeError**: Python is not installed as a framework. The Mac OS X backend will not be able to function correctly if Python is not installed as a framework. See the Python documentation for more information on installing Python as a framework on Mac OS X. Please either reinstall Python as a framework, or try one of the other backends.
+```
+
+If this happens, you will need to manually change the backend for use in your IDE. This can be done by running the following commands in the terminal:
+
+```Shell Session
+sudo apt install nano # If you have not already installed it
+
+vim ~/.matplotlib/matplotlibrc
+```
+
+I assume you have installed the pip matplotlib, there is a directory in you root called ~/.matplotlib.
+Create a file ~/.matplotlib/matplotlibrc there and add the following code: backend: TkAgg
 
 # Metrics
 
