@@ -3,7 +3,7 @@ Hydrostats
 
 ## Contents
 
-### [Mac OSX Installation Notes](#hello)
+### [Mac OS X Installation Notes](#macosxinstallationnotes)
 
 ### Metrics
 
@@ -84,11 +84,13 @@ If this happens, you will need to manually change the backend for use in your ID
 ```Shell Session
 sudo apt install nano # If you have not already installed it
 
-vim ~/.matplotlib/matplotlibrc
+vim ~/.matplotlib/matplotlibrc # Create a file called matplotlibrc
+```
+Then add the following code to the file you created:
+```
+backend: TkAgg
 ```
 
-I assume you have installed the pip matplotlib, there is a directory in you root called ~/.matplotlib.
-Create a file ~/.matplotlib/matplotlibrc there and add the following code: backend: TkAgg
 
 # Metrics
 
