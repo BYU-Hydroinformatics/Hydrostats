@@ -3,7 +3,7 @@ Hydrostats
 
 ## Contents
 
-### [Mac OS X Installation Notes](#mac-os-x-installation-notes)
+### [Mac OS X Installation Notes](#mac-os-x)
 
 ### Metrics
 
@@ -71,7 +71,7 @@ Hydrostats
 ### Appendix
 + [List of Available Timezones](#available-timezones)
 
-# Mac OSX Installation Notes
+# Mac OS X
 
 When installing hydrostats on Mac OSX operating system, you may get the following error when trying to run python scripts using hydrostats in an IDE such as PyCharm. 
 
