@@ -1807,7 +1807,7 @@ print(df_monthly_std_error)
 hydrostats.visual.plot
 ----------------------
 
-#### class hydrostats.visual.plot(merged_data_df=None, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None, savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False, fig_size=(10, 6), text_adjust=[-0.35, 0.75], plot_adjust=0.27, transparency=0.5, ebars=None, ecolor=None, markersize=2, errorevery=1, markevery=1)):
+#### class hydrostats.visual.plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None, savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False, fig_size=(10, 6), text_adjust=[-0.35, 0.75], plot_adjust=0.27, transparency=0.5, ebars=None, ecolor=None, markersize=2, errorevery=1, markevery=1):
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/visual.py#L10 "Source Code")
 
 #### Time Series Plot
@@ -1829,6 +1829,13 @@ The time series plot is a function that is available for viewing two times serie
 | tight_xlim (Default=False)           | Takes a boolean type input indicating of a tight xlim is desired. |
 | fig_size=(10, 6)                     | Takes a tuple type input indicating the size of the figure created. |
 | text_adjust=[-0.35, 0.75]            | Takes a list type input indicating the relative position of the text [x-coordinate, y-coordinate]. |
+| plot_adjust=0.27                     | Take a float type input specifying the relative position to shift the plot the the right when adding metrics to the plot. |
+| transparency=0.5                     | Float type input from 0 to 1 indicating the transparency of the two lines that are plotted and error bars if they are plotted. |
+| ebars=None                           | Pandas dataframe type with a datetime index and two columns of data that specify the error of the plots. These dataframes can be created with the following hydrostats functions hydrostats.data.daily_std_error, hydrostats.data.daily_std_dev, hydrostats.data.monthly_std_error, hydrostats.data.monthly_std_dev. |
+| ecolor=None                          | List of two sting type inputs specifying the colors of the errorbars (e.g. ['r', 'k'] would make red and black errorbars on the simulated and observed data, respectively. |
+| markersize=2                         | Float type input indicating the size of the markers on the plot, if markers are used. |
+| errorevery=1                         | Integer type input specifying how often to put error bars on the plot. |
+| markevery=1                          | Integer type input specifying how often to put markers on the plot if markers are used. |
 
 #### Available metrics to add to the left side of the plot:
 - ME (Mean Error)
