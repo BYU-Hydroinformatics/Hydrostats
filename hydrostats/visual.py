@@ -5,45 +5,49 @@ Created on Jan 5 3:25:56 2018
 @author: Wade Roberts
 """
 from hydrostats import me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smap1, smap2, d, d1, dr, \
-    drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga
+    drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga, remove_values
+from hydrostats.data import HydrostatsError
 import numpy as np
 import matplotlib.pyplot as plt
 import sympy as sp
 import calendar
-import statsmodels.graphics.gofplots as sm
 
 
-def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None,
-         savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False, fig_size=(10, 6), text_adjust=[-0.35, 0.75]):
-    """A function that will plot a simulated and observed data vs time and show metrics to the left of the plot if specified.
-    Arguments:
-    merged_data_df - A pandas dataframe with a datetime type index, and two columns of simulated and observed data of
-    float type, respectively.
-    legend - A list of two string type inputs specifying the two legend text values (e.g. ['sim', 'obs']).
-    metrics - A list of string type input indicating the metrics you want placed to the left of the graph
-    (See documentation for a full list of the available metrics).
-    grid - Boolean type indicating whether a graph is desired
-    title - String type input indicating the title of the plot.
-    x_season - For use when a dataframe has been converted to monthly or daily averages or standard error with a
-    hydrostats.data function. A boolean type argument that will change the string values to monthly values.
-    labels - A list of string type inputs specifying the x and y axis labels, respectively.
-    savefigure - A string type input requiring the path and the filename where the figure will be save instead of
-    displayed (e.g. r'path/to/file/image.png)
-    linestyles - A list of two string type inputs specifying the linestyles (see documentation for the available
-    options.
-    tight_xlim - A boolean type input indicating if the user would like the gap in the x limits of the graph to be
-    removed."""
+def plot(merged_data_df=None, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None,
+         savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False, fig_size=(10, 6), text_adjust=[-0.35, 0.75],
+         plot_adjust=0.27, transparency=0.5, ebars=None, ecolor=None, markersize=2, errorevery=1, markevery=1):
+    """ A function that will plot a simulated and observed data vs time and show metrics to the left of the plot if
+    specified. See the documentation at:
+    https://github.com/waderoberts123/Hydrostats/blob/master/docs/README.md#hydrostatsvisualplot. """
     fig = plt.figure(num=1, figsize=fig_size, dpi=80, facecolor='w', edgecolor='k')
     ax = fig.add_subplot(111)
-    if legend:
-        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], linestyles[0], markersize=2,
-                 label=legend[0], alpha=0.5)
-        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], linestyles[1], markersize=2,
-                 label=legend[1], alpha=0.5)
+
+    if legend is not None and ebars is None:
+        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], fmt=linestyles[0], markersize=markersize,
+                 label=legend[0], alpha=transparency, markevery=markevery)
+        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], fmt=linestyles[1], markersize=markersize,
+                 label=legend[1], alpha=transparency, markevery=markevery)
         plt.legend(fontsize=14)
+    elif legend is not None and ebars is not None:
+        plt.errorbar(x=merged_data_df.index, y=merged_data_df.iloc[:, 0], yerr=ebars.iloc[:, 0].values,
+                     fmt=linestyles[0], markersize=markersize, label=legend[0], alpha=transparency, ecolor=ecolor[0],
+                     markevery=markevery, errorevery=errorevery)
+        plt.errorbar(x=merged_data_df.index, y=merged_data_df.iloc[:, 1], yerr=ebars.iloc[:, 1].values,
+                     fmt=linestyles[1], markersize=markersize, label=legend[1], alpha=transparency, ecolor=ecolor[1],
+                     markevery=markevery, errorevery=errorevery)
+        plt.legend(fontsize=14)
+    elif legend is None and ebars is not None:
+        plt.errorbar(merged_data_df.index, merged_data_df.iloc[:, 0], fmt=linestyles[0], yerr=ebars.iloc[:, 0].values,
+                     markersize=markersize, alpha=transparency, ecolor=ecolor[0], markevery=markevery,
+                     errorevery=errorevery)
+        plt.errorbar(merged_data_df.index, merged_data_df.iloc[:, 1], fmt=linestyles[1], yerr=ebars.iloc[:, 0].values,
+                     markersize=markersize, alpha=transparency, ecolor=ecolor[1], markevery=markevery,
+                     errorevery=errorevery)
     else:
-        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], linestyles[0], markersize=2, alpha=0.5)
-        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], linestyles[1], markersize=2, alpha=0.5)
+        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], linestyles[0], markersize=markersize,
+                 alpha=transparency, markevery=markevery)
+        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], linestyles[1], markersize=markersize,
+                 alpha=transparency, markevery=markevery)
     if tight_xlim:
         plt.xlim(merged_data_df.index[0], merged_data_df.index[-1])
     if x_season:
@@ -101,22 +105,28 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
                 'size': 14}
         plt.text(text_adjust[0], text_adjust[1], formatted_selected_metrics, ha='left', va='center',
                  transform=ax.transAxes, fontdict=font)
-        plt.subplots_adjust(left=0.27)
-    if savefigure:
+        plt.subplots_adjust(left=plot_adjust)
+    if savefigure is not None:
         plt.savefig(savefigure)
         plt.close()
     else:
         plt.show()
 
 
-def hist(merged_data_df, num_bins, z_norm=False, legend=None, grid=False, title=None, labels=None,
-         savefigure=None, prob_dens=False):
+def hist(merged_data_df=None, sim_array=None, obs_array=None, num_bins=100, z_norm=False, legend=None, grid=False,
+         title=None, labels=None, savefigure=None, prob_dens=False, figsize=(12, 6)):
     # Getting the fig and axis handles
-    fig, ax1 = plt.subplots(figsize=(12, 7))
+    fig, ax1 = plt.subplots(figsize=figsize)
 
-    # Creating a simulated and observed data array
-    sim = merged_data_df.iloc[:, 0].as_matrix()
-    obs = merged_data_df.iloc[:, 1].as_matrix()
+    if merged_data_df is not None:
+        # Creating a simulated and observed data array
+        sim = merged_data_df.iloc[:, 0].values
+        obs = merged_data_df.iloc[:, 1].values
+    elif sim_array is not None and obs_array is not None:
+        sim = sim_array
+        obs = obs_array
+    else:
+        raise HydrostatsError("You must either pass in a dataframe or two arrays.")
 
     if z_norm:
         # Calculating the Z Scores for the simulated data
@@ -190,7 +200,7 @@ def hist(merged_data_df, num_bins, z_norm=False, legend=None, grid=False, title=
     # Assuring a tight layout
     plt.tight_layout()
 
-    if savefigure:
+    if savefigure is not None:
         # Saving the figure
         plt.savefig(savefigure)
         plt.close()
@@ -199,13 +209,24 @@ def hist(merged_data_df, num_bins, z_norm=False, legend=None, grid=False, title=
         plt.show()
 
 
-def scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=False, savefigure=None, marker_style='ko',
-            metrics=None, log_scale=False, line45=False):
-    fig = plt.figure(num=1, figsize=(12, 8), dpi=80, facecolor='w', edgecolor='k')
+def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, title=None, labels=None, best_fit=False,
+            savefigure=None, marker_style='ko', metrics=None, log_scale=False, line45=False, figsize=(12, 8)):
+
+    fig = plt.figure(num=1, figsize=figsize, dpi=80, facecolor='w', edgecolor='k')
     ax = fig.add_subplot(111)
-    sim = merged_data_df.iloc[:, 0].as_matrix()
-    obs = merged_data_df.iloc[:, 1].as_matrix()
+
+    if merged_data_df is not None:
+        # Creating a simulated and observed data array
+        sim = merged_data_df.iloc[:, 0].values
+        obs = merged_data_df.iloc[:, 1].values
+    elif sim_array is not None and obs_array is not None:
+        sim = sim_array
+        obs = obs_array
+    else:
+        raise HydrostatsError("You must either pass in a dataframe or two arrays.")
+
     max_both = max([np.max(sim), np.max(obs)])
+
     if not log_scale:
         plt.plot(sim, obs, marker_style)
     else:
@@ -268,31 +289,84 @@ def scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=False,
                 'size': 14}
         plt.text(-0.35, 0.75, formatted_selected_metrics, ha='left', va='center', transform=ax.transAxes, fontdict=font)
         plt.subplots_adjust(left=0.25)
-    if savefigure:
+    if savefigure is not None:
         plt.savefig(savefigure)
         plt.close()
     else:
         plt.show()
 
 
-def qqplot(merged_df, labels=['X Quantiles', 'Y Quantiles'], line=None, savefig=None, title=None, grid=None):
-    # Pulling the data from the dataframe
-    sim = merged_df.iloc[:, 0].as_matrix()
-    obs = merged_df.iloc[:, 1].as_matrix()
+def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='linear', title=None, xlabel='Simulated Data Quantiles',
+           ylabel='Observed Data Quantiles', legend=False, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False, figsize=(12, 8), savefigure=None):
+    
+    plt.figure(num=1, figsize=figsize, dpi=80, facecolor='w', edgecolor='k')
 
-    # Making a probability plot for simulated and observed
-    pp_sim = sm.ProbPlot(sim)
-    pp_obs = sm.ProbPlot(obs)
-    sm.qqplot_2samples(pp_obs, pp_sim, line=line, xlabel=labels[0], ylabel=labels[1])
+    if merged_data_df is not None:
+        # Creating a simulated and observed data array
+        sim = merged_data_df.iloc[:, 0].values
+        obs = merged_data_df.iloc[:, 1].values
+    elif sim_array is not None and obs_array is not None:
+        sim = sim_array
+        obs = obs_array
+    else:
+        raise HydrostatsError("You must either pass in a dataframe or two arrays.")
+
+    sim, obs = remove_values(sim, obs, replace_nan=replace_nan, replace_inf=replace_inf, remove_neg=remove_neg,
+                             remove_zero=remove_zero)
+
+    # Finding the size of n and creating a percentile vector:
+    n = sim.size
+
+    pvec = 100 * ((np.arange(1, n + 1) - 0.5) / n)
+
+    sim_perc = np.percentile(sim, pvec, interpolation=interpolate)
+    obs_perc = np.percentile(obs, pvec, interpolation=interpolate)
+
+    # Finding the interquartile range to plot the best fit line
+    quant_1_sim = np.percentile(sim, 25, interpolation=interpolate)
+    quant_2_sim = np.percentile(sim, 50, interpolation=interpolate)
+    quant_3_sim = np.percentile(sim, 75, interpolation=interpolate)
+    quant_1_obs = np.percentile(obs, 25, interpolation=interpolate)
+    quant_2_obs = np.percentile(sim, 50, interpolation=interpolate)
+    quant_3_obs = np.percentile(obs, 75, interpolation=interpolate)
+    quant_sim = np.array([quant_1_sim, quant_2_sim, quant_3_sim])
+    quant_obs = np.array([quant_1_obs, quant_2_obs, quant_3_obs])
+
+    dsim = quant_3_sim - quant_1_sim
+    dobs = quant_3_obs - quant_1_obs
+    slope = dobs / dsim
+    centersim = (quant_1_sim + quant_3_sim) / 2
+    centerobs = (quant_1_obs + quant_3_obs) / 2
+    maxsim = np.max(sim)
+    minsim = np.min(sim)
+    maxobs = centerobs + slope * (maxsim - centersim)
+    minobs = centerobs - slope * (centersim - minsim)
+
+    msim = np.array([minsim, maxsim])
+    mobs = np.array([minobs, maxobs])
+
+    if not legend:
+        plt.plot(sim_perc, obs_perc, 'b^', markersize=2)
+        plt.plot(msim, mobs, 'r-.', lw=1)
+        plt.plot(quant_sim, quant_obs, 'r-', marker='o', mfc='k', lw=2)
+    else:
+        plt.plot(sim_perc, obs_perc, 'b^', markersize=2, label='Quantiles')
+        plt.plot(msim, mobs, 'r-.', lw=1, label='Entire Range of Quantiles')
+        plt.plot(quant_sim, quant_obs, 'r-', marker='o', mfc='w', lw=2, label='Inter-Quartile Range')
+        plt.legend(fontsize=14)
 
     if title is not None:
-        plt.title(title)
+        plt.title(title, fontsize=20)
 
-    if grid is not None:
-        plt.grid()
+    # Formatting things
+    plt.xlabel(xlabel, fontsize=16)
+    plt.ylabel(ylabel, fontsize=16)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
 
-    if savefig is not None:
-        plt.savefig(savefig)
+    if savefigure is not None:
+        plt.savefig(savefigure)
         plt.close()
     else:
         plt.show()
