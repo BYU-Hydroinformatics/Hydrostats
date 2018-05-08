@@ -1807,7 +1807,7 @@ print(df_monthly_std_error)
 hydrostats.visual.plot
 ----------------------
 
-#### class hydrostats.visual.plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None, savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False, fig_size=(10, 6), text_adjust=[-0.35, 0.75]):
+#### class hydrostats.visual.plot(merged_data_df=None, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None, savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False, fig_size=(10, 6), text_adjust=[-0.35, 0.75], plot_adjust=0.27, transparency=0.5, ebars=None, ecolor=None, markersize=2, errorevery=1, markevery=1)):
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/visual.py#L10 "Source Code")
 
 #### Time Series Plot
@@ -1917,7 +1917,7 @@ hv.plot(df, linestyles=['k-', 'r--'], title='Daily Averages of Sin Curves', labe
 hydrostats.visual.hist
 ----------------------
 
-#### class hydrostats.visual.hist(merged_data_df, num_bins, z_norm=False, legend=None, grid=False, title=None, labels=None, savefigure=None, prob_dens=False):
+#### class hydrostats.visual.hist(merged_data_df=None, sim_array=None, obs_array=None, num_bins=100, z_norm=False, legend=None, grid=False, title=None, labels=None, savefigure=None, prob_dens=False, figsize=(12, 6)):
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/visual.py#L112 "Source Code")
 
 #### Histogram Plot
@@ -1927,7 +1927,9 @@ The histogram plot is a function that is available for comparing the histogram o
 
 | Parameters       |               |
 | :---------------------------------   |:-------------|
-| merged_data_df (Required Input)      | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be simulated Data and observed Data going from left to right. |
+| merged_data_df=None                  | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be simulated Data and observed Data going from left to right. |
+| sim_array=None                       | An numpy 1D array of simulated data. If this argument is selected then the obs_array parameter must also be provided. |
+| obs_array=None                       | An numpy 1D array of observed data. If this argument is selected then the sim_array parameter must also be provided. |
 | num_bins (Required Input)            | An interger type input specifying the number of bins in the histogram. |
 | z_norm=False                         | A boolean type input specifying if the user wants to Z-score normalize the data. |
 | legend (Default=None)                | Adds a Legend in the 'best' location determined by matplotlib. The entries must be in the form of a list. (e.g. ['Simulated Data', 'Predicted Data']|
@@ -1936,6 +1938,7 @@ The histogram plot is a function that is available for comparing the histogram o
 | labels (Default=None)                | Takes a list of two string type objects and adds them as x-axis labels and y-axis labels, respectively.|
 | savefigure (Default=None)            | Takes a string type input and will save the plot the the specified path as a filetype specified by the user. (eg. path/to/file.png) | 
 | prob_dens=False                      | Takes a boolean type input. If True, the first element of the return tuple will be the counts normalized to form a probability density, i.e., the area (or integral) under the histogram will sum to 1. |
+| figsize=(12, 6)                      | A list of tuples specifying the size of the figure in inches. |
 
 #### Available Filetypes with savefig: 
 - Postscript (.ps) 
@@ -1985,7 +1988,7 @@ hv.hist(df, num_bins=100, title='28 Year Histograms of Sin Curves (Z-Score Norma
 hydrostats.visual.scatter
 ----------------------
 
-#### class hydrostats.visual.scatter(merged_data_df, grid=False, title=None, labels=None, best_fit=False, savefigure=None, marker_style='ko', metrics=None, log_scale=False, line45=False):
+#### class hydrostats.visual.scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, title=None, labels=None, best_fit=False, savefigure=None, marker_style='ko', metrics=None, log_scale=False, line45=False, figsize=(12, 8)):
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/visual.py#L202 "Source Code")
 
 #### Scatter Plot
@@ -1995,7 +1998,9 @@ The scatter plot is a function that is available for comparing the correlation o
 
 | Parameters       |               |
 | :---------------------------------   |:-------------|
-| merged_data_df (Required Input)      | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be simulated Data and observed Data going from left to right. |
+| merged_data_df=None                  | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be simulated Data and observed Data going from left to right. |
+| sim_array=None                       | An numpy 1D array of simulated data. If this argument is selected then the obs_array parameter must also be provided. |
+| obs_array=None                       | An numpy 1D array of observed data. If this argument is selected then the sim_array parameter must also be provided. |
 | grid (Default=False)                 | Takes a boolean type input and adds a grid to the plot. |
 | title (Default=None)                 | Takes a string type input and adds a title to the hydrograph. |
 | labels (Default=None)                | Takes a list of two string type objects and adds them as x-axis labels and y-axis labels, respectively.|
@@ -2005,6 +2010,7 @@ The scatter plot is a function that is available for comparing the correlation o
 | metrics (Default=None)               | Adds Metrics to the left side of the Plot. Any Metric from the Hydrostats Library can be added to the plot as the name of the function. The entries must be in a list. (e.g. ['ME', 'MASE'] would plot the Mean Error and the Mean Absolute Scaled Error on the left side of the plot.| 
 | log_scale=False                      | Boolean type input indicating whether or not to use a log-log scale on the scatter plot. | 
 | line45=False                         | Boolean type input indicating whether or not to add a line with a slope of 1 to the plot. |
+| figsize=(12, 8)                      | List of tuples specifying the size of the plot in inches. | 
 
 #### Available metrics to add to the left side of the plot:
 - ME (Mean Error)
@@ -2088,22 +2094,30 @@ hv.scatter(df, title='Scatter Plot for the Synthetic Data (Log-Log Scale)',
 hydrostats.visual.qqplot
 ----------------------
 
-#### class hydrostats.visual.qqplot(merged_df, labels=['X Quantiles', 'Y Quantiles'], line=None, savefig=None, title=None, grid=None):
+#### class hydrostats.visual.qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='linear', title=None, xlabel='Simulated Data Quantiles', ylabel='Observed Data Quantiles', legend=False, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False, figsize=(12, 8), savefigure=None):
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/visual.py#L202 "Source Code")
 
 #### QQ (Quantile Quantile Plot)
-The QQ plot is a function that is available for comparing the distribution of two datasets. When data falls along a linear regression line, it indicates that the data comes from the same distribution.  
+The QQ plot is a function that is available for comparing the distribution of two datasets. When data falls along a linear regression line, it indicates that the data comes from the same distribution. The function will plot the quantiles along a line that is linear to the ends of the interquartile range of the two plots (Q1 and Q3).
 
 <br>
 
-| Parameters       |               |
+| Parameters       |                   |
 | :---------------------------------   |:-------------|
-| merged_data_df (Required Input)      | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be simulated Data and observed Data going from left to right. |
-| labels (Default=None)                | Takes a list of two string type objects and adds them as x-axis labels and y-axis labels, respectively.|
-| line=None                            |  - str {‘45’, ‘s’, ‘r’, q’} or None - Options for the reference line to which the data is compared: ‘45’ - 45-degree line, ‘s’ - standardized line, the expected order statistics are scaled by the standard deviation of the given sample and have the mean added to them, ‘r’ - A regression line is fit, ‘q’ - A line is fit through the quartiles, None - by default no reference line is added to the plot. |
-| savefigure (Default=None)            | Takes a string type input and will save the plot the the specified path as a filetype specified by the user. (eg. path/to/file.png) | 
-| title (Default=None)                 | Takes a string type input and adds a title to the hydrograph. |
-| grid (Default=False)                 | Takes a boolean type input and adds a grid to the plot. |
+| merged_data_df=None                  | A dataframe with a datetime type index and floating point type numbers in the two columns. The columns must be simulated Data and observed Data going from left to right. |
+| sim_array=None                       | An numpy 1D array of simulated data. If this argument is selected then the obs_array parameter must also be provided. |
+| obs_array=None                       | An numpy 1D array of observed data. If this argument is selected then the sim_array parameter must also be provided. |
+| interpolate='linear'                 | A string type input specifying the interpolation type when computing quantiles. The default is linear. |
+| title=None                           | A string type input that specifies the title of the QQ Plot. |
+| xlabel='Simulated Data Quantiles'    | The label for the x axis that holds the simulated data quantiles. |
+| ylabel='Observed Data Quantiles'     | The label for the y axis that holds the observed data quantiles. |
+| legend=False                         | Boolean type input specifying whether the user wants to add a legend to explain the elements on the chart. | 
+| replace_nan=None                     | Float input indicating what value to replace NaN values with. |
+| replace_inf=None                     | Float input indicating what value to replace Inf values with. |
+| remove_neg=False                     | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False                    | Boolean input indicating whether user wants to remove zero values. |
+| figsize=(12, 8)                      | Takes a list of 2 tuples specifying the size of the figure in inches. |
+| savefigure=None                      | Takes a string type input and will save the plot the the specified path as a filetype specified by the user. (eg. path/to/file.png) | 
 
 #### Available Filetypes with savefig: 
 - Postscript (.ps) 
@@ -2138,12 +2152,10 @@ time_index = pd.date_range('1980-01-01', periods=100)
 df = pd.DataFrame(np.column_stack((sim, obs)), index=time_index, columns=['Synthetic Simulated Data', 'Synthetic Observed Data'])
 
 # Plotting a QQ Plot for the time series
-hv.qqplot(df, labels=['Simulated Quantiles', 'Observed Quantiles'], line='r', title='QQ Plot of Synthetic Data',
-          grid=True)
+hv.qqplot(df, legend=True, title='QQ Plot', interpolate='midpoint')
 
 # Saving the figure with savefig argument
-hv.qqplot(df, labels=['Simulated Quantiles', 'Observed Quantiles'], line='r', title='QQ Plot of Synthetic Data',
-          grid=True, savefig='QQ_Plot.png')
+hv.qqplot(df, legend=True, title='QQ Plot', interpolate='midpoint', savefig='QQ_Plot.png')
 ```
 
 # Appendix
