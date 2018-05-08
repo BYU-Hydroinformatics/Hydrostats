@@ -13,7 +13,7 @@ import sympy as sp
 import calendar
 
 
-def plot(merged_data_df=None, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None,
+def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None,
          savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False, fig_size=(10, 6), text_adjust=[-0.35, 0.75],
          plot_adjust=0.27, transparency=0.5, ebars=None, ecolor=None, markersize=2, errorevery=1, markevery=1):
     """ A function that will plot a simulated and observed data vs time and show metrics to the left of the plot if
