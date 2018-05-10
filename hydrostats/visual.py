@@ -22,42 +22,47 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
     fig = plt.figure(num=1, figsize=fig_size, dpi=80, facecolor='w', edgecolor='k')
     ax = fig.add_subplot(111)
 
+    # Setting Variable for the simulated data, observed data, and time stamps
+    sim = merged_data_df.iloc[:, 0].values
+    obs = merged_data_df.iloc[:, 1].values
+    time = merged_data_df.index
+
     if legend is not None and ebars is None:
-        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], fmt=linestyles[0], markersize=markersize,
+        plt.plot(time, sim, linestyles[0], markersize=markersize,
                  label=legend[0], alpha=transparency, markevery=markevery)
-        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], fmt=linestyles[1], markersize=markersize,
+        plt.plot(time, obs, linestyles[1], markersize=markersize,
                  label=legend[1], alpha=transparency, markevery=markevery)
         plt.legend(fontsize=14)
     elif legend is not None and ebars is not None:
-        plt.errorbar(x=merged_data_df.index, y=merged_data_df.iloc[:, 0], yerr=ebars.iloc[:, 0].values,
+        plt.errorbar(x=time, y=sim, yerr=ebars.iloc[:, 0].values,
                      fmt=linestyles[0], markersize=markersize, label=legend[0], alpha=transparency, ecolor=ecolor[0],
                      markevery=markevery, errorevery=errorevery)
-        plt.errorbar(x=merged_data_df.index, y=merged_data_df.iloc[:, 1], yerr=ebars.iloc[:, 1].values,
+        plt.errorbar(x=time, y=obs, yerr=ebars.iloc[:, 1].values,
                      fmt=linestyles[1], markersize=markersize, label=legend[1], alpha=transparency, ecolor=ecolor[1],
                      markevery=markevery, errorevery=errorevery)
         plt.legend(fontsize=14)
     elif legend is None and ebars is not None:
-        plt.errorbar(merged_data_df.index, merged_data_df.iloc[:, 0], fmt=linestyles[0], yerr=ebars.iloc[:, 0].values,
+        plt.errorbar(time, sim, fmt=linestyles[0], yerr=ebars.iloc[:, 0].values,
                      markersize=markersize, alpha=transparency, ecolor=ecolor[0], markevery=markevery,
                      errorevery=errorevery)
-        plt.errorbar(merged_data_df.index, merged_data_df.iloc[:, 1], fmt=linestyles[1], yerr=ebars.iloc[:, 0].values,
+        plt.errorbar(time, obs, fmt=linestyles[1], yerr=ebars.iloc[:, 0].values,
                      markersize=markersize, alpha=transparency, ecolor=ecolor[1], markevery=markevery,
                      errorevery=errorevery)
     else:
-        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 0], linestyles[0], markersize=markersize,
+        plt.plot(time, sim, linestyles[0], markersize=markersize,
                  alpha=transparency, markevery=markevery)
-        plt.plot(merged_data_df.index, merged_data_df.iloc[:, 1], linestyles[1], markersize=markersize,
+        plt.plot(time, obs, linestyles[1], markersize=markersize,
                  alpha=transparency, markevery=markevery)
     if tight_xlim:
-        plt.xlim(merged_data_df.index[0], merged_data_df.index[-1])
+        plt.xlim(time[0], time[-1])
     if x_season:
         seasons = calendar.month_abbr[1:13]
         day_month = np.array([31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
         day_month_cum = np.cumsum(day_month)
         fractions = day_month_cum[:11] / 366
         fractions = np.insert(fractions, 0, 0)
-        index = np.rint(fractions * len(merged_data_df.index)).astype(np.integer)
-        plt.xticks(merged_data_df.index[index], seasons, fontsize=14, rotation=45)
+        index = np.rint(fractions * len(time)).astype(np.integer)
+        plt.xticks(time[index], seasons, fontsize=14, rotation=45)
     else:
         plt.xticks(fontsize=14, rotation=45)
     plt.yticks(fontsize=14)
@@ -79,8 +84,6 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
     plt.tight_layout()
 
     if metrics:
-        forecasted_array = merged_data_df.iloc[:, 0].as_matrix()
-        observed_array = merged_data_df.iloc[:, 1].as_matrix()
         function_list = [me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smap1, smap2, d, d1, dr,
                          drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga
                          ]
@@ -96,7 +99,7 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
         selected_metrics = []
         for i in index:
             selected_metrics.append(
-                function_list_str[i] + '=' + str(round(function_list[i](forecasted_array, observed_array), 3)))
+                function_list_str[i] + '=' + str(round(function_list[i](sim, obs), 3)))
         formatted_selected_metrics = ''
         for i in selected_metrics:
             formatted_selected_metrics += i + '\n'
@@ -263,14 +266,14 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
         plt.legend(fontsize=12)
 
     if metrics is not None:
-        forecasted_array = merged_data_df.iloc[:, 0].as_matrix()
-        observed_array = merged_data_df.iloc[:, 1].as_matrix()
+
         function_list = [me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smap1, smap2, d, d1, dr,
-                         drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga
-                         ]
+                         drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga]
+
         function_list_str = ['ME', 'MAE', 'MSE', 'ED', 'NED', 'RMSE', 'RMSLE', 'MASE', 'R^2', 'ACC', 'MAPE',
                              'MAPD', 'SMAP1', 'SMAP2', 'D', 'D1', 'DR', 'D-Rel', 'D-Mod', 'M', 'R', 'NSE', 'NSE-Mod',
                              'NSE-Rel', 'E_1', 'SA', 'SC', 'SID', 'SGA']
+
         assert isinstance(metrics, list)
         for metric in metrics:
             assert metric in function_list_str
@@ -299,7 +302,7 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
 def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='linear', title=None, xlabel='Simulated Data Quantiles',
            ylabel='Observed Data Quantiles', legend=False, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False, figsize=(12, 8), savefigure=None):
-    
+
     plt.figure(num=1, figsize=figsize, dpi=80, facecolor='w', edgecolor='k')
 
     if merged_data_df is not None:
