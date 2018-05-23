@@ -4,6 +4,7 @@
 Created on Dec 28 12:16:32 2017
 @author: Wade Roberts
 """
+from __future__ import division
 import numpy as np
 import pandas as pd
 from numba import njit, prange
@@ -12,6 +13,11 @@ import calendar
 import hydrostats.data as hd
 import scipy.stats
 import matplotlib.pyplot as plt
+from hydrostats.data import HydrostatsError
+
+""" ###################################################################################################################
+                                         General and Hydrological Error Metrics                                       
+    ################################################################################################################"""
 
 
 def me(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -45,6 +51,42 @@ def mse(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
     return np.mean((simulated_array - observed_array) ** 2)
+
+
+def mle(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+        remove_zero=False):
+    """Returns the Mean Log Error."""
+    assert len(observed_array) == len(simulated_array)
+    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
+                                                    replace_inf=replace_inf, remove_neg=remove_neg,
+                                                    remove_zero=remove_zero)
+    sim_log = np.log(simulated_array)
+    obs_log = np.log(observed_array)
+    return np.mean(sim_log - obs_log)
+
+
+def male(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+         remove_zero=False):
+    """Returns the Mean Absolute Log Error."""
+    assert len(observed_array) == len(simulated_array)
+    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
+                                                    replace_inf=replace_inf, remove_neg=remove_neg,
+                                                    remove_zero=remove_zero)
+    sim_log = np.log(simulated_array)
+    obs_log = np.log(observed_array)
+    return np.mean(np.abs(sim_log - obs_log))
+
+
+def msle(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+         remove_zero=False):
+    """Returns the Mean Squared Log Error."""
+    assert len(observed_array) == len(simulated_array)
+    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
+                                                    replace_inf=replace_inf, remove_neg=remove_neg,
+                                                    remove_zero=remove_zero)
+    sim_log = np.log(simulated_array)
+    obs_log = np.log(observed_array)
+    return np.mean((sim_log - obs_log) ** 2)
 
 
 def ed(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -92,6 +134,33 @@ def rmsle(simulated_array, observed_array, replace_nan=None, replace_inf=None, r
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
     return np.sqrt(np.mean(np.power(np.log1p(simulated_array) - np.log1p(observed_array), 2)))
+
+
+def nrmse(simulated_array, observed_array, nrmse_type, replace_nan=None, replace_inf=None, remove_neg=False,
+          remove_zero=False):
+    """"Return the Normalized Root Mean Square Error. Different types are 'range', 'mean', and 'iqr'.
+    RMSE normalized by the range, the mean, or interquartile range of the observed time series (x), respectively.
+    This allows comparison between data sets with different scales. The NRMSErange and NRMSEquartile  are the most and
+    least sensitive to outliers, respectively. (Pontius et al., 2008)"""
+    assert len(observed_array) == len(simulated_array)
+    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
+                                                    replace_inf=replace_inf, remove_neg=remove_neg,
+                                                    remove_zero=remove_zero)
+    rmse_value = rmse(simulated_array=simulated_array, observed_array=observed_array)
+    if nrmse_type == 'range':
+        obs_max = np.max(observed_array)
+        obs_min = np.min(observed_array)
+        return rmse_value / (obs_max - obs_min)
+    elif nrmse_type == 'mean':
+        obs_mean = np.mean(observed_array)
+        return rmse_value / obs_mean
+    elif nrmse_type == 'iqr':
+        q1 = np.percentile(observed_array, 25)
+        q3 = np.percentile(observed_array, 75)
+        iqr = q3 - q1
+        return rmse_value / iqr
+    else:
+        raise HydrostatsError("Available types are 'range', 'mean', and 'iqr'. Please Specify one of these types.")
 
 
 def mase(simulated_array, observed_array, m=1, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -145,7 +214,10 @@ def mape(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    return np.mean(np.abs(simulated_array - observed_array) / np.abs(observed_array)) * 100
+    a = simulated_array - observed_array
+    b = np.abs(a / observed_array)
+    c = 100 / simulated_array.size
+    return c * np.sum(b)
 
 
 def mapd(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -156,11 +228,29 @@ def mapd(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    return (np.sum(np.abs(simulated_array - observed_array))) / np.abs(observed_array.sum())
+    a = np.sum(np.abs(simulated_array - observed_array))
+    b = np.sum(np.abs(observed_array))
+    return a / b
 
 
-def smap1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+def maape(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
           remove_zero=False):
+    """Returns the Mean Arctangent Absolute Percentage Error. Range: 0 ≤ MAAPE < π/2, unit less, does not indicate bias,
+    smaller is better. Represents the mean absolute error as a percentage of the observed values. Handles 0s in the
+    observed data. not as bias as MAPE by under-over predictions
+    (Kim and Kim, 2016)
+    """
+    assert len(observed_array) == len(simulated_array)
+    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
+                                                    replace_inf=replace_inf, remove_neg=remove_neg,
+                                                    remove_zero=remove_zero)
+    a = simulated_array - observed_array
+    b = np.abs(a / observed_array)
+    return np.mean(np.arctan(b))
+
+
+def smape1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """Returns the Symmetric Mean Absolute Percentage Error (1).
     arguments: simulated array, observed array"""
     assert len(observed_array) == len(simulated_array)
@@ -169,21 +259,22 @@ def smap1(simulated_array, observed_array, replace_nan=None, replace_inf=None, r
                                                     remove_zero=remove_zero)
     a = 100 / simulated_array.size
     b = np.abs(simulated_array - observed_array)
-    c = np.abs(simulated_array) - np.abs(observed_array)
+    c = np.abs(simulated_array) + np.abs(observed_array)
     return a * np.sum(b / c)
 
 
-def smap2(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-          remove_zero=False):
+def smape2(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """Returns the Symmetric Mean Absolute Percentage Error (2).
     arguments: simulated array, observed array"""
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    a = np.sum(np.abs(simulated_array - observed_array))
-    b = np.sum(simulated_array + observed_array)
-    return (100 / simulated_array.size) * (a / b)
+    a = simulated_array - observed_array
+    b = (simulated_array + observed_array) / 2
+    c = 100 / simulated_array.size
+    return c * np.sum(np.abs(a / b))
 
 
 def d(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -208,9 +299,10 @@ def d1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    num = np.sum(np.abs(simulated_array - observed_array))
-    den = np.sum((np.abs(simulated_array - observed_array.mean()) + np.abs(observed_array - observed_array.mean())))
-    return 1 - (num / den)
+    a = np.sum((np.abs(simulated_array - observed_array)) ** 2)
+    b = np.abs(simulated_array - np.mean(observed_array))
+    c = np.abs(observed_array - np.mean(observed_array))
+    return np.sum(a) / np.sum(b + c)
 
 
 def dr(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -221,12 +313,12 @@ def dr(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    if np.abs(simulated_array - observed_array).sum() <= 2 * np.abs(simulated_array - simulated_array.mean()).sum():
-        return 1 - (np.abs(simulated_array - observed_array).sum() /
-                    np.abs(simulated_array - simulated_array.mean()).sum())
+    a = np.sum(np.abs(simulated_array - observed_array))
+    b = 2 * np.sum(np.abs(observed_array - observed_array.mean()))
+    if a <= b:
+        return 1 - (a / b)
     else:
-        return (np.sum(np.abs(observed_array - observed_array.mean())) /
-                np.sum(np.abs(simulated_array - observed_array))) - 1
+        return (b / a) - 1
 
 
 def drel(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -237,9 +329,11 @@ def drel(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    return 1 - (np.sum(((observed_array - simulated_array) / observed_array) ** 2) /
-                np.sum(((np.abs(simulated_array - np.mean(observed_array)) +
-                         np.abs(observed_array - np.mean(observed_array))) / np.mean(observed_array)) ** 2))
+    a = ((simulated_array - observed_array) / observed_array) ** 2
+    b = np.abs(simulated_array - np.mean(observed_array))
+    c = np.abs(observed_array - np.mean(observed_array))
+    e = ((b + c) / np.mean(observed_array)) ** 2
+    return 1 - (np.sum(a) / np.sum(e))
 
 
 def dmod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -250,9 +344,11 @@ def dmod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=Non
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    return (1 - (np.sum((np.abs(observed_array - simulated_array)) ** j)) /
-            np.sum((np.abs(simulated_array - np.mean(observed_array)) +
-                    np.abs(observed_array - np.mean(observed_array))) ** j))
+    a = (np.abs(simulated_array - observed_array)) ** j
+    b = np.abs(simulated_array - np.mean(observed_array))
+    c = np.abs(observed_array - np.mean(observed_array))
+    e = (b + c) ** j
+    return 1 - (np.sum(a) / np.sum(e))
 
 
 def watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -264,9 +360,12 @@ def watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    return (2 / np.pi) * np.arcsin(1 - mse(simulated_array, observed_array) /
-                                   (np.std(observed_array) ** 2 + np.std(simulated_array) ** 2 +
-                                    (np.mean(simulated_array) - np.mean(observed_array)) ** 2))
+    a = 2 / np.pi
+    b = mse(simulated_array, observed_array)
+    c = np.std(observed_array) ** 2 + np.std(simulated_array) ** 2
+    e = (np.mean(simulated_array) - np.mean(observed_array)) ** 2
+    f = c + e
+    return a * np.arcsin(1 - (b / f))
 
 
 def mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -280,16 +379,16 @@ def mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
                                                     remove_zero=remove_zero)
 
     @njit(parallel=True)
-    def numba_loop(simulated_array, observed_array):
+    def numba_loop(simulated_array_numba, observed_array_numba):
         """Using numba for the double for loop"""
-        assert len(observed_array) == len(simulated_array)
-        size = len(simulated_array)
-        total = 0.
-        for i in prange(size):
-            observed = observed_array[i]
-            for j in prange(size):
-                total += abs(simulated_array[j] - observed)
-        return total, size
+        assert len(observed_array_numba) == len(simulated_array_numba)
+        size_numba = len(simulated_array_numba)
+        total_numba = 0.
+        for i in prange(size_numba):
+            observed = observed_array_numba[i]
+            for j in prange(size_numba):
+                total_numba += abs(simulated_array_numba[j] - observed)
+        return total_numba, size
 
     # Using NumPy for the vectorized calculations
     total, size = numba_loop(simulated_array, observed_array)
@@ -305,8 +404,9 @@ def nse(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    return 1 - (
-            np.sum((simulated_array - observed_array) ** 2) / np.sum((observed_array - observed_array.mean()) ** 2))
+    a = (np.abs(simulated_array - observed_array)) ** 2
+    b = (np.abs(observed_array - np.mean(observed_array))) ** 2
+    return 1 - (np.sum(a) / np.sum(b))
 
 
 def nse_mod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -321,8 +421,10 @@ def nse_mod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    return 1 - (np.sum(np.abs(observed_array - simulated_array) ** j) / np.sum(
-        np.abs(observed_array - np.mean(observed_array)) ** j))
+
+    a = (np.abs(simulated_array - observed_array)) ** j
+    b = (np.abs(observed_array - np.mean(observed_array))) ** j
+    return 1 - (np.sum(a) / np.sum(b))
 
 
 def nse_rel(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -337,21 +439,63 @@ def nse_rel(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    return 1 - (np.sum(((observed_array - simulated_array) / observed_array) ** 2) /
-                np.sum(np.abs((observed_array - np.mean(observed_array)) / np.mean(observed_array)) ** 2))
+
+    a = (np.abs((simulated_array - observed_array) / observed_array)) ** 2
+    b = (np.abs((observed_array - np.mean(observed_array)) / np.mean(observed_array))) ** 2
+    return 1 - (np.sum(a) / np.sum(b))
 
 
-def lm_index(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+def lm_index(simulated_array, observed_array, x_bar_p=None, replace_nan=None, replace_inf=None, remove_neg=False,
              remove_zero=False):
-    """Returns the Legate-McCabe index. Legates DR, McCabe GJ Jr. 1999. Evaluating the use of “goodness-of-fit” measures
-    in hydrologic and hydroclimatic model validation. Water Resources Research 35(1): 233–241.
-    arguments: simulated array, observed array"""
+    """Returns the Legate-McCabe Efficiency Index. Range: 0 ≤ lm_index < 1, unit less, larger is better, 
+    does not indicate bias, less weight to outliers. The term x_bar_p is a seasonal or other selected average. If no 
+    x_bar_p is given, the function will use the average of the observed data instead.  
+    (Legates and McCabe Jr, 1999)"""
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    return 1 - (np.sum(np.abs(observed_array - simulated_array)) / np.sum(
-        np.abs(observed_array - np.mean(observed_array))))
+    if x_bar_p is not None:
+        a = np.abs(observed_array - simulated_array)
+        b = np.abs(observed_array - np.mean(x_bar_p))
+        return 1 - (np.sum(a) / np.sum(b))
+    else:
+        a = np.abs(observed_array - simulated_array)
+        b = np.abs(observed_array - np.mean(observed_array))
+        return 1 - (np.sum(a) / np.sum(b))
+
+
+def d1_p(simulated_array, observed_array, x_bar_p=None, replace_nan=None, replace_inf=None, remove_neg=False,
+         remove_zero=False):
+    """Returns the Legate-McCabe Index of Agreement. Range: 0 ≤ d1_p < 1, unit less, larger is better, does not indicate
+     bias, less weight to outliers. The term (x_bar_p) is a seasonal or other selected average. If not x_bar_p is given, 
+     the mean of the observed data will be used instead.
+     (Legates and McCabe Jr, 1999)"""
+    assert len(observed_array) == len(simulated_array)
+    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
+                                                    replace_inf=replace_inf, remove_neg=remove_neg,
+                                                    remove_zero=remove_zero)
+    if x_bar_p is not None:
+        a = (np.abs(simulated_array - observed_array)) ** 2
+        b = np.abs(simulated_array - x_bar_p) + np.abs(observed_array - x_bar_p)
+        return 1 - (np.sum(a) / np.sum(b))
+    else:
+        a = (np.abs(simulated_array - observed_array)) ** 2
+        b = np.abs(simulated_array - np.mean(observed_array)) + np.abs(observed_array - np.mean(observed_array))
+        return 1 - (np.sum(a) / np.sum(b))
+
+
+def ve(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+       remove_zero=False):
+    """Range: 0≤VE<1 (Unitless) smaller is better, does not indicate bias, error as a percentage of flow.
+    (Criss and Winston, 2008)"""
+    assert len(observed_array) == len(simulated_array)
+    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
+                                                    replace_inf=replace_inf, remove_neg=remove_neg,
+                                                    remove_zero=remove_zero)
+    a = np.sum(np.abs(simulated_array - observed_array))
+    b = np.sum(observed_array)
+    return 1 - (a / b)
 
 
 def sa(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -378,9 +522,11 @@ def sc(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    return np.arccos(np.dot((observed_array - observed_array.mean()), (simulated_array - simulated_array.mean())) /
-                     (np.linalg.norm(observed_array - observed_array.mean()) *
-                      np.linalg.norm(simulated_array - simulated_array.mean())))
+    a = np.dot(observed_array - np.mean(observed_array), simulated_array - np.mean(simulated_array))
+    b = np.linalg.norm(observed_array - np.mean(observed_array))
+    c = np.linalg.norm(simulated_array - np.mean(simulated_array))
+    e = b * c
+    return np.arccos(a / e)
 
 
 def sid(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -412,205 +558,195 @@ def sga(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
     return np.arccos(a / b)
 
 
-# def sga(forecasted_array, observed_array):
-#     """Returns the spectral gradient angle
-#     arguments: forecasted array, observed array"""
-#     assert len(observed_array) == len(forecasted_array)
-#     forecasted_array, observed_array = remove_values(forecasted_array, observed_array)
-#     SGx = observed_array[1:] - observed_array[:observed_array.size - 1]
-#     SGy = forecasted_array[1:] - forecasted_array[:forecasted_array.size - 1]
-#     return sa(SGx, SGy)
-
-
 """ ###################################################################################################################
                         H Metrics: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)                                       
     ################################################################################################################"""
 
 
-def h1(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False,
+def h1(simulated_array, observed_array, h_type='mhe', replace_nan=None, replace_inf=None, remove_neg=False,
        remove_zero=False):
     """H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
-    arguments: simulated array, observed array, h_type where the three h_types are mean, absolute, and rmhe."""
+    arguments: simulated array, observed array, h_type where the three h_types are mean, AHE, and rmhe."""
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
     h = (simulated_array - observed_array) / observed_array
-    if h_type == 'mean':
+    if h_type == 'mhe':
         return h.mean()
-    elif h_type == 'absolute':
+    elif h_type == 'ahe':
         return np.abs(h).mean()
-    elif h_type == 'rmhe':
+    elif h_type == 'rmshe':
         return np.sqrt((h ** 2).mean())
     else:
-        print('Please make a valid h_type selection')
+        raise HydrostatsError("The three types available are 'mhe', 'ahe', and 'rmshe'.")
 
 
-def h2(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False,
+def h2(simulated_array, observed_array, h_type='mhe', replace_nan=None, replace_inf=None, remove_neg=False,
        remove_zero=False):
     """H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
-    arguments: simulated array, observed array, h_type where the three h_types are mean, absolute, and rmhe."""
+    arguments: simulated array, observed array, h_type where the three h_types are mean, AHE, and rmhe."""
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
     h = (simulated_array - observed_array) / simulated_array
-    if h_type == 'mean':
+    if h_type == 'mhe':
         return h.mean()
-    elif h_type == 'absolute':
+    elif h_type == 'ahe':
         return np.abs(h).mean()
-    elif h_type == 'rmhe':
+    elif h_type == 'rmshe':
         return np.sqrt((h ** 2).mean())
     else:
-        return 'Please make a valid h_type selection'
+        raise HydrostatsError("The three types available are 'mhe', 'ahe', and 'rmshe'.")
 
 
-def h3(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False,
+def h3(simulated_array, observed_array, h_type='mhe', replace_nan=None, replace_inf=None, remove_neg=False,
        remove_zero=False):
     """H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
-    arguments: simulated array, observed array, h_type where the three h_types are mean, absolute, and rmhe."""
+    arguments: simulated array, observed array, h_type where the three h_types are mean, AHE, and rmhe."""
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
     h = (simulated_array - observed_array) / (0.5 * (simulated_array + observed_array))
-    if h_type == 'mean':
+    if h_type == 'mhe':
         return h.mean()
-    elif h_type == 'absolute':
+    elif h_type == 'ahe':
         return np.abs(h).mean()
-    elif h_type == 'rmhe':
+    elif h_type == 'rmshe':
         return np.sqrt((h ** 2).mean())
     else:
-        return 'Please make a valid h_type selection'
+        raise HydrostatsError("The three types available are 'mhe', 'ahe', and 'rmshe'.")
 
 
-def h4(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False,
+def h4(simulated_array, observed_array, h_type='mhe', replace_nan=None, replace_inf=None, remove_neg=False,
        remove_zero=False):
     """H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
-    arguments: simulated array, observed array, h_type where the three h_types are mean, absolute, and rmhe."""
+    arguments: simulated array, observed array, h_type where the three h_types are mean, AHE, and rmhe."""
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
     h = (simulated_array - observed_array) / np.sqrt(simulated_array * observed_array)
-    if h_type == 'mean':
+    if h_type == 'mhe':
         return h.mean()
-    elif h_type == 'absolute':
+    elif h_type == 'ahe':
         return np.abs(h).mean()
-    elif h_type == 'rmhe':
+    elif h_type == 'rmshe':
         return np.sqrt((h ** 2).mean())
     else:
-        return 'Please make a valid h_type selection'
+        raise HydrostatsError("The three types available are 'mhe', 'ahe', and 'rmshe'.")
 
 
-def h5(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False,
+def h5(simulated_array, observed_array, h_type='mhe', replace_nan=None, replace_inf=None, remove_neg=False,
        remove_zero=False):
     """H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
-    arguments: simulated array, observed array, h_type where the three h_types are mean, absolute, and rmhe."""
+    arguments: simulated array, observed array, h_type where the three h_types are mean, AHE, and rmhe."""
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
     h = (simulated_array - observed_array) / \
         np.reciprocal(0.5 * (np.reciprocal(observed_array) + np.reciprocal(simulated_array)))
-    if h_type == 'mean':
+    if h_type == 'mhe':
         return h.mean()
-    elif h_type == 'absolute':
+    elif h_type == 'ahe':
         return np.abs(h).mean()
-    elif h_type == 'rmhe':
+    elif h_type == 'rmshe':
         return np.sqrt((h ** 2).mean())
     else:
-        return 'Please make a valid h_type selection'
+        raise HydrostatsError("The three types available are 'mhe', 'ahe', and 'rmshe'.")
 
 
-def h6(simulated_array, observed_array, h_type='mean', k=1, replace_nan=None, replace_inf=None, remove_neg=False,
+def h6(simulated_array, observed_array, h_type='mhe', k=1, replace_nan=None, replace_inf=None, remove_neg=False,
        remove_zero=False):
     """H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
-    arguments: simulated array, observed array, h_type where the three h_types are mean, absolute, and rmhe."""
+    arguments: simulated array, observed array, h_type where the three h_types are mean, AHE, and rmhe."""
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
     h = (simulated_array / observed_array - 1) / \
         np.power(0.5 * (1 + np.power(simulated_array / observed_array, k)), 1 / k)
-    if h_type == 'mean':
+    if h_type == 'mhe':
         return h.mean()
-    elif h_type == 'absolute':
+    elif h_type == 'ahe':
         return np.abs(h).mean()
-    elif h_type == 'rmhe':
+    elif h_type == 'rmshe':
         return np.sqrt((h ** 2).mean())
     else:
-        return 'Please make a valid h_type selection'
+        raise HydrostatsError("The three types available are 'mhe', 'ahe', and 'rmshe'.")
 
 
-def h7(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False,
+def h7(simulated_array, observed_array, h_type='mhe', replace_nan=None, replace_inf=None, remove_neg=False,
        remove_zero=False):
     """H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
-    arguments: simulated array, observed array, h_type where the three h_types are mean, absolute, and rmhe."""
+    arguments: simulated array, observed array, h_type where the three h_types are mean, AHE, and rmhe."""
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
     h = (simulated_array / observed_array - 1) / np.min(simulated_array / observed_array)
-    if h_type == 'mean':
+    if h_type == 'mhe':
         return h.mean()
-    elif h_type == 'absolute':
+    elif h_type == 'ahe':
         return np.abs(h).mean()
-    elif h_type == 'rmhe':
+    elif h_type == 'rmshe':
         return np.sqrt((h ** 2).mean())
     else:
-        return 'Please make a valid h_type selection'
+        raise HydrostatsError("The three types available are 'mhe', 'ahe', and 'rmshe'.")
 
 
-def h8(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False,
+def h8(simulated_array, observed_array, h_type='mhe', replace_nan=None, replace_inf=None, remove_neg=False,
        remove_zero=False):
     """H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
-    arguments: simulated array, observed array, h_type where the three h_types are mean, absolute, and rmhe."""
+    arguments: simulated array, observed array, h_type where the three h_types are mean, AHE, and rmhe."""
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
     h = (simulated_array / observed_array - 1) / (simulated_array / observed_array).max()
-    if h_type == 'mean':
+    if h_type == 'mhe':
         return h.mean()
-    elif h_type == 'absolute':
+    elif h_type == 'ahe':
         return np.abs(h).mean()
-    elif h_type == 'rmhe':
+    elif h_type == 'rmshe':
         return np.sqrt((h ** 2).mean())
     else:
-        return 'Please make a valid h_type selection'
+        raise HydrostatsError("The three types available are 'mhe', 'ahe', and 'rmshe'.")
 
 
-# def h9(simulated_array, observed_array, h_type='mean', k=1):
+# def h9(simulated_array, observed_array, h_type='mhe', k=1):
 #     h = (simulated_array / observed_array - 1) / \
 #         np.power(0.5 * (1 + np.power(simulated_array / observed_array, k)), 1 / k)
-#     if h_type == 'mean':
+#     if h_type == 'mhe':
 #         return h.mean()
-#     elif h_type == 'absolute':
+#     elif h_type == 'ahe':
 #         return np.abs(h).mean()
-#     elif h_type == 'rmhe':
+#     elif h_type == 'rmshe':
 #         return np.sqrt((h**2).mean())
 #     else:
-#         return 'Please make a valid h_type selection'
+#         raise HydrostatsError("The three types available are 'mhe', 'ahe', and 'rmshe'.")
 
 
-def h10(simulated_array, observed_array, h_type='mean', replace_nan=None, replace_inf=None, remove_neg=False,
+def h10(simulated_array, observed_array, h_type='mhe', replace_nan=None, replace_inf=None, remove_neg=False,
         remove_zero=False):
     """H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
-    arguments: simulated array, observed array, h_type where the three h_types are mean, absolute, and rmhe."""
+    arguments: simulated array, observed array, h_type where the three h_types are mean, AHE, and rmhe."""
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
     h = np.log1p(simulated_array) - np.log1p(observed_array)
-    if h_type == 'mean':
+    if h_type == 'mhe':
         return h.mean()
-    elif h_type == 'absolute':
+    elif h_type == 'ahe':
         return np.abs(h).mean()
-    elif h_type == 'rmhe':
+    elif h_type == 'rmshe':
         return np.sqrt((h ** 2).mean())
     else:
-        return 'Please make a valid h_type selection'
+        raise HydrostatsError("The three types available are 'mhe', 'ahe', and 'rmshe'.")
 
 
 """ ###################################################################################################################
@@ -639,96 +775,49 @@ def mean_var(simulated_array, observed_array, replace_nan=None, replace_inf=None
     return np.var(np.log1p(observed_array) - np.log1p(simulated_array))
 
 
-def all_metrics(simulated_array, observed_array, mase_m=1, dmod_j=1, nse_mod_j=1, h6_k=1, replace_nan=None,
-                replace_inf=None, remove_neg=False, remove_zero=False):
-    """Takes two numpy arrays and returns a pandas dataframe with all of the metrics included."""
-    metrics_list = ['Mean Error', 'Mean Absolute Error', 'Mean Squared Error', 'Eclidean Distance',
-                    'Normalized Eclidean Distance', 'Root Mean Square Error', 'Root Mean Squared Log Error',
-                    'Mean Absolute Scaled Error', 'R^2', 'Anomoly Correlation Coefficient',
-                    'Mean Absolute Percentage Error', 'Mean Absolute Percentage Deviation',
-                    'Symmetric Mean Absolute Percentage Error (1)', 'Symmetric Mean Absolute Percentage Error (2)',
-                    'Index of Agreement (d)', 'Index of Agreement (d1)', 'Index of Agreement Refined (dr)',
-                    'Relative Index of Agreement', 'Modified Index of Agreement', "Watterson's M", 'Mielke-Berry R',
-                    'Nash-Sutcliffe Efficiency', 'Modified Nash-Sutcliffe Efficiency',
-                    'Relative Nash-Sutcliffe Efficiency',
-                    'Legate-McCabe Index', 'Spectral Angle', 'Spectral Correlation',
-                    'Spectral Information Divergence', 'Spectral Gradient Angle', 'H1 - Mean', 'H1 - Absolute',
-                    'H1 - Root', 'H2 - Mean', 'H2 - Absolute', 'H2 - Root', 'H3 - Mean', 'H3 - Absolute', 'H3 - Root',
-                    'H4 - Mean', 'H4 - Absolute', 'H4 - Root', 'H5 - Mean', 'H5 - Absolute', 'H5 - Root', 'H6 - Mean',
-                    'H6 - Absolute', 'H6 - Root', 'H7 - Mean', 'H7 - Absolute', 'H7 - Root', 'H8 - Mean',
-                    'H8 - Absolute', 'H8 - Root', 'H10 - Mean', 'H10 - Absolute', 'H10 - Root',
-                    'Geometric Mean Difference', 'Mean Variance']
+""" ###################################################################################################################
+                                                Helper Functions and Classes                                       
+    ################################################################################################################"""
 
-    # Creating the Metrics Matrix
-    metrics_array = np.zeros(len(metrics_list), dtype=float)
 
-    # Removing Values based on User Input
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+class HydrostatsVariables:
+    metric_names = ['Mean Error', 'Mean Absolute Error', 'Mean Squared Error', 'Eclidean Distance',
+                    'Normalized Eclidean Distance', 'Root Mean Square Error',
+                    'Root Mean Squared Log Error', 'Mean Absolute Scaled Error', 'R^2',
+                    'Anomaly Correlation Coefficient', 'Mean Absolute Percentage Error',
+                    'Mean Absolute Percentage Deviation', 'Symmetric Mean Absolute Percentage Error (1)',
+                    'Symmetric Mean Absolute Percentage Error (2)', 'Index of Agreement (d)',
+                    'Index of Agreement (d1)', 'Index of Agreement Refined (dr)',
+                    'Relative Index of Agreement', 'Modified Index of Agreement', "Watterson's M",
+                    'Mielke-Berry R', 'Nash-Sutcliffe Efficiency', 'Modified Nash-Sutcliffe Efficiency',
+                    'Relative Nash-Sutcliffe Efficiency', 'Legate-McCabe Efficiency Index',
+                    'Spectral Angle', 'Spectral Correlation', 'Spectral Information Divergence',
+                    'Spectral Gradient Angle', 'H1 - MHE', 'H1 - AHE', 'H1 - RMSHE', 'H2 - MHE',
+                    'H2 - AHE', 'H2 - RMSHE', 'H3 - MHE', 'H3 - AHE', 'H3 - RMSHE', 'H4 - MHE',
+                    'H4 - AHE', 'H4 - RMSHE', 'H5 - MHE', 'H5 - AHE', 'H5 - RMSHE', 'H6 - MHE',
+                    'H6 - AHE', 'H6 - RMSHE', 'H7 - MHE', 'H7 - AHE', 'H7 - RMSHE', 'H8 - MHE',
+                    'H8 - AHE', 'H8 - RMSHE', 'H10 - MHE', 'H10 - AHE', 'H10 - RMSHE',
+                    'Geometric Mean Difference', 'Mean Variance', 'Mean Log Error',
+                    'Mean Absolute Log Error', 'Mean Squared Log Error',
+                    'Normalized Root Mean Square Error - Range',
+                    'Normalized Root Mean Square Error - Mean',
+                    'Normalized Root Mean Square Error - IQR',
+                    'Mean Arctangent Absolute Percentage Error',
+                    'Legate-McCabe Index of Agreement', 'Volumetric Efficiency']
 
-    metrics_array[0] = me(simulated_array, observed_array)
-    warnings.filterwarnings("ignore")
-    metrics_array[1] = mae(simulated_array, observed_array)
-    metrics_array[2] = mse(simulated_array, observed_array)
-    metrics_array[3] = ed(simulated_array, observed_array)
-    metrics_array[4] = ned(simulated_array, observed_array)
-    metrics_array[5] = rmse(simulated_array, observed_array)
-    metrics_array[6] = rmsle(simulated_array, observed_array)
-    metrics_array[7] = mase(simulated_array, observed_array, m=mase_m)
-    metrics_array[8] = r_squared(simulated_array, observed_array)
-    metrics_array[9] = acc(simulated_array, observed_array)
-    metrics_array[10] = mape(simulated_array, observed_array)
-    metrics_array[11] = mapd(simulated_array, observed_array)
-    metrics_array[12] = smap1(simulated_array, observed_array)
-    metrics_array[13] = smap2(simulated_array, observed_array)
-    metrics_array[14] = d(simulated_array, observed_array)
-    metrics_array[15] = d1(simulated_array, observed_array)
-    metrics_array[16] = dr(simulated_array, observed_array)
-    metrics_array[17] = drel(simulated_array, observed_array)
-    metrics_array[18] = dmod(simulated_array, observed_array, j=dmod_j)
-    metrics_array[19] = watt_m(simulated_array, observed_array)
-    metrics_array[20] = mb_r(simulated_array, observed_array)
-    metrics_array[21] = nse(simulated_array, observed_array)
-    metrics_array[22] = nse_mod(simulated_array, observed_array, j=nse_mod_j)
-    metrics_array[23] = nse_rel(simulated_array, observed_array)
-    metrics_array[24] = lm_index(simulated_array, observed_array)
-    metrics_array[25] = sa(simulated_array, observed_array)
-    metrics_array[26] = sc(simulated_array, observed_array)
-    metrics_array[27] = sid(simulated_array, observed_array)
-    metrics_array[28] = sga(simulated_array, observed_array)
-    metrics_array[29] = h1(simulated_array, observed_array, 'mean')
-    metrics_array[30] = h1(simulated_array, observed_array, 'absolute')
-    metrics_array[31] = h1(simulated_array, observed_array, 'rmhe')
-    metrics_array[32] = h2(simulated_array, observed_array, 'mean')
-    metrics_array[33] = h2(simulated_array, observed_array, 'absolute')
-    metrics_array[34] = h2(simulated_array, observed_array, 'rmhe')
-    metrics_array[35] = h3(simulated_array, observed_array, 'mean')
-    metrics_array[36] = h3(simulated_array, observed_array, 'absolute')
-    metrics_array[37] = h3(simulated_array, observed_array, 'rmhe')
-    metrics_array[38] = h4(simulated_array, observed_array, 'mean')
-    metrics_array[39] = h4(simulated_array, observed_array, 'absolute')
-    metrics_array[40] = h4(simulated_array, observed_array, 'rmhe')
-    metrics_array[41] = h5(simulated_array, observed_array, 'mean')
-    metrics_array[42] = h5(simulated_array, observed_array, 'absolute')
-    metrics_array[43] = h5(simulated_array, observed_array, 'rmhe')
-    metrics_array[44] = h6(simulated_array, observed_array, 'mean', k=h6_k)
-    metrics_array[45] = h6(simulated_array, observed_array, 'absolute', k=h6_k)
-    metrics_array[46] = h6(simulated_array, observed_array, 'rmhe', k=h6_k)
-    metrics_array[47] = h7(simulated_array, observed_array, 'mean')
-    metrics_array[48] = h7(simulated_array, observed_array, 'absolute')
-    metrics_array[49] = h7(simulated_array, observed_array, 'rmhe')
-    metrics_array[50] = h8(simulated_array, observed_array, 'mean')
-    metrics_array[51] = h8(simulated_array, observed_array, 'absolute')
-    metrics_array[52] = h8(simulated_array, observed_array, 'rmhe')
-    metrics_array[53] = h10(simulated_array, observed_array, 'mean')
-    metrics_array[54] = h10(simulated_array, observed_array, 'absolute')
-    metrics_array[55] = h10(simulated_array, observed_array, 'rmhe')
-    metrics_array[56] = g_mean_diff(simulated_array, observed_array)
-    metrics_array[57] = mean_var(simulated_array, observed_array)
-    warnings.filterwarnings("always")
+    metric_abbr = ['ME', 'MAE', 'MSE', 'ED', 'NED', 'RMSE', 'RMSLE', 'MASE', 'R^2', 'ACC', 'MAPE', 'MAPD', 'SMAPE1',
+                   'SMAPE2', 'd', 'd1', 'dr', 'd (Rel.)', 'd (Mod.)', 'M', '(MB) R', 'NSE', 'NSE (Mod.)', 'NSE (Rel.)',
+                   "E1'", 'SA', 'SC', 'SID', 'SGA', 'H1 (MHE)', 'H1 (AHE)', 'H1 (RMSHE)', 'H2 (MHE)', 'H2 (AHE)',
+                   'H2 (RMSHE)', 'H3 (MHE)', 'H3 (AHE)', 'H3 (RMSHE)', 'H4 (MHE)', 'H4 (AHE)', 'H4 (RMSHE)',
+                   'H5 (MHE)', 'H5 (AHE)', 'H5 (RMSHE)', 'H6 (MHE)', 'H6 (AHE)', 'H6 (RMSHE)', 'H7 (MHE)',
+                   'H7 (AHE)', 'H7 (RMSHE)', 'H8 (MHE)', 'H8 (AHE)', 'H8 (RMSHE)', 'H10 (MHE)', 'H10 (AHE)',
+                   'H10 (RMSHE)', 'GMD', 'MV', 'MLE', 'MALE', 'MSLE', 'NRMSE (Range)', 'NRMSE (Mean)', 'NRMSE (IQR)',
+                   'MAAPE', "D1'", 'VE']
 
-    return pd.DataFrame(np.column_stack([metrics_list, metrics_array]), columns=['Metrics', 'Values'])
+    function_list = [me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smape1, smape2, d, d1, dr,
+                     drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga, h1, h1, h1, h2, h2,
+                     h2, h3, h3, h3, h4, h4, h4, h5, h5, h5, h6, h6, h6, h7, h7, h7, h8, h8, h8, h10, h10, h10,
+                     g_mean_diff, mean_var, mle, male, msle, nrmse, nrmse, nrmse, maape, d1_p, ve]
 
 
 def remove_values(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -772,8 +861,8 @@ def remove_values(simulated_array, observed_array, replace_nan=None, replace_inf
 
     if remove_neg:
         # Finding the negative indices and combining them
-        sim_neg = simulated_array >= 0
-        obs_neg = observed_array >= 0
+        sim_neg = simulated_array > 0
+        obs_neg = observed_array > 0
         neg_indices = np.logical_and(sim_neg, obs_neg)
         # Removing the negative indices
         simulated_array = simulated_array[neg_indices]
@@ -800,47 +889,183 @@ def remove_values(simulated_array, observed_array, replace_nan=None, replace_inf
     return simulated_array, observed_array
 
 
-def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_j=1, nse_mod_j=1, h6_k=1,
-               replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False, to_csv=None, to_excel=None,
-               location=None):
-    """Creates a table with metrics as specified by the user. Seasonal periods can also be specified in order to compare
-    different seasons and how well the simulated data matches the observed data. Has options to save the table to either
-    a csv or an excel workbook. Also has an option to add a column for the location of the data. See the official
-    documentation at https://waderoberts123.github.io/Hydrostats/ for a full explanation of all of the function
-    arguments as well as examples."""
+def list_of_metrics(metrics, sim_array, obs_array, mase_m=1, dmod_j=1, nse_mod_j=1, h6_mhe_k=1, h6_ahe_k=1,
+                    h6_rmshe_k=1, d1_p_x_bar=None, lm_x_bar=None, replace_nan=None, replace_inf=None, remove_neg=False,
+                    remove_zero=False):
+    # Empty list for the metrics that are returned
+    metrics_list = []
 
-    # Metrics list
-    metrics_list = ['Mean Error', 'Mean Absolute Error', 'Mean Squared Error', 'Eclidean Distance',
-                    'Normalized Eclidean Distance', 'Root Mean Square Error', 'Root Mean Squared Log Error',
-                    'Mean Absolute Scaled Error', 'R^2', 'Anomoly Correlation Coefficient',
-                    'Mean Absolute Percentage Error', 'Mean Absolute Percentage Deviation',
-                    'Symmetric Mean Absolute Percentage Error (1)', 'Symmetric Mean Absolute Percentage Error (2)',
-                    'Index of Agreement (d)', 'Index of Agreement (d1)', 'Index of Agreement Refined (dr)',
-                    'Relative Index of Agreement', 'Modified Index of Agreement', "Watterson's M", 'Mielke-Berry R',
-                    'Nash-Sutcliffe Efficiency', 'Modified Nash-Sutcliffe Efficiency',
-                    'Relative Nash-Sutcliffe Efficiency',
-                    'Legate-McCabe Index', 'Spectral Angle', 'Spectral Correlation',
-                    'Spectral Information Divergence', 'Spectral Gradient Angle', 'H1 - Mean', 'H1 - Absolute',
-                    'H1 - Root', 'H2 - Mean', 'H2 - Absolute', 'H2 - Root', 'H3 - Mean', 'H3 - Absolute', 'H3 - Root',
-                    'H4 - Mean', 'H4 - Absolute', 'H4 - Root', 'H5 - Mean', 'H5 - Absolute', 'H5 - Root', 'H6 - Mean',
-                    'H6 - Absolute', 'H6 - Root', 'H7 - Mean', 'H7 - Absolute', 'H7 - Root', 'H8 - Mean',
-                    'H8 - Absolute', 'H8 - Root', 'H10 - Mean', 'H10 - Absolute', 'H10 - Root',
-                    'Geometric Mean Difference', 'Mean Variance']
+    metric_names = HydrostatsVariables.metric_names
+    function_list = HydrostatsVariables.function_list
 
     # creating a list of indices for the selected metrics
     metrics_indices = []
     for i in metrics:
-        metrics_indices.append(metrics_list.index(i))
-
-    function_list = [me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smap1, smap2, d, d1, dr,
-                     drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga, h1, h1, h1, h2, h2,
-                     h2, h3, h3, h3, h4, h4, h4, h5, h5, h5, h6, h6, h6, h7, h7, h7, h8, h8, h8, h10, h10, h10,
-                     g_mean_diff, mean_var]
+        metrics_indices.append(metric_names.index(i))
 
     # Creating a list of selected metric functions
     selected_metrics = []
     for i in metrics_indices:
         selected_metrics.append(function_list[i])
+
+    for index, func in zip(metrics_indices, selected_metrics):
+        if index == 7:
+            metrics_list.append(func(sim_array, obs_array, m=mase_m, replace_nan=replace_nan,
+                                     replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif index == 18:
+            metrics_list.append(func(sim_array, obs_array, j=dmod_j, replace_nan=replace_nan,
+                                     replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif index == 22:
+            metrics_list.append(func(sim_array, obs_array, j=nse_mod_j, replace_nan=replace_nan,
+                                     replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif index == 24:
+            metrics_list.append(func(sim_array, obs_array, x_bar_p=lm_x_bar, replace_nan=replace_nan,
+                                     replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif index == 29 or index == 32 or index == 35 or index == 38 or index == 41 or index == 47 or index == 50 \
+                or index == 53:
+            metrics_list.append(func(sim_array, obs_array, h_type='mhe', replace_nan=replace_nan,
+                                     replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif index == 30 or index == 33 or index == 36 or index == 39 or index == 42 or index == 48 or index == 51 \
+                or index == 54:
+            metrics_list.append(func(sim_array, obs_array, h_type='ahe', replace_nan=replace_nan,
+                                     replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif index == 31 or index == 34 or index == 37 or index == 40 or index == 43 or index == 49 or index == 52 \
+                or index == 55:
+            metrics_list.append(func(sim_array, obs_array, h_type='rmshe', replace_nan=replace_nan,
+                                     replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif index == 44:
+            metrics_list.append(func(sim_array, obs_array, k=h6_mhe_k, h_type='mhe', replace_nan=replace_nan,
+                                     replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif index == 45:
+            metrics_list.append(func(sim_array, obs_array, k=h6_ahe_k, h_type='ahe', replace_nan=replace_nan,
+                                     replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif index == 46:
+            metrics_list.append(func(sim_array, obs_array, k=h6_rmshe_k, h_type='rmshe', replace_nan=replace_nan,
+                                     replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif index == 61:
+            metrics_list.append(func(sim_array, obs_array, nrmse_type='range', replace_nan=replace_nan,
+                                     replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif index == 62:
+            metrics_list.append(func(sim_array, obs_array, nrmse_type='mean', replace_nan=replace_nan,
+                                     replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif index == 63:
+            metrics_list.append(func(sim_array, obs_array, nrmse_type='iqr', replace_nan=replace_nan,
+                                     replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        elif index == 65:
+            metrics_list.append(func(sim_array, obs_array, x_bar_p=d1_p_x_bar, replace_nan=replace_nan,
+                                     replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
+        else:
+            metrics_list.append(
+                func(sim_array, obs_array, replace_nan=replace_nan, replace_inf=replace_inf,
+                     remove_neg=remove_neg, remove_zero=remove_zero))
+
+    return metrics_list
+
+
+""" ###################################################################################################################
+                                          Tools for Tables, Lag Analysis, Etc.                                       
+    ################################################################################################################"""
+
+
+def all_metrics(simulated_array, observed_array, mase_m=1, dmod_j=1, nse_mod_j=1, h6_k=1, d1_p_x_bar=None,
+                lm_x_bar=None, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+    """Takes two numpy arrays and returns a pandas dataframe with all of the metrics included."""
+    metrics_list = HydrostatsVariables.metric_names
+
+    # Creating the Metrics Matrix
+    metrics_array = np.zeros(len(metrics_list), dtype=np.float64)
+
+    # Removing Values based on User Input
+    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
+                                                    replace_inf=replace_inf, remove_neg=remove_neg,
+                                                    remove_zero=remove_zero)
+
+    if d1_p_x_bar is None:
+        d1_p_x_bar = np.mean(observed_array)
+    if lm_x_bar is None:
+        lm_x_bar = np.mean(observed_array)
+
+    metrics_array[0] = me(simulated_array, observed_array)
+    warnings.filterwarnings("ignore")
+    metrics_array[1] = mae(simulated_array, observed_array)
+    metrics_array[2] = mse(simulated_array, observed_array)
+    metrics_array[3] = ed(simulated_array, observed_array)
+    metrics_array[4] = ned(simulated_array, observed_array)
+    metrics_array[5] = rmse(simulated_array, observed_array)
+    metrics_array[6] = rmsle(simulated_array, observed_array)
+    metrics_array[7] = mase(simulated_array, observed_array, m=mase_m)
+    metrics_array[8] = r_squared(simulated_array, observed_array)
+    metrics_array[9] = acc(simulated_array, observed_array)
+    metrics_array[10] = mape(simulated_array, observed_array)
+    metrics_array[11] = mapd(simulated_array, observed_array)
+    metrics_array[12] = smape1(simulated_array, observed_array)
+    metrics_array[13] = smape2(simulated_array, observed_array)
+    metrics_array[14] = d(simulated_array, observed_array)
+    metrics_array[15] = d1(simulated_array, observed_array)
+    metrics_array[16] = dr(simulated_array, observed_array)
+    metrics_array[17] = drel(simulated_array, observed_array)
+    metrics_array[18] = dmod(simulated_array, observed_array, j=dmod_j)
+    metrics_array[19] = watt_m(simulated_array, observed_array)
+    metrics_array[20] = mb_r(simulated_array, observed_array)
+    metrics_array[21] = nse(simulated_array, observed_array)
+    metrics_array[22] = nse_mod(simulated_array, observed_array, j=nse_mod_j)
+    metrics_array[23] = nse_rel(simulated_array, observed_array)
+    metrics_array[24] = lm_index(simulated_array, observed_array, lm_x_bar)
+    metrics_array[25] = sa(simulated_array, observed_array)
+    metrics_array[26] = sc(simulated_array, observed_array)
+    metrics_array[27] = sid(simulated_array, observed_array)
+    metrics_array[28] = sga(simulated_array, observed_array)
+    metrics_array[29] = h1(simulated_array, observed_array, 'mhe')
+    metrics_array[30] = h1(simulated_array, observed_array, 'ahe')
+    metrics_array[31] = h1(simulated_array, observed_array, 'rmshe')
+    metrics_array[32] = h2(simulated_array, observed_array, 'mhe')
+    metrics_array[33] = h2(simulated_array, observed_array, 'ahe')
+    metrics_array[34] = h2(simulated_array, observed_array, 'rmshe')
+    metrics_array[35] = h3(simulated_array, observed_array, 'mhe')
+    metrics_array[36] = h3(simulated_array, observed_array, 'ahe')
+    metrics_array[37] = h3(simulated_array, observed_array, 'rmshe')
+    metrics_array[38] = h4(simulated_array, observed_array, 'mhe')
+    metrics_array[39] = h4(simulated_array, observed_array, 'ahe')
+    metrics_array[40] = h4(simulated_array, observed_array, 'rmshe')
+    metrics_array[41] = h5(simulated_array, observed_array, 'mhe')
+    metrics_array[42] = h5(simulated_array, observed_array, 'ahe')
+    metrics_array[43] = h5(simulated_array, observed_array, 'rmshe')
+    metrics_array[44] = h6(simulated_array, observed_array, 'mhe', k=h6_k)
+    metrics_array[45] = h6(simulated_array, observed_array, 'ahe', k=h6_k)
+    metrics_array[46] = h6(simulated_array, observed_array, 'rmshe', k=h6_k)
+    metrics_array[47] = h7(simulated_array, observed_array, 'mhe')
+    metrics_array[48] = h7(simulated_array, observed_array, 'ahe')
+    metrics_array[49] = h7(simulated_array, observed_array, 'rmshe')
+    metrics_array[50] = h8(simulated_array, observed_array, 'mhe')
+    metrics_array[51] = h8(simulated_array, observed_array, 'ahe')
+    metrics_array[52] = h8(simulated_array, observed_array, 'rmshe')
+    metrics_array[53] = h10(simulated_array, observed_array, 'mhe')
+    metrics_array[54] = h10(simulated_array, observed_array, 'ahe')
+    metrics_array[55] = h10(simulated_array, observed_array, 'rmshe')
+    metrics_array[56] = g_mean_diff(simulated_array, observed_array)
+    metrics_array[57] = mean_var(simulated_array, observed_array)
+    metrics_array[58] = mle(simulated_array, observed_array)
+    metrics_array[59] = male(simulated_array, observed_array)
+    metrics_array[60] = msle(simulated_array, observed_array)
+    metrics_array[61] = nrmse(simulated_array, observed_array, 'range')
+    metrics_array[62] = nrmse(simulated_array, observed_array, 'mean')
+    metrics_array[63] = nrmse(simulated_array, observed_array, 'iqr')
+    metrics_array[64] = maape(simulated_array, observed_array)
+    metrics_array[65] = d1_p(simulated_array, observed_array, d1_p_x_bar)
+    metrics_array[66] = ve(simulated_array, observed_array)
+    warnings.filterwarnings("always")
+
+    return pd.DataFrame(data=metrics_array, columns=['Metric Values'], index=metrics_list)
+
+
+def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_j=1, nse_mod_j=1, h6_mhe_k=1,
+               h6_ahe_k=1, h6_rmshe_k=1, d1_p_x_bar=None, lm_x_bar=None, replace_nan=None, replace_inf=None,
+               remove_neg=False, remove_zero=False, to_csv=None, to_excel=None, location=None):
+    """Creates a table with metrics as specified by the user. Seasonal periods can also be specified in order to compare
+    different seasons and how well the simulated data matches the observed data. Has options to save the table to either
+    a csv or an excel workbook. Also has an option to add a column for the location of the data. See the official
+    documentation at https://waderoberts123.github.io/Hydrostats/ for a full explanation of all of the function
+    arguments as well as examples."""
 
     # Creating a list for all of the metrics for all of the seasons
     complete_metric_list = []
@@ -856,47 +1081,17 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
             seasonal_periods_names.append(name)
         index_array.extend(seasonal_periods_names)
 
-    # Creating arrays for sim and obs with all the values
+    # Creating arrays for sim and obs with all the values if a merged dataframe is given
     sim_array = merged_dataframe.iloc[:, 0].values
     obs_array = merged_dataframe.iloc[:, 1].values
 
-    full_time_series_list = []
+    # Getting a list of the full time series
+    full_time_series_list = list_of_metrics(metrics=metrics, sim_array=sim_array, obs_array=obs_array,
+                                            mase_m=mase_m, dmod_j=dmod_j, nse_mod_j=nse_mod_j, h6_mhe_k=h6_mhe_k,
+                                            h6_ahe_k=h6_ahe_k, h6_rmshe_k=h6_rmshe_k,
+                                            d1_p_x_bar=d1_p_x_bar, lm_x_bar=lm_x_bar, replace_nan=replace_nan,
+                                            replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero)
 
-    # Calculating Metrics for the entire time span
-    for index, func in zip(metrics_indices, selected_metrics):
-        if index == 7:
-            full_time_series_list.append(func(sim_array, obs_array, m=mase_m, replace_nan=replace_nan,
-                                              replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif index == 18:
-            full_time_series_list.append(func(sim_array, obs_array, j=dmod_j, replace_nan=replace_nan,
-                                              replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif index == 22:
-            full_time_series_list.append(func(sim_array, obs_array, j=nse_mod_j, replace_nan=replace_nan,
-                                              replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif index == 29 or index == 32 or index == 35 or index == 38 or index == 41 or index == 47 or index == 50 \
-                or index == 53:
-            full_time_series_list.append(func(sim_array, obs_array, h_type='mean', replace_nan=replace_nan,
-                                              replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif index == 30 or index == 33 or index == 36 or index == 39 or index == 42 or index == 48 or index == 51 \
-                or index == 54:
-            full_time_series_list.append(func(sim_array, obs_array, h_type='absolute', replace_nan=replace_nan,
-                                              replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif index == 31 or index == 34 or index == 37 or index == 40 or index == 43 or index == 49 or index == 52 \
-                or index == 55:
-            full_time_series_list.append(func(sim_array, obs_array, h_type='rmhe', replace_nan=replace_nan,
-                                              replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif index == 44:
-            full_time_series_list.append(func(sim_array, obs_array, k=h6_k, h_type='mean', replace_nan=replace_nan,
-                                              replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif index == 45:
-            full_time_series_list.append(func(sim_array, obs_array, k=h6_k, h_type='absolute', replace_nan=replace_nan,
-                                              replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif index == 46:
-            full_time_series_list.append(func(sim_array, obs_array, k=h6_k, h_type='rmhe', replace_nan=replace_nan,
-                                              replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        else:
-            full_time_series_list.append(func(sim_array, obs_array, replace_nan=replace_nan, replace_inf=replace_inf,
-                                              remove_neg=remove_neg, remove_zero=remove_zero))
     # Appending the full time series list to the entire list:
     complete_metric_list.append(full_time_series_list)
 
@@ -906,52 +1101,12 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
             sim_array = temp_df.iloc[:, 0].values
             obs_array = temp_df.iloc[:, 1].values
 
-            seasonal_metric_list = []
+            seasonal_metric_list = list_of_metrics(metrics=metrics, sim_array=sim_array, obs_array=obs_array,
+                                                   mase_m=mase_m, dmod_j=dmod_j, nse_mod_j=nse_mod_j, h6_mhe_k=h6_mhe_k,
+                                                   h6_ahe_k=h6_ahe_k, h6_rmshe_k=h6_rmshe_k, d1_p_x_bar=d1_p_x_bar,
+                                                   lm_x_bar=lm_x_bar, replace_nan=replace_nan, replace_inf=replace_inf,
+                                                   remove_neg=remove_neg, remove_zero=remove_zero)
 
-            for index, func in zip(metrics_indices, selected_metrics):
-                if index == 7:
-                    seasonal_metric_list.append(func(sim_array, obs_array, m=mase_m, replace_nan=replace_nan,
-                                                     replace_inf=replace_inf, remove_neg=remove_neg,
-                                                     remove_zero=remove_zero))
-                elif index == 18:
-                    seasonal_metric_list.append(func(sim_array, obs_array, j=dmod_j, replace_nan=replace_nan,
-                                                     replace_inf=replace_inf, remove_neg=remove_neg,
-                                                     remove_zero=remove_zero))
-                elif index == 22:
-                    seasonal_metric_list.append(func(sim_array, obs_array, j=nse_mod_j, replace_nan=replace_nan,
-                                                     replace_inf=replace_inf, remove_neg=remove_neg,
-                                                     remove_zero=remove_zero))
-                elif index == 29 or index == 32 or index == 35 or index == 38 or index == 41 or index == 47 \
-                        or index == 50 or index == 53:
-                    seasonal_metric_list.append(func(sim_array, obs_array, h_type='mean', replace_nan=replace_nan,
-                                                     replace_inf=replace_inf, remove_neg=remove_neg,
-                                                     remove_zero=remove_zero))
-                elif index == 30 or index == 33 or index == 36 or index == 39 or index == 42 or index == 48 \
-                        or index == 51 or index == 54:
-                    seasonal_metric_list.append(func(sim_array, obs_array, h_type='absolute', replace_nan=replace_nan,
-                                                     replace_inf=replace_inf, remove_neg=remove_neg,
-                                                     remove_zero=remove_zero))
-                elif index == 31 or index == 34 or index == 37 or index == 40 or index == 43 or index == 49 \
-                        or index == 52 or index == 55:
-                    seasonal_metric_list.append(func(sim_array, obs_array, h_type='rmhe', replace_nan=replace_nan,
-                                                     replace_inf=replace_inf, remove_neg=remove_neg,
-                                                     remove_zero=remove_zero))
-                elif index == 44:
-                    seasonal_metric_list.append(
-                        func(sim_array, obs_array, k=h6_k, h_type='mean', replace_nan=replace_nan,
-                             replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-                elif index == 45:
-                    seasonal_metric_list.append(
-                        func(sim_array, obs_array, k=h6_k, h_type='absolute', replace_nan=replace_nan,
-                             replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-                elif index == 46:
-                    seasonal_metric_list.append(
-                        func(sim_array, obs_array, k=h6_k, h_type='rmhe', replace_nan=replace_nan,
-                             replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-                else:
-                    seasonal_metric_list.append(
-                        func(sim_array, obs_array, replace_nan=replace_nan, replace_inf=replace_inf,
-                             remove_neg=remove_neg, remove_zero=remove_zero))
             complete_metric_list.append(seasonal_metric_list)
 
     table_df_final = pd.DataFrame(complete_metric_list, index=index_array, columns=metrics)
@@ -974,47 +1129,37 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
         table_df_final.to_csv(to_csv, index_label='Datetime')
 
 
-def time_lag(merged_dataframe, metric, interp_freq='6H', interp_type='pchip', shift_range=[-30, 30], mase_m=1, dmod_j=1,
-             nse_mod_j=1, h6_k=1, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False,
+def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip', shift_range=[-30, 30], mase_m=1,
+             dmod_j=1, nse_mod_j=1, h6_mhe_k=1, h6_ahe_k=1, h6_rmshe_k=1, d1_p_x_bar=None, lm_x_bar=None,
+             replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False,
              plot_title='Metric Values as Different Lags', ylabel='Metric Value', xlabel='Number of Lags',
-             save_fig=None, figsize=(10, 6)):
+             save_fig=None, figsize=(10, 6), station=None, to_csv=None, to_excel=None):
     """Runs a time lag analysis to check for potential timing errors in datasets. Returns a dataframe with all of the
     metric values at different time lag, as well as the max and min metric value throughout the time lag as well as the
     position of the max and min time lag values. See the official documentation at
     https://waderoberts123.github.io/Hydrostats/ for a full explanation of all of the function arguments as well
     as examples."""
-    metrics_list = ['Mean Error', 'Mean Absolute Error', 'Mean Squared Error', 'Eclidean Distance',
-                    'Normalized Eclidean Distance', 'Root Mean Square Error', 'Root Mean Squared Log Error',
-                    'Mean Absolute Scaled Error', 'R^2', 'Anomoly Correlation Coefficient',
-                    'Mean Absolute Percentage Error', 'Mean Absolute Percentage Deviation',
-                    'Symmetric Mean Absolute Percentage Error (1)', 'Symmetric Mean Absolute Percentage Error (2)',
-                    'Index of Agreement (d)', 'Index of Agreement (d1)', 'Index of Agreement Refined (dr)',
-                    'Relative Index of Agreement', 'Modified Index of Agreement', "Watterson's M", 'Mielke-Berry R',
-                    'Nash-Sutcliffe Efficiency', 'Modified Nash-Sutcliffe Efficiency',
-                    'Relative Nash-Sutcliffe Efficiency',
-                    'Legate-McCabe Index', 'Spectral Angle', 'Spectral Correlation',
-                    'Spectral Information Divergence', 'Spectral Gradient Angle', 'H1 - Mean', 'H1 - Absolute',
-                    'H1 - Root', 'H2 - Mean', 'H2 - Absolute', 'H2 - Root', 'H3 - Mean', 'H3 - Absolute', 'H3 - Root',
-                    'H4 - Mean', 'H4 - Absolute', 'H4 - Root', 'H5 - Mean', 'H5 - Absolute', 'H5 - Root', 'H6 - Mean',
-                    'H6 - Absolute', 'H6 - Root', 'H7 - Mean', 'H7 - Absolute', 'H7 - Root', 'H8 - Mean',
-                    'H8 - Absolute', 'H8 - Root', 'H10 - Mean', 'H10 - Absolute', 'H10 - Root',
-                    'Geometric Mean Difference', 'Mean Variance']
+    metrics_list = HydrostatsVariables.metric_names
+    abbreviations = HydrostatsVariables.metric_abbr
 
-    function_list = [me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smap1, smap2, d, d1, dr,
-                     drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga, h1, h1, h1, h2, h2,
-                     h2, h3, h3, h3, h4, h4, h4, h5, h5, h5, h6, h6, h6, h7, h7, h7, h8, h8, h8, h10, h10, h10,
-                     g_mean_diff, mean_var]
+    abbr_indices = []
+    for i in metrics:
+        abbr_indices.append(metrics_list.index(i))
 
-    # Finding the proper function to use for the selected metric
-    metric_index = metrics_list.index(metric)
-    func = function_list[metric_index]
+    abbr_list = []
+    for i in abbr_indices:
+        abbr_list.append(abbreviations[i])
 
     # Making a new time index to be able to interpolate the time series to the required input
     new_index = pd.date_range(merged_dataframe.index[0], merged_dataframe.index[-1], freq=interp_freq)
 
     # Reindexing the dataframe and interpolating it
-    merged_dataframe = merged_dataframe.reindex(new_index)
-    merged_dataframe = merged_dataframe.interpolate(interp_type)
+    try:
+        merged_dataframe = merged_dataframe.reindex(new_index)
+        merged_dataframe = merged_dataframe.interpolate(interp_type)
+    except ValueError:
+        raise HydrostatsError('ValueError Raised while interpolating, you may want to check for duplicates in your '
+                              'dates.')
 
     # Making arrays to compare the metric value at different time steps
     sim_array = merged_dataframe.iloc[:, 0].values
@@ -1027,73 +1172,63 @@ def time_lag(merged_dataframe, metric, interp_freq='6H', interp_type='pchip', sh
     shift_list = []
 
     # Creating a list of all the time shifts specified by the user
-    lag_list = list(range(shift_range[0], shift_range[1] + 1))
+    lag_array = np.arange(shift_range[0], shift_range[1] + 1)
 
     # Looping through the list of lags and appending the metric value to the shift list
-    for i in lag_list:
+    for i in lag_array:
         sim_array_temp = np.roll(sim_array, i)
 
-        if metric_index == 7:
-            shift_list.append(func(sim_array_temp, obs_array, m=mase_m, replace_nan=replace_nan,
-                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif metric_index == 18:
-            shift_list.append(func(sim_array_temp, obs_array, j=dmod_j, replace_nan=replace_nan,
-                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif metric_index == 22:
-            shift_list.append(func(sim_array_temp, obs_array, j=nse_mod_j, replace_nan=replace_nan,
-                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif metric_index == 29 or metric_index == 32 or metric_index == 35 or metric_index == 38 or metric_index == 41 \
-                or metric_index == 47 or metric_index == 50 or metric_index == 53:
-            shift_list.append(func(sim_array_temp, obs_array, h_type='mean', replace_nan=replace_nan,
-                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif metric_index == 30 or metric_index == 33 or metric_index == 36 or metric_index == 39 or metric_index == 42 \
-                or metric_index == 48 or metric_index == 51 or metric_index == 54:
-            shift_list.append(func(sim_array_temp, obs_array, h_type='absolute', replace_nan=replace_nan,
-                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif metric_index == 31 or metric_index == 34 or metric_index == 37 or metric_index == 40 or metric_index == 43 \
-                or metric_index == 49 or metric_index == 52 or metric_index == 55:
-            shift_list.append(func(sim_array_temp, obs_array, h_type='rmhe', replace_nan=replace_nan,
-                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif metric_index == 44:
-            shift_list.append(func(sim_array_temp, obs_array, k=h6_k, h_type='mean', replace_nan=replace_nan,
-                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif metric_index == 45:
-            shift_list.append(func(sim_array_temp, obs_array, k=h6_k, h_type='absolute', replace_nan=replace_nan,
-                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        elif metric_index == 46:
-            shift_list.append(func(sim_array_temp, obs_array, k=h6_k, h_type='rmhe', replace_nan=replace_nan,
-                                   replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero))
-        else:
-            shift_list.append(func(sim_array_temp, obs_array, replace_nan=replace_nan, replace_inf=replace_inf,
-                                   remove_neg=remove_neg, remove_zero=remove_zero))
+        lag_metrics = list_of_metrics(metrics=metrics, sim_array=sim_array_temp, obs_array=obs_array, mase_m=mase_m,
+                                      dmod_j=dmod_j, nse_mod_j=nse_mod_j, h6_mhe_k=h6_mhe_k,
+                                      h6_ahe_k=h6_ahe_k, h6_rmshe_k=h6_rmshe_k, d1_p_x_bar=d1_p_x_bar,
+                                      lm_x_bar=lm_x_bar, replace_nan=replace_nan, replace_inf=replace_inf,
+                                      remove_neg=remove_neg, remove_zero=remove_zero)
+        shift_list.append(lag_metrics)
 
-    fig = plt.figure(num=1, figsize=figsize, dpi=80, facecolor='w', edgecolor='k')
-    ax = fig.add_subplot(111)
-    plt.plot(lag_list, shift_list)
+    final_array = np.array(shift_list)
+
+    plt.figure(figsize=figsize)
+
+    for i, abbr in enumerate(abbr_list):
+        shift_list_temp = final_array[:, i]
+        plt.plot(lag_array, shift_list_temp, label=abbr, alpha=0.7)
+
     plt.title(plot_title, fontsize=18)
     plt.xlabel(xlabel, fontsize=14)
     plt.ylabel(ylabel, fontsize=14)
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
-    plot_text = "Max: " + str(np.round(max(shift_list), 4)) + "\nMin: " + str(np.round(min(shift_list), 4))
-    font = {'family': 'sans-serif',
-            'weight': 'normal',
-            'size': 14}
-    plt.text(-0.35, 0.75, plot_text, ha='left', va='center', transform=ax.transAxes, fontdict=font)
-    plt.subplots_adjust(left=0.25)
-
+    plt.legend()
     if save_fig is None:
         plt.show()
     else:
         plt.savefig(save_fig)
         plt.close()
 
-    final_df = pd.DataFrame(shift_list, index=lag_list, columns=[metric + ' Value'])
-    final_df.index.name = 'Lag Number'
+    max_lag_array = np.max(final_array, 0)
+    max_lag_indices = np.argmax(final_array, 0)
+    max_lag_locations = lag_array[max_lag_indices]
+    min_lag_array = np.min(final_array, 0)
+    min_lag_indices = np.argmin(final_array, 0)
+    min_lag_locations = lag_array[min_lag_indices]
 
-    max_lag_value = max(shift_list)
-    max_lag_number = lag_list[shift_list.index(max(shift_list))]
-    min_lag_value = min(shift_list)
-    min_lag_number = lag_list[shift_list.index(min(shift_list))]
+    data = np.column_stack((max_lag_array, max_lag_locations, min_lag_array, min_lag_locations))
 
-    return final_df, max_lag_value, max_lag_number, min_lag_value, min_lag_number
+    final_df = pd.DataFrame(data=data, index=metrics, columns=["Max", "Max Lag Number", "Min", "Min Lag Number"])
+
+    if station is not None:
+        col_values = [station for i in range(final_df.shape[0])]
+        final_df.insert(loc=0, column='Station', value=np.array(col_values))
+
+    if to_csv is None and to_excel is None:
+        return final_df
+
+    elif to_csv is None and to_excel is not None:
+        final_df.to_excel(to_excel, index_label='Metric')
+
+    elif to_csv is not None and to_excel is None:
+        final_df.to_csv(to_csv, index_label='Metric')
+
+    else:
+        final_df.to_excel(to_excel, index_label='Metric')
+        final_df.to_csv(to_csv, index_label='Metric')
