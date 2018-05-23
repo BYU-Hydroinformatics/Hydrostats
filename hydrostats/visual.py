@@ -4,8 +4,8 @@
 Created on Jan 5 3:25:56 2018
 @author: Wade Roberts
 """
-from hydrostats import me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smap1, smap2, d, d1, dr, \
-    drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga, remove_values
+from __future__ import division
+from hydrostats import HydrostatsVariables, remove_values
 from hydrostats.data import HydrostatsError
 import numpy as np
 import matplotlib.pyplot as plt
@@ -84,12 +84,8 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
     plt.tight_layout()
 
     if metrics:
-        function_list = [me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smap1, smap2, d, d1, dr,
-                         drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga
-                         ]
-        function_list_str = ['ME', 'MAE', 'MSE', 'ED', 'NED', 'RMSE', 'RMSLE', 'MASE', 'R^2', 'ACC', 'MAPE',
-                             'MAPD', 'SMAP1', 'SMAP2', 'D', 'D1', 'DR', 'D-Rel', 'D-Mod', 'M', 'R', 'NSE', 'NSE-Mod',
-                             'NSE-Rel', 'E_1', 'SA', 'SC', 'SID', 'SGA']
+        function_list = HydrostatsVariables.function_list
+        function_list_str = HydrostatsVariables.metric_abbr
         assert isinstance(metrics, list)
         for metric in metrics:
             assert metric in function_list_str
