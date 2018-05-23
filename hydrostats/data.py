@@ -4,6 +4,7 @@
 Created on Jan 7 1:56:32 2018
 @author: Wade Roberts
 """
+from __future__ import division
 import pandas as pd
 from numpy import inf, nan
 import math
@@ -42,8 +43,8 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
         obs_df = pd.read_csv(obs_fpath, delimiter=",", header=None, names=[column_names[1]],
                              index_col=0, infer_datetime_format=True, skiprows=1)
         # Converting the index to datetime type
-        obs_df.index = pd.to_datetime(obs_df.index, infer_datetime_format=True)
-        sim_df.index = pd.to_datetime(sim_df.index, infer_datetime_format=True)
+        obs_df.index = pd.to_datetime(obs_df.index, infer_datetime_format=True, errors='coerce')
+        sim_df.index = pd.to_datetime(sim_df.index, infer_datetime_format=True, errors='coerce')
 
     elif sim_df is not None and obs_df is not None:
         # Overriding the column names to match the column name input
@@ -56,8 +57,8 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
         if sim_df.index.dtype == "datetime64[ns]" and obs_df.index.dtype == "datetime64[ns]":
             pass
         else:
-            obs_df.index = pd.to_datetime(obs_df.index, infer_datetime_format=True)
-            sim_df.index = pd.to_datetime(sim_df.index, infer_datetime_format=True)
+            obs_df.index = pd.to_datetime(obs_df.index, infer_datetime_format=True, errors='coerce')
+            sim_df.index = pd.to_datetime(sim_df.index, infer_datetime_format=True, errors='coerce')
 
     else:
         raise HydrostatsError('either sim_fpath and obs_fpath or sim_df and obs_df are required inputs.')
