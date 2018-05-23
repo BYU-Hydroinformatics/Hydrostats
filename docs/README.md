@@ -91,6 +91,7 @@ Then add the following code to the file you created:
 backend: TkAgg
 ```
 
+For more information about backends, read [here](https://matplotlib.org/faq/usage_faq.html#what-is-a-backend).
 
 # Metrics
 
