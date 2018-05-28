@@ -388,7 +388,7 @@ def mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
             observed = observed_array_numba[i]
             for j in prange(size_numba):
                 total_numba += abs(simulated_array_numba[j] - observed)
-        return total_numba, size
+        return total_numba, size_numba
 
     # Using NumPy for the vectorized calculations
     total, size = numba_loop(simulated_array, observed_array)
@@ -447,9 +447,9 @@ def nse_rel(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
 def lm_index(simulated_array, observed_array, x_bar_p=None, replace_nan=None, replace_inf=None, remove_neg=False,
              remove_zero=False):
-    """Returns the Legate-McCabe Efficiency Index. Range: 0 ≤ lm_index < 1, unit less, larger is better, 
-    does not indicate bias, less weight to outliers. The term x_bar_p is a seasonal or other selected average. If no 
-    x_bar_p is given, the function will use the average of the observed data instead.  
+    """Returns the Legate-McCabe Efficiency Index. Range: 0 ≤ lm_index < 1, unit less, larger is better,
+    does not indicate bias, less weight to outliers. The term x_bar_p is a seasonal or other selected average. If no
+    x_bar_p is given, the function will use the average of the observed data instead.
     (Legates and McCabe Jr, 1999)"""
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
@@ -468,7 +468,7 @@ def lm_index(simulated_array, observed_array, x_bar_p=None, replace_nan=None, re
 def d1_p(simulated_array, observed_array, x_bar_p=None, replace_nan=None, replace_inf=None, remove_neg=False,
          remove_zero=False):
     """Returns the Legate-McCabe Index of Agreement. Range: 0 ≤ d1_p < 1, unit less, larger is better, does not indicate
-     bias, less weight to outliers. The term (x_bar_p) is a seasonal or other selected average. If not x_bar_p is given, 
+     bias, less weight to outliers. The term (x_bar_p) is a seasonal or other selected average. If not x_bar_p is given,
      the mean of the observed data will be used instead.
      (Legates and McCabe Jr, 1999)"""
     assert len(observed_array) == len(simulated_array)
