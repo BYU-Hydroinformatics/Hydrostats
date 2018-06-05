@@ -84,12 +84,16 @@ If this happens, you will need to manually change the backend for use in your ID
 ```Shell Session
 sudo apt install nano # If you have not already installed it
 
-vim ~/.matplotlib/matplotlibrc # Create a file called matplotlibrc
+nano ~/.matplotlib/matplotlibrc # Create a file called matplotlibrc
 ```
-Then add the following code to the file you created:
+
+Add the following code to the file you created:
+
 ```
 backend: TkAgg
 ```
+
+Then close the text document with ctrl+x.
 
 For more information about backends, read [here](https://matplotlib.org/faq/usage_faq.html#what-is-a-backend).
 
