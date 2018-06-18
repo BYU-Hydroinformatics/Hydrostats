@@ -81,15 +81,14 @@ When installing hydrostats on Mac OSX operating system, you may get the followin
 
 If this happens, you will need to manually change the backend for use in your IDE. This can be done by running the following commands in the terminal:
 
-```
+```python
 sudo apt install nano # If you have not already installed it
-
 nano ~/.matplotlib/matplotlibrc # Create a file called matplotlibrc
 ```
 
 Add the following code to the file you created:
 
-```
+```python
 backend: TkAgg
 ```
 
