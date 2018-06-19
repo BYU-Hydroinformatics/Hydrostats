@@ -105,13 +105,22 @@ For more information about backends, read [here](https://matplotlib.org/faq/usag
 | Full Metric Name | Abbreviation |
 | :------------- | :------------- |
 | Mean Error | ME |
+| Mean Log Error | MLE |
 | Mean Absolute Error | MAE |
+| Mean Absolute Log Error | MALE |
 | Mean Squared Error | MSE |
+| Mean Squared Log Error | MSLE |
 | Eclidean Distance | ED |
 | Normalized Eclidean Distance | NED |
 | Root Mean Square Error | RMSE |
 | Root Mean Squared Log Error | RMSLE |
+| Normalized Root Mean Square Error - Range | NRMSE (Range) |
+| Normalized Root Mean Square Error - Mean | NRMSE (Mean) |
+| Normalized Root Mean Square Error - IQR | NRMSE (IQR) |
+| Mean Arctangent Absolute Percentage Error | MAAPE |
 | Mean Absolute Scaled Error | MASE |
+| Pearson R | R (Peason) |
+| Spearman R | R (Spearman) |
 | Coefficient of Determination | R^2 |
 | Anomaly Correlation Coefficient | ACC |
 | Mean Absolute Percentage Error | MAPE |
@@ -129,6 +138,10 @@ For more information about backends, read [here](https://matplotlib.org/faq/usag
 | Modified Nash-Sutcliffe Efficiency | NSE (Mod.) |
 | Relative Nash-Sutcliffe Efficiency | NSE (Rel.) |
 | Legate-McCabe Efficiency Index | E1' |
+| Legate-McCabe Index of Agreement | D1' |
+| Volumetric Efficiency | VE |
+| Kling-Gupta Efficiency (2009) | KGE (2009) |
+| Kling-Gupta Efficiency (2012) | KGE (2012) |
 | Spectral Angle | SA |
 | Spectral Correlation | SC |
 | Spectral Information Divergence | SID |
@@ -162,19 +175,6 @@ For more information about backends, read [here](https://matplotlib.org/faq/usag
 | H10 - RMSHE | H10 (RMSHE) |
 | Geometric Mean Difference | GMD |
 | Mean Variance | MV |
-| Mean Log Error | MLE |
-| Mean Absolute Log Error | MALE |
-| Mean Squared Log Error | MSLE |
-| Normalized Root Mean Square Error - Range | NRMSE (Range) |
-| Normalized Root Mean Square Error - Mean | NRMSE (Mean) |
-| Normalized Root Mean Square Error - IQR | NRMSE (IQR) |
-| Mean Arctangent Absolute Percentage Error | MAAPE |
-| Legate-McCabe Index of Agreement | D1' |
-| Volumetric Efficiency | VE |
-| Pearson R | R (Peason) |
-| Spearman R | R (Spearman) |
-| Kling-Gupta Efficiency (2009) | KGE (2009) |
-| Kling-Gupta Efficiency (2012) | KGE (2012) |
 
 hydrostats.me
 -------------
