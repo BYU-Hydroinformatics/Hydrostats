@@ -102,79 +102,79 @@ For more information about backends, read [here](https://matplotlib.org/faq/usag
 
 ## Table of Metrics and Abbreviations
 
-| Full Metric Name | Abbreviation |
-| :------------- | :------------- |
-| Mean Error | ME |
-| Mean Log Error | MLE |
+| Full Metric Name | Abbreviation | Function Name |
+| :--------------- | :----------- | :------------ |
+| Mean Error | ME | me | mae |
+| Mean Log Error | MLE | mle |
 | Mean Absolute Error | MAE |
-| Mean Absolute Log Error | MALE |
-| Mean Squared Error | MSE |
-| Mean Squared Log Error | MSLE |
-| Eclidean Distance | ED |
-| Normalized Eclidean Distance | NED |
-| Root Mean Square Error | RMSE |
-| Root Mean Squared Log Error | RMSLE |
-| Normalized Root Mean Square Error - Range | NRMSE (Range) |
-| Normalized Root Mean Square Error - Mean | NRMSE (Mean) |
-| Normalized Root Mean Square Error - IQR | NRMSE (IQR) |
-| Mean Arctangent Absolute Percentage Error | MAAPE |
-| Mean Absolute Scaled Error | MASE |
-| Pearson R | R (Peason) |
-| Spearman R | R (Spearman) |
-| Coefficient of Determination | R^2 |
-| Anomaly Correlation Coefficient | ACC |
-| Mean Absolute Percentage Error | MAPE |
-| Mean Absolute Percentage Deviation | MAPD |
-| Symmetric Mean Absolute Percentage Error (1) | SMAPE1 |
-| Symmetric Mean Absolute Percentage Error (2) | SMAPE2 |
-| Index of Agreement (d) | d |
-| Index of Agreement (d1) | d1 |
-| Index of Agreement Refined (dr) | dr |
-| Relative Index of Agreement | d (Rel.) |
-| Modified Index of Agreement | d (Mod.) |
-| Watterson's M | M |
-| Mielke-Berry R | (MB) R |
-| Nash-Sutcliffe Efficiency | NSE |
-| Modified Nash-Sutcliffe Efficiency | NSE (Mod.) |
-| Relative Nash-Sutcliffe Efficiency | NSE (Rel.) |
-| Legate-McCabe Efficiency Index | E1' |
-| Legate-McCabe Index of Agreement | D1' |
-| Volumetric Efficiency | VE |
-| Kling-Gupta Efficiency (2009) | KGE (2009) |
-| Kling-Gupta Efficiency (2012) | KGE (2012) |
-| Spectral Angle | SA |
-| Spectral Correlation | SC |
-| Spectral Information Divergence | SID |
-| Spectral Gradient Angle | SGA |
-| H1 - MHE | H1 (MHE) |
-| H1 - AHE | H1 (AHE) |
-| H1 - RMSHE | H1 (RMSHE) |
-| H2 - MHE | H2 (MHE) |
-| H2 - AHE | H2 (AHE) |
-| H2 - RMSHE | H2 (RMSHE) |
-| H3 - MHE | H3 (MHE) |
-| H3 - AHE | H3 (AHE) |
-| H3 - RMSHE | H3 (RMSHE) |
-| H4 - MHE | H4 (MHE) |
-| H4 - AHE | H4 (AHE) |
-| H4 - RMSHE | H4 (RMSHE) |
-| H5 - MHE | H5 (MHE) |
-| H5 - AHE | H5 (AHE) |
-| H5 - RMSHE | H5 (RMSHE) |
-| H6 - MHE | H6 (MHE) |
-| H6 - AHE | H6 (AHE) |
-| H6 - RMSHE | H6 (RMSHE) |
-| H7 - MHE | H7 (MHE) |
-| H7 - AHE | H7 (AHE) |
-| H7 - RMSHE | H7 (RMSHE) |
-| H8 - MHE | H8 (MHE) |
-| H8 - AHE | H8 (AHE) |
-| H8 - RMSHE | H8 (RMSHE) |
-| H10 - MHE | H10 (MHE) |
-| H10 - AHE | H10 (AHE) |
-| H10 - RMSHE | H10 (RMSHE) |
-| Geometric Mean Difference | GMD |
-| Mean Variance | MV |
+| Mean Absolute Log Error | MALE | male |
+| Mean Squared Error | MSE | mse |
+| Mean Squared Log Error | MSLE | msle |
+| Eclidean Distance | ED |  ed |
+| Normalized Eclidean Distance | NED | ned |
+| Root Mean Square Error | RMSE | rmse |
+| Root Mean Squared Log Error | RMSLE | rmsle |
+| Normalized Root Mean Square Error - Range | NRMSE (Range) | nrmse_range |
+| Normalized Root Mean Square Error - Mean | NRMSE (Mean) | nrmse_mean |
+| Normalized Root Mean Square Error - IQR | NRMSE (IQR) | nrmse_iqr |
+| Mean Arctangent Absolute Percentage Error | MAAPE | maape |
+| Mean Absolute Scaled Error | MASE | mase |
+| Pearson R | R (Peason) | pearson_r |
+| Spearman R | R (Spearman) | spearman_r |
+| Coefficient of Determination | R^2 | r_squared |
+| Anomaly Correlation Coefficient | ACC | acc |
+| Mean Absolute Percentage Error | MAPE | mape |
+| Mean Absolute Percentage Deviation | MAPD | mapd |
+| Symmetric Mean Absolute Percentage Error (1) | SMAPE1 | smape1 |
+| Symmetric Mean Absolute Percentage Error (2) | SMAPE2 | smape2 |
+| Index of Agreement (d) | d | d |
+| Index of Agreement (d1) | d1 | d1 |
+| Index of Agreement Refined (dr) | dr |  dr |
+| Relative Index of Agreement | d (Rel.) | drel |
+| Modified Index of Agreement | d (Mod.) | dmod |
+| Watterson's M | M | watt_m |
+| Mielke-Berry R | (MB) R | mb_r |
+| Nash-Sutcliffe Efficiency | NSE | nse |
+| Modified Nash-Sutcliffe Efficiency | NSE (Mod.) | nse_mod |
+| Relative Nash-Sutcliffe Efficiency | NSE (Rel.) | nse_rel |
+| Legate-McCabe Efficiency Index | E1' | lm_index |
+| Legate-McCabe Index of Agreement | D1' | d1_p |
+| Volumetric Efficiency | VE | ve |
+| Kling-Gupta Efficiency (2009) | KGE (2009) | kge_2009 |
+| Kling-Gupta Efficiency (2012) | KGE (2012) | kge_2012 |
+| Spectral Angle | SA | sa |
+| Spectral Correlation | sc |
+| Spectral Information Divergence | SID | sid |
+| Spectral Gradient Angle | SGA | sga |
+| H1 - MHE | H1 (MHE) | h1_mhe |
+| H1 - AHE | H1 (AHE) | h1_ahe |
+| H1 - RMSHE | H1 (RMSHE) | h1_rmshe |
+| H2 - MHE | H2 (MHE) | h2_mhe |
+| H2 - AHE | H2 (AHE) | h2_ahe |
+| H2 - RMSHE | H2 (RMSHE) | h2_rmshe |
+| H3 - MHE | H3 (MHE) | h3_mhe |
+| H3 - AHE | H3 (AHE) | h3_ahe |
+| H3 - RMSHE | H3 (RMSHE) | h3_rmshe |
+| H4 - MHE | H4 (MHE) | h4_mhe |
+| H4 - AHE | H4 (AHE) | h4_ahe |
+| H4 - RMSHE | H4 (RMSHE) | h4_rmshe |
+| H5 - MHE | H5 (MHE) | h5_mhe |
+| H5 - AHE | H5 (AHE) | h5_ahe |
+| H5 - RMSHE | H5 (RMSHE) | h5_rmshe |
+| H6 - MHE | H6 (MHE) | h6_mhe |
+| H6 - AHE | H6 (AHE) | h6_ahe |
+| H6 - RMSHE | H6 (RMSHE) | h6_rmshe |
+| H7 - MHE | H7 (MHE) | h7_mhe |
+| H7 - AHE | H7 (AHE) | h7_ahe |
+| H7 - RMSHE | H7 (RMSHE) | h7_rmshe |
+| H8 - MHE | H8 (MHE) | h8_mhe |
+| H8 - AHE | H8 (AHE) | h8_ahe |
+| H8 - RMSHE | H8 (RMSHE) | h8_rmshe |
+| H10 - MHE | H10 (MHE) | h10_mhe |
+| H10 - AHE | H10 (AHE) | h10_ahe |
+| H10 - RMSHE | H10 (RMSHE) | h10_rmshe |
+| Geometric Mean Difference | GMD | g_mean_diff |
+| Mean Variance | MV | mean_var |
 
 hydrostats.me
 -------------
