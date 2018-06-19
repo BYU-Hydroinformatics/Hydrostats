@@ -106,7 +106,7 @@ For more information about backends, read [here](https://matplotlib.org/faq/usag
 | :--------------- | :----------- | :------------ |
 | Mean Error | ME | me | mae |
 | Mean Log Error | MLE | mle |
-| Mean Absolute Error | MAE |
+| Mean Absolute Error | MAE | mae |
 | Mean Absolute Log Error | MALE | male |
 | Mean Squared Error | MSE | mse |
 | Mean Squared Log Error | MSLE | msle |
@@ -143,7 +143,7 @@ For more information about backends, read [here](https://matplotlib.org/faq/usag
 | Kling-Gupta Efficiency (2009) | KGE (2009) | kge_2009 |
 | Kling-Gupta Efficiency (2012) | KGE (2012) | kge_2012 |
 | Spectral Angle | SA | sa |
-| Spectral Correlation | sc |
+| Spectral Correlation | SC | sc |
 | Spectral Information Divergence | SID | sid |
 | Spectral Gradient Angle | SGA | sga |
 | H1 - MHE | H1 (MHE) | h1_mhe |
