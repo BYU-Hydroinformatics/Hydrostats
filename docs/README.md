@@ -223,7 +223,7 @@ hydrostats.mle
 <p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 Range: 0 ≤ MAE < ∞ 
-Smaller is better, does not indicate bias. Notes: random errors do not cancel, an L1-norm. [1]. 
+This metric is essentially the same as the mean error (ME) except that is uses log ratios as the error terms. This metric limits the impact of outliers, and more evenly weight high and low flows [1].  
 
 | Parameters       |              |
 | :-------------   |:-------------|
@@ -247,7 +247,7 @@ hs.mle(sim, obs)
 ```
 
 #### References
-[1] Willmott, C.J., Matsuura, K., 2005. Advantages of the mean absolute error (MAE) over the root mean square error (RMSE) in assessing average model performance. Climate Research 30(1) 79-82.
+[1] Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured? The American Statistician 43-46.
 
 hydrostats.mae
 -------------
