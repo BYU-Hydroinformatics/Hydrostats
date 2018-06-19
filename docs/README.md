@@ -210,6 +210,44 @@ obs = np.random.rand(10)
 hs.me(sim, obs)
 ```
 
+hydrostats.mle
+-------------
+
+#### class hydrostats.me(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L13 "Source Code")
+
+#### Mean Error (ME) 
+
+![Mean Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/ME.png?raw=true)
+<p align="left"><b>Where x = observed data and y = simulated data</b></p>
+
+Range: 0 ≤ MAE < ∞ 
+Smaller is better, does not indicate bias. Notes: random errors do not cancel, an L1-norm. [1]. 
+
+| Parameters       |              |
+| :-------------   |:-------------|
+| forecasted_array | A 1D Numpy array of forecasted data from the time series.   |
+| observed_array   | A 1D Numpy array of observed data from the time series.     |
+| replace_nan=None | Float input indicating what value to replace NaN values with. |
+| replace_inf=None | Float input indicating what value to replace Inf values with. |
+| remove_neg=False | Boolean input indicating whether user wants to remove negative numbers. |
+| remove_zero=False| Boolean input indicating whether user wants to remove zero values. |
+
+#### Example
+
+```python
+import hydrostats as hs
+import numpy as np
+
+sim = np.arange(10)
+obs = np.random.rand(10)
+
+hs.mle(sim, obs)
+```
+
+#### References
+[1] Willmott, C.J., Matsuura, K., 2005. Advantages of the mean absolute error (MAE) over the root mean square error (RMSE) in assessing average model performance. Climate Research 30(1) 79-82.
+
 hydrostats.mae
 -------------
 
