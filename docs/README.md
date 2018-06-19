@@ -7,6 +7,8 @@ Hydrostats
 
 ### Metrics
 
+[Table of Metrics and Abbreviations](#)
+
 + [Mean Error](#hydrostatsme)
 + [Mean Absolute Error](#hydrostatsmae)
 + [Mean Squared Error](#hydrostatsmse)
@@ -97,6 +99,82 @@ Then close the text document with ctrl+x.
 For more information about backends, read [here](https://matplotlib.org/faq/usage_faq.html#what-is-a-backend).
 
 # Metrics
+
+## Table of Metrics and Abbreviations
+
+| Full Metric Name | Abbreviation |
+| :------------- | :------------- |
+| Mean Error | ME |
+| Mean Absolute Error | MAE |
+| Mean Squared Error | MSE |
+| Eclidean Distance | ED |
+| Normalized Eclidean Distance | NED |
+| Root Mean Square Error | RMSE |
+| Root Mean Squared Log Error | RMSLE |
+| Mean Absolute Scaled Error | MASE |
+| R^2 | R^2 |
+| Anomaly Correlation Coefficient | ACC |
+| Mean Absolute Percentage Error | MAPE |
+| Mean Absolute Percentage Deviation | MAPD |
+| Symmetric Mean Absolute Percentage Error (1) | SMAPE1 |
+| Symmetric Mean Absolute Percentage Error (2) | SMAPE2 |
+| Index of Agreement (d) | d |
+| Index of Agreement (d1) | d1 |
+| Index of Agreement Refined (dr) | dr |
+| Relative Index of Agreement | d (Rel.) |
+| Modified Index of Agreement | d (Mod.) |
+| Watterson's M | M |
+| Mielke-Berry R | (MB) R |
+| Nash-Sutcliffe Efficiency | NSE |
+| Modified Nash-Sutcliffe Efficiency | NSE (Mod.) |
+| Relative Nash-Sutcliffe Efficiency | NSE (Rel.) |
+| Legate-McCabe Efficiency Index | E1' |
+| Spectral Angle | SA |
+| Spectral Correlation | SC |
+| Spectral Information Divergence | SID |
+| Spectral Gradient Angle | SGA |
+| H1 - MHE | H1 (MHE) |
+| H1 - AHE | H1 (AHE) |
+| H1 - RMSHE | H1 (RMSHE) |
+| H2 - MHE | H2 (MHE) |
+| H2 - AHE | H2 (AHE) |
+| H2 - RMSHE | H2 (RMSHE) |
+| H3 - MHE | H3 (MHE) |
+| H3 - AHE | H3 (AHE) |
+| H3 - RMSHE | H3 (RMSHE) |
+| H4 - MHE | H4 (MHE) |
+| H4 - AHE | H4 (AHE) |
+| H4 - RMSHE | H4 (RMSHE) |
+| H5 - MHE | H5 (MHE) |
+| H5 - AHE | H5 (AHE) |
+| H5 - RMSHE | H5 (RMSHE) |
+| H6 - MHE | H6 (MHE) |
+| H6 - AHE | H6 (AHE) |
+| H6 - RMSHE | H6 (RMSHE) |
+| H7 - MHE | H7 (MHE) |
+| H7 - AHE | H7 (AHE) |
+| H7 - RMSHE | H7 (RMSHE) |
+| H8 - MHE | H8 (MHE) |
+| H8 - AHE | H8 (AHE) |
+| H8 - RMSHE | H8 (RMSHE) |
+| H10 - MHE | H10 (MHE) |
+| H10 - AHE | H10 (AHE) |
+| H10 - RMSHE | H10 (RMSHE) |
+| Geometric Mean Difference | GMD |
+| Mean Variance | MV |
+| Mean Log Error | MLE |
+| Mean Absolute Log Error | MALE |
+| Mean Squared Log Error | MSLE |
+| Normalized Root Mean Square Error - Range | NRMSE (Range) |
+| Normalized Root Mean Square Error - Mean | NRMSE (Mean) |
+| Normalized Root Mean Square Error - IQR | NRMSE (IQR) |
+| Mean Arctangent Absolute Percentage Error | MAAPE |
+| Legate-McCabe Index of Agreement | D1' |
+| Volumetric Efficiency | VE |
+| Pearson R | R (Peason) |
+| Spearman R | R (Spearman) |
+| Kling-Gupta Efficiency (2009) | KGE (2009) |
+| Kling-Gupta Efficiency (2012) | KGE (2012) |
 
 hydrostats.me
 -------------
