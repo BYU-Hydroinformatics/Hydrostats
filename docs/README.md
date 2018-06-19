@@ -10,6 +10,7 @@ Hydrostats
 [Table of Metrics and Abbreviations](#table-of-metrics-and-abbreviations)
 
 + [Mean Error](#hydrostatsme)
++ [Mean Log Error](#hydrostatsmle)
 + [Mean Absolute Error](#hydrostatsmae)
 + [Mean Squared Error](#hydrostatsmse)
 + [Eclidean Distance](#hydrostatsed)
@@ -213,12 +214,12 @@ hs.me(sim, obs)
 hydrostats.mle
 -------------
 
-#### class hydrostats.me(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
-[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L13 "Source Code")
+#### class hydrostats.mle(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/metrics.py#L56 "Source Code")
 
 #### Mean Error (ME) 
 
-![Mean Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/ME.png?raw=true)
+![Mean Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MLE.png?raw=true)
 <p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 Range: 0 ≤ MAE < ∞ 
