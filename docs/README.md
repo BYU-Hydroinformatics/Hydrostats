@@ -112,7 +112,7 @@ For more information about backends, read [here](https://matplotlib.org/faq/usag
 | Root Mean Square Error | RMSE |
 | Root Mean Squared Log Error | RMSLE |
 | Mean Absolute Scaled Error | MASE |
-| R^2 | R^2 |
+| Coefficient of Determination | R^2 |
 | Anomaly Correlation Coefficient | ACC |
 | Mean Absolute Percentage Error | MAPE |
 | Mean Absolute Percentage Deviation | MAPD |
