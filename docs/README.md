@@ -218,8 +218,7 @@ hydrostats.mle
 [source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/metrics.py#L56 "Source Code")
 
 #### Mean Error (ME) 
-
-![Mean Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MLE.png?raw=true)
+<img src="https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MLE.png?raw=true" width="25%" height="25%"/>
 <p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 Range: 0 ≤ MAE < ∞ 
