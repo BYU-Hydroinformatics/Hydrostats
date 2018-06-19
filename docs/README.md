@@ -219,7 +219,7 @@ hydrostats.mle
 
 #### Mean Error (ME) 
 
-![Mean Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MLE.png?raw=true)
+![Mean Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MLE.PNG?raw=true)
 <p align="left"><b>Where x = observed data and y = simulated data</b></p>
 
 Range: 0 ≤ MAE < ∞ 
