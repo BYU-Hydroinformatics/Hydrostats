@@ -354,10 +354,13 @@ def d1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
-    a = np.sum((np.abs(simulated_array - observed_array)) ** 2)
-    b = np.abs(simulated_array - np.mean(observed_array))
-    c = np.abs(observed_array - np.mean(observed_array))
-    return np.sum(a) / np.sum(b + c)
+
+    obs_mean = np.mean(observed_array)
+
+    a = np.sum(np.abs(simulated_array - observed_array))
+    b = np.abs(simulated_array - obs_mean)
+    c = np.abs(observed_array - obs_mean)
+    return 1 - np.sum(a) / np.sum(b + c)
 
 
 def dr(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -1079,7 +1082,8 @@ metric_abbr = ['ME', 'MAE', 'MSE', 'ED', 'NED', 'RMSE', 'RMSLE', 'MASE', 'R^2', 
                'H5 (MHE)', 'H5 (AHE)', 'H5 (RMSHE)', 'H6 (MHE)', 'H6 (AHE)', 'H6 (RMSHE)', 'H7 (MHE)',
                'H7 (AHE)', 'H7 (RMSHE)', 'H8 (MHE)', 'H8 (AHE)', 'H8 (RMSHE)', 'H10 (MHE)', 'H10 (AHE)',
                'H10 (RMSHE)', 'GMD', 'MV', 'MLE', 'MALE', 'MSLE', 'NRMSE (Range)', 'NRMSE (Mean)', 'NRMSE (IQR)',
-               'MAAPE', "D1'", 'VE', 'R (Peason)', 'R (Spearman)', 'KGE (2009)', 'KGE (2012)']
+               'MAAPE', "D1'", 'VE', 'R (Pearson)', 'R (Spearman)', 'KGE (2009)', 'KGE (2012)']
+
 
 function_list = [me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smape1, smape2, d, d1, dr, drel,
                  dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga, h1_mhe, h1_ahe, h1_rmshe,
@@ -1173,7 +1177,7 @@ def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=
         for i in metrics:
             metrics_indices.append(metric_names.index(i))
     else:
-        for i in metric_abbr:
+        for i in metrics:
             metrics_indices.append(metric_abbr.index(i))
 
     # Creating a list of selected metric functions
