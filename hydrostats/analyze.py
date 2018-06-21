@@ -58,7 +58,7 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
             sim_array = temp_df.iloc[:, 0].values
             obs_array = temp_df.iloc[:, 1].values
 
-            seasonal_metric_list = list_of_metrics(metrics=metrics, sim_array=sim_array, obs_array=obs_array,
+            seasonal_metric_list = list_of_metrics(metrics=metrics, sim_array=sim_array, abbr=True, obs_array=obs_array,
                                                    mase_m=mase_m, dmod_j=dmod_j, nse_mod_j=nse_mod_j,
                                                    h6_mhe_k=h6_mhe_k, h6_ahe_k=h6_ahe_k, h6_rmshe_k=h6_rmshe_k,
                                                    d1_p_obs_bar_p=d1_p_obs_bar_p, lm_x_obs_bar_p=lm_x_obs_bar_p,
