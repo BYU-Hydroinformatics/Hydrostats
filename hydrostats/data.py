@@ -5,13 +5,13 @@ Created on Jan 7 1:56:32 2018
 @author: Wade Roberts
 """
 from __future__ import division
+from hydrostats.metrics import HydrostatsError
 import pandas as pd
 from numpy import inf, nan
-import math
+from math import modf
 
-
-class HydrostatsError(Exception):
-    pass
+__all__ = ['merge_data', 'daily_average', 'daily_std_error', 'daily_std_dev', 'monthly_average', 'monthly_std_error',
+           'monthly_std_dev', 'remove_nan_df', 'seasonal_period']
 
 
 def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpolate=None,
@@ -145,8 +145,8 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
                       ((obs_df.index[1] - obs_df.index[0]).seconds / 3600) / 24
 
         # converting the time delta to a tuple with days and hours
-        td_tuple_simulated = math.modf(td_simulated)
-        td_tuple_observed = math.modf(td_observed)
+        td_tuple_simulated = modf(td_simulated)
+        td_tuple_observed = modf(td_observed)
 
         # Converting the time delta to a frequency
         freq_simulated = str(td_tuple_simulated[1]) + 'D' + str(td_tuple_simulated[0] * 24) + 'H'
@@ -250,7 +250,8 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
                     # Reindexing and interpolating the dataframe to match the observed data
                     obs_df = obs_df.reindex(observed_index_interpolate).interpolate(interp_type)
         else:
-            raise HydrostatsError("You must specify the interpolation argument to be either 'simulated' or 'observed'.")
+            raise HydrostatsError("You must specify the interpolation argument to be either 'simulated' or "
+                                        "'observed'.")
 
         return pd.DataFrame.join(sim_df, obs_df).dropna()
 
