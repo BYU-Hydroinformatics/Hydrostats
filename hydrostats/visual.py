@@ -5,12 +5,14 @@ Created on Jan 5 3:25:56 2018
 @author: Wade Roberts
 """
 from __future__ import division
-from hydrostats import HydrostatsVariables, remove_values
-from hydrostats.data import HydrostatsError
+from hydrostats.metrics import function_list, metric_abbr, HydrostatsError, remove_values
 import numpy as np
 import matplotlib.pyplot as plt
-import sympy as sp
+from sympy import symbols, S
+from sympy.printing import latex
 import calendar
+
+__all__ = ['plot', 'hist', 'scatter', 'qqplot']
 
 
 def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None,
@@ -84,8 +86,7 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
     plt.tight_layout()
 
     if metrics:
-        function_list = HydrostatsVariables.function_list
-        function_list_str = HydrostatsVariables.metric_abbr
+        function_list_str = metric_abbr
         assert isinstance(metrics, list)
         for metric in metrics:
             assert metric in function_list_str
@@ -251,9 +252,9 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
         y_new = f(x_new)
 
         # Formatting the best fit equation to be able to display in latex
-        x = sp.symbols("x")
-        poly = sum(sp.S("{:6.4f}".format(v)) * x ** i for i, v in enumerate(p[::-1]))
-        eq_latex = sp.printing.latex(poly)
+        x = symbols("x")
+        poly = sum(S("{:6.4f}".format(v)) * x ** i for i, v in enumerate(p[::-1]))
+        eq_latex = latex(poly)
 
         # Plotting the best fit line with the equation as a legend in latex
         plt.plot(x_new, y_new, 'k', label="${}$".format(eq_latex))
@@ -262,13 +263,7 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
         plt.legend(fontsize=12)
 
     if metrics is not None:
-
-        function_list = [me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smap1, smap2, d, d1, dr,
-                         drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga]
-
-        function_list_str = ['ME', 'MAE', 'MSE', 'ED', 'NED', 'RMSE', 'RMSLE', 'MASE', 'R^2', 'ACC', 'MAPE',
-                             'MAPD', 'SMAP1', 'SMAP2', 'D', 'D1', 'DR', 'D-Rel', 'D-Mod', 'M', 'R', 'NSE', 'NSE-Mod',
-                             'NSE-Rel', 'E_1', 'SA', 'SC', 'SID', 'SGA']
+        function_list_str = metric_abbr
 
         assert isinstance(metrics, list)
         for metric in metrics:
@@ -295,9 +290,13 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
         plt.show()
 
 
-def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='linear', title=None, xlabel='Simulated Data Quantiles',
-           ylabel='Observed Data Quantiles', legend=False, replace_nan=None, replace_inf=None, remove_neg=False,
-           remove_zero=False, figsize=(12, 8), savefigure=None):
+def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='linear', title=None,
+           xlabel='Simulated Data Quantiles', ylabel='Observed Data Quantiles', legend=False, replace_nan=None,
+           replace_inf=None, remove_neg=False, remove_zero=False, figsize=(12, 8), savefigure=None):
+    """Plots a Quantile-Quantile plot of the simulated and observed data. Useful for comparing to see whether the
+    two datasets come from the same distribution.
+
+    See the full documentation for a list of the function arguments."""
 
     plt.figure(num=1, figsize=figsize, dpi=80, facecolor='w', edgecolor='k')
 
@@ -324,13 +323,11 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
 
     # Finding the interquartile range to plot the best fit line
     quant_1_sim = np.percentile(sim, 25, interpolation=interpolate)
-    quant_2_sim = np.percentile(sim, 50, interpolation=interpolate)
     quant_3_sim = np.percentile(sim, 75, interpolation=interpolate)
     quant_1_obs = np.percentile(obs, 25, interpolation=interpolate)
-    quant_2_obs = np.percentile(sim, 50, interpolation=interpolate)
     quant_3_obs = np.percentile(obs, 75, interpolation=interpolate)
-    quant_sim = np.array([quant_1_sim, quant_2_sim, quant_3_sim])
-    quant_obs = np.array([quant_1_obs, quant_2_obs, quant_3_obs])
+    quant_sim = np.array([quant_1_sim, quant_3_sim])
+    quant_obs = np.array([quant_1_obs, quant_3_obs])
 
     dsim = quant_3_sim - quant_1_sim
     dobs = quant_3_obs - quant_1_obs
@@ -356,7 +353,7 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
         plt.legend(fontsize=14)
 
     if title is not None:
-        plt.title(title, fontsize=20)
+        plt.title(title, fontsize=18)
 
     # Formatting things
     plt.xlabel(xlabel, fontsize=16)
@@ -369,3 +366,9 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
         plt.close()
     else:
         plt.show()
+
+
+if __name__ == "__main__":
+    sim = np.random.rand(1000)
+    obs = np.random.rand(1000)
+    print(function_list[0](sim, obs))
