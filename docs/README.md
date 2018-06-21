@@ -120,7 +120,7 @@ For more information about backends, read [here](https://matplotlib.org/faq/usag
 | Normalized Root Mean Square Error - IQR | NRMSE (IQR) | nrmse_iqr |
 | Mean Arctangent Absolute Percentage Error | MAAPE | maape |
 | Mean Absolute Scaled Error | MASE | mase |
-| Pearson R | R (Peason) | pearson_r |
+| Pearson R | R (Pearson) | pearson_r |
 | Spearman R | R (Spearman) | spearman_r |
 | Coefficient of Determination | R^2 | r_squared |
 | Anomaly Correlation Coefficient | ACC | acc |
