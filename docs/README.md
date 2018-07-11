@@ -181,7 +181,7 @@ hydrostats.me
 -------------
 
 #### class hydrostats.me(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
-[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L13 "Source Code")
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/metrics.py#L26 "Source Code")
 
 #### Mean Error (ME) 
 
