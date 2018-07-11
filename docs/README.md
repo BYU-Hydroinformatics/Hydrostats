@@ -252,7 +252,7 @@ hydrostats.mae
 -------------
 
 #### class hydrostats.mae(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False)
-[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/__init__.py#L13 "Source Code")
+[source](https://github.com/waderoberts123/Hydrostats/blob/master/hydrostats/metrics.py#L36 "Source Code")
 
 #### Mean Absolute Error (MAE) 
 
