@@ -25,7 +25,23 @@ __all__ = ['me', 'mae', 'mse', 'ed', 'ned', 'rmse', 'rmsle', 'mase', 'r_squared'
 
 def me(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
        remove_zero=False):
-    """Returns the mean error of two 1 dimensional arrays"""
+    """
+
+    :param simulated_array: A 1D Numpy array of forecasted data from the time series.
+    :param observed_array: A 1D Numpy array of observed data from the time series.
+    :param replace_nan: Float input indicating what value to replace NaN values with.
+    :param replace_inf: Float input indicating what value to replace Inf values with.
+    :param remove_neg: Boolean input indicating whether user wants to remove negative numbers.
+    :param remove_zero: Boolean input indicating whether user wants to remove zero values.
+    :return: the mean error (bias) of the two arrays
+
+    Range: -∞ < ME < ∞, data units, closer to 0 is  better, indicates bias.
+    Notes: random errors can cancel with ME than indicating a better fit than actual
+
+    - Fisher, Ronald Aylmer. “012: A Mathematical Examination of the Methods of Determining the Accuracy of an
+    Observation by the Mean Error, and by the Mean Square Error.,” 1920.
+    """
+
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
@@ -35,7 +51,25 @@ def me(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
 def mae(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
         remove_zero=False):
-    """Returns the Mean Absolute Error"""
+    """
+
+    :param simulated_array: A 1D Numpy array of forecasted data from the time series.
+    :param observed_array: A 1D Numpy array of observed data from the time series.
+    :param replace_nan: Float input indicating what value to replace NaN values with.
+    :param replace_inf: Float input indicating what value to replace Inf values with.
+    :param remove_neg: Boolean input indicating whether user wants to remove negative numbers.
+    :param remove_zero: Boolean input indicating whether user wants to remove zero values.
+    :return: Mean Absolute Error metric of the two arrays
+
+    Range: 0 ≤ MAE < ∞, data units, smaller is better, does not indicate bias.
+    Notes: random errors do not cancel, an L1-norm.
+
+    - Willmott, Cort J., and Kenji Matsuura. “Advantages of the Mean Absolute Error (MAE) over the Root Mean Square
+    Error (RMSE) in Assessing Average Model Performance.” Climate Research 30, no. 1 (2005): 79–82.
+    - Willmott, Cort J., and Kenji Matsuura. “On the Use of Dimensioned Measures of Error to Evaluate the Performance
+    of Spatial Interpolators.” International Journal of Geographical Information Science 20, no. 1 (2006): 89–102.
+    """
+
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
@@ -45,7 +79,23 @@ def mae(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
 def mse(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
         remove_zero=False):
-    """Returns the Mean Squared Error"""
+    """
+
+    :param simulated_array: A 1D Numpy array of forecasted data from the time series.
+    :param observed_array: A 1D Numpy array of observed data from the time series.
+    :param replace_nan: Float input indicating what value to replace NaN values with.
+    :param replace_inf: Float input indicating what value to replace Inf values with.
+    :param remove_neg: Boolean input indicating whether user wants to remove negative numbers.
+    :param remove_zero: Boolean input indicating whether user wants to remove zero values.
+    :return: Mean Squared Error of the two arrays
+
+    Range: 0 ≤ MSE < ∞, data units squared, smaller is better, does not indicate bias.
+    Notes: random errors do not cancel, highlights larger errors, a squared L2-norm.
+
+    - Wang, Zhou, and Alan C. Bovik. “Mean Squared Error: Love It or Leave It? A New Look at Signal Fidelity Measures.”
+    IEEE Signal Processing Magazine 26, no. 1 (2009): 98–117.
+    """
+
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
@@ -55,7 +105,23 @@ def mse(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
 def mle(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
         remove_zero=False):
-    """Returns the Mean Log Error."""
+    """
+
+    :param simulated_array: A 1D Numpy array of forecasted data from the time series.
+    :param observed_array: A 1D Numpy array of observed data from the time series.
+    :param replace_nan: Float input indicating what value to replace NaN values with.
+    :param replace_inf: Float input indicating what value to replace Inf values with.
+    :param remove_neg: Boolean input indicating whether user wants to remove negative numbers.
+    :param remove_zero: Boolean input indicating whether user wants to remove zero values.
+    :return: The mean log error of the two arrays.
+
+    Same as ME only use log ratios as the error term.
+    Notes: Limits the impact of outliers, more evenly weights high and low flows.
+
+    - Törnqvist, Leo, Pentti Vartia, and Yrjö O. Vartia. “How Should Relative Changes Be Measured?”
+    The American Statistician 39, no. 1 (1985): 43–46.
+    """
+
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
@@ -67,7 +133,23 @@ def mle(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
 def male(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
          remove_zero=False):
-    """Returns the Mean Absolute Log Error."""
+    """
+
+    :param simulated_array: A 1D Numpy array of forecasted data from the time series.
+    :param observed_array: A 1D Numpy array of observed data from the time series.
+    :param replace_nan: Float input indicating what value to replace NaN values with.
+    :param replace_inf: Float input indicating what value to replace Inf values with.
+    :param remove_neg: Boolean input indicating whether user wants to remove negative numbers.
+    :param remove_zero: Boolean input indicating whether user wants to remove zero values.
+    :return: The mean absolute log error of the two arrays.
+
+    Same as MAE only use log ratios as the error term.
+    Notes: Limits the impact of outliers, more evenly weights high and low flows.
+
+    - Törnqvist, Leo, Pentti Vartia, and Yrjö O. Vartia. “How Should Relative Changes Be Measured?”
+    The American Statistician 39, no. 1 (1985): 43–46.
+    """
+
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
@@ -249,8 +331,23 @@ def r_squared(simulated_array, observed_array, replace_nan=None, replace_inf=Non
 
 def acc(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
         remove_zero=False):
-    """Returns the Anomaly Correlation Coefficient.
-    arguments: simulated array, observed array"""
+    """
+    :param simulated_array: A 1D Numpy array of forecasted data from the time series.
+    :param observed_array: A 1D Numpy array of observed data from the time series.
+    :param replace_nan: Float input indicating what value to replace NaN values with.
+    :param replace_inf: Float input indicating what value to replace Inf values with.
+    :param remove_neg: Boolean input indicating whether user wants to remove negative numbers.
+    :param remove_zero: Boolean input indicating whether user wants to remove zero values.
+    :return: Anomaly Correlation Coefficient.
+
+    - Langland, Rolf H., and Ryan N. Maue. “Recent Northern Hemisphere Mid-Latitude Medium-Range Deterministic Forecast
+    Skill.” Tellus A: Dynamic Meteorology and Oceanography 64, no. 1 (2012): 17531.
+    - Miyakoda, K., G. D. Hembree, R. F. Strickler, and I. Shulman. “Cumulative Results of Extended Forecast Experiments
+     I. Model Performance for Winter Cases.” Monthly Weather Review 100, no. 12 (1972): 836–55.
+    - Murphy, Allan H., and Edward S. Epstein. “Skill Scores and Correlation Coefficients in Model Verification.”
+    Monthly Weather Review 117, no. 3 (1989): 572–82.
+
+    """
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
@@ -609,10 +706,20 @@ def lm_index(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, 
 
 def d1_p(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, replace_inf=None, remove_neg=False,
          remove_zero=False):
-    """Returns the Legate-McCabe Index of Agreement. Range: 0 ≤ d1_p < 1, unit less, larger is better, does not indicate
-     bias, less weight to outliers. The term (obs_bar_p) is a seasonal or other selected average. If not obs_bar_p is given,
+    """
+    :param simulated_array: array of simulated data.
+    :param observed_array: array of observed data
+    :param obs_bar_p: The term (obs_bar_p) is a seasonal or other selected average. If not obs_bar_p is given,
      the mean of the observed data will be used instead.
-     (Legates and McCabe Jr, 1999)"""
+    :param replace_nan: Float input indicating what value to replace NaN values with.
+    :param replace_inf: Float input indicating what value to replace Inf values with.
+    :param remove_neg: Boolean input indicating whether user wants to remove negative numbers.
+    :param remove_zero: Boolean input indicating whether user wants to remove zero values.
+    :return: the Legate-McCabe Index of Agreement. Range: 0 ≤ d1_p < 1, unit less, larger is better, does not indicate
+     bias, less weight to outliers.
+
+    (Legates and McCabe Jr, 1999)
+    """
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
@@ -1225,14 +1332,7 @@ if __name__ == "__main__":
     #     long_str += i + ', '
     # print(long_str)
 
-    # file_path = "C:\\Users\\wadear\\Google Drive\\Work\\Dr. Nelson Research\\hydroinformatics group\\Observed Global " \
-    #             "Streamflow Data\\Asia\\Nepal\\Asaraghat_merged.csv "
-    #
-    # df = pd.read_csv(file_path)
-    # sim = df.iloc[:, 1].values
-    # obs = df.iloc[:, 2].values
-    #
-    # print(spearman_r(sim, obs))
+    sim = np.random.rand(1000) * 20
+    obs = np.random.rand(1000) * 20
 
-    for i, j, k in zip(metric_names, metric_abbr, __all__):
-        print("| {} | {} | {} |".format(i, j, k))
+    print(mase(sim, obs, m=3))

@@ -4,6 +4,7 @@
 Created on June 6 15:40:57, 2018
 @author: Wade Roberts
 """
+from __future__ import division
 from hydrostats.metrics import list_of_metrics, metric_names, metric_abbr, remove_values, HydrostatsError
 from hydrostats.data import seasonal_period
 import calendar
