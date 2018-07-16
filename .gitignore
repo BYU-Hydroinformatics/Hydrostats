@@ -1,3 +1,5 @@
 .idea
 hydrostats_venv
 test.py
+__pycache__
+
