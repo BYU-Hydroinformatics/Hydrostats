@@ -140,7 +140,7 @@ For more information about backends, read [here](https://matplotlib.org/faq/usag
 | Mean Absolute Scaled Error | MASE | mase |
 | Pearson R | R (Pearson) | pearson_r |
 | Spearman R | R (Spearman) | spearman_r |
-| Coefficient of Determination | R^2 | r_squared |
+| Coefficient of Determination | r2 | r_squared |
 | Anomaly Correlation Coefficient | ACC | acc |
 | Mean Absolute Percentage Error | MAPE | mape |
 | Mean Absolute Percentage Deviation | MAPD | mapd |

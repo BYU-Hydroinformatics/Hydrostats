@@ -1182,7 +1182,7 @@ metric_names = ['Mean Error', 'Mean Absolute Error', 'Mean Squared Error', 'Ecli
                 'Legate-McCabe Index of Agreement', 'Volumetric Efficiency', 'Pearson R', 'Spearman R',
                 'Kling-Gupta Efficiency (2009)', 'Kling-Gupta Efficiency (2012)']
 
-metric_abbr = ['ME', 'MAE', 'MSE', 'ED', 'NED', 'RMSE', 'RMSLE', 'MASE', 'R^2', 'ACC', 'MAPE', 'MAPD', 'SMAPE1',
+metric_abbr = ['ME', 'MAE', 'MSE', 'ED', 'NED', 'RMSE', 'RMSLE', 'MASE', 'r2', 'ACC', 'MAPE', 'MAPD', 'SMAPE1',
                'SMAPE2', 'd', 'd1', 'dr', 'd (Rel.)', 'd (Mod.)', 'M', '(MB) R', 'NSE', 'NSE (Mod.)', 'NSE (Rel.)',
                "E1'", 'SA', 'SC', 'SID', 'SGA', 'H1 (MHE)', 'H1 (AHE)', 'H1 (RMSHE)', 'H2 (MHE)', 'H2 (AHE)',
                'H2 (RMSHE)', 'H3 (MHE)', 'H3 (AHE)', 'H3 (RMSHE)', 'H4 (MHE)', 'H4 (AHE)', 'H4 (RMSHE)',
