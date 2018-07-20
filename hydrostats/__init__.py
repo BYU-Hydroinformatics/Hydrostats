@@ -4,7 +4,7 @@
 Created on June 11, 17:16:19, 2018
 @author: Wade Roberts
 
-For full documentation, see
+For full documentation, see https://github.com/waderoberts123/Hydrostats/
 """
 from hydrostats.metrics import *
 from hydrostats.analyze import *

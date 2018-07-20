@@ -1,0 +1,517 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Welcome to hydrostats’s documentation! &#8212; hydrostats 0.65 documentation</title>
+    <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="make_table" href="api/hydrostats.analyze.make_table.html" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api/hydrostats.analyze.make_table.html" title="make_table"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">hydrostats 0.65 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-hydrostats-s-documentation">
+<h1>Welcome to hydrostats’s documentation!<a class="headerlink" href="#welcome-to-hydrostats-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Hydrostats is a library of tools and functions for users working with timeseries data. It has tools
+for preprocessing data,</p>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>Hydrostats is freely available on the Python Package index repository (PyPI). It can be installed with the
+following command using either virtualenv or Anaconda.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">hydrostats</span>
+</pre></div>
+</div>
+<div class="highlight-error notranslate"><div class="highlight"><pre><span></span>**RuntimeError**: Python is not installed as a framework. The Mac OS X backend will not be able
+to function correctly if Python is not installed as a framework. See the Python documentation for
+more information on installing Python as a framework on Mac OS X. Please either reinstall Python
+as a framework, or try one of the other backends.
+</pre></div>
+</div>
+</div>
+<div class="section" id="hydrostats-package">
+<h1>hydrostats package<a class="headerlink" href="#hydrostats-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-hydrostats.analyze">
+<span id="hydrostats-analyze-module"></span><h2>hydrostats.analyze Module<a class="headerlink" href="#module-hydrostats.analyze" title="Permalink to this headline">¶</a></h2>
+<p>Created on June 6 15:40:57, 2018 &#64;author: Wade Roberts</p>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.analyze.make_table.html#hydrostats.analyze.make_table" title="hydrostats.analyze.make_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_table</span></code></a>(merged_dataframe,&nbsp;metrics[,&nbsp;…])</td>
+<td>Creates a table with metrics as specified by the user.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.analyze.time_lag.html#hydrostats.analyze.time_lag" title="hydrostats.analyze.time_lag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_lag</span></code></a>(merged_dataframe,&nbsp;metrics[,&nbsp;…])</td>
+<td>Runs a time lag analysis to check for potential timing errors in datasets.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="module-hydrostats.data">
+<span id="hydrostats-data-module"></span><h2>hydrostats.data Module<a class="headerlink" href="#module-hydrostats.data" title="Permalink to this headline">¶</a></h2>
+<p>Created on Jan 7 1:56:32 2018 &#64;author: Wade Roberts</p>
+<div class="section" id="id1">
+<h3>Functions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.data.merge_data.html#hydrostats.data.merge_data" title="hydrostats.data.merge_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_data</span></code></a>([sim_fpath,&nbsp;obs_fpath,&nbsp;sim_df,&nbsp;…])</td>
+<td>Takes two csv files or two pandas dataframes that have been formatted with 1 row as a header with date in the first column and streamflow values in the second column and combines them into a pandas dataframe with datetime type for the dates and float type for the streamflow value.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.data.daily_average.html#hydrostats.data.daily_average" title="hydrostats.data.daily_average"><code class="xref py py-obj docutils literal notranslate"><span class="pre">daily_average</span></code></a>(merged_data)</td>
+<td>Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and calculates the daily average streamflow over the course of the data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.data.daily_std_error.html#hydrostats.data.daily_std_error" title="hydrostats.data.daily_std_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">daily_std_error</span></code></a>(merged_data)</td>
+<td>Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and calculates the daily standard error of the streamflow over the course of the data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.data.daily_std_dev.html#hydrostats.data.daily_std_dev" title="hydrostats.data.daily_std_dev"><code class="xref py py-obj docutils literal notranslate"><span class="pre">daily_std_dev</span></code></a>(merged_data)</td>
+<td>Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and calculates the daily standard deviation of the streamflow over the course of the data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.data.monthly_average.html#hydrostats.data.monthly_average" title="hydrostats.data.monthly_average"><code class="xref py py-obj docutils literal notranslate"><span class="pre">monthly_average</span></code></a>(merged_data)</td>
+<td>Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and calculates the monthly average streamflow over the course of the data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.data.monthly_std_error.html#hydrostats.data.monthly_std_error" title="hydrostats.data.monthly_std_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">monthly_std_error</span></code></a>(merged_data)</td>
+<td>Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and calculates the monthly standard error of the streamflow over the course of the data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.data.monthly_std_dev.html#hydrostats.data.monthly_std_dev" title="hydrostats.data.monthly_std_dev"><code class="xref py py-obj docutils literal notranslate"><span class="pre">monthly_std_dev</span></code></a>(merged_data)</td>
+<td>Takes a dataframe with an index of datetime type and both recorded and predicted streamflow values and calculates the monthly standard deviation of the streamflow over the course of the data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.data.remove_nan_df.html#hydrostats.data.remove_nan_df" title="hydrostats.data.remove_nan_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_nan_df</span></code></a>(merged_dataframe)</td>
+<td>Drops rows with Nan, zero, negative, and inf values from a pandas dataframe</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.data.seasonal_period.html#hydrostats.data.seasonal_period" title="hydrostats.data.seasonal_period"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seasonal_period</span></code></a>(merged_dataframe,&nbsp;daily_period)</td>
+<td>Returns the seasonal period specified for the time series, between the specified time range.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="module-hydrostats.metrics">
+<span id="hydrostats-metrics-module"></span><h2>hydrostats.metrics Module<a class="headerlink" href="#module-hydrostats.metrics" title="Permalink to this headline">¶</a></h2>
+<p>Created on Dec 28 12:16:32 2017 &#64;author: Wade Roberts</p>
+<div class="section" id="id2">
+<h3>Functions<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.me.html#hydrostats.metrics.me" title="hydrostats.metrics.me"><code class="xref py py-obj docutils literal notranslate"><span class="pre">me</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Compute the mean error of the simulated and observed data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.mae.html#hydrostats.metrics.mae" title="hydrostats.metrics.mae"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mae</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Compute the mean absolute error of the simulated and observed data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.mse.html#hydrostats.metrics.mse" title="hydrostats.metrics.mse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mse</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Compute the mean squared error of the simulated and observed data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.ed.html#hydrostats.metrics.ed" title="hydrostats.metrics.ed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ed</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Compute the Euclidean distance between predicted and observed values in vector space.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.ned.html#hydrostats.metrics.ned" title="hydrostats.metrics.ned"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ned</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Compute the normalized Euclidian distance between the simulated and observed data in vector space.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.rmse.html#hydrostats.metrics.rmse" title="hydrostats.metrics.rmse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rmse</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Compute the root mean square error between the simulated and observed data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.rmsle.html#hydrostats.metrics.rmsle" title="hydrostats.metrics.rmsle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rmsle</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>“Return the Root Mean Square Log Error.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.mase.html#hydrostats.metrics.mase" title="hydrostats.metrics.mase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mase</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;m,&nbsp;…])</td>
+<td>Returns the Mean Absolute Scaled Error, the default period for m (seasonal period) is 1.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.r_squared.html#hydrostats.metrics.r_squared" title="hydrostats.metrics.r_squared"><code class="xref py py-obj docutils literal notranslate"><span class="pre">r_squared</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the Coefficient of Determination arguments: simulated array, observed array</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.acc.html#hydrostats.metrics.acc" title="hydrostats.metrics.acc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">acc</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">param simulated_array:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">A 1D Numpy array of forecasted data from the</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.mape.html#hydrostats.metrics.mape" title="hydrostats.metrics.mape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mape</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the Mean Absolute Percentage Error.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.mapd.html#hydrostats.metrics.mapd" title="hydrostats.metrics.mapd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mapd</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the Mean Absolute Percentage Deviation.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.smape1.html#hydrostats.metrics.smape1" title="hydrostats.metrics.smape1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smape1</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the Symmetric Mean Absolute Percentage Error (1).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.smape2.html#hydrostats.metrics.smape2" title="hydrostats.metrics.smape2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smape2</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the Symmetric Mean Absolute Percentage Error (2).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.d.html#hydrostats.metrics.d" title="hydrostats.metrics.d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">d</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the Index of Agreement (d).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.d1.html#hydrostats.metrics.d1" title="hydrostats.metrics.d1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">d1</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the Index of Agreement (d1).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.dr.html#hydrostats.metrics.dr" title="hydrostats.metrics.dr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dr</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the Refined Index of Agreement.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.drel.html#hydrostats.metrics.drel" title="hydrostats.metrics.drel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drel</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the Relative Index of Agreement.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.dmod.html#hydrostats.metrics.dmod" title="hydrostats.metrics.dmod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dmod</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;j,&nbsp;…])</td>
+<td>Returns the modified index of agreement, with j=1 as the default.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.watt_m.html#hydrostats.metrics.watt_m" title="hydrostats.metrics.watt_m"><code class="xref py py-obj docutils literal notranslate"><span class="pre">watt_m</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns Watterson’s M value.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.mb_r.html#hydrostats.metrics.mb_r" title="hydrostats.metrics.mb_r"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mb_r</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the Mielke-Berry R value.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.nse.html#hydrostats.metrics.nse" title="hydrostats.metrics.nse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nse</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the Nash-Sutcliffe Efficiency value (Nash JE, Sutcliffe JV.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.nse_mod.html#hydrostats.metrics.nse_mod" title="hydrostats.metrics.nse_mod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nse_mod</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the modified Nash-Sutcliffe Efficiency value (Krause, P., Boyle, D.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.nse_rel.html#hydrostats.metrics.nse_rel" title="hydrostats.metrics.nse_rel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nse_rel</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the relative Nash-Sutcliffe Efficiency value (Krause, P., Boyle, D.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.lm_index.html#hydrostats.metrics.lm_index" title="hydrostats.metrics.lm_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lm_index</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the Legate-McCabe Efficiency Index.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.sa.html#hydrostats.metrics.sa" title="hydrostats.metrics.sa"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sa</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the spectral angle.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.sc.html#hydrostats.metrics.sc" title="hydrostats.metrics.sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the spectral Correlation.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.sid.html#hydrostats.metrics.sid" title="hydrostats.metrics.sid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sid</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the ___ arguments: simulated array, observed array</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.sga.html#hydrostats.metrics.sga" title="hydrostats.metrics.sga"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sga</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the spectral gradient angle arguments: simulated array, observed array</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.h1_mhe.html#hydrostats.metrics.h1_mhe" title="hydrostats.metrics.h1_mhe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h1_mhe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.h1_ahe.html#hydrostats.metrics.h1_ahe" title="hydrostats.metrics.h1_ahe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h1_ahe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.h1_rmshe.html#hydrostats.metrics.h1_rmshe" title="hydrostats.metrics.h1_rmshe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h1_rmshe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.h2_mhe.html#hydrostats.metrics.h2_mhe" title="hydrostats.metrics.h2_mhe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h2_mhe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.h2_ahe.html#hydrostats.metrics.h2_ahe" title="hydrostats.metrics.h2_ahe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h2_ahe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.h2_rmshe.html#hydrostats.metrics.h2_rmshe" title="hydrostats.metrics.h2_rmshe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h2_rmshe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.h3_mhe.html#hydrostats.metrics.h3_mhe" title="hydrostats.metrics.h3_mhe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h3_mhe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.h3_ahe.html#hydrostats.metrics.h3_ahe" title="hydrostats.metrics.h3_ahe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h3_ahe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.h3_rmshe.html#hydrostats.metrics.h3_rmshe" title="hydrostats.metrics.h3_rmshe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h3_rmshe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.h4_mhe.html#hydrostats.metrics.h4_mhe" title="hydrostats.metrics.h4_mhe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h4_mhe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.h4_ahe.html#hydrostats.metrics.h4_ahe" title="hydrostats.metrics.h4_ahe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h4_ahe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.h4_rmshe.html#hydrostats.metrics.h4_rmshe" title="hydrostats.metrics.h4_rmshe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h4_rmshe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.h5_mhe.html#hydrostats.metrics.h5_mhe" title="hydrostats.metrics.h5_mhe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h5_mhe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.h5_ahe.html#hydrostats.metrics.h5_ahe" title="hydrostats.metrics.h5_ahe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h5_ahe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.h5_rmshe.html#hydrostats.metrics.h5_rmshe" title="hydrostats.metrics.h5_rmshe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h5_rmshe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.h6_mhe.html#hydrostats.metrics.h6_mhe" title="hydrostats.metrics.h6_mhe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h6_mhe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;k,&nbsp;…])</td>
+<td>H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.h6_ahe.html#hydrostats.metrics.h6_ahe" title="hydrostats.metrics.h6_ahe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h6_ahe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;k,&nbsp;…])</td>
+<td>H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.h6_rmshe.html#hydrostats.metrics.h6_rmshe" title="hydrostats.metrics.h6_rmshe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h6_rmshe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.h7_mhe.html#hydrostats.metrics.h7_mhe" title="hydrostats.metrics.h7_mhe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h7_mhe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.h7_ahe.html#hydrostats.metrics.h7_ahe" title="hydrostats.metrics.h7_ahe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h7_ahe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.h7_rmshe.html#hydrostats.metrics.h7_rmshe" title="hydrostats.metrics.h7_rmshe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h7_rmshe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.h8_mhe.html#hydrostats.metrics.h8_mhe" title="hydrostats.metrics.h8_mhe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h8_mhe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.h8_ahe.html#hydrostats.metrics.h8_ahe" title="hydrostats.metrics.h8_ahe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h8_ahe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.h8_rmshe.html#hydrostats.metrics.h8_rmshe" title="hydrostats.metrics.h8_rmshe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h8_rmshe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.h10_mhe.html#hydrostats.metrics.h10_mhe" title="hydrostats.metrics.h10_mhe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h10_mhe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.h10_ahe.html#hydrostats.metrics.h10_ahe" title="hydrostats.metrics.h10_ahe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h10_ahe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.h10_rmshe.html#hydrostats.metrics.h10_rmshe" title="hydrostats.metrics.h10_rmshe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h10_rmshe</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.g_mean_diff.html#hydrostats.metrics.g_mean_diff" title="hydrostats.metrics.g_mean_diff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">g_mean_diff</span></code></a>(simulated_array,&nbsp;observed_array)</td>
+<td>Returns the geometric mean difference.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.mean_var.html#hydrostats.metrics.mean_var" title="hydrostats.metrics.mean_var"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean_var</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.mle.html#hydrostats.metrics.mle" title="hydrostats.metrics.mle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mle</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Compute the mean log error of the simulated and observed data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.male.html#hydrostats.metrics.male" title="hydrostats.metrics.male"><code class="xref py py-obj docutils literal notranslate"><span class="pre">male</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Compute the mean absolute log error of the simulated and observed data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.msle.html#hydrostats.metrics.msle" title="hydrostats.metrics.msle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">msle</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Compute the mean squared log error of the simulated and observed data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.nrmse_range.html#hydrostats.metrics.nrmse_range" title="hydrostats.metrics.nrmse_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nrmse_range</span></code></a>(simulated_array,&nbsp;observed_array)</td>
+<td>“Return the Normalized Root Mean Square Error.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.nrmse_mean.html#hydrostats.metrics.nrmse_mean" title="hydrostats.metrics.nrmse_mean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nrmse_mean</span></code></a>(simulated_array,&nbsp;observed_array)</td>
+<td>“Return the mean Normalized Root Mean Square Error.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.nrmse_iqr.html#hydrostats.metrics.nrmse_iqr" title="hydrostats.metrics.nrmse_iqr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nrmse_iqr</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>“Return the interquartile range Normalized Root Mean Square Error.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.maape.html#hydrostats.metrics.maape" title="hydrostats.metrics.maape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">maape</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Returns the Mean Arctangent Absolute Percentage Error.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.d1_p.html#hydrostats.metrics.d1_p" title="hydrostats.metrics.d1_p"><code class="xref py py-obj docutils literal notranslate"><span class="pre">d1_p</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">param simulated_array:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">array of simulated data. :param observed_array:</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.ve.html#hydrostats.metrics.ve" title="hydrostats.metrics.ve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ve</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Range: 0≤VE&lt;1 (Unitless) smaller is better, does not indicate bias, error as a percentage of flow.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.pearson_r.html#hydrostats.metrics.pearson_r" title="hydrostats.metrics.pearson_r"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pearson_r</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td>Compute the median along the specified axis.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.spearman_r.html#hydrostats.metrics.spearman_r" title="hydrostats.metrics.spearman_r"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spearman_r</span></code></a>(simulated_array,&nbsp;observed_array)</td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">param simulated_array:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">param observed_array:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">param replace_nan:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.metrics.kge_2009.html#hydrostats.metrics.kge_2009" title="hydrostats.metrics.kge_2009"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kge_2009</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.metrics.kge_2012.html#hydrostats.metrics.kge_2012" title="hydrostats.metrics.kge_2012"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kge_2012</span></code></a>(simulated_array,&nbsp;observed_array[,&nbsp;…])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="module-hydrostats.test">
+<span id="hydrostats-test-module"></span><h2>hydrostats.test Module<a class="headerlink" href="#module-hydrostats.test" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-hydrostats.visual">
+<span id="hydrostats-visual-module"></span><h2>hydrostats.visual Module<a class="headerlink" href="#module-hydrostats.visual" title="Permalink to this headline">¶</a></h2>
+<p>Created on Jan 5 3:25:56 2018 &#64;author: Wade Roberts</p>
+<div class="section" id="id3">
+<h3>Functions<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.visual.plot.html#hydrostats.visual.plot" title="hydrostats.visual.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>(merged_data_df[,&nbsp;legend,&nbsp;metrics,&nbsp;…])</td>
+<td>A function that will plot a simulated and observed data vs time and show metrics to the left of the plot if specified.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.visual.hist.html#hydrostats.visual.hist" title="hydrostats.visual.hist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hist</span></code></a>([merged_data_df,&nbsp;sim_array,&nbsp;obs_array,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api/hydrostats.visual.scatter.html#hydrostats.visual.scatter" title="hydrostats.visual.scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scatter</span></code></a>([merged_data_df,&nbsp;sim_array,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api/hydrostats.visual.qqplot.html#hydrostats.visual.qqplot" title="hydrostats.visual.qqplot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qqplot</span></code></a>([merged_data_df,&nbsp;sim_array,&nbsp;…])</td>
+<td>Plots a Quantile-Quantile plot of the simulated and observed data.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to hydrostats’s documentation!</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#hydrostats-package">hydrostats package</a><ul>
+<li><a class="reference internal" href="#module-hydrostats.analyze">hydrostats.analyze Module</a><ul>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-hydrostats.data">hydrostats.data Module</a><ul>
+<li><a class="reference internal" href="#id1">Functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-hydrostats.metrics">hydrostats.metrics Module</a><ul>
+<li><a class="reference internal" href="#id2">Functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-hydrostats.test">hydrostats.test Module</a></li>
+<li><a class="reference internal" href="#module-hydrostats.visual">hydrostats.visual Module</a><ul>
+<li><a class="reference internal" href="#id3">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="api/hydrostats.analyze.make_table.html"
+                        title="next chapter">make_table</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api/hydrostats.analyze.make_table.html" title="make_table"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">hydrostats 0.65 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Wade Roberts.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+    </div>
+  </body>
+</html>
