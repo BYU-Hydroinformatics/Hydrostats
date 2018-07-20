@@ -2,4 +2,8 @@
 hydrostats_venv
 test.py
 __pycache__
+doctrees
+make.bat
+Makefile
 
+docs/pandoc-2.2.2.1-windows-x86_64.msi

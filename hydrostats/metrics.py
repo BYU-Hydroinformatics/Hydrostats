@@ -10,184 +10,484 @@ from numba import njit, prange
 from scipy.stats import gmean, rankdata
 import warnings
 
-__all__ = ['me', 'mae', 'mse', 'ed', 'ned', 'rmse', 'rmsle', 'mase', 'r_squared', 'acc', 'mape', 'mapd', 'smape1',
-           'smape2', 'd', 'd1', 'dr', 'drel', 'dmod', 'watt_m', 'mb_r', 'nse', 'nse_mod', 'nse_rel', 'lm_index', 'sa',
-           'sc', 'sid', 'sga', 'h1_mhe', 'h1_ahe', 'h1_rmshe', 'h2_mhe', 'h2_ahe', 'h2_rmshe', 'h3_mhe', 'h3_ahe',
-           'h3_rmshe', 'h4_mhe', 'h4_ahe', 'h4_rmshe', 'h5_mhe', 'h5_ahe', 'h5_rmshe', 'h6_mhe', 'h6_ahe', 'h6_rmshe',
-           'h7_mhe', 'h7_ahe', 'h7_rmshe', 'h8_mhe', 'h8_ahe', 'h8_rmshe', 'h10_mhe', 'h10_ahe', 'h10_rmshe',
-           'g_mean_diff', 'mean_var', 'mle', 'male', 'msle', 'nrmse_range', 'nrmse_mean', 'nrmse_iqr', 'maape', 'd1_p',
-           've', 'pearson_r', 'spearman_r', 'kge_2009', 'kge_2012']
-
-#######################################################################################################################
-#                                         General and Hydrological Error Metrics                                      #
-#######################################################################################################################
+__all__ = ['me', 'mae', 'mse', 'ed', 'ned', 'rmse', 'rmsle', 'mase', 'r_squared', 'acc', 'mape',
+           'mapd', 'smape1', 'smape2', 'd', 'd1', 'dr', 'drel', 'dmod', 'watt_m', 'mb_r', 'nse',
+           'nse_mod', 'nse_rel', 'lm_index', 'sa', 'sc', 'sid', 'sga', 'h1_mhe', 'h1_ahe',
+           'h1_rmshe', 'h2_mhe', 'h2_ahe', 'h2_rmshe', 'h3_mhe', 'h3_ahe', 'h3_rmshe', 'h4_mhe',
+           'h4_ahe', 'h4_rmshe', 'h5_mhe', 'h5_ahe', 'h5_rmshe', 'h6_mhe', 'h6_ahe', 'h6_rmshe',
+           'h7_mhe', 'h7_ahe', 'h7_rmshe', 'h8_mhe', 'h8_ahe', 'h8_rmshe', 'h10_mhe', 'h10_ahe',
+           'h10_rmshe', 'g_mean_diff', 'mean_var', 'mle', 'male', 'msle', 'nrmse_range',
+           'nrmse_mean', 'nrmse_iqr', 'maape', 'd1_p', 've', 'pearson_r', 'spearman_r', 'kge_2009',
+           'kge_2012']
 
 
-def me(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-       remove_zero=False):
+####################################################################################################
+#                            General and Hydrological Error Metrics                                #
+####################################################################################################
+
+
+def me(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+       remove_neg=False, remove_zero=False):
     """
 
-    :param simulated_array: A 1D Numpy array of forecasted data from the time series.
-    :param observed_array: A 1D Numpy array of observed data from the time series.
-    :param replace_nan: Float input indicating what value to replace NaN values with.
-    :param replace_inf: Float input indicating what value to replace Inf values with.
-    :param remove_neg: Boolean input indicating whether user wants to remove negative numbers.
-    :param remove_zero: Boolean input indicating whether user wants to remove zero values.
-    :return: the mean error (bias) of the two arrays
+    Compute the mean error of the simulated and observed data.
 
-    Range: -∞ < ME < ∞, data units, closer to 0 is  better, indicates bias.
-    Notes: random errors can cancel with ME than indicating a better fit than actual
+    **Range:** -inf < MAE < inf, data units, closer to zero is better, indicates bias.
 
-    - Fisher, Ronald Aylmer. “012: A Mathematical Examination of the Methods of Determining the Accuracy of an
-    Observation by the Mean Error, and by the Mean Square Error.,” 1920.
+    **Notes:** The mean error (ME) measures the difference between the simulated data and the
+    observed data. For the mean error, a smaller number indicates a better fit to the original
+    data. Note that if the error is in the form of random noise, the mean error will be very small,
+    which can skew the accuracy of this metric. ME is cumulative and will be small even if there
+    are large positive and negative errors that balance.
+
+    *x = observed data and y = simulated data*
+
+    ![Mean Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/ME.png?raw=true)
+
+    **Parameters**
+
+    forecasted_array:  *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **Example**
+
+    ```python
+    import hydrostats as hs
+    import numpy as np
+
+    sim = np.arange(10)
+    obs = np.random.rand(10)
+
+    hs.me(sim, obs)
+    ```
+
+    **References**
+
+    - Fisher, R.A., 1920. A Mathematical Examination of the Methods of Determining the Accuracy of
+      an Observation by the Mean Error, and by the Mean Square Error. Monthly Notices of the Royal
+      Astronomical Society 80 758 - 770.
+
     """
 
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
+    simulated_array, observed_array = remove_values(simulated_array, observed_array,
+                                                    replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
     return np.mean(simulated_array - observed_array)
 
 
-def mae(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-        remove_zero=False):
+def mae(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+        remove_neg=False, remove_zero=False):
+    """
+    Compute the mean absolute error of the simulated and observed data.
+
+    **Notes:** The ME measures the absolute difference between the simulated data and the observed
+    data. For the mean abolute error, a smaller number indicates a better fit to the original data.
+    Also note that random errors do not cancel. Also referred to as an L1-norm.
+
+    **Range:** 0 ≤ MAE < inf, data units, smaller is better, does not indicate bias.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References**
+
+    - Willmott, Cort J., and Kenji Matsuura. “Advantages of the Mean Absolute Error (MAE) over the
+      Root Mean Square Error (RMSE) in Assessing Average Model Performance.” Climate Research 30,
+      no. 1 (2005): 79–82.
+    - Willmott, Cort J., and Kenji Matsuura. “On the Use of Dimensioned Measures of Error to
+      Evaluate the Performance of Spatial Interpolators.” International Journal of Geographical
+      Information Science 20, no. 1 (2006): 89–102.
     """
 
-    :param simulated_array: A 1D Numpy array of forecasted data from the time series.
-    :param observed_array: A 1D Numpy array of observed data from the time series.
-    :param replace_nan: Float input indicating what value to replace NaN values with.
-    :param replace_inf: Float input indicating what value to replace Inf values with.
-    :param remove_neg: Boolean input indicating whether user wants to remove negative numbers.
-    :param remove_zero: Boolean input indicating whether user wants to remove zero values.
-    :return: Mean Absolute Error metric of the two arrays
-
-    Range: 0 ≤ MAE < ∞, data units, smaller is better, does not indicate bias.
-    Notes: random errors do not cancel, an L1-norm.
-
-    - Willmott, Cort J., and Kenji Matsuura. “Advantages of the Mean Absolute Error (MAE) over the Root Mean Square
-    Error (RMSE) in Assessing Average Model Performance.” Climate Research 30, no. 1 (2005): 79–82.
-    - Willmott, Cort J., and Kenji Matsuura. “On the Use of Dimensioned Measures of Error to Evaluate the Performance
-    of Spatial Interpolators.” International Journal of Geographical Information Science 20, no. 1 (2006): 89–102.
-    """
-
+    # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     return np.mean(np.absolute(simulated_array - observed_array))
 
 
-def mse(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-        remove_zero=False):
+def mse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+        remove_neg=False, remove_zero=False):
+    """
+    Compute the mean squared error of the simulated and observed data.
+
+    **Range:** 0 ≤ MSE < inf, data units squared, smaller is better, does not indicate bias.
+
+    **Notes:** Random errors do not cancel, highlights larger errors, also referred to as a
+    squared L2-norm.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References**
+    - Wang, Zhou, and Alan C. Bovik. “Mean Squared Error: Love It or Leave It? A New Look at Signal
+      Fidelity Measures.” IEEE Signal Processing Magazine 26, no. 1 (2009): 98–117.
     """
 
-    :param simulated_array: A 1D Numpy array of forecasted data from the time series.
-    :param observed_array: A 1D Numpy array of observed data from the time series.
-    :param replace_nan: Float input indicating what value to replace NaN values with.
-    :param replace_inf: Float input indicating what value to replace Inf values with.
-    :param remove_neg: Boolean input indicating whether user wants to remove negative numbers.
-    :param remove_zero: Boolean input indicating whether user wants to remove zero values.
-    :return: Mean Squared Error of the two arrays
-
-    Range: 0 ≤ MSE < ∞, data units squared, smaller is better, does not indicate bias.
-    Notes: random errors do not cancel, highlights larger errors, a squared L2-norm.
-
-    - Wang, Zhou, and Alan C. Bovik. “Mean Squared Error: Love It or Leave It? A New Look at Signal Fidelity Measures.”
-    IEEE Signal Processing Magazine 26, no. 1 (2009): 98–117.
-    """
-
+    # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     return np.mean((simulated_array - observed_array) ** 2)
 
 
-def mle(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-        remove_zero=False):
+def mle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+        remove_neg=False, remove_zero=False):
     """
+    Compute the mean log error of the simulated and observed data.
 
-    :param simulated_array: A 1D Numpy array of forecasted data from the time series.
-    :param observed_array: A 1D Numpy array of observed data from the time series.
-    :param replace_nan: Float input indicating what value to replace NaN values with.
-    :param replace_inf: Float input indicating what value to replace Inf values with.
-    :param remove_neg: Boolean input indicating whether user wants to remove negative numbers.
-    :param remove_zero: Boolean input indicating whether user wants to remove zero values.
-    :return: The mean log error of the two arrays.
+    **Range:** -inf < MLE < inf, data units, closer to zero is better, indicates bias.
 
-    Same as ME only use log ratios as the error term.
-    Notes: Limits the impact of outliers, more evenly weights high and low flows.
+    **Notes** Same as ME only use log ratios as the error term. Limits the impact of outliers, more
+    evenly weights high and low data values.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References**
 
     - Törnqvist, Leo, Pentti Vartia, and Yrjö O. Vartia. “How Should Relative Changes Be Measured?”
-    The American Statistician 39, no. 1 (1985): 43–46.
+      The American Statistician 39, no. 1 (1985): 43–46.
     """
 
+    # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     sim_log = np.log(simulated_array)
     obs_log = np.log(observed_array)
     return np.mean(sim_log - obs_log)
 
 
-def male(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-         remove_zero=False):
+def male(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+         remove_neg=False, remove_zero=False):
     """
+    Compute the mean absolute log error of the simulated and observed data.
 
-    :param simulated_array: A 1D Numpy array of forecasted data from the time series.
-    :param observed_array: A 1D Numpy array of observed data from the time series.
-    :param replace_nan: Float input indicating what value to replace NaN values with.
-    :param replace_inf: Float input indicating what value to replace Inf values with.
-    :param remove_neg: Boolean input indicating whether user wants to remove negative numbers.
-    :param remove_zero: Boolean input indicating whether user wants to remove zero values.
-    :return: The mean absolute log error of the two arrays.
+    **Range:** 0 ≤ MALE < inf, data units squared, smaller is better, does not indicate bias.
 
-    Same as MAE only use log ratios as the error term.
-    Notes: Limits the impact of outliers, more evenly weights high and low flows.
+    **Notes** Same as MAE only use log ratios as the error term. Limits the impact of outliers,
+    more evenly weights high and low flows.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References**
 
     - Törnqvist, Leo, Pentti Vartia, and Yrjö O. Vartia. “How Should Relative Changes Be Measured?”
-    The American Statistician 39, no. 1 (1985): 43–46.
+      The American Statistician 39, no. 1 (1985): 43–46.
     """
 
+    # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     sim_log = np.log(simulated_array)
     obs_log = np.log(observed_array)
     return np.mean(np.abs(sim_log - obs_log))
 
 
-def msle(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-         remove_zero=False):
-    """Returns the Mean Squared Log Error."""
+def msle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+         remove_neg=False, remove_zero=False):
+    """
+    Compute the mean squared log error of the simulated and observed data.
+
+    **Range:** 0 ≤ MSLE < inf, data units squared, smaller is better, does not indicate bias.
+
+    **Notes** Same as the mean squared error (MSE) only use log ratios as the error term. Limits
+    the impact of outliers, more evenly weights high and low values.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References**
+
+    - Törnqvist, Leo, Pentti Vartia, and Yrjö O. Vartia. “How Should Relative Changes Be Measured?”
+      The American Statistician 39, no. 1 (1985): 43–46.
+    """
+    # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     sim_log = np.log(simulated_array)
     obs_log = np.log(observed_array)
     return np.mean((sim_log - obs_log) ** 2)
 
 
-def ed(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-       remove_zero=False):
-    """Returns the Euclidean Distance"""
+def ed(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+       remove_neg=False, remove_zero=False):
+    """
+    Compute the Euclidean distance between predicted and observed values in vector space.
+
+    **Range** 0 ≤ ED < inf, smaller is better.
+    **Notes** This metric does not indicate bias. It is also sometimes referred to as the L2-norm.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References**
+
+    - Kennard, M. J., Mackay, S. J., Pusey, B. J., Olden, J. D., & Marsh, N. (2010). Quantifying
+      uncertainty in estimation of hydrologic metrics for ecohydrological studies. River Research
+      and Applications, 26(2), 137-156.
+    """
+
+    # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     return np.linalg.norm(observed_array - simulated_array)
+
+
+def mde(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+        remove_neg=False, remove_zero=False):
+    """
+    Compute the median error between the simulated and observed data.
+
+    **Range** -inf < MdE < inf, closer to zero is better.
+    **Notes** This metric indicates bias. It is similar to the mean error (ME), only it takes the
+    median rather than the mean. Median measures reduces the impact of outliers.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    """
+
+    # Checking and cleaning the data
+    assert len(observed_array) == len(simulated_array)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
+    return np.median(simulated_array - observed_array)
 
 
 def ned(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
         remove_zero=False):
-    """Returns the Normalized Euclidean Distance"""
+    """
+    Compute the normalized Euclidian distance between the simulated and observed data in vector
+    space.
+
+    **Range** 0 ≤ NED < inf, smaller is better.
+    **Notes** This metric does not indicate bias. It is also sometimes referred to as the squared
+    L2-norm.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    """
+
+    # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = observed_array / np.mean(observed_array)
     b = simulated_array / np.mean(simulated_array)
     return np.linalg.norm(a - b)
@@ -195,12 +495,49 @@ def ned(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
 def rmse(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
          remove_zero=False):
-    """Returns the Root mean squared error
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the root mean square error between the simulated and observed data.
+
+    **Range** 0 ≤ RMSE < inf, smaller is better.
+    **Notes** Random errors do not cancel. This metric will highlights larger errors. It is also
+    referred to as an L2-norm.
+
+    Hyndman and Koehler, 2006; Willmott and Matsuura, 2005
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    """
+
+    # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     return np.sqrt(np.mean((simulated_array - observed_array) ** 2))
 
 
@@ -210,21 +547,30 @@ def rmsle(simulated_array, observed_array, replace_nan=None, replace_inf=None, r
     simulated array is increased by one unit in order to avoid run-time errors and nan values.
     arguments: simulated array, observed array"""
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
+    simulated_array, observed_array = remove_values(simulated_array, observed_array,
+                                                    replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
     return np.sqrt(np.mean(np.power(np.log1p(simulated_array) - np.log1p(observed_array), 2)))
 
 
-def nrmse_range(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+def nrmse_range(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+                remove_neg=False,
                 remove_zero=False):
     """"Return the Normalized Root Mean Square Error. RMSE normalized by the range of the observed time series (x).
     This allows comparison between data sets with different scales. The NRMSErange and NRMSEquartile  are the most and
     least sensitive to outliers, respectively. (Pontius et al., 2008)"""
+
+    # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
 
     rmse_value = rmse(simulated_array=simulated_array, observed_array=observed_array)
     obs_max = np.max(observed_array)
@@ -232,31 +578,47 @@ def nrmse_range(simulated_array, observed_array, replace_nan=None, replace_inf=N
     return rmse_value / (obs_max - obs_min)
 
 
-def nrmse_mean(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+def nrmse_mean(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+               remove_neg=False,
                remove_zero=False):
     """"Return the mean Normalized Root Mean Square Error. RMSE normalized by the mean of the observed time series (x).
     This allows comparison between data sets with different scales. The NRMSErange and NRMSEquartile  are the most and
     least sensitive to outliers, respectively.
     (Pontius et al., 2008)"""
+
+    # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
 
     rmse_value = rmse(simulated_array=simulated_array, observed_array=observed_array)
     obs_mean = np.mean(observed_array)
     return rmse_value / obs_mean
 
 
-def nrmse_iqr(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def nrmse_iqr(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+              remove_zero=False):
     """"Return the interquartile range Normalized Root Mean Square Error. RMSE normalized by the interquartile
     range of the observed time series (x). The nRMSE allows comparison between data sets with different scales.
     The NRMSErange and NRMSEquartile  are the most and least sensitive to outliers, respectively.
     (Pontius et al., 2008)"""
+
+    # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
 
     rmse_value = rmse(simulated_array=simulated_array, observed_array=observed_array)
     q1 = np.percentile(observed_array, 25)
@@ -270,10 +632,18 @@ def mase(simulated_array, observed_array, m=1, replace_nan=None, replace_inf=Non
     """Returns the Mean Absolute Scaled Error, the default period for m (seasonal period) is 1.
     Using the default assumes that the data is non-seasonal
     arguments: simulated array, observed array, m where m is the seasonal period"""
+
+    # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     start = m
     end = simulated_array.size - m
     a = np.mean(np.abs(simulated_array - observed_array))
@@ -281,29 +651,139 @@ def mase(simulated_array, observed_array, m=1, replace_nan=None, replace_inf=Non
     return a / (np.sum(b) / end)
 
 
-def pearson_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
-    simulated_array, observed_array = remove_values(simulated_array, observed_array,
-                                                    replace_nan=replace_nan, replace_inf=replace_inf,
-                                                    remove_neg=remove_neg, remove_zero=remove_zero)
+def pearson_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+              remove_zero=False):
+    """
+    Compute the median along the specified axis.
+    Returns the median of the array elements.
+
+    Parameters
+    ----------
+
+    a : array_like
+        Input array or object that can be converted to an array.
+    axis : {int, sequence of int, None}, optional
+        Axis or axes along which the medians are computed. The default
+        is to compute the median along a flattened version of the array.
+        A sequence of axes is supported since version 1.9.0.
+    out : ndarray, optional
+        Alternative output array in which to place the result. It must
+        have the same shape and buffer length as the expected output,
+        but the type (of the output) will be cast if necessary.
+    overwrite_input : bool, optional
+       If True, then allow use of memory of input array `a` for
+       calculations. The input array will be modified by the call to
+       `median`. This will save memory when you do not need to preserve
+       the contents of the input array. Treat the input as undefined,
+       but it will probably be fully or partially sorted. Default is
+       False. If `overwrite_input` is ``True`` and `a` is not already an
+       `ndarray`, an error will be raised.
+    keepdims : bool, optional
+        If this is set to True, the axes which are reduced are left
+        in the result as dimensions with size one. With this option,
+        the result will broadcast correctly against the original `arr`.
+        .. versionadded:: 1.9.0
+
+    *******
+    Returns
+    *******
+
+    median : ndarray
+        A new array holding the result. If the input contains integers
+        or floats smaller than ``float64``, then the output data-type is
+        ``np.float64``.  Otherwise, the data-type of the output is the
+        same as that of the input. If `out` is specified, that array is
+        returned instead.
+
+    See Also
+    --------
+
+    mean, percentile
+
+    Notes
+    -----
+
+    Given a vector ``V`` of length ``N``, the median of ``V`` is the
+    middle value of a sorted copy of ``V``, ``V_sorted`` - i
+    e., ``V_sorted[(N-1)/2]``, when ``N`` is odd, and the average of the
+    two middle values of ``V_sorted`` when ``N`` is even.
+
+    Examples
+    --------
+
+    >>> a = np.array([[10, 7, 4], [3, 2, 1]])
+    >>> a
+    array([[10,  7,  4],
+           [ 3,  2,  1]])
+    >>> np.median(a)
+    3.5
+    >>> np.median(a, axis=0)
+    array([ 6.5,  4.5,  2.5])
+    >>> np.median(a, axis=1)
+    array([ 7.,  2.])
+    >>> m = np.median(a, axis=0)
+    >>> out = np.zeros_like(m)
+    >>> np.median(a, axis=0, out=m)
+    array([ 6.5,  4.5,  2.5])
+    >>> m
+    array([ 6.5,  4.5,  2.5])
+    >>> b = a.copy()
+    >>> np.median(b, axis=1, overwrite_input=True)
+    array([ 7.,  2.])
+    >>> assert not np.all(a==b)
+    >>> b = a.copy()
+    >>> np.median(b, axis=None, overwrite_input=True)
+    3.5
+    >>> assert not np.all(a==b)
+    """
+    # Checking and cleaning the data
+    assert len(observed_array) == len(simulated_array)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     sim_mean = np.mean(simulated_array)
     obs_mean = np.mean(observed_array)
 
-    top = np.sum((observed_array - obs_mean)*(simulated_array - sim_mean))
-    bot1 = np.sqrt(np.sum((observed_array - obs_mean)**2))
-    bot2 = np.sqrt(np.sum((simulated_array - sim_mean)**2))
+    top = np.sum((observed_array - obs_mean) * (simulated_array - sim_mean))
+    bot1 = np.sqrt(np.sum((observed_array - obs_mean) ** 2))
+    bot2 = np.sqrt(np.sum((simulated_array - sim_mean) ** 2))
 
     return top / (bot1 * bot2)
 
 
-def spearman_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-               remove_zero=False):
-    """Returns the Spearman rank-order correlation coefficient. The rank method is the scipy default, or 'average'.
+def spearman_r(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+               remove_neg=False, remove_zero=False):
+    """
 
+    :param simulated_array:
+    :param observed_array:
+    :param replace_nan:
+    :param replace_inf:
+    :param remove_neg:
+    :param remove_zero:
+    :return: Returns the Spearman rank-order correlation coefficient. The rank method is the scipy
+             default, or 'average'.
+    """
+    """
     Spearman C (1904). "The proof and measurement of association between two things". American Journal of Psychology.
     15: 72–101. doi:10.2307/1412159"""
-    simulated_array, observed_array = remove_values(simulated_array, observed_array,
-                                                    replace_nan=replace_nan, replace_inf=replace_inf,
-                                                    remove_neg=remove_neg, remove_zero=remove_zero)
+
+    assert len(observed_array) == len(simulated_array)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     rank_sim = rankdata(simulated_array)
     rank_obs = rankdata(observed_array)
 
@@ -311,7 +791,8 @@ def spearman_r(simulated_array, observed_array, replace_nan=None, replace_inf=No
     mean_rank_obs = np.mean(rank_obs)
 
     top = np.mean((rank_obs - mean_rank_obs) * (rank_sim - mean_rank_sim))
-    bot = np.sqrt(np.mean((rank_obs - mean_rank_obs) ** 2) * np.mean((rank_sim - mean_rank_sim) ** 2))
+    bot = np.sqrt(
+        np.mean((rank_obs - mean_rank_obs) ** 2) * np.mean((rank_sim - mean_rank_sim) ** 2))
 
     return top / bot
 
@@ -320,10 +801,17 @@ def r_squared(simulated_array, observed_array, replace_nan=None, replace_inf=Non
               remove_zero=False):
     """Returns the Coefficient of Determination
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = observed_array - np.mean(observed_array)
     b = simulated_array - np.mean(simulated_array)
     return (np.sum(a * b)) ** 2 / (np.sum(a ** 2) * np.sum(b ** 2))
@@ -348,10 +836,17 @@ def acc(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
     Monthly Weather Review 117, no. 3 (1989): 572–82.
 
     """
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = simulated_array - np.mean(simulated_array)
     b = observed_array - np.mean(observed_array)
     c = np.std(observed_array) * np.std(simulated_array) * simulated_array.size
@@ -362,10 +857,17 @@ def mape(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
          remove_zero=False):
     """Returns the Mean Absolute Percentage Error. The answer is a percentage
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = simulated_array - observed_array
     b = np.abs(a / observed_array)
     c = 100 / simulated_array.size
@@ -376,10 +878,17 @@ def mapd(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
          remove_zero=False):
     """Returns the Mean Absolute Percentage Deviation.
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = np.sum(np.abs(simulated_array - observed_array))
     b = np.sum(np.abs(observed_array))
     return a / b
@@ -392,10 +901,17 @@ def maape(simulated_array, observed_array, replace_nan=None, replace_inf=None, r
     observed data. not as bias as MAPE by under-over predictions
     (Kim and Kim, 2016)
     """
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = simulated_array - observed_array
     b = np.abs(a / observed_array)
     return np.mean(np.arctan(b))
@@ -405,10 +921,17 @@ def smape1(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """Returns the Symmetric Mean Absolute Percentage Error (1).
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = 100 / simulated_array.size
     b = np.abs(simulated_array - observed_array)
     c = np.abs(simulated_array) + np.abs(observed_array)
@@ -419,10 +942,17 @@ def smape2(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """Returns the Symmetric Mean Absolute Percentage Error (2).
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = simulated_array - observed_array
     b = (simulated_array + observed_array) / 2
     c = 100 / simulated_array.size
@@ -433,10 +963,17 @@ def d(simulated_array, observed_array, replace_nan=None, replace_inf=None, remov
       remove_zero=False):
     """Returns the Index of Agreement (d).
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = (observed_array - simulated_array) ** 2
     b = np.abs(simulated_array - np.mean(observed_array))
     c = np.abs(observed_array - np.mean(observed_array))
@@ -447,10 +984,16 @@ def d1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
        remove_zero=False):
     """Returns the Index of Agreement (d1).
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
 
     obs_mean = np.mean(observed_array)
 
@@ -464,10 +1007,17 @@ def dr(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
        remove_zero=False):
     """Returns the Refined Index of Agreement.
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = np.sum(np.abs(simulated_array - observed_array))
     b = 2 * np.sum(np.abs(observed_array - observed_array.mean()))
     if a <= b:
@@ -480,10 +1030,17 @@ def drel(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
          remove_zero=False):
     """Returns the Relative Index of Agreement.
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = ((simulated_array - observed_array) / observed_array) ** 2
     b = np.abs(simulated_array - np.mean(observed_array))
     c = np.abs(observed_array - np.mean(observed_array))
@@ -495,10 +1052,17 @@ def dmod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=Non
          remove_zero=False):
     """Returns the modified index of agreement, with j=1 as the default.
     arguments: simulated array, observed array, j"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = (np.abs(simulated_array - observed_array)) ** j
     b = np.abs(simulated_array - np.mean(observed_array))
     c = np.abs(observed_array - np.mean(observed_array))
@@ -511,10 +1075,17 @@ def watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     """Returns Watterson's M value. Watterson IG. 1996. Non-dimensional measures of climate model performance.
     International Journal of Climatology 16: 379–391.
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = 2 / np.pi
     b = mse(simulated_array, observed_array)
     c = np.std(observed_array) ** 2 + np.std(simulated_array) ** 2
@@ -528,10 +1099,16 @@ def mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
     """Returns the Mielke-Berry R value. Mielke PW Jr, Berry KJ. 2001. Permutation Methods: A Distance Function Approach.
     Springer-Verlag: New York; 352.
     arguments: simulated array, observed array"""
-    # Removing Nan Values
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+
+    assert len(observed_array) == len(simulated_array)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
 
     @njit(parallel=True)
     def numba_loop(simulated_array_numba, observed_array_numba):
@@ -555,16 +1132,24 @@ def nse(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
     """Returns the Nash-Sutcliffe Efficiency value (Nash JE, Sutcliffe JV. 1970. River flow forecasting through
     conceptual models part I—A discussion of principles. Journal of Hydrology 10(3): 282–290.)
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = (np.abs(simulated_array - observed_array)) ** 2
     b = (np.abs(observed_array - np.mean(observed_array))) ** 2
     return 1 - (np.sum(a) / np.sum(b))
 
 
-def nse_mod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=None, remove_neg=False,
+def nse_mod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=None,
+            remove_neg=False,
             remove_zero=False):
     """Returns the modified Nash-Sutcliffe Efficiency value
     (Krause, P., Boyle, D. P., and Base, F.: Comparison of different efficiency criteria for hydrological model
@@ -572,10 +1157,16 @@ def nse_mod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=
     Legates, D. R., and G. J. McCabe Jr. (1999), Evaluating the Use of "Goodness-of-Fit"
     Measures in Hydrologic and Hydroclimatic Model Validation, Water Resour. Res., 35(1), 233-241)
     arguments: simulated array, observed array, j"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
 
     a = (np.abs(simulated_array - observed_array)) ** j
     b = (np.abs(observed_array - np.mean(observed_array))) ** j
@@ -590,21 +1181,34 @@ def nse_rel(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     Legates, D. R., and G. J. McCabe Jr. (1999), Evaluating the Use of "Goodness-of-Fit"
     Measures in Hydrologic and Hydroclimatic Model Validation, Water Resour. Res., 35(1), 233-241)
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
 
     a = (np.abs((simulated_array - observed_array) / observed_array)) ** 2
     b = (np.abs((observed_array - np.mean(observed_array)) / np.mean(observed_array))) ** 2
     return 1 - (np.sum(a) / np.sum(b))
 
 
-def kge_2009(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None, replace_inf=None, remove_neg=False,
-             remove_zero=False):
-    simulated_array, observed_array = remove_values(simulated_array, observed_array,
-                                                    replace_nan=replace_nan, replace_inf=replace_inf,
-                                                    remove_neg=remove_neg, remove_zero=remove_zero)
+def kge_2009(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
+             replace_inf=None, remove_neg=False, remove_zero=False):
+    assert len(observed_array) == len(simulated_array)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     # Means
     sim_mean = np.mean(simulated_array)
     obs_mean = np.mean(observed_array)
@@ -626,24 +1230,34 @@ def kge_2009(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None, rep
     alpha = sim_sigma / obs_sigma
 
     if obs_mean != 0 and obs_sigma != 0:
-        kge = 1 - np.sqrt((s[0] * (pr - 1))**2 + (s[1] * (alpha - 1))**2 + (s[2] * (beta - 1))**2)
+        kge = 1 - np.sqrt(
+            (s[0] * (pr - 1)) ** 2 + (s[1] * (alpha - 1)) ** 2 + (s[2] * (beta - 1)) ** 2)
     else:
         if obs_mean == 0:
-            warnings.warn('Warning: The observed data mean is 0. Therefore, Beta is infinite and the KGE value cannot '
-                          'be computed.')
+            warnings.warn(
+                'Warning: The observed data mean is 0. Therefore, Beta is infinite and the KGE value cannot '
+                'be computed.')
         if obs_sigma == 0:
-            warnings.warn('Warning: The observed data standard deviation is 0. Therefore, Alpha is infinite and the KGE'
-                          ' value cannot be computed.')
+            warnings.warn(
+                'Warning: The observed data standard deviation is 0. Therefore, Alpha is infinite and the KGE'
+                ' value cannot be computed.')
         kge = np.nan
 
     return kge
 
 
-def kge_2012(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None, replace_inf=None, remove_neg=False,
-             remove_zero=False):
-    simulated_array, observed_array = remove_values(simulated_array, observed_array,
-                                                    replace_nan=replace_nan, replace_inf=replace_inf,
-                                                    remove_neg=remove_neg, remove_zero=remove_zero)
+def kge_2012(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
+             replace_inf=None, remove_neg=False, remove_zero=False):
+    assert len(observed_array) == len(simulated_array)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     # Means
     sim_mean = np.mean(simulated_array)
     obs_mean = np.mean(observed_array)
@@ -669,29 +1283,40 @@ def kge_2012(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None, rep
     gam = sim_cv / obs_cv
 
     if obs_mean != 0 and obs_sigma != 0:
-        kge = 1 - np.sqrt((s[0] * (pr - 1))**2 + (s[1] * (gam - 1))**2 + (s[2] * (beta-1))**2)
+        kge = 1 - np.sqrt(
+            (s[0] * (pr - 1)) ** 2 + (s[1] * (gam - 1)) ** 2 + (s[2] * (beta - 1)) ** 2)
     else:
         if obs_mean == 0:
-            warnings.warn('Warning: The observed data mean is 0. Therefore, Beta is infinite and the KGE value cannot '
-                          'be computed.')
+            warnings.warn(
+                'Warning: The observed data mean is 0. Therefore, Beta is infinite and the KGE value cannot '
+                'be computed.')
         if obs_sigma == 0:
-            warnings.warn('Warning: The observed data standard deviation is 0. Therefore, Gamma is infinite and the KGE'
-                          ' value cannot be computed.')
+            warnings.warn(
+                'Warning: The observed data standard deviation is 0. Therefore, Gamma is infinite and the KGE'
+                ' value cannot be computed.')
         kge = np.nan
 
     return kge
 
 
-def lm_index(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, replace_inf=None, remove_neg=False,
+def lm_index(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, replace_inf=None,
+             remove_neg=False,
              remove_zero=False):
     """Returns the Legate-McCabe Efficiency Index. Range: 0 ≤ lm_index < 1, unit less, larger is better,
     does not indicate bias, less weight to outliers. The term obs_bar_p is a seasonal or other selected average. If no
     obs_bar_p is given, the function will use the average of the observed data instead.
     (Legates and McCabe Jr, 1999)"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     mean_obs = np.mean(observed_array)
 
     if obs_bar_p is not None:
@@ -704,7 +1329,8 @@ def lm_index(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, 
         return 1 - (np.sum(a) / np.sum(b))
 
 
-def d1_p(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, replace_inf=None, remove_neg=False,
+def d1_p(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, replace_inf=None,
+         remove_neg=False,
          remove_zero=False):
     """
     :param simulated_array: array of simulated data.
@@ -720,10 +1346,16 @@ def d1_p(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, repl
 
     (Legates and McCabe Jr, 1999)
     """
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
 
     if obs_bar_p is not None:
         a = np.abs(observed_array - simulated_array)
@@ -740,10 +1372,17 @@ def ve(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
        remove_zero=False):
     """Range: 0≤VE<1 (Unitless) smaller is better, does not indicate bias, error as a percentage of flow.
     (Criss and Winston, 2008)"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = np.sum(np.abs(simulated_array - observed_array))
     b = np.sum(observed_array)
     return 1 - (a / b)
@@ -754,10 +1393,17 @@ def sa(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
     """Returns the spectral angle. Robila, S.A.; Gershman, A. In Spectral matching accuracy in processing hyperspectral
     data, Signals, Circuits and Systems, 2005. ISSCS 2005. International Symposium on, 2005; IEEE: pp 163-166.
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = np.dot(simulated_array, observed_array)
     b = np.linalg.norm(simulated_array) * np.linalg.norm(observed_array)
     return np.arccos(a / b)
@@ -769,10 +1415,17 @@ def sc(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
     hyperspectral data, Signals, Circuits and Systems, 2005. ISSCS 2005. International Symposium on,
     2005; IEEE: pp 163-166.
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     a = np.dot(observed_array - np.mean(observed_array), simulated_array - np.mean(simulated_array))
     b = np.linalg.norm(observed_array - np.mean(observed_array))
     c = np.linalg.norm(simulated_array - np.mean(simulated_array))
@@ -784,11 +1437,19 @@ def sid(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
         remove_zero=False):
     """Returns the ___
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
-    first = (observed_array / np.mean(observed_array)) - (simulated_array / np.mean(simulated_array))
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
+    first = (observed_array / np.mean(observed_array)) - (
+                simulated_array / np.mean(simulated_array))
     second1 = np.log10(observed_array) - np.log10(np.mean(observed_array))
     second2 = np.log10(simulated_array) - np.log10(np.mean(simulated_array))
     return np.dot(first, second1 - second2)
@@ -798,10 +1459,17 @@ def sga(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
         remove_zero=False):
     """Returns the spectral gradient angle
     arguments: simulated array, observed array"""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     sgx = observed_array[1:] - observed_array[:observed_array.size - 1]
     sgy = simulated_array[1:] - simulated_array[:simulated_array.size - 1]
     a = np.dot(sgx, sgy)
@@ -814,13 +1482,20 @@ def sga(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
     ################################################################################################################"""
 
 
-def h1_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h1_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array - observed_array) / observed_array
     return np.mean(h)
 
@@ -828,252 +1503,429 @@ def h1_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 def h1_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
     """H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array - observed_array) / observed_array
     return np.mean(np.abs(h))
 
 
-def h1_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h1_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+             remove_zero=False):
     """H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array - observed_array) / observed_array
     return np.mean(np.sqrt((h ** 2)))
 
 
-def h2_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h2_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array - observed_array) / simulated_array
     return np.mean(h)
 
 
-def h2_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h2_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array - observed_array) / simulated_array
     return np.mean(np.abs(h))
 
 
-def h2_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h2_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+             remove_zero=False):
     """H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+
+    assert len(observed_array) == len(simulated_array)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array - observed_array) / simulated_array
     return np.mean(np.sqrt((h ** 2)))
 
 
-def h3_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h3_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array - observed_array) / (0.5 * (simulated_array + observed_array))
     return np.mean(h)
 
 
-def h3_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h3_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array - observed_array) / (0.5 * (simulated_array + observed_array))
     return np.mean(np.abs(h))
 
 
-def h3_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h3_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+             remove_zero=False):
     """H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array - observed_array) / (0.5 * (simulated_array + observed_array))
     return np.mean(np.sqrt((h ** 2)))
 
 
-def h4_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h4_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array - observed_array) / np.sqrt(simulated_array * observed_array)
     return np.mean(h)
 
 
-def h4_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h4_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array - observed_array) / np.sqrt(simulated_array * observed_array)
     return np.mean(np.abs(h))
 
 
-def h4_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h4_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+             remove_zero=False):
     """H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array - observed_array) / np.sqrt(simulated_array * observed_array)
     return np.mean(np.sqrt((h ** 2)))
 
 
-def h5_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h5_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     top = (simulated_array - observed_array)
     bot = np.reciprocal(0.5 * (np.reciprocal(observed_array) + np.reciprocal(simulated_array)))
     h = top / bot
     return np.mean(h)
 
 
-def h5_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h5_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     top = (simulated_array - observed_array)
     bot = np.reciprocal(0.5 * (np.reciprocal(observed_array) + np.reciprocal(simulated_array)))
     h = top / bot
     return np.mean(np.abs(h))
 
 
-def h5_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h5_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+             remove_zero=False):
     """H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     top = (simulated_array - observed_array)
     bot = np.reciprocal(0.5 * (np.reciprocal(observed_array) + np.reciprocal(simulated_array)))
     h = top / bot
     return np.mean(np.sqrt((h ** 2)))
 
 
-def h6_mhe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=None, remove_neg=False,
+def h6_mhe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=None,
+           remove_neg=False,
            remove_zero=False):
     """H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     top = (simulated_array / observed_array - 1)
     bot = np.power(0.5 * (1 + np.power(simulated_array / observed_array, k)), 1 / k)
     h = top / bot
     return np.mean(h)
 
 
-def h6_ahe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=None, remove_neg=False,
+def h6_ahe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=None,
+           remove_neg=False,
            remove_zero=False):
     """H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     top = (simulated_array / observed_array - 1)
     bot = np.power(0.5 * (1 + np.power(simulated_array / observed_array, k)), 1 / k)
     h = top / bot
     return np.mean(np.abs(h))
 
 
-def h6_rmshe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=None, remove_neg=False,
+def h6_rmshe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=None,
+             remove_neg=False,
              remove_zero=False):
     """H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     top = (simulated_array / observed_array - 1)
     bot = np.power(0.5 * (1 + np.power(simulated_array / observed_array, k)), 1 / k)
     h = top / bot
     return np.mean(np.sqrt((h ** 2)))
 
 
-def h7_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h7_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array / observed_array - 1) / np.min(simulated_array / observed_array)
     return np.mean(h)
 
 
-def h7_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h7_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array / observed_array - 1) / np.min(simulated_array / observed_array)
     return np.mean(np.abs(h))
 
 
-def h7_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h7_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+             remove_zero=False):
     """H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array / observed_array - 1) / np.min(simulated_array / observed_array)
     return np.mean(np.sqrt((h ** 2)))
 
 
-def h8_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h8_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array / observed_array - 1) / np.max(simulated_array / observed_array)
     return np.mean(h)
 
 
-def h8_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h8_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+           remove_zero=False):
     """H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array / observed_array - 1) / np.max(simulated_array / observed_array)
     return np.mean(np.abs(h))
 
 
-def h8_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h8_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+             remove_zero=False):
     """H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = (simulated_array / observed_array - 1) / np.max(simulated_array / observed_array)
     return np.mean(np.sqrt((h ** 2)))
 
@@ -1091,49 +1943,80 @@ def h8_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
 #         raise HydrostatsError("The three types available are 'mhe', 'ahe', and 'rmshe'.")
 
 
-def h10_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h10_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+            remove_zero=False):
     """H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = np.log1p(simulated_array) - np.log1p(observed_array)
     return np.mean(h)
 
 
-def h10_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h10_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+            remove_zero=False):
     """H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = np.log1p(simulated_array) - np.log1p(observed_array)
     return np.mean(np.abs(h))
 
 
-def h10_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False):
+def h10_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+              remove_zero=False):
     """H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     h = np.log1p(simulated_array) - np.log1p(observed_array)
     return np.mean(np.sqrt((h ** 2)))
 
 
-""" ###################################################################################################################
-                                Statistical Error Metrics for Distribution Testing                                       
-    ################################################################################################################"""
+###################################################################################################
+#                         Statistical Error Metrics for Distribution Testing                      #
+###################################################################################################
 
 
-def g_mean_diff(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+def g_mean_diff(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+                remove_neg=False,
                 remove_zero=False):
     """Returns the geometric mean difference."""
+
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     sim_log = np.log1p(simulated_array)
     obs_log = np.log1p(observed_array)
     return np.exp(gmean(sim_log) - gmean(obs_log))
@@ -1142,65 +2025,73 @@ def g_mean_diff(simulated_array, observed_array, replace_nan=None, replace_inf=N
 def mean_var(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
              remove_zero=False):
     assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(simulated_array, observed_array, replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
-                                                    remove_zero=remove_zero)
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
     return np.var(np.log1p(observed_array) - np.log1p(simulated_array))
 
 
-#######################################################################################################################
-#                                             HELPER FUNCTIONS                                                        #
-#######################################################################################################################
+####################################################################################################
+#                                      HELPER FUNCTIONS                                            #
+####################################################################################################
 
 
 class HydrostatsError(Exception):
     pass
 
 
-metric_names = ['Mean Error', 'Mean Absolute Error', 'Mean Squared Error', 'Eclidean Distance',
-                'Normalized Eclidean Distance', 'Root Mean Square Error',
-                'Root Mean Squared Log Error', 'Mean Absolute Scaled Error', 'Coefficient of Determination',
-                'Anomaly Correlation Coefficient', 'Mean Absolute Percentage Error',
-                'Mean Absolute Percentage Deviation', 'Symmetric Mean Absolute Percentage Error (1)',
-                'Symmetric Mean Absolute Percentage Error (2)', 'Index of Agreement (d)',
-                'Index of Agreement (d1)', 'Index of Agreement Refined (dr)',
-                'Relative Index of Agreement', 'Modified Index of Agreement', "Watterson's M",
-                'Mielke-Berry R', 'Nash-Sutcliffe Efficiency', 'Modified Nash-Sutcliffe Efficiency',
-                'Relative Nash-Sutcliffe Efficiency', 'Legate-McCabe Efficiency Index',
-                'Spectral Angle', 'Spectral Correlation', 'Spectral Information Divergence',
-                'Spectral Gradient Angle', 'H1 - MHE', 'H1 - AHE', 'H1 - RMSHE', 'H2 - MHE',
-                'H2 - AHE', 'H2 - RMSHE', 'H3 - MHE', 'H3 - AHE', 'H3 - RMSHE', 'H4 - MHE',
-                'H4 - AHE', 'H4 - RMSHE', 'H5 - MHE', 'H5 - AHE', 'H5 - RMSHE', 'H6 - MHE',
-                'H6 - AHE', 'H6 - RMSHE', 'H7 - MHE', 'H7 - AHE', 'H7 - RMSHE', 'H8 - MHE',
-                'H8 - AHE', 'H8 - RMSHE', 'H10 - MHE', 'H10 - AHE', 'H10 - RMSHE',
-                'Geometric Mean Difference', 'Mean Variance', 'Mean Log Error',
-                'Mean Absolute Log Error', 'Mean Squared Log Error',
-                'Normalized Root Mean Square Error - Range',
-                'Normalized Root Mean Square Error - Mean',
-                'Normalized Root Mean Square Error - IQR',
-                'Mean Arctangent Absolute Percentage Error',
-                'Legate-McCabe Index of Agreement', 'Volumetric Efficiency', 'Pearson R', 'Spearman R',
-                'Kling-Gupta Efficiency (2009)', 'Kling-Gupta Efficiency (2012)']
+metric_names = [
+    'Mean Error', 'Mean Absolute Error', 'Mean Squared Error', 'Eclidean Distance',
+    'Normalized Eclidean Distance', 'Root Mean Square Error', 'Root Mean Squared Log Error',
+    'Mean Absolute Scaled Error', 'Coefficient of Determination', 'Anomaly Correlation Coefficient',
+    'Mean Absolute Percentage Error', 'Mean Absolute Percentage Deviation',
+    'Symmetric Mean Absolute Percentage Error (1)', 'Symmetric Mean Absolute Percentage Error (2)',
+    'Index of Agreement (d)', 'Index of Agreement (d1)', 'Index of Agreement Refined (dr)',
+    'Relative Index of Agreement', 'Modified Index of Agreement', "Watterson's M", 'Mielke-Berry R',
+    'Nash-Sutcliffe Efficiency', 'Modified Nash-Sutcliffe Efficiency',
+    'Relative Nash-Sutcliffe Efficiency', 'Legate-McCabe Efficiency Index', 'Spectral Angle',
+    'Spectral Correlation', 'Spectral Information Divergence', 'Spectral Gradient Angle',
+    'H1 - MHE', 'H1 - AHE', 'H1 - RMSHE', 'H2 - MHE', 'H2 - AHE', 'H2 - RMSHE', 'H3 - MHE',
+    'H3 - AHE', 'H3 - RMSHE', 'H4 - MHE', 'H4 - AHE', 'H4 - RMSHE', 'H5 - MHE', 'H5 - AHE',
+    'H5 - RMSHE', 'H6 - MHE', 'H6 - AHE', 'H6 - RMSHE', 'H7 - MHE', 'H7 - AHE', 'H7 - RMSHE',
+    'H8 - MHE', 'H8 - AHE', 'H8 - RMSHE', 'H10 - MHE', 'H10 - AHE', 'H10 - RMSHE',
+    'Geometric Mean Difference', 'Mean Variance', 'Mean Log Error', 'Mean Absolute Log Error',
+    'Mean Squared Log Error', 'Normalized Root Mean Square Error - Range',
+    'Normalized Root Mean Square Error - Mean', 'Normalized Root Mean Square Error - IQR',
+    'Mean Arctangent Absolute Percentage Error', 'Legate-McCabe Index of Agreement',
+    'Volumetric Efficiency', 'Pearson R', 'Spearman R', 'Kling-Gupta Efficiency (2009)',
+    'Kling-Gupta Efficiency (2012)'
+]
 
-metric_abbr = ['ME', 'MAE', 'MSE', 'ED', 'NED', 'RMSE', 'RMSLE', 'MASE', 'r2', 'ACC', 'MAPE', 'MAPD', 'SMAPE1',
-               'SMAPE2', 'd', 'd1', 'dr', 'd (Rel.)', 'd (Mod.)', 'M', '(MB) R', 'NSE', 'NSE (Mod.)', 'NSE (Rel.)',
-               "E1'", 'SA', 'SC', 'SID', 'SGA', 'H1 (MHE)', 'H1 (AHE)', 'H1 (RMSHE)', 'H2 (MHE)', 'H2 (AHE)',
-               'H2 (RMSHE)', 'H3 (MHE)', 'H3 (AHE)', 'H3 (RMSHE)', 'H4 (MHE)', 'H4 (AHE)', 'H4 (RMSHE)',
-               'H5 (MHE)', 'H5 (AHE)', 'H5 (RMSHE)', 'H6 (MHE)', 'H6 (AHE)', 'H6 (RMSHE)', 'H7 (MHE)',
-               'H7 (AHE)', 'H7 (RMSHE)', 'H8 (MHE)', 'H8 (AHE)', 'H8 (RMSHE)', 'H10 (MHE)', 'H10 (AHE)',
-               'H10 (RMSHE)', 'GMD', 'MV', 'MLE', 'MALE', 'MSLE', 'NRMSE (Range)', 'NRMSE (Mean)', 'NRMSE (IQR)',
-               'MAAPE', "D1'", 'VE', 'R (Pearson)', 'R (Spearman)', 'KGE (2009)', 'KGE (2012)']
+metric_abbr = [
+    'ME', 'MAE', 'MSE', 'ED', 'NED', 'RMSE', 'RMSLE', 'MASE', 'r2', 'ACC', 'MAPE', 'MAPD', 'SMAPE1',
+    'SMAPE2', 'd', 'd1', 'dr', 'd (Rel.)', 'd (Mod.)', 'M', '(MB) R', 'NSE', 'NSE (Mod.)',
+    'NSE (Rel.)', "E1'", 'SA', 'SC', 'SID', 'SGA', 'H1 (MHE)', 'H1 (AHE)', 'H1 (RMSHE)', 'H2 (MHE)',
+    'H2 (AHE)', 'H2 (RMSHE)', 'H3 (MHE)', 'H3 (AHE)', 'H3 (RMSHE)', 'H4 (MHE)', 'H4 (AHE)',
+    'H4 (RMSHE)', 'H5 (MHE)', 'H5 (AHE)', 'H5 (RMSHE)', 'H6 (MHE)', 'H6 (AHE)', 'H6 (RMSHE)',
+    'H7 (MHE)', 'H7 (AHE)', 'H7 (RMSHE)', 'H8 (MHE)', 'H8 (AHE)', 'H8 (RMSHE)', 'H10 (MHE)',
+    'H10 (AHE)', 'H10 (RMSHE)', 'GMD', 'MV', 'MLE', 'MALE', 'MSLE', 'NRMSE (Range)', 'NRMSE (Mean)',
+    'NRMSE (IQR)', 'MAAPE', "D1'", 'VE', 'R (Pearson)', 'R (Spearman)', 'KGE (2009)', 'KGE (2012)'
+]
+
+function_list = [
+    me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smape1, smape2, d, d1, dr,
+    drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga, h1_mhe, h1_ahe,
+    h1_rmshe, h2_mhe, h2_ahe, h2_rmshe, h3_mhe, h3_ahe, h3_rmshe, h4_mhe, h4_ahe, h4_rmshe, h5_mhe,
+    h5_ahe, h5_rmshe, h6_mhe, h6_ahe, h6_rmshe, h7_mhe, h7_ahe, h7_rmshe, h8_mhe, h8_ahe, h8_rmshe,
+    h10_mhe, h10_ahe, h10_rmshe, g_mean_diff, mean_var, mle, male, msle, nrmse_range, nrmse_mean,
+    nrmse_iqr, maape, d1_p, ve, pearson_r, spearman_r, kge_2009, kge_2012
+]
 
 
-function_list = [me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smape1, smape2, d, d1, dr, drel,
-                 dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga, h1_mhe, h1_ahe, h1_rmshe,
-                 h2_mhe, h2_ahe, h2_rmshe, h3_mhe, h3_ahe, h3_rmshe, h4_mhe, h4_ahe, h4_rmshe, h5_mhe, h5_ahe, h5_rmshe,
-                 h6_mhe, h6_ahe, h6_rmshe, h7_mhe, h7_ahe, h7_rmshe, h8_mhe, h8_ahe, h8_rmshe, h10_mhe, h10_ahe,
-                 h10_rmshe, g_mean_diff, mean_var, mle, male, msle, nrmse_range, nrmse_mean, nrmse_iqr, maape, d1_p, ve,
-                 pearson_r, spearman_r, kge_2009, kge_2012]
-
-
-def remove_values(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+def remove_values(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+                  remove_neg=False,
                   remove_zero=False):
     """Removes the nan, negative, and inf values in two numpy arrays"""
     # Filtering warnings so that user doesn't see them while we remove the nans
@@ -1263,17 +2154,28 @@ def remove_values(simulated_array, observed_array, replace_nan=None, replace_inf
     warnings.filterwarnings("always")
     # Checking to see if any of the values were removed
     if final_length != original_length:
-        warnings.warn("One of the arrays contained negative, nan, or inf values and they have been removed.",
-                      Warning)
+        warnings.warn(
+            "One of the arrays contained negative, nan, or inf values and they have been removed.",
+            Warning)
     return simulated_array, observed_array
 
 
-def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=1, nse_mod_j=1, h6_mhe_k=1, h6_ahe_k=1,
-                    h6_rmshe_k=1, d1_p_obs_bar_p=None, lm_x_obs_bar_p=None, replace_nan=None, replace_inf=None,
+def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=1, nse_mod_j=1,
+                    h6_mhe_k=1, h6_ahe_k=1,
+                    h6_rmshe_k=1, d1_p_obs_bar_p=None, lm_x_obs_bar_p=None, replace_nan=None,
+                    replace_inf=None,
                     remove_neg=False, remove_zero=False):
-    # Removing values or replacing them based on user input
-    sim_array, obs_array = remove_values(sim_array, obs_array, replace_nan=replace_nan, replace_inf=replace_inf,
-                                         remove_neg=remove_neg, remove_zero=remove_zero)
+
+    # Removing values or replacing them based on user input and checking the length of the values
+    assert len(sim_array) == len(obs_array)
+    sim_array, obs_array = remove_values(
+        sim_array,
+        obs_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
 
     # Empty list for the metrics that are returned
     metrics_list = []
