@@ -1,8 +1,10 @@
 # python 3.6
 # -*- coding: utf-8 -*-
 """
-Created on June 6 15:40:57, 2018
-@author: Wade Roberts
+
+The analyze module contains functions that perform a more complex analysis of simulated and observed
+time series data.
+
 """
 from __future__ import division
 from hydrostats.metrics import list_of_metrics, metric_names, metric_abbr, remove_values, HydrostatsError

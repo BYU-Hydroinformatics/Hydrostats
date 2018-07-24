@@ -53,10 +53,18 @@ def me(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     > An array of observed data from the time series.
 
     replace_nan: *float, optional*
-    > If given, indicates which value to replace NaN values with in the two arrays.
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     replace_inf *float, optional*
-    > If given, indicates which value to replace Inf values with in the two arrays.
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     remove_neg *boolean, optional*
     > If true, negative numbers will be removed from the observed and simulated arrays.
@@ -112,10 +120,18 @@ def mae(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     > An array of observed data from the time series.
 
     replace_nan: *float, optional*
-    > If given, indicates which value to replace NaN values with in the two arrays.
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     replace_inf *float, optional*
-    > If given, indicates which value to replace Inf values with in the two arrays.
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     remove_neg *boolean, optional*
     > If true, negative numbers will be removed from the observed and simulated arrays.
@@ -166,10 +182,16 @@ def mse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     > An array of observed data from the time series.
 
     replace_nan: *float, optional*
-    > If given, indicates which value to replace NaN values with in the two arrays.
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     replace_inf *float, optional*
-    > If given, indicates which value to replace Inf values with in the two arrays.
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     remove_neg *boolean, optional*
     > If true, negative numbers will be removed from the observed and simulated arrays.
@@ -215,10 +237,16 @@ def mle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     > An array of observed data from the time series.
 
     replace_nan: *float, optional*
-    > If given, indicates which value to replace NaN values with in the two arrays.
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     replace_inf *float, optional*
-    > If given, indicates which value to replace Inf values with in the two arrays.
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     remove_neg *boolean, optional*
     > If true, negative numbers will be removed from the observed and simulated arrays.
@@ -267,10 +295,16 @@ def male(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     > An array of observed data from the time series.
 
     replace_nan: *float, optional*
-    > If given, indicates which value to replace NaN values with in the two arrays.
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     replace_inf *float, optional*
-    > If given, indicates which value to replace Inf values with in the two arrays.
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     remove_neg *boolean, optional*
     > If true, negative numbers will be removed from the observed and simulated arrays.
@@ -319,10 +353,16 @@ def msle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     > An array of observed data from the time series.
 
     replace_nan: *float, optional*
-    > If given, indicates which value to replace NaN values with in the two arrays.
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     replace_inf *float, optional*
-    > If given, indicates which value to replace Inf values with in the two arrays.
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     remove_neg *boolean, optional*
     > If true, negative numbers will be removed from the observed and simulated arrays.
@@ -368,10 +408,16 @@ def ed(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     > An array of observed data from the time series.
 
     replace_nan: *float, optional*
-    > If given, indicates which value to replace NaN values with in the two arrays.
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     replace_inf *float, optional*
-    > If given, indicates which value to replace Inf values with in the two arrays.
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     remove_neg *boolean, optional*
     > If true, negative numbers will be removed from the observed and simulated arrays.
@@ -418,10 +464,16 @@ def mde(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     > An array of observed data from the time series.
 
     replace_nan: *float, optional*
-    > If given, indicates which value to replace NaN values with in the two arrays.
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     replace_inf *float, optional*
-    > If given, indicates which value to replace Inf values with in the two arrays.
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     remove_neg *boolean, optional*
     > If true, negative numbers will be removed from the observed and simulated arrays.
@@ -445,8 +497,8 @@ def mde(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     return np.median(simulated_array - observed_array)
 
 
-def ned(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-        remove_zero=False):
+def ned(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+        remove_neg=False, remove_zero=False):
     """
     Compute the normalized Euclidian distance between the simulated and observed data in vector
     space.
@@ -464,16 +516,28 @@ def ned(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
     > An array of observed data from the time series.
 
     replace_nan: *float, optional*
-    > If given, indicates which value to replace NaN values with in the two arrays.
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     replace_inf *float, optional*
-    > If given, indicates which value to replace Inf values with in the two arrays.
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     remove_neg *boolean, optional*
     > If true, negative numbers will be removed from the observed and simulated arrays.
 
     remove_zero *boolean, optional*
     > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Kennard, M. J., Mackay, S. J., Pusey, B. J., Olden, J. D., & Marsh, N. (2010). Quantifying
+      uncertainty in estimation of hydrologic metrics for ecohydrological studies. River Research
+      and Applications, 26(2), 137-156.
 
     """
 
@@ -493,8 +557,8 @@ def ned(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
     return np.linalg.norm(a - b)
 
 
-def rmse(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-         remove_zero=False):
+def rmse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+         remove_neg=False, remove_zero=False):
     """
 
     Compute the root mean square error between the simulated and observed data.
@@ -514,16 +578,29 @@ def rmse(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
     > An array of observed data from the time series.
 
     replace_nan: *float, optional*
-    > If given, indicates which value to replace NaN values with in the two arrays.
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     replace_inf *float, optional*
-    > If given, indicates which value to replace Inf values with in the two arrays.
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
     remove_neg *boolean, optional*
     > If true, negative numbers will be removed from the observed and simulated arrays.
 
     remove_zero *boolean, optional*
     > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+    - Willmott, C.J., Matsuura, K., 2005. Advantages of the mean absolute error (MAE) over the
+    root mean square error (RMSE) in assessing average model performance.
+    Climate Research 30(1) 79-82.
+    - Hyndman, R.J., Koehler, A.B., 2006. Another look at measures of forecast accuracy.
+    International Journal of Forecasting 22(4) 679-688.
 
     """
 
@@ -541,11 +618,54 @@ def rmse(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
     return np.sqrt(np.mean((simulated_array - observed_array) ** 2))
 
 
-def rmsle(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-          remove_zero=False):
-    """"Return the Root Mean Square Log Error. Note that to calculate the log values, each value in the observed and
-    simulated array is increased by one unit in order to avoid run-time errors and nan values.
-    arguments: simulated array, observed array"""
+def rmsle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+          remove_neg=False, remove_zero=False):
+    """
+
+    Compute the root mean square log error between the simulated and observed data.
+
+    **Range:** 0 ≤ RMSLE < inf. Smaller is better, and it does not indicate bias.
+
+    **Notes:** Random errors do not cancel while using this metric. This metric also limits the
+    impact of outliers by more evenly weighting high and low values. To calculate the log values,
+    each value in the observed and simulated array is increased by one unit in order to avoid
+    run-time errors and nan values (function np.log1p).
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+    - Willmott, C.J., Matsuura, K., 2005. Advantages of the mean absolute error (MAE) over the
+    root mean square error (RMSE) in assessing average model performance.
+    Climate Research 30(1) 79-82.
+
+    """
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(simulated_array, observed_array,
                                                     replace_nan=replace_nan,
@@ -555,11 +675,50 @@ def rmsle(simulated_array, observed_array, replace_nan=None, replace_inf=None, r
 
 
 def nrmse_range(simulated_array, observed_array, replace_nan=None, replace_inf=None,
-                remove_neg=False,
-                remove_zero=False):
-    """"Return the Normalized Root Mean Square Error. RMSE normalized by the range of the observed time series (x).
-    This allows comparison between data sets with different scales. The NRMSErange and NRMSEquartile  are the most and
-    least sensitive to outliers, respectively. (Pontius et al., 2008)"""
+                remove_neg=False, remove_zero=False):
+    """
+
+    Compute the range normalized root mean square error between the simulated and observed data.
+
+    **Range:** 0 ≤ NRMSE < inf.
+
+    **Notes:** This metric is the RMSE normalized by the range of the observed time series (x).
+    Normalizing allows comparison between data sets with different scales. The NRMSErange is the
+    most sensitive to outliers of the three normalized rmse metrics.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Pontius, R.G., Thontteh, O., Chen, H., 2008. Components of information for multiple
+    resolution comparison between maps that share a real variable. Environmental and Ecological
+    Statistics 15(2) 111-142.
+
+    """
 
     # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
@@ -572,19 +731,56 @@ def nrmse_range(simulated_array, observed_array, replace_nan=None, replace_inf=N
         remove_zero=remove_zero
     )
 
-    rmse_value = rmse(simulated_array=simulated_array, observed_array=observed_array)
+    rmse_value = np.sqrt(np.mean((simulated_array - observed_array) ** 2))
     obs_max = np.max(observed_array)
     obs_min = np.min(observed_array)
     return rmse_value / (obs_max - obs_min)
 
 
 def nrmse_mean(simulated_array, observed_array, replace_nan=None, replace_inf=None,
-               remove_neg=False,
-               remove_zero=False):
-    """"Return the mean Normalized Root Mean Square Error. RMSE normalized by the mean of the observed time series (x).
-    This allows comparison between data sets with different scales. The NRMSErange and NRMSEquartile  are the most and
-    least sensitive to outliers, respectively.
-    (Pontius et al., 2008)"""
+               remove_neg=False, remove_zero=False):
+    """
+
+    Compute the range normalized root mean square error between the simulated and observed data.
+
+    **Range:** 0 ≤ NRMSE < inf.
+
+    **Notes:** This metric is the RMSE normalized by the mean of the observed time series (x).
+    Normalizing allows comparison between data sets with different scales.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Pontius, R.G., Thontteh, O., Chen, H., 2008. Components of information for multiple
+    resolution comparison between maps that share a real variable. Environmental and Ecological
+    Statistics 15(2) 111-142.
+
+    """
 
     # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
@@ -602,12 +798,51 @@ def nrmse_mean(simulated_array, observed_array, replace_nan=None, replace_inf=No
     return rmse_value / obs_mean
 
 
-def nrmse_iqr(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-              remove_zero=False):
-    """"Return the interquartile range Normalized Root Mean Square Error. RMSE normalized by the interquartile
-    range of the observed time series (x). The nRMSE allows comparison between data sets with different scales.
-    The NRMSErange and NRMSEquartile  are the most and least sensitive to outliers, respectively.
-    (Pontius et al., 2008)"""
+def nrmse_iqr(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+              remove_neg=False, remove_zero=False):
+    """
+
+    Compute the range normalized root mean square error between the simulated and observed data.
+
+    **Range:** 0 ≤ NRMSE < inf.
+
+    **Notes:** This metric is the RMSE normalized by the range of the observed time series (x).
+    Normalizing allows comparison between data sets with different scales. The NRMSEquartile is
+    the least sensitive to outliers of the three normalized rmse metrics.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Pontius, R.G., Thontteh, O., Chen, H., 2008. Components of information for multiple
+    resolution comparison between maps that share a real variable. Environmental and Ecological
+    Statistics 15(2) 111-142.
+
+    """
 
     # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
@@ -627,11 +862,45 @@ def nrmse_iqr(simulated_array, observed_array, replace_nan=None, replace_inf=Non
     return rmse_value / iqr
 
 
-def mase(simulated_array, observed_array, m=1, replace_nan=None, replace_inf=None, remove_neg=False,
-         remove_zero=False):
-    """Returns the Mean Absolute Scaled Error, the default period for m (seasonal period) is 1.
-    Using the default assumes that the data is non-seasonal
-    arguments: simulated array, observed array, m where m is the seasonal period"""
+def mase(simulated_array, observed_array, m=1, replace_nan=None, replace_inf=None,
+         remove_neg=False, remove_zero=False):
+    """
+
+    Compute the mean absolute scaled error between the simulated and observed data.
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    """
 
     # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
@@ -651,90 +920,46 @@ def mase(simulated_array, observed_array, m=1, replace_nan=None, replace_inf=Non
     return a / (np.sum(b) / end)
 
 
-def pearson_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-              remove_zero=False):
+def pearson_r(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+              remove_neg=False, remove_zero=False):
     """
-    Compute the median along the specified axis.
-    Returns the median of the array elements.
 
-    Parameters
-    ----------
+    Compute the pearson correlation coefficient.
 
-    a : array_like
-        Input array or object that can be converted to an array.
-    axis : {int, sequence of int, None}, optional
-        Axis or axes along which the medians are computed. The default
-        is to compute the median along a flattened version of the array.
-        A sequence of axes is supported since version 1.9.0.
-    out : ndarray, optional
-        Alternative output array in which to place the result. It must
-        have the same shape and buffer length as the expected output,
-        but the type (of the output) will be cast if necessary.
-    overwrite_input : bool, optional
-       If True, then allow use of memory of input array `a` for
-       calculations. The input array will be modified by the call to
-       `median`. This will save memory when you do not need to preserve
-       the contents of the input array. Treat the input as undefined,
-       but it will probably be fully or partially sorted. Default is
-       False. If `overwrite_input` is ``True`` and `a` is not already an
-       `ndarray`, an error will be raised.
-    keepdims : bool, optional
-        If this is set to True, the axes which are reduced are left
-        in the result as dimensions with size one. With this option,
-        the result will broadcast correctly against the original `arr`.
-        .. versionadded:: 1.9.0
+    **Range:** -1 ≤ R (Pearson) ≤ 1. 1 indicates perfect postive correlation, 0 indicates
+    complete randomness, -1 indicate perfect negative correlation.
 
-    *******
-    Returns
-    *******
+    **Notes:** The pearson r coefficient measures linear correlation. It can be affected negatively
+    by outliers.
 
-    median : ndarray
-        A new array holding the result. If the input contains integers
-        or floats smaller than ``float64``, then the output data-type is
-        ``np.float64``.  Otherwise, the data-type of the output is the
-        same as that of the input. If `out` is specified, that array is
-        returned instead.
+    **Parameters**
 
-    See Also
-    --------
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
 
-    mean, percentile
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
 
-    Notes
-    -----
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
-    Given a vector ``V`` of length ``N``, the median of ``V`` is the
-    middle value of a sorted copy of ``V``, ``V_sorted`` - i
-    e., ``V_sorted[(N-1)/2]``, when ``N`` is odd, and the average of the
-    two middle values of ``V_sorted`` when ``N`` is even.
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
 
-    Examples
-    --------
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
 
-    >>> a = np.array([[10, 7, 4], [3, 2, 1]])
-    >>> a
-    array([[10,  7,  4],
-           [ 3,  2,  1]])
-    >>> np.median(a)
-    3.5
-    >>> np.median(a, axis=0)
-    array([ 6.5,  4.5,  2.5])
-    >>> np.median(a, axis=1)
-    array([ 7.,  2.])
-    >>> m = np.median(a, axis=0)
-    >>> out = np.zeros_like(m)
-    >>> np.median(a, axis=0, out=m)
-    array([ 6.5,  4.5,  2.5])
-    >>> m
-    array([ 6.5,  4.5,  2.5])
-    >>> b = a.copy()
-    >>> np.median(b, axis=1, overwrite_input=True)
-    array([ 7.,  2.])
-    >>> assert not np.all(a==b)
-    >>> b = a.copy()
-    >>> np.median(b, axis=None, overwrite_input=True)
-    3.5
-    >>> assert not np.all(a==b)
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
     """
     # Checking and cleaning the data
     assert len(observed_array) == len(simulated_array)
@@ -761,18 +986,47 @@ def spearman_r(simulated_array, observed_array, replace_nan=None, replace_inf=No
                remove_neg=False, remove_zero=False):
     """
 
-    :param simulated_array:
-    :param observed_array:
-    :param replace_nan:
-    :param replace_inf:
-    :param remove_neg:
-    :param remove_zero:
-    :return: Returns the Spearman rank-order correlation coefficient. The rank method is the scipy
-             default, or 'average'.
+    Compute the spearman rank correlation coefficient.
+
+    **Range:** -1 ≤ R (Pearson) ≤ 1. 1 indicates perfect postive correlation, 0 indicates
+    complete randomness, -1 indicate perfect negative correlation.
+
+    **Notes:** The spearman r coefficient measures the monotomic relation between simulated and
+    observed data. Because it uses a nonparametric measure of rank correlation, it is less
+    influenced by outliers than the pearson correlation coefficient.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Spearman C (1904). "The proof and measurement of association between two things". American
+    Journal of Psychology. 15: 72–101. doi:10.2307/1412159
+
     """
-    """
-    Spearman C (1904). "The proof and measurement of association between two things". American Journal of Psychology.
-    15: 72–101. doi:10.2307/1412159"""
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -797,10 +1051,47 @@ def spearman_r(simulated_array, observed_array, replace_nan=None, replace_inf=No
     return top / bot
 
 
-def r_squared(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-              remove_zero=False):
-    """Returns the Coefficient of Determination
-    arguments: simulated array, observed array"""
+def r_squared(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+              remove_neg=False, remove_zero=False):
+    """
+
+    Compute the the Coefficient of Determination (r2).
+
+    **Range:** 0 ≤ r2 ≤ 1. 1 indicates perfect correlation, 0 indicates complete randomness.
+
+    **Notes:** The Coefficient of Determination measures the linear relation between simulated and
+    observed data. Because it is the pearson correlation coefficient squared, it is more heavily
+    affected by outliers than the pearson correlation coefficient.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -820,20 +1111,52 @@ def r_squared(simulated_array, observed_array, replace_nan=None, replace_inf=Non
 def acc(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
         remove_zero=False):
     """
-    :param simulated_array: A 1D Numpy array of forecasted data from the time series.
-    :param observed_array: A 1D Numpy array of observed data from the time series.
-    :param replace_nan: Float input indicating what value to replace NaN values with.
-    :param replace_inf: Float input indicating what value to replace Inf values with.
-    :param remove_neg: Boolean input indicating whether user wants to remove negative numbers.
-    :param remove_zero: Boolean input indicating whether user wants to remove zero values.
-    :return: Anomaly Correlation Coefficient.
 
-    - Langland, Rolf H., and Ryan N. Maue. “Recent Northern Hemisphere Mid-Latitude Medium-Range Deterministic Forecast
-    Skill.” Tellus A: Dynamic Meteorology and Oceanography 64, no. 1 (2012): 17531.
-    - Miyakoda, K., G. D. Hembree, R. F. Strickler, and I. Shulman. “Cumulative Results of Extended Forecast Experiments
-     I. Model Performance for Winter Cases.” Monthly Weather Review 100, no. 12 (1972): 836–55.
-    - Murphy, Allan H., and Edward S. Epstein. “Skill Scores and Correlation Coefficients in Model Verification.”
-    Monthly Weather Review 117, no. 3 (1989): 572–82.
+    Compute the the anomaly correlation coefficient (ACC).
+
+    **Range:** -1 ≤ ACC ≤ 1. -1 indicates perfect negative correlation of the variation pattern of
+    the anomalies, 0 indicates complete randomness of the variation pattern of the anomalies,
+    1 indicates perfect correlation of the variation pattern of the anomalies.
+
+    **Notes:** Measures the correlation between the variation pattern of the simulated data
+    compared to the observed data.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Langland, Rolf H., and Ryan N. Maue. “Recent Northern Hemisphere Mid-Latitude Medium-Range
+    Deterministic Forecast Skill.” Tellus A: Dynamic Meteorology and Oceanography 64,
+    no. 1 (2012): 17531.
+    - Miyakoda, K., G. D. Hembree, R. F. Strickler, and I. Shulman. “Cumulative Results of Extended
+    Forecast Experiments I. Model Performance for Winter Cases.” Monthly Weather Review 100, no. 12
+    (1972): 836–55.
+    - Murphy, Allan H., and Edward S. Epstein. “Skill Scores and Correlation Coefficients in Model
+    Verification.” Monthly Weather Review 117, no. 3 (1989): 572–82.
 
     """
 
@@ -855,8 +1178,42 @@ def acc(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
 def mape(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
          remove_zero=False):
-    """Returns the Mean Absolute Percentage Error. The answer is a percentage
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the the mean absolute percentage error (MAPE).
+
+    **Range:** 0% ≤ MAPE ≤ 100%. 100% indicates perfect correlation, 0% indicates complete
+    randomness.
+
+    **Notes:**
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -876,8 +1233,41 @@ def mape(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
 
 def mapd(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
          remove_zero=False):
-    """Returns the Mean Absolute Percentage Deviation.
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the the mean absolute percentage deviation (MAPE).
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -896,10 +1286,44 @@ def mapd(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
 
 def maape(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
           remove_zero=False):
-    """Returns the Mean Arctangent Absolute Percentage Error. Range: 0 ≤ MAAPE < π/2, unit less, does not indicate bias,
-    smaller is better. Represents the mean absolute error as a percentage of the observed values. Handles 0s in the
-    observed data. not as bias as MAPE by under-over predictions
-    (Kim and Kim, 2016)
+    """
+
+    Compute the the Mean Arctangent Absolute Percentage Error (MAAPE).
+
+    **Range:** 0 ≤ MAAPE < π/2, does not indicate bias, smaller is better.
+
+    **Notes:** Represents the mean absolute error as a percentage of the observed values. Handles
+    0s in the observed data. This metric is not as biased as MAPE by under-over predictions.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Kim, S., Kim, H., 2016. A new metric of absolute percentage error for intermittent demand
+    forecasts. International Journal of Forecasting 32(3) 669-679.
+
     """
 
     assert len(observed_array) == len(simulated_array)
@@ -919,8 +1343,46 @@ def maape(simulated_array, observed_array, replace_nan=None, replace_inf=None, r
 
 def smape1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """Returns the Symmetric Mean Absolute Percentage Error (1).
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the the Symmetric Mean Absolute Percentage Error (1) (SMAPE1).
+
+    **Range:** 0 ≤ SMAPE1 < 200%, does not indicate bias, smaller is better, symmetrical.
+
+    **Notes:** This metric is an adjusted version of the MAPE.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Flores, B.E., 1986. A pragmatic view of accuracy measurement in forecasting. Omega 14(2)
+    93-98.
+    - Goodwin, P., Lawton, R., 1999. On the asymmetry of the symmetric MAPE. International Journal
+    of Forecasting 15(4) 405-408.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -940,8 +1402,46 @@ def smape1(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def smape2(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """Returns the Symmetric Mean Absolute Percentage Error (2).
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the the Symmetric Mean Absolute Percentage Error (2) (SMAPE2).
+
+    **Range:** 0 ≤ SMAPE1 < 200%, does not indicate bias, smaller is better, symmetrical.
+
+    **Notes:** This metric is an adjusted version of the MAPE with only positive metric values.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Flores, B.E., 1986. A pragmatic view of accuracy measurement in forecasting. Omega 14(2)
+    93-98.
+    - Goodwin, P., Lawton, R., 1999. On the asymmetry of the symmetric MAPE. International Journal
+    of Forecasting 15(4) 405-408.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -961,8 +1461,46 @@ def smape2(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def d(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
       remove_zero=False):
-    """Returns the Index of Agreement (d).
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the the index of agreement (d).
+
+    **Range:** 0 ≤ d < 1, does not indicate bias, larger is better.
+
+    **Notes:** This metric is a modified approach to the Nash-Sutcliffe Efficiency metric.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Legates, D.R., McCabe Jr, G.J., 1999. Evaluating the use of “goodness‐of‐fit” Measures in
+    hydrologic and hydroclimatic model validation. Water Resources Research 35(1) 233-241.
+    - Willmott, C.J., Robeson, S.M., Matsuura, K., 2012. A refined index of model performance.
+    International Journal of Climatology 32(13) 2088-2094.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -982,8 +1520,45 @@ def d(simulated_array, observed_array, replace_nan=None, replace_inf=None, remov
 
 def d1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
        remove_zero=False):
-    """Returns the Index of Agreement (d1).
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the the index of agreement (d1).
+
+    **Range:** 0 ≤ d < 1, does not indicate bias, larger is better.
+
+    **Notes:** This metric is a modified approach to the Nash-Sutcliffe Efficiency metric. Compared
+    to the other index of agreement (d) it has a reduced impact of outliers.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Willmott, C.J., Robeson, S.M., Matsuura, K., 2012. A refined index of model performance.
+    International Journal of Climatology 32(13) 2088-2094.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -1005,8 +1580,45 @@ def d1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
 def dr(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
        remove_zero=False):
-    """Returns the Refined Index of Agreement.
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the the refined index of agreement (dr).
+
+    **Range:** -1 ≤ dr < 1, does not indicate bias, larger is better.
+
+    **Notes:** This metric was created to address issues in the index of agreement and the
+    Nash-Sutcliffe efficiency metric. It is easy to interpret.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Willmott, C.J., Robeson, S.M., Matsuura, K., 2012. A refined index of model performance.
+    International Journal of Climatology 32(13) 2088-2094.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -1028,8 +1640,44 @@ def dr(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
 def drel(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
          remove_zero=False):
-    """Returns the Relative Index of Agreement.
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the the relative index of agreement (drel).
+
+    **Range:** 0 ≤ drel < 1, does not indicate bias, larger is better.
+
+    **Notes:** Instead of absolute differences, this metric uses relative differences.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Krause, P., Boyle, D., Bäse, F., 2005. Comparison of different efficiency criteria for
+    hydrological model assessment. Advances in geosciences 5 89-97.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -1050,8 +1698,45 @@ def drel(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
 
 def dmod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=None, remove_neg=False,
          remove_zero=False):
-    """Returns the modified index of agreement, with j=1 as the default.
-    arguments: simulated array, observed array, j"""
+    """
+
+    Compute the the modified index of agreement (dmod).
+
+    **Range:** 0 ≤ dmod < 1, does not indicate bias, larger is better.
+
+    **Notes:** When j=1, this metric is the same as d1. As j becomes larger, outliers have a larger
+    impact on the value.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Krause, P., Boyle, D., Bäse, F., 2005. Comparison of different efficiency criteria for
+    hydrological model assessment. Advances in geosciences 5 89-97.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -1072,9 +1757,44 @@ def dmod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=Non
 
 def watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """Returns Watterson's M value. Watterson IG. 1996. Non-dimensional measures of climate model performance.
-    International Journal of Climatology 16: 379–391.
-    arguments: simulated array, observed array"""
+    """
+
+    Compute Watterson's M (M).
+
+    **Range:** -1 ≤ M < 1, does not indicate bias, larger is better.
+
+    # **Notes:**
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Watterson, I.G., 1996. Non‐dimensional measures of climate model performance. International
+    Journal of Climatology 16(4) 379-391.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -1096,9 +1816,47 @@ def watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
          remove_zero=False):
-    """Returns the Mielke-Berry R value. Mielke PW Jr, Berry KJ. 2001. Permutation Methods: A Distance Function Approach.
-    Springer-Verlag: New York; 352.
-    arguments: simulated array, observed array"""
+    """
+
+    Compute Mielke-Berry R value (MB R).
+
+    **Range:** 0 ≤ MB R < 1, does not indicate bias, larger is better.
+
+    **Notes:** Compares prediction to probability it arose by chance.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Berry, K.J., Mielke, P.W., 1988. A Generalization of Cohen's Kappa Agreement Measure to
+    Interval Measurement and Multiple Raters. Educational and Psychological Measurement 48(4)
+    921-933.
+    - Mielke, P.W., Berry, K.J., 2007. Permutation methods: a distance function approach.
+    Springer Science & Business Media.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -1129,9 +1887,51 @@ def mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
 
 def nse(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
         remove_zero=False):
-    """Returns the Nash-Sutcliffe Efficiency value (Nash JE, Sutcliffe JV. 1970. River flow forecasting through
-    conceptual models part I—A discussion of principles. Journal of Hydrology 10(3): 282–290.)
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the Nash-Sutcliffe Efficiency.
+
+    **Range:** -inf < NSE < 1, does not indicate bias, larger is better.
+
+    **Notes:** The Nash-Sutcliffe efficiency metric compares prediction values to naive preditions
+    (i.e. average value).
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Krause, P., Boyle, D., Bäse, F., 2005. Comparison of different efficiency criteria for
+    hydrological model assessment. Advances in geosciences 5 89-97.
+    - McCuen, R.H., Knight, Z., Cutter, A.G., 2006. Evaluation of the Nash-Sutcliffe Efficiency
+    Index. Journal of Hydraulic Engineering.
+    - Nash, J.E., Sutcliffe, J.V., 1970. River flow forecasting through conceptual models part
+    I — A discussion of principles. Journal of Hydrology 282-290.
+    - Willmott, C.J., Robeson, S.M., Matsuura, K., 2012. A refined index of model performance.
+    International Journal of Climatology 32(13) 2088-2094.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -1151,12 +1951,45 @@ def nse(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 def nse_mod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=None,
             remove_neg=False,
             remove_zero=False):
-    """Returns the modified Nash-Sutcliffe Efficiency value
-    (Krause, P., Boyle, D. P., and Base, F.: Comparison of different efficiency criteria for hydrological model
-    assessment, Adv. Geosci., 5, 89-97, 2005
-    Legates, D. R., and G. J. McCabe Jr. (1999), Evaluating the Use of "Goodness-of-Fit"
-    Measures in Hydrologic and Hydroclimatic Model Validation, Water Resour. Res., 35(1), 233-241)
-    arguments: simulated array, observed array, j"""
+    """
+
+    Compute the modified Nash-Sutcliffe efficiency (NSE mod).
+
+    **Range:** -inf < NSE (mod) < 1, does not indicate bias, larger is better.
+
+    **Notes:** The modified Nash-Sutcliffe efficiency metric gives less weight to outliers if j=1,
+    or more weight to outliers if j is higher. Generally, j=1.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Krause, P., Boyle, D., Bäse, F., 2005. Comparison of different efficiency criteria for
+    hydrological model assessment. Advances in geosciences 5 89-97.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -1175,12 +2008,45 @@ def nse_mod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=
 
 def nse_rel(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
             remove_zero=False):
-    """Returns the relative Nash-Sutcliffe Efficiency value
-    (Krause, P., Boyle, D. P., and Base, F.: Comparison of different efficiency criteria for hydrological model
-    assessment, Adv. Geosci., 5, 89-97, 2005
-    Legates, D. R., and G. J. McCabe Jr. (1999), Evaluating the Use of "Goodness-of-Fit"
-    Measures in Hydrologic and Hydroclimatic Model Validation, Water Resour. Res., 35(1), 233-241)
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the relative Nash-Sutcliffe efficiency (NSE rel).
+
+    **Range:** -inf < NSE (rel) < 1, does not indicate bias, larger is better.
+
+    **Notes:** The modified Nash-Sutcliffe efficiency metric gives less weight to outliers if j=1,
+    or more weight to outliers if j is higher. Generally, j=1.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Krause, P., Boyle, D., Bäse, F., 2005. Comparison of different efficiency criteria for
+    hydrological model assessment. Advances in geosciences 5 89-97.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -1199,6 +2065,53 @@ def nse_rel(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
 def kge_2009(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
              replace_inf=None, remove_neg=False, remove_zero=False):
+    """
+
+    Compute the Kling-Gupta efficiency (2009).
+
+    **Range:** -inf < KGE (2009) < 1, does not indicate bias, larger is better.
+
+    **Notes:** Gupta et al. (2009) created this metric to demonstrate the relative importance of
+    the three components of the NSE, which are correlation, bias and variability. This was done
+    with hydrologic modeling as the context. This metric is meant to address issues with the NSE.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    s: *tuple of length three*
+    > representing the scaling factors to be used for re-scaling the Pearson product-moment
+    correlation coefficient (r), Alpha, and Beta, respectively.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Gupta, H. V., Kling, H., Yilmaz, K. K., & Martinez, G. F. (2009). Decomposition of the mean
+    squared error and NSE performance criteria: Implications for improving hydrological modelling.
+    Journal of Hydrology, 377(1-2), 80-91.
+
+
+    """
+
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
         simulated_array,
@@ -1230,17 +2143,16 @@ def kge_2009(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
     alpha = sim_sigma / obs_sigma
 
     if obs_mean != 0 and obs_sigma != 0:
-        kge = 1 - np.sqrt(
-            (s[0] * (pr - 1)) ** 2 + (s[1] * (alpha - 1)) ** 2 + (s[2] * (beta - 1)) ** 2)
+        kge = 1 - np.sqrt((s[0] * (pr - 1)) ** 2 + (s[1] * (alpha - 1)) ** 2 + (s[2] * (beta - 1)) ** 2)
     else:
         if obs_mean == 0:
             warnings.warn(
-                'Warning: The observed data mean is 0. Therefore, Beta is infinite and the KGE value cannot '
-                'be computed.')
+                'Warning: The observed data mean is 0. Therefore, Beta is infinite and the KGE '
+                'value cannot be computed.')
         if obs_sigma == 0:
             warnings.warn(
-                'Warning: The observed data standard deviation is 0. Therefore, Alpha is infinite and the KGE'
-                ' value cannot be computed.')
+                'Warning: The observed data standard deviation is 0. Therefore, Alpha is infinite '
+                'and the KGE value cannot be computed.')
         kge = np.nan
 
     return kge
@@ -1248,6 +2160,49 @@ def kge_2009(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
 
 def kge_2012(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
              replace_inf=None, remove_neg=False, remove_zero=False):
+    """
+
+    Compute the Kling-Gupta efficiency (2012).
+
+    **Range:** -inf < KGE (2012) < 1, does not indicate bias, larger is better.
+
+    **Notes:** The modified version of the KGE (2009). Kling proposed this version to avoid
+    cross-correlation between bias and variability ratios.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    s: *tuple of length three*
+    > representing the scaling factors to be used for re-scaling the Pearson product-moment
+    correlation coefficient (r), Alpha, and Beta, respectively.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Kling, H., Fuchs, M., & Paulin, M. (2012). Runoff conditions in the upper Danube basin under
+    an ensemble of climate change scenarios. Journal of Hydrology, 424, 264-277.
+
+    """
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
         simulated_array,
@@ -1288,24 +2243,62 @@ def kge_2012(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
     else:
         if obs_mean == 0:
             warnings.warn(
-                'Warning: The observed data mean is 0. Therefore, Beta is infinite and the KGE value cannot '
-                'be computed.')
+                'Warning: The observed data mean is 0. Therefore, Beta is infinite and the KGE '
+                'value cannot be computed.')
         if obs_sigma == 0:
             warnings.warn(
-                'Warning: The observed data standard deviation is 0. Therefore, Gamma is infinite and the KGE'
-                ' value cannot be computed.')
+                'Warning: The observed data standard deviation is 0. Therefore, Gamma is infinite '
+                'and the KGE value cannot be computed.')
         kge = np.nan
 
     return kge
 
 
-def lm_index(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, replace_inf=None,
-             remove_neg=False,
-             remove_zero=False):
-    """Returns the Legate-McCabe Efficiency Index. Range: 0 ≤ lm_index < 1, unit less, larger is better,
-    does not indicate bias, less weight to outliers. The term obs_bar_p is a seasonal or other selected average. If no
-    obs_bar_p is given, the function will use the average of the observed data instead.
-    (Legates and McCabe Jr, 1999)"""
+def lm_index(simulated_array, observed_array, obs_bar_p=None, replace_nan=None,
+             replace_inf=None, remove_neg=False, remove_zero=False):
+    """
+
+    Compute the Legate-McCabe Efficiency Index.
+
+    **Range:** 0 ≤ E1' < 1, does not indicate bias, larger is better.
+
+    **Notes:** The obs_bar_p argument represents a seasonal or other selected average.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    obs_bar_p: *float*
+    > Seasonal or other selected average. If None, the mean of the observed array will be used.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Legates, D.R., McCabe Jr, G.J., 1999. Evaluating the use of “goodness‐of‐fit” Measures in
+    hydrologic and hydroclimatic model validation. Water Resources Research 35(1) 233-241.
+    Lehmann, E.L., Casella, G., 1998. Springer Texts in Statistics. Springer-Verlag, New York.
+
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -1333,18 +2326,46 @@ def d1_p(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, repl
          remove_neg=False,
          remove_zero=False):
     """
-    :param simulated_array: array of simulated data.
-    :param observed_array: array of observed data
-    :param obs_bar_p: The term (obs_bar_p) is a seasonal or other selected average. If not obs_bar_p is given,
-     the mean of the observed data will be used instead.
-    :param replace_nan: Float input indicating what value to replace NaN values with.
-    :param replace_inf: Float input indicating what value to replace Inf values with.
-    :param remove_neg: Boolean input indicating whether user wants to remove negative numbers.
-    :param remove_zero: Boolean input indicating whether user wants to remove zero values.
-    :return: the Legate-McCabe Index of Agreement. Range: 0 ≤ d1_p < 1, unit less, larger is better, does not indicate
-     bias, less weight to outliers.
 
-    (Legates and McCabe Jr, 1999)
+    Compute the Legate-McCabe Index of Agreement.
+
+    **Range:** 0 ≤ d1' < 1, does not indicate bias, larger is better.
+
+    **Notes:** The obs_bar_p argument represents a seasonal or other selected average.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    obs_bar_p: *float*
+    > Seasonal or other selected average. If None, the mean of the observed array will be used.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Legates, D.R., McCabe Jr, G.J., 1999. Evaluating the use of “goodness‐of‐fit” Measures in
+    hydrologic and hydroclimatic model validation. Water Resources Research 35(1) 233-241.
+    Lehmann, E.L., Casella, G., 1998. Springer Texts in Statistics. Springer-Verlag, New York.
+
     """
 
     assert len(observed_array) == len(simulated_array)
@@ -1370,8 +2391,44 @@ def d1_p(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, repl
 
 def ve(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
        remove_zero=False):
-    """Range: 0≤VE<1 (Unitless) smaller is better, does not indicate bias, error as a percentage of flow.
-    (Criss and Winston, 2008)"""
+    """
+
+    Compute the Volumetric Efficiency (VE).
+
+    **Range:** 0 ≤ VE < 1 smaller is better, does not indicate bias.
+
+    **Notes:** Represents the error as a percentage of flow.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Criss, R.E., Winston, W.E., 2008. Do Nash values have value? Discussion and alternate
+    proposals. Hydrological Processes 22(14) 2723.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -1390,9 +2447,46 @@ def ve(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
 def sa(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
        remove_zero=False):
-    """Returns the spectral angle. Robila, S.A.; Gershman, A. In Spectral matching accuracy in processing hyperspectral
-    data, Signals, Circuits and Systems, 2005. ISSCS 2005. International Symposium on, 2005; IEEE: pp 163-166.
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the Spectral Angle (SA).
+
+    **Range:** -π/2 ≤ SA < π/2, closer to 0 is better.
+
+    **Notes:** The spectral angle metric measures the angle between the two vectors in hyperspace.
+    It indicates how well the shape of the two series match – not magnitude.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Robila, S.A., Gershman, A., 2005. Spectral matching accuracy in processing hyperspectral
+    data, Signals, Circuits and Systems, 2005. ISSCS 2005. International Symposium on. IEEE,
+    pp. 163-166.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -1411,10 +2505,46 @@ def sa(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
 def sc(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
        remove_zero=False):
-    """Returns the spectral Correlation. Robila, S.A.; Gershman, A. In Spectral matching accuracy in processing
-    hyperspectral data, Signals, Circuits and Systems, 2005. ISSCS 2005. International Symposium on,
-    2005; IEEE: pp 163-166.
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the Spectral Correlation (SC).
+
+    **Range:** -π/2 ≤ SA < π/2, closer to 0 is better.
+
+    **Notes:** The spectral correlation metric measures the angle between the two vectors in hyperspace.
+    It indicates how well the shape of the two series match – not magnitude.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Robila, S.A., Gershman, A., 2005. Spectral matching accuracy in processing hyperspectral
+    data, Signals, Circuits and Systems, 2005. ISSCS 2005. International Symposium on. IEEE,
+    pp. 163-166.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -1435,8 +2565,46 @@ def sc(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
 def sid(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
         remove_zero=False):
-    """Returns the ___
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the Spectral Information Divergence (SID).
+
+    **Range:** -π/2 ≤ SID < π/2, closer to 0 is better.
+
+    **Notes:** The spectral information divergence measures the angle between the two vectors in
+    hyperspace. It indicates how well the shape of the two series match – not magnitude.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Robila, S.A., Gershman, A., 2005. Spectral matching accuracy in processing hyperspectral
+    data, Signals, Circuits and Systems, 2005. ISSCS 2005. International Symposium on. IEEE,
+    pp. 163-166.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -1457,8 +2625,47 @@ def sid(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
 def sga(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
         remove_zero=False):
-    """Returns the spectral gradient angle
-    arguments: simulated array, observed array"""
+    """
+
+    Compute the Spectral Gradient Angle (SGA).
+
+    **Range:** -π/2 ≤ SID < π/2, closer to 0 is better.
+
+    **Notes:** The spectral gradient angle measures the angle between the two vectors in
+    hyperspace. It indicates how well the shape of the two series match – not magnitude.
+    SG is the gradient of the simulated or observed time series.
+
+    **Parameters**
+
+    forecasted_array: *one dimensional ndarray*
+    > An array of forecasted data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Robila, S.A., Gershman, A., 2005. Spectral matching accuracy in processing hyperspectral
+    data, Signals, Circuits and Systems, 2005. ISSCS 2005. International Symposium on. IEEE,
+    pp. 163-166.
+
+    """
 
     assert len(observed_array) == len(simulated_array)
     simulated_array, observed_array = remove_values(
@@ -2226,15 +3433,12 @@ def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=
 
 
 if __name__ == "__main__":
-    import pandas as pd
-    import scipy.stats as stat
-
     # long_str = ''
     # for i in __all__:
     #     long_str += i + ', '
     # print(long_str)
 
-    sim = np.random.rand(1000) * 20
-    obs = np.random.rand(1000) * 20
+    sim = np.sin(1, 100) * 1e6
+    obs = np.arange(1, 100)
 
-    print(mase(sim, obs, m=3))
+    print(nrmse_range(sim, obs))
