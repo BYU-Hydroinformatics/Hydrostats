@@ -1,9 +1,9 @@
 .idea
 hydrostats_venv
 test.py
-__pycache__
-doctrees
-make.bat
-Makefile
-docs/
-
+docs/_build/
+docs/__pycache__/
+docs/api/
+docs/make.bat
+docs/pandoc-2.2.2.1-windows-x86_64.msi
+__pycache__/

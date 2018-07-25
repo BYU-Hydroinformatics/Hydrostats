@@ -1,8 +1,11 @@
 # python 3.6
 # -*- coding: utf-8 -*-
 """
-Created on Dec 28 12:16:32 2017
-@author: Wade Roberts
+
+The metrics module contains all of the metrics included in hydrostats. Each metric is contained in
+function, and every metric has the ability to treat missing values as well as remove zero and
+negative values from the timeseries data.
+
 """
 from __future__ import division
 import numpy as np
@@ -46,8 +49,8 @@ def me(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     **Parameters**
 
-    forecasted_array:  *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array:  *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -92,10 +95,17 @@ def me(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    # Checking data to make sure it will work and the arrays are correct
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
+
+    # Treating missing values
     simulated_array, observed_array = remove_values(simulated_array, observed_array,
                                                     replace_nan=replace_nan,
-                                                    replace_inf=replace_inf, remove_neg=remove_neg,
+                                                    replace_inf=replace_inf,
+                                                    remove_neg=remove_neg,
                                                     remove_zero=remove_zero)
     return np.mean(simulated_array - observed_array)
 
@@ -113,8 +123,8 @@ def mae(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -150,7 +160,10 @@ def mae(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     # Checking and cleaning the data
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -175,8 +188,8 @@ def mse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -205,7 +218,10 @@ def mse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     # Checking and cleaning the data
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -230,8 +246,8 @@ def mle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -261,7 +277,10 @@ def mle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     # Checking and cleaning the data
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -288,8 +307,8 @@ def male(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -319,7 +338,10 @@ def male(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     # Checking and cleaning the data
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -346,8 +368,8 @@ def msle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -376,7 +398,10 @@ def msle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
       The American Statistician 39, no. 1 (1985): 43–46.
     """
     # Checking and cleaning the data
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -391,6 +416,172 @@ def msle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     return np.mean((sim_log - obs_log) ** 2)
 
 
+def mde(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+        remove_neg=False, remove_zero=False):
+    """
+    Compute the median error (MdE) between the simulated and observed data.
+
+    **Range** -inf < MdE < inf, closer to zero is better.
+    **Notes** This metric indicates bias. It is similar to the mean error (ME), only it takes the
+    median rather than the mean. Median measures reduces the impact of outliers.
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    """
+
+    # Checking and cleaning the data
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
+    return np.median(simulated_array - observed_array)
+
+
+def mdae(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+         remove_neg=False, remove_zero=False):
+    """
+    Compute the median absolute error (MdAE) between the simulated and observed data.
+
+    **Range** 0 ≤ MdAE < inf, closer to zero is better.
+
+    **Notes** This metric does not indicates bias. Random errors (noise) do not cancel.
+    It is similar to the mean absolute error (MAE), only it takes the median rather than
+    the mean. Median measures reduces the impact of outliers.
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    """
+
+    # Checking and cleaning the data
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
+    return np.median(np.abs(simulated_array - observed_array))
+
+
+def mdse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+         remove_neg=False, remove_zero=False):
+    """
+    Compute the median squared error (MdSE) between the simulated and observed data.
+
+    **Range** 0 ≤ MdSE < inf, closer to zero is better.
+
+    **Notes** This metric does not indicates bias. Random errors (noise) do not cancel.
+    It is similar to the mean squared error (MSE), only it takes the median rather than
+    the mean. Median measures reduces the impact of outliers.
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    """
+
+    # Checking and cleaning the data
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
+    return np.median((simulated_array - observed_array)**2)
+
+
 def ed(simulated_array, observed_array, replace_nan=None, replace_inf=None,
        remove_neg=False, remove_zero=False):
     """
@@ -401,8 +592,8 @@ def ed(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -433,7 +624,10 @@ def ed(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     # Checking and cleaning the data
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -444,57 +638,6 @@ def ed(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     )
 
     return np.linalg.norm(observed_array - simulated_array)
-
-
-def mde(simulated_array, observed_array, replace_nan=None, replace_inf=None,
-        remove_neg=False, remove_zero=False):
-    """
-    Compute the median error between the simulated and observed data.
-
-    **Range** -inf < MdE < inf, closer to zero is better.
-    **Notes** This metric indicates bias. It is similar to the mean error (ME), only it takes the
-    median rather than the mean. Median measures reduces the impact of outliers.
-
-    **Parameters**
-
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
-
-    observed_array: *one dimensional ndarray*
-    > An array of observed data from the time series.
-
-    replace_nan: *float, optional*
-    > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
-    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
-    of the observed and simulated array are removed before the computation. If None, when 
-    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
-    of the observed and simulated array are removed before the computation.
-
-    replace_inf *float, optional*
-    > If given, indicates which value to replace Inf values with in the two arrays. If None, when 
-    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-    of the observed and simulated array are removed before the computation.
-
-    remove_neg *boolean, optional*
-    > If true, negative numbers will be removed from the observed and simulated arrays.
-
-    remove_zero *boolean, optional*
-    > If true, zeros will be removed from the observed and simulated arrays.
-
-    """
-
-    # Checking and cleaning the data
-    assert len(observed_array) == len(simulated_array)
-    simulated_array, observed_array = remove_values(
-        simulated_array,
-        observed_array,
-        replace_nan=replace_nan,
-        replace_inf=replace_inf,
-        remove_neg=remove_neg,
-        remove_zero=remove_zero
-    )
-
-    return np.median(simulated_array - observed_array)
 
 
 def ned(simulated_array, observed_array, replace_nan=None, replace_inf=None,
@@ -509,8 +652,8 @@ def ned(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -542,7 +685,10 @@ def ned(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     # Checking and cleaning the data
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -571,8 +717,8 @@ def rmse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -605,7 +751,10 @@ def rmse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     # Checking and cleaning the data
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -633,8 +782,8 @@ def rmsle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -666,7 +815,10 @@ def rmsle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     Climate Research 30(1) 79-82.
 
     """
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(simulated_array, observed_array,
                                                     replace_nan=replace_nan,
                                                     replace_inf=replace_inf, remove_neg=remove_neg,
@@ -688,8 +840,8 @@ def nrmse_range(simulated_array, observed_array, replace_nan=None, replace_inf=N
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -721,7 +873,10 @@ def nrmse_range(simulated_array, observed_array, replace_nan=None, replace_inf=N
     """
 
     # Checking and cleaning the data
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -750,8 +905,8 @@ def nrmse_mean(simulated_array, observed_array, replace_nan=None, replace_inf=No
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -783,7 +938,10 @@ def nrmse_mean(simulated_array, observed_array, replace_nan=None, replace_inf=No
     """
 
     # Checking and cleaning the data
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -812,8 +970,8 @@ def nrmse_iqr(simulated_array, observed_array, replace_nan=None, replace_inf=Non
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -845,7 +1003,10 @@ def nrmse_iqr(simulated_array, observed_array, replace_nan=None, replace_inf=Non
     """
 
     # Checking and cleaning the data
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -862,6 +1023,78 @@ def nrmse_iqr(simulated_array, observed_array, replace_nan=None, replace_inf=Non
     return rmse_value / iqr
 
 
+def irmse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+              remove_neg=False, remove_zero=False):
+    """
+
+    Compute the inertial root mean square error (IRMSE) between the simulated and observed data.
+
+    **Range:** 0 ≤ IRMSE < inf, lower is better.
+
+    **Notes:** This metric is the RMSE devided by by the standard deviation of the gradient of the
+    observed timeseries data. This metric is meant to be help understand the ability of the model
+    to predict changes in observation. Difficult to interpret and must be compared to the
+    RMSE in order to understand fully.
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Daga, M., Deo, M.C., 2009. Alternative data-driven methods to estimate wind from waves by
+    inverse modeling. Natural Hazards 49(2) 293-310.
+
+    """
+
+    # Checking and cleaning the data
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
+    simulated_array, observed_array = remove_values(
+        simulated_array,
+        observed_array,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero
+    )
+
+    # Getting the gradient of the observed data
+    obs_len = observed_array.size
+    obs_grad = observed_array[1:obs_len] - observed_array[obs_len - 1]
+
+    # Standard deviation of the gradient
+    obs_grad_std = np.std(obs_grad)
+
+    # Divide RMSE by the standard deviation of the gradient of the observed data
+    rmse_value = np.sqrt(np.mean((simulated_array - observed_array) ** 2))
+    return rmse_value / obs_grad_std
+
+
 def mase(simulated_array, observed_array, m=1, replace_nan=None, replace_inf=None,
          remove_neg=False, remove_zero=False):
     """
@@ -874,8 +1107,8 @@ def mase(simulated_array, observed_array, m=1, replace_nan=None, replace_inf=Non
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -900,10 +1133,17 @@ def mase(simulated_array, observed_array, m=1, replace_nan=None, replace_inf=Non
 
     **References:**
 
+    - Hyndman, R.J., Koehler, A.B., 2006. Another look at measures of forecast accuracy.
+    International Journal of Forecasting 22(4) 679-688.
+
     """
 
     # Checking and cleaning the data
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
+
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -934,8 +1174,8 @@ def pearson_r(simulated_array, observed_array, replace_nan=None, replace_inf=Non
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -962,7 +1202,10 @@ def pearson_r(simulated_array, observed_array, replace_nan=None, replace_inf=Non
 
     """
     # Checking and cleaning the data
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -997,8 +1240,8 @@ def spearman_r(simulated_array, observed_array, replace_nan=None, replace_inf=No
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1028,7 +1271,10 @@ def spearman_r(simulated_array, observed_array, replace_nan=None, replace_inf=No
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1065,8 +1311,8 @@ def r_squared(simulated_array, observed_array, replace_nan=None, replace_inf=Non
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1093,7 +1339,10 @@ def r_squared(simulated_array, observed_array, replace_nan=None, replace_inf=Non
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1108,8 +1357,8 @@ def r_squared(simulated_array, observed_array, replace_nan=None, replace_inf=Non
     return (np.sum(a * b)) ** 2 / (np.sum(a ** 2) * np.sum(b ** 2))
 
 
-def acc(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-        remove_zero=False):
+def acc(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+        remove_neg=False, remove_zero=False):
     """
 
     Compute the the anomaly correlation coefficient (ACC).
@@ -1123,8 +1372,8 @@ def acc(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1160,7 +1409,10 @@ def acc(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1176,8 +1428,8 @@ def acc(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
     return np.dot(a, b / c)
 
 
-def mape(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-         remove_zero=False):
+def mape(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+         remove_neg=False, remove_zero=False):
     """
 
     Compute the the mean absolute percentage error (MAPE).
@@ -1189,8 +1441,8 @@ def mape(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1215,7 +1467,10 @@ def mape(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1231,8 +1486,8 @@ def mape(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
     return c * np.sum(b)
 
 
-def mapd(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-         remove_zero=False):
+def mapd(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+         remove_neg=False, remove_zero=False):
     """
 
     Compute the the mean absolute percentage deviation (MAPE).
@@ -1243,8 +1498,8 @@ def mapd(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1269,7 +1524,10 @@ def mapd(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1284,8 +1542,8 @@ def mapd(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
     return a / b
 
 
-def maape(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-          remove_zero=False):
+def maape(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+          remove_neg=False, remove_zero=False):
     """
 
     Compute the the Mean Arctangent Absolute Percentage Error (MAAPE).
@@ -1297,8 +1555,8 @@ def maape(simulated_array, observed_array, replace_nan=None, replace_inf=None, r
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1326,7 +1584,10 @@ def maape(simulated_array, observed_array, replace_nan=None, replace_inf=None, r
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1341,8 +1602,8 @@ def maape(simulated_array, observed_array, replace_nan=None, replace_inf=None, r
     return np.mean(np.arctan(b))
 
 
-def smape1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-           remove_zero=False):
+def smape1(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+           remove_neg=False, remove_zero=False):
     """
 
     Compute the the Symmetric Mean Absolute Percentage Error (1) (SMAPE1).
@@ -1353,8 +1614,8 @@ def smape1(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1384,7 +1645,10 @@ def smape1(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1400,8 +1664,8 @@ def smape1(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     return a * np.sum(b / c)
 
 
-def smape2(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-           remove_zero=False):
+def smape2(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+           remove_neg=False, remove_zero=False):
     """
 
     Compute the the Symmetric Mean Absolute Percentage Error (2) (SMAPE2).
@@ -1412,8 +1676,8 @@ def smape2(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1443,7 +1707,10 @@ def smape2(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1459,8 +1726,8 @@ def smape2(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     return c * np.sum(np.abs(a / b))
 
 
-def d(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-      remove_zero=False):
+def d(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+      remove_neg=False, remove_zero=False):
     """
 
     Compute the the index of agreement (d).
@@ -1471,8 +1738,8 @@ def d(simulated_array, observed_array, replace_nan=None, replace_inf=None, remov
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1502,7 +1769,10 @@ def d(simulated_array, observed_array, replace_nan=None, replace_inf=None, remov
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1518,8 +1788,8 @@ def d(simulated_array, observed_array, replace_nan=None, replace_inf=None, remov
     return 1 - (np.sum(a) / np.sum((b + c) ** 2))
 
 
-def d1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-       remove_zero=False):
+def d1(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+       remove_neg=False, remove_zero=False):
     """
 
     Compute the the index of agreement (d1).
@@ -1531,8 +1801,8 @@ def d1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1560,7 +1830,10 @@ def d1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1578,8 +1851,8 @@ def d1(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
     return 1 - np.sum(a) / np.sum(b + c)
 
 
-def dr(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-       remove_zero=False):
+def dr(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+       remove_neg=False, remove_zero=False):
     """
 
     Compute the the refined index of agreement (dr).
@@ -1591,8 +1864,8 @@ def dr(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1620,7 +1893,10 @@ def dr(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1638,8 +1914,8 @@ def dr(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
         return (b / a) - 1
 
 
-def drel(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-         remove_zero=False):
+def drel(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+         remove_neg=False, remove_zero=False):
     """
 
     Compute the the relative index of agreement (drel).
@@ -1650,8 +1926,8 @@ def drel(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1679,7 +1955,10 @@ def drel(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1696,8 +1975,8 @@ def drel(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
     return 1 - (np.sum(a) / np.sum(e))
 
 
-def dmod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=None, remove_neg=False,
-         remove_zero=False):
+def dmod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=None,
+         remove_neg=False, remove_zero=False):
     """
 
     Compute the the modified index of agreement (dmod).
@@ -1709,8 +1988,8 @@ def dmod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=Non
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1738,7 +2017,10 @@ def dmod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=Non
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1755,8 +2037,8 @@ def dmod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=Non
     return 1 - (np.sum(a) / np.sum(e))
 
 
-def watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-           remove_zero=False):
+def watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+           remove_neg=False, remove_zero=False):
     """
 
     Compute Watterson's M (M).
@@ -1767,8 +2049,8 @@ def watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1796,7 +2078,10 @@ def watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1814,8 +2099,8 @@ def watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     return a * np.arcsin(1 - (b / f))
 
 
-def mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-         remove_zero=False):
+def mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+         remove_neg=False, remove_zero=False):
     """
 
     Compute Mielke-Berry R value (MB R).
@@ -1826,8 +2111,8 @@ def mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1858,7 +2143,10 @@ def mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1885,8 +2173,8 @@ def mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None, re
     return 1 - (mae(simulated_array, observed_array) * size ** 2 / total)
 
 
-def nse(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-        remove_zero=False):
+def nse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+        remove_neg=False, remove_zero=False):
     """
 
     Compute the Nash-Sutcliffe Efficiency.
@@ -1898,8 +2186,8 @@ def nse(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1933,7 +2221,10 @@ def nse(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -1949,8 +2240,7 @@ def nse(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
 
 def nse_mod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=None,
-            remove_neg=False,
-            remove_zero=False):
+            remove_neg=False, remove_zero=False):
     """
 
     Compute the modified Nash-Sutcliffe efficiency (NSE mod).
@@ -1962,8 +2252,8 @@ def nse_mod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -1991,7 +2281,10 @@ def nse_mod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2006,8 +2299,8 @@ def nse_mod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=
     return 1 - (np.sum(a) / np.sum(b))
 
 
-def nse_rel(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-            remove_zero=False):
+def nse_rel(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+            remove_neg=False, remove_zero=False):
     """
 
     Compute the relative Nash-Sutcliffe efficiency (NSE rel).
@@ -2019,8 +2312,8 @@ def nse_rel(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -2048,7 +2341,10 @@ def nse_rel(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2077,8 +2373,8 @@ def kge_2009(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -2112,7 +2408,10 @@ def kge_2009(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2171,8 +2470,8 @@ def kge_2012(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -2203,7 +2502,10 @@ def kge_2012(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
     an ensemble of climate change scenarios. Journal of Hydrology, 424, 264-277.
 
     """
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2266,8 +2568,8 @@ def lm_index(simulated_array, observed_array, obs_bar_p=None, replace_nan=None,
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -2300,7 +2602,10 @@ def lm_index(simulated_array, observed_array, obs_bar_p=None, replace_nan=None,
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2322,9 +2627,8 @@ def lm_index(simulated_array, observed_array, obs_bar_p=None, replace_nan=None,
         return 1 - (np.sum(a) / np.sum(b))
 
 
-def d1_p(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, replace_inf=None,
-         remove_neg=False,
-         remove_zero=False):
+def d1_p(simulated_array, observed_array, obs_bar_p=None, replace_nan=None,
+         replace_inf=None, remove_neg=False, remove_zero=False):
     """
 
     Compute the Legate-McCabe Index of Agreement.
@@ -2335,8 +2639,8 @@ def d1_p(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, repl
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -2368,7 +2672,10 @@ def d1_p(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, repl
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2389,8 +2696,8 @@ def d1_p(simulated_array, observed_array, obs_bar_p=None, replace_nan=None, repl
         return 1 - (np.sum(a) / np.sum(b))
 
 
-def ve(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-       remove_zero=False):
+def ve(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+       remove_neg=False, remove_zero=False):
     """
 
     Compute the Volumetric Efficiency (VE).
@@ -2401,8 +2708,8 @@ def ve(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -2430,7 +2737,10 @@ def ve(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2445,8 +2755,8 @@ def ve(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
     return 1 - (a / b)
 
 
-def sa(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-       remove_zero=False):
+def sa(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+       remove_neg=False, remove_zero=False):
     """
 
     Compute the Spectral Angle (SA).
@@ -2458,8 +2768,8 @@ def sa(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -2488,7 +2798,10 @@ def sa(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2503,21 +2816,21 @@ def sa(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
     return np.arccos(a / b)
 
 
-def sc(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-       remove_zero=False):
+def sc(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+       remove_neg=False, remove_zero=False):
     """
 
     Compute the Spectral Correlation (SC).
 
     **Range:** -π/2 ≤ SA < π/2, closer to 0 is better.
 
-    **Notes:** The spectral correlation metric measures the angle between the two vectors in hyperspace.
-    It indicates how well the shape of the two series match – not magnitude.
+    **Notes:** The spectral correlation metric measures the angle between the two vectors in
+    hyperspace. It indicates how well the shape of the two series match – not magnitude.
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -2546,7 +2859,10 @@ def sc(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2563,8 +2879,8 @@ def sc(simulated_array, observed_array, replace_nan=None, replace_inf=None, remo
     return np.arccos(a / e)
 
 
-def sid(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-        remove_zero=False):
+def sid(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+        remove_neg=False, remove_zero=False):
     """
 
     Compute the Spectral Information Divergence (SID).
@@ -2576,8 +2892,8 @@ def sid(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -2606,7 +2922,10 @@ def sid(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2623,8 +2942,8 @@ def sid(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
     return np.dot(first, second1 - second2)
 
 
-def sga(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-        remove_zero=False):
+def sga(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+        remove_neg=False, remove_zero=False):
     """
 
     Compute the Spectral Gradient Angle (SGA).
@@ -2637,8 +2956,8 @@ def sga(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
     **Parameters**
 
-    forecasted_array: *one dimensional ndarray*
-    > An array of forecasted data from the time series.
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
@@ -2667,7 +2986,10 @@ def sga(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
 
     """
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2684,16 +3006,23 @@ def sga(simulated_array, observed_array, replace_nan=None, replace_inf=None, rem
     return np.arccos(a / b)
 
 
-""" ###################################################################################################################
-                        H Metrics: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)                                       
-    ################################################################################################################"""
+####################################################################################################
+#               H Metrics: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)               #
+####################################################################################################
 
 
-def h1_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-           remove_zero=False):
-    """H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+def h1_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+           remove_neg=False, remove_zero=False):
+    """
 
-    assert len(observed_array) == len(simulated_array)
+    H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
+
+    """
+
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2711,7 +3040,10 @@ def h1_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2729,7 +3061,10 @@ def h1_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
              remove_zero=False):
     """H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2747,7 +3082,10 @@ def h2_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2765,7 +3103,10 @@ def h2_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2782,9 +3123,15 @@ def h2_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 def h2_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
              remove_zero=False):
     """H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2802,7 +3149,10 @@ def h3_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2820,7 +3170,10 @@ def h3_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2838,7 +3191,10 @@ def h3_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
              remove_zero=False):
     """H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2856,7 +3212,10 @@ def h4_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2874,7 +3233,10 @@ def h4_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2892,7 +3254,10 @@ def h4_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
              remove_zero=False):
     """H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2910,7 +3275,10 @@ def h5_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2930,7 +3298,10 @@ def h5_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2950,7 +3321,10 @@ def h5_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
              remove_zero=False):
     """H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2971,7 +3345,10 @@ def h6_mhe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=N
            remove_zero=False):
     """H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -2992,7 +3369,10 @@ def h6_ahe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=N
            remove_zero=False):
     """H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -3013,7 +3393,10 @@ def h6_rmshe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf
              remove_zero=False):
     """H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -3033,7 +3416,10 @@ def h7_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -3051,7 +3437,10 @@ def h7_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -3069,7 +3458,10 @@ def h7_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
              remove_zero=False):
     """H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -3087,7 +3479,10 @@ def h8_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -3105,7 +3500,10 @@ def h8_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
            remove_zero=False):
     """H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -3123,7 +3521,10 @@ def h8_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
              remove_zero=False):
     """H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -3154,7 +3555,10 @@ def h10_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
             remove_zero=False):
     """H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -3172,7 +3576,10 @@ def h10_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
             remove_zero=False):
     """H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -3190,7 +3597,10 @@ def h10_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=Non
               remove_zero=False):
     """H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -3214,7 +3624,10 @@ def g_mean_diff(simulated_array, observed_array, replace_nan=None, replace_inf=N
                 remove_zero=False):
     """Returns the geometric mean difference."""
 
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -3231,7 +3644,10 @@ def g_mean_diff(simulated_array, observed_array, replace_nan=None, replace_inf=N
 
 def mean_var(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
              remove_zero=False):
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     simulated_array, observed_array = remove_values(
         simulated_array,
         observed_array,
@@ -3304,7 +3720,10 @@ def remove_values(simulated_array, observed_array, replace_nan=None, replace_inf
     # Filtering warnings so that user doesn't see them while we remove the nans
     warnings.filterwarnings("ignore")
     # Checking to see if the vectors are the same length
-    assert len(observed_array) == len(simulated_array)
+    if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if simulated_array.size != observed_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
     # Finding the original length of the two arrays
     original_length = simulated_array.size
     if replace_nan is not None:
@@ -3433,12 +3852,22 @@ def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=
 
 
 if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+
     # long_str = ''
     # for i in __all__:
     #     long_str += i + ', '
     # print(long_str)
+    x = np.arange(100) / 20
 
-    sim = np.sin(1, 100) * 1e6
-    obs = np.arange(1, 100)
+    sim = np.sin(x) + 2
+    obs = sim * (((np.random.rand(100) - 0.5) / 10) + 1)
 
-    print(nrmse_range(sim, obs))
+    plt.plot(x, sim)
+    plt.plot(x, obs)
+
+    plt.show()
+
+    print(me(sim, obs))
+    print(irmse(sim, obs))
+    print(rmse(sim, obs))
