@@ -1,0 +1,1 @@
+.. automodapi:: hydrostats.analyze
