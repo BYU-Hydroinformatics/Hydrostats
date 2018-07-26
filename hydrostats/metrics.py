@@ -13,15 +13,15 @@ from numba import njit, prange
 from scipy.stats import gmean, rankdata
 import warnings
 
-__all__ = ['me', 'mae', 'mse', 'ed', 'ned', 'rmse', 'rmsle', 'mase', 'r_squared', 'acc', 'mape',
-           'mapd', 'smape1', 'smape2', 'd', 'd1', 'dr', 'drel', 'dmod', 'watt_m', 'mb_r', 'nse',
-           'nse_mod', 'nse_rel', 'lm_index', 'sa', 'sc', 'sid', 'sga', 'h1_mhe', 'h1_ahe',
+__all__ = ['me', 'mae', 'mse', 'mle', 'male', 'msle', 'mde', 'mdae', 'mdse', 'ed', 'ned', 'rmse',
+           'rmsle', 'nrmse_range', 'nrmse_mean', 'nrmse_iqr', 'irmse', 'mase', 'r_squared',
+           'pearson_r', 'spearman_r', 'acc', 'mape', 'mapd', 'maape', 'smape1', 'smape2', 'd', 'd1',
+           'dmod', 'drel', 'dr', 'watt_m', 'mb_r', 'nse', 'nse_mod', 'nse_rel', 'kge_2009',
+           'kge_2012', 'lm_index', 'd1_p', 've', 'sa', 'sc', 'sid', 'sga', 'h1_mhe', 'h1_ahe',
            'h1_rmshe', 'h2_mhe', 'h2_ahe', 'h2_rmshe', 'h3_mhe', 'h3_ahe', 'h3_rmshe', 'h4_mhe',
            'h4_ahe', 'h4_rmshe', 'h5_mhe', 'h5_ahe', 'h5_rmshe', 'h6_mhe', 'h6_ahe', 'h6_rmshe',
            'h7_mhe', 'h7_ahe', 'h7_rmshe', 'h8_mhe', 'h8_ahe', 'h8_rmshe', 'h10_mhe', 'h10_ahe',
-           'h10_rmshe', 'g_mean_diff', 'mean_var', 'mle', 'male', 'msle', 'nrmse_range',
-           'nrmse_mean', 'nrmse_iqr', 'maape', 'd1_p', 've', 'pearson_r', 'spearman_r', 'kge_2009',
-           'kge_2012']
+           'h10_rmshe', 'g_mean_diff', 'mean_var']
 
 
 ####################################################################################################
@@ -3670,46 +3670,51 @@ class HydrostatsError(Exception):
 
 
 metric_names = [
-    'Mean Error', 'Mean Absolute Error', 'Mean Squared Error', 'Eclidean Distance',
-    'Normalized Eclidean Distance', 'Root Mean Square Error', 'Root Mean Squared Log Error',
-    'Mean Absolute Scaled Error', 'Coefficient of Determination', 'Anomaly Correlation Coefficient',
+    'Mean Error', 'Mean Absolute Error', 'Mean Squared Error', 'Mean Log Error',
+    'Mean Absolute Log Error', 'Mean Squared Log Error', 'Median Error', 'Median Absolute Error',
+    'Median Squared Error', 'Eclidean Distance', 'Normalized Eclidean Distance',
+    'Root Mean Square Error', 'Root Mean Squared Log Error',
+    'Normalized Root Mean Square Error - Range', 'Normalized Root Mean Square Error - Mean',
+    'Normalized Root Mean Square Error - IQR', 'Inertial Root Mean Square Error',
+    'Mean Absolute Scaled Error', 'Coefficient of Determination', 'Pearson Correlation Coefficient',
+    'Spearman Rank Correlation Coefficient', 'Anomaly Correlation Coefficient',
     'Mean Absolute Percentage Error', 'Mean Absolute Percentage Deviation',
-    'Symmetric Mean Absolute Percentage Error (1)', 'Symmetric Mean Absolute Percentage Error (2)',
-    'Index of Agreement (d)', 'Index of Agreement (d1)', 'Index of Agreement Refined (dr)',
-    'Relative Index of Agreement', 'Modified Index of Agreement', "Watterson's M", 'Mielke-Berry R',
+    'Mean Arctangent Absolute Percentage Error', 'Symmetric Mean Absolute Percentage Error (1)',
+    'Symmetric Mean Absolute Percentage Error (2)', 'Index of Agreement (d)',
+    'Index of Agreement (d1)', 'Modified Index of Agreement', 'Relative Index of Agreement',
+    'Index of Agreement Refined (dr)', "Watterson's M", 'Mielke-Berry R',
     'Nash-Sutcliffe Efficiency', 'Modified Nash-Sutcliffe Efficiency',
-    'Relative Nash-Sutcliffe Efficiency', 'Legate-McCabe Efficiency Index', 'Spectral Angle',
+    'Relative Nash-Sutcliffe Efficiency', 'Kling-Gupta Efficiency (2009)',
+    'Kling-Gupta Efficiency (2012)', 'Legate-McCabe Efficiency Index',
+    'Legate-McCabe Index of Agreement', 'Volumetric Efficiency', 'Spectral Angle',
     'Spectral Correlation', 'Spectral Information Divergence', 'Spectral Gradient Angle',
     'H1 - MHE', 'H1 - AHE', 'H1 - RMSHE', 'H2 - MHE', 'H2 - AHE', 'H2 - RMSHE', 'H3 - MHE',
     'H3 - AHE', 'H3 - RMSHE', 'H4 - MHE', 'H4 - AHE', 'H4 - RMSHE', 'H5 - MHE', 'H5 - AHE',
     'H5 - RMSHE', 'H6 - MHE', 'H6 - AHE', 'H6 - RMSHE', 'H7 - MHE', 'H7 - AHE', 'H7 - RMSHE',
     'H8 - MHE', 'H8 - AHE', 'H8 - RMSHE', 'H10 - MHE', 'H10 - AHE', 'H10 - RMSHE',
-    'Geometric Mean Difference', 'Mean Variance', 'Mean Log Error', 'Mean Absolute Log Error',
-    'Mean Squared Log Error', 'Normalized Root Mean Square Error - Range',
-    'Normalized Root Mean Square Error - Mean', 'Normalized Root Mean Square Error - IQR',
-    'Mean Arctangent Absolute Percentage Error', 'Legate-McCabe Index of Agreement',
-    'Volumetric Efficiency', 'Pearson R', 'Spearman R', 'Kling-Gupta Efficiency (2009)',
-    'Kling-Gupta Efficiency (2012)'
+    'Geometric Mean Difference', 'Mean Variance'
 ]
 
 metric_abbr = [
-    'ME', 'MAE', 'MSE', 'ED', 'NED', 'RMSE', 'RMSLE', 'MASE', 'r2', 'ACC', 'MAPE', 'MAPD', 'SMAPE1',
-    'SMAPE2', 'd', 'd1', 'dr', 'd (Rel.)', 'd (Mod.)', 'M', '(MB) R', 'NSE', 'NSE (Mod.)',
-    'NSE (Rel.)', "E1'", 'SA', 'SC', 'SID', 'SGA', 'H1 (MHE)', 'H1 (AHE)', 'H1 (RMSHE)', 'H2 (MHE)',
+    'ME', 'MAE', 'MSE', 'MLE', 'MALE', 'MSLE', 'MdE', 'MdAE', 'MdSE', 'ED', 'NED', 'RMSE', 'RMSLE',
+    'NRMSE (Range)', 'NRMSE (Mean)', 'NRMSE (IQR)', 'IRMSE', 'MASE', 'r2', 'R (Pearson)',
+    'R (Spearman)', 'ACC', 'MAPE', 'MAPD', 'MAAPE', 'SMAPE1', 'SMAPE2', 'd', 'd1', 'd (Mod.)',
+    'd (Rel.)', 'dr', 'M', '(MB) R', 'NSE', 'NSE (Mod.)', 'NSE (Rel.)', 'KGE (2009)', 'KGE (2012)',
+    "E1'", "D1'", 'VE', 'SA', 'SC', 'SID', 'SGA', 'H1 (MHE)', 'H1 (AHE)', 'H1 (RMSHE)', 'H2 (MHE)',
     'H2 (AHE)', 'H2 (RMSHE)', 'H3 (MHE)', 'H3 (AHE)', 'H3 (RMSHE)', 'H4 (MHE)', 'H4 (AHE)',
     'H4 (RMSHE)', 'H5 (MHE)', 'H5 (AHE)', 'H5 (RMSHE)', 'H6 (MHE)', 'H6 (AHE)', 'H6 (RMSHE)',
     'H7 (MHE)', 'H7 (AHE)', 'H7 (RMSHE)', 'H8 (MHE)', 'H8 (AHE)', 'H8 (RMSHE)', 'H10 (MHE)',
-    'H10 (AHE)', 'H10 (RMSHE)', 'GMD', 'MV', 'MLE', 'MALE', 'MSLE', 'NRMSE (Range)', 'NRMSE (Mean)',
-    'NRMSE (IQR)', 'MAAPE', "D1'", 'VE', 'R (Pearson)', 'R (Spearman)', 'KGE (2009)', 'KGE (2012)'
+    'H10 (AHE)', 'H10 (RMSHE)', 'GMD', 'MV'
 ]
 
 function_list = [
-    me, mae, mse, ed, ned, rmse, rmsle, mase, r_squared, acc, mape, mapd, smape1, smape2, d, d1, dr,
-    drel, dmod, watt_m, mb_r, nse, nse_mod, nse_rel, lm_index, sa, sc, sid, sga, h1_mhe, h1_ahe,
-    h1_rmshe, h2_mhe, h2_ahe, h2_rmshe, h3_mhe, h3_ahe, h3_rmshe, h4_mhe, h4_ahe, h4_rmshe, h5_mhe,
-    h5_ahe, h5_rmshe, h6_mhe, h6_ahe, h6_rmshe, h7_mhe, h7_ahe, h7_rmshe, h8_mhe, h8_ahe, h8_rmshe,
-    h10_mhe, h10_ahe, h10_rmshe, g_mean_diff, mean_var, mle, male, msle, nrmse_range, nrmse_mean,
-    nrmse_iqr, maape, d1_p, ve, pearson_r, spearman_r, kge_2009, kge_2012
+    me, mae, mse, mle, male, msle, mde, mdae, mdse, ed, ned, rmse, rmsle, nrmse_range, nrmse_mean,
+    nrmse_iqr, irmse, mase, r_squared, pearson_r, spearman_r, acc, mape, mapd, maape, smape1,
+    smape2, d, d1, dmod, drel, dr, watt_m, mb_r, nse, nse_mod, nse_rel, kge_2009, kge_2012,
+    lm_index, d1_p, ve, sa, sc, sid, sga, h1_mhe, h1_ahe, h1_rmshe, h2_mhe, h2_ahe, h2_rmshe,
+    h3_mhe, h3_ahe, h3_rmshe, h4_mhe, h4_ahe, h4_rmshe, h5_mhe, h5_ahe, h5_rmshe, h6_mhe, h6_ahe,
+    h6_rmshe, h7_mhe, h7_ahe, h7_rmshe, h8_mhe, h8_ahe, h8_rmshe, h10_mhe, h10_ahe, h10_rmshe,
+    g_mean_diff, mean_var,
 ]
 
 
@@ -3786,88 +3791,144 @@ def remove_values(simulated_array, observed_array, replace_nan=None, replace_inf
     return simulated_array, observed_array
 
 
-def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=1, nse_mod_j=1,
-                    h6_mhe_k=1, h6_ahe_k=1,
-                    h6_rmshe_k=1, d1_p_obs_bar_p=None, lm_x_obs_bar_p=None, replace_nan=None,
-                    replace_inf=None,
-                    remove_neg=False, remove_zero=False):
+def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=1,
+                    nse_mod_j=1, h6_mhe_k=1, h6_ahe_k=1, h6_rmshe_k=1, d1_p_obs_bar_p=None,
+                    lm_x_obs_bar_p=None, replace_nan=None, replace_inf=None, remove_neg=False,
+                    remove_zero=False):
+    if len(sim_array.shape) != 1 or len(obs_array.shape) != 1:
+        raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
+    if sim_array.size != obs_array.size:
+        raise HydrostatsError("The two ndarrays are not the same size.")
 
-    # Removing values or replacing them based on user input and checking the length of the values
-    assert len(sim_array) == len(obs_array)
-    sim_array, obs_array = remove_values(
-        sim_array,
-        obs_array,
-        replace_nan=replace_nan,
-        replace_inf=replace_inf,
-        remove_neg=remove_neg,
-        remove_zero=remove_zero
-    )
-
-    # Empty list for the metrics that are returned
     metrics_list = []
 
-    # creating a list of indices for the selected metrics
-    metrics_indices = []
     if not abbr:
-        for i in metrics:
-            metrics_indices.append(metric_names.index(i))
+        for metric in metrics:
+            if metric == 'Mean Absolute Scaled Error':
+                metrics_list.append(mase(sim_array, obs_array, m=mase_m,
+                                         replace_nan=replace_nan, replace_inf=replace_inf,
+                                         remove_neg=remove_neg, remove_zero=remove_zero))
+
+            elif metric == 'Modified Index of Agreement':
+                metrics_list.append(dmod(sim_array, obs_array, j=dmod_j,
+                                         replace_nan=replace_nan, replace_inf=replace_inf,
+                                         remove_neg=remove_neg, remove_zero=remove_zero))
+
+            elif metric == 'Modified Nash-Sutcliffe Efficiency':
+                metrics_list.append(nse_mod(sim_array, obs_array, j=nse_mod_j,
+                                            replace_nan=replace_nan, replace_inf=replace_inf,
+                                            remove_neg=remove_neg, remove_zero=remove_zero))
+
+            elif metric == 'Legate-McCabe Efficiency Index':
+                metrics_list.append(lm_index(sim_array, obs_array, obs_bar_p=lm_x_obs_bar_p,
+                                             replace_nan=replace_nan, replace_inf=replace_inf,
+                                             remove_neg=remove_neg, remove_zero=remove_zero))
+
+            elif metric == 'H6 - MHE':
+                metrics_list.append(h6_mhe(sim_array, obs_array, k=h6_mhe_k,
+                                           replace_nan=replace_nan, replace_inf=replace_inf,
+                                           remove_neg=remove_neg, remove_zero=remove_zero
+                                           ))
+
+            elif metric == 'H6 - AHE':
+                metrics_list.append(h6_ahe(sim_array, obs_array, k=h6_ahe_k,
+                                           replace_nan=replace_nan, replace_inf=replace_inf,
+                                           remove_neg=remove_neg, remove_zero=remove_zero
+                                           ))
+
+            elif metric == 'H6 - RMSHE':
+                metrics_list.append(h6_rmshe(sim_array, obs_array, k=h6_rmshe_k,
+                                             replace_nan=replace_nan, replace_inf=replace_inf,
+                                             remove_neg=remove_neg, remove_zero=remove_zero
+                                             ))
+
+            elif metric == 'Legate-McCabe Index of Agreement':
+                metrics_list.append(d1_p(sim_array, obs_array, obs_bar_p=d1_p_obs_bar_p,
+                                         replace_nan=replace_nan, replace_inf=replace_inf,
+                                         remove_neg=remove_neg, remove_zero=remove_zero
+                                         ))
+            else:
+                index = metric_names.index(metric)
+                metric_func = function_list[index]
+                metrics_list.append(metric_func(sim_array, obs_array, replace_nan=replace_nan,
+                                                replace_inf=replace_inf, remove_neg=remove_neg,
+                                                remove_zero=remove_zero))
+
     else:
-        for i in metrics:
-            metrics_indices.append(metric_abbr.index(i))
+        for metric in metrics:
+            if metric == 'MASE':
+                metrics_list.append(mase(sim_array, obs_array, m=mase_m,
+                                         replace_nan=replace_nan, replace_inf=replace_inf,
+                                         remove_neg=remove_neg, remove_zero=remove_zero))
 
-    # Creating a list of selected metric functions
-    selected_metrics = []
-    for i in metrics_indices:
-        selected_metrics.append(function_list[i])
+            elif metric == 'd (Mod.)':
+                metrics_list.append(dmod(sim_array, obs_array, j=dmod_j,
+                                         replace_nan=replace_nan, replace_inf=replace_inf,
+                                         remove_neg=remove_neg, remove_zero=remove_zero))
 
-    for index, func in zip(metrics_indices, selected_metrics):
-        if index == 7:
-            metrics_list.append(func(sim_array, obs_array, m=mase_m))
+            elif metric == 'NSE (Mod.)':
+                metrics_list.append(nse_mod(sim_array, obs_array, j=nse_mod_j,
+                                            replace_nan=replace_nan,
+                                            replace_inf=replace_inf,
+                                            remove_neg=remove_neg, remove_zero=remove_zero))
 
-        elif index == 18:
-            metrics_list.append(func(sim_array, obs_array, j=dmod_j))
+            elif metric == "E1'":
+                metrics_list.append(lm_index(sim_array, obs_array, obs_bar_p=lm_x_obs_bar_p,
+                                             replace_nan=replace_nan,
+                                             replace_inf=replace_inf,
+                                             remove_neg=remove_neg,
+                                             remove_zero=remove_zero))
 
-        elif index == 22:
-            metrics_list.append(func(sim_array, obs_array, j=nse_mod_j))
+            elif metric == 'H6 (MHE)':
+                metrics_list.append(h6_mhe(sim_array, obs_array, k=h6_mhe_k,
+                                           replace_nan=replace_nan, replace_inf=replace_inf,
+                                           remove_neg=remove_neg, remove_zero=remove_zero
+                                           ))
 
-        elif index == 24:
-            metrics_list.append(func(sim_array, obs_array, obs_bar_p=lm_x_obs_bar_p))
+            elif metric == 'H6 (AHE)':
+                metrics_list.append(h6_ahe(sim_array, obs_array, k=h6_ahe_k,
+                                           replace_nan=replace_nan, replace_inf=replace_inf,
+                                           remove_neg=remove_neg, remove_zero=remove_zero
+                                           ))
 
-        elif index == 44:
-            metrics_list.append(func(sim_array, obs_array, k=h6_mhe_k))
+            elif metric == 'H6 (RMSHE)':
+                metrics_list.append(h6_rmshe(sim_array, obs_array, k=h6_rmshe_k,
+                                             replace_nan=replace_nan,
+                                             replace_inf=replace_inf,
+                                             remove_neg=remove_neg, remove_zero=remove_zero
+                                             ))
 
-        elif index == 45:
-            metrics_list.append(func(sim_array, obs_array, k=h6_ahe_k))
-
-        elif index == 46:
-            metrics_list.append(func(sim_array, obs_array, k=h6_rmshe_k))
-
-        elif index == 65:
-            metrics_list.append(func(sim_array, obs_array, obs_bar_p=d1_p_obs_bar_p))
-
-        else:
-            metrics_list.append(func(sim_array, obs_array))
-
+            elif metric == "D1'":
+                metrics_list.append(d1_p(sim_array, obs_array, obs_bar_p=d1_p_obs_bar_p,
+                                         replace_nan=replace_nan, replace_inf=replace_inf,
+                                         remove_neg=remove_neg, remove_zero=remove_zero
+                                         ))
+            else:
+                index = metric_abbr.index(metric)
+                metric_func = function_list[index]
+                metrics_list.append(
+                    metric_func(sim_array, obs_array, replace_nan=replace_nan,
+                                replace_inf=replace_inf, remove_neg=remove_neg,
+                                remove_zero=remove_zero))
     return metrics_list
 
 
 if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-
+    pass
     # long_str = ''
     # for i in __all__:
     #     long_str += i + ', '
     # print(long_str)
-    x = np.arange(100) / 20
-
-    sim = np.sin(x) + 2
-    obs = sim * (((np.random.rand(100) - 0.5) / 10) + 1)
-
-    plt.plot(x, sim)
-    plt.plot(x, obs)
-
-    plt.show()
-
-    print(me(sim, obs))
-    print(irmse(sim, obs))
-    print(rmse(sim, obs))
+    # x = np.arange(100) / 20
+    #
+    # sim = np.sin(x) + 2
+    # obs = sim * (((np.random.rand(100) - 0.5) / 10) + 1)
+    #
+    # plt.plot(x, sim)
+    # plt.plot(x, obs)
+    #
+    # plt.show()
+    #
+    # print(me(sim, obs))
+    # print(irmse(sim, obs))
+    # print(rmse(sim, obs))
