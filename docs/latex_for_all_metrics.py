@@ -35,7 +35,7 @@ latex_symbols = {
     'IRMSE2': r'$\sigma_{\Delta_O}=\sqrt{\sum_{i=1}^{n}\frac{(\Delta_{O_i}-\overline{\Delta_O})^2}'
               r'{n-1}}=$ std $(\Delta_O)$',
     'IRMSE3': r'$IRMSE = \frac{RMSE}{\sigma_{\Delta_O}}$',
-    'MASE': r'$MASE = \frac{\sum_{i=1}^{n}|S_i-O_i|}{\frac{n}{n-1}\sum_{i=1}^{n}|O_i-O_{i-1}|}$',
+    'MASE': r'$MASE = \frac{\sum_{i=1}^{n}|S_i-O_i|}{\frac{n}{n-1}\sum_{i=2}^{n}|O_i-O_{i-1}|}$',
     'r2': r'$R^2=\frac{(\sum_{i=1}^{n}(O_i-\overline{O})(S_i-\overline{S}))^2}'
           r'{\sum_{i=1}^{n}(O_i-\overline{O})^2\sum_{i=1}^{n}(S_i-\overline{S})^2}$',
     'R_pearson': r'$R_{Pearson}=\frac{\sum_{i=1}^{n}(O_i-\overline{O})(S_i-\overline{S})}{\sqrt{'
@@ -49,7 +49,8 @@ latex_symbols = {
     'MAPD': r'$MAPE=100\%\frac{\sum_{i=1}^{n}|S_i-O_i|}{\sum_{i=1}^{n}|O_i|}$',
     'MAAPE': r'$MAPE=\frac{1}{n}\sum_{i=1}^{n}arctan|\frac{S_i-O_i}{O_i}|$',
     'SMAPE1': r'$sMAPE1=\frac{100\%}{n}\sum_{i=1}^{n}\frac{|S_i-O_i|}{|S_i|+|O_i|}$',
-    'SMAPE2': r'$sMAPE1=\frac{100\%}{n}\sum_{i=1}^{n}|\frac{S_i-O_i}{\frac{(S_i+O_i)}{2}}|$',
+    'SMAPE2': r'sMAPE2 $=\frac{100\%}{n}\sum_{i=1}^{n} '
+              r'\left|\frac{S_i-O_i}{\frac{(S_i+O_i)}{2}} \right|$',
     'd': r'$d=1-\frac{\sum_{i=1}^{n}(S_i-O_i)^2}{\sum_{i=1}^{n}(|S_i-\overline{O}|+|O_i-'
          r'\overline{O}|)^2}$',
     'd1': r'$d_{1}=1-\frac{\sum_{i=1}^{n}|S_i-O_i|}{\sum_{i=1}^{n}(|S_i-\overline{O}|+|O_i-'
@@ -111,7 +112,7 @@ latex_symbols = {
     'H10': r'$H_{10} = \ln{ \frac {S_i}{O_i}}$',
     'GMD': r'GM $= e^{\left(\sqrt[n]{\ln(S_1)\ln(S_2)\cdot\cdot\cdot \ln(S_n)} - \sqrt[n]'
            r'{\ln(O_1)\ln(O_2)\cdot\cdot\cdot \ln(O_n)}\right)}$',
-    'MV': r'MV $=$ var$(\ln(O_1), \ln(O_2),..., \ln(O_n) -$ var$(\ln(S_1),\ln(S_2),..., \ln(S_n)$'
+    'MV': r'MV $=$ var$(\ln(O_1), \ln(O_2),..., \ln(O_n)) -$ var$(\ln(S_1),\ln(S_2),..., \ln(S_n))$'
 }
 
 # Code to make latex images from the raw tex above. Note that latex must be installed with the following commands:
