@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+import sympy as sp
 
 metric_abbr = [
     'ME', 'MAE', 'MSE', 'MLE', 'MALE', 'MSLE', 'MdE', 'MdAE', 'MdSE', 'ED', 'NED', 'RMSE', 'RMSLE',
@@ -48,7 +48,7 @@ latex_symbols = {
     'MAPD': r'$MAPE=100\%\frac{\sum_{i=1}^{n}|S_i-O_i|}{\sum_{i=1}^{n}|O_i|}$',
     'MAAPE': r'$MAPE=\frac{1}{n}\sum_{i=1}^{n}arctan|\frac{S_i-O_i}{O_i}|$',
     'SMAPE1': r'$sMAPE1=\frac{100\%}{n}\sum_{i=1}^{n}\frac{|S_i-O_i|}{|S_i|+|O_i|}$',
-    'SMAPE2': r'sMAPE1=\frac{100\%}{n}\sum_{i=1}^{n}|\frac{S_i-O_i}{\frac{(S_i+O_i)}{2}}|',
+    'SMAPE2': r'$sMAPE1=\frac{100\%}{n}\sum_{i=1}^{n}|\frac{S_i-O_i}{\frac{(S_i+O_i)}{2}}|$',
     'd': r'$d=1-\frac{\sum_{i=1}^{n}(S_i-O_i)^2}{\sum_{i=1}^{n}(|S_i-\overline{O}|+|O_i-'
          r'\overline{O}|)^2}$',
     'd1': r'$d_{1}=1-\frac{\sum_{i=1}^{n}|S_i-O_i|}{\sum_{i=1}^{n}(|S_i-\overline{O}|+|O_i-'
@@ -80,12 +80,11 @@ latex_symbols = {
     'KGE_2012_4': r'$\beta=\mu_s / \mu_o$',
     'KGE_2012_5': r'$\gamma = \frac{CV_s}{CV_o} = \frac{\sigma_s/\mu_s}{\sigma_o/\mu_o}$',
     'E1p': r"$E_{1}^{'} = 1-\frac{\sum_{i=1}^{n}\left|S_i-O_i\right|}{\sum_{i=1}^{n} \left|O_i-"
-           r"\overline{O_i^'}\right|}$",
-    'D1p': r"$d_{1}^{'} = 1-\frac{\sum_{i=1}^{n}\left|S_i-O_i\right|}{\sum_{i=1}^{n} \left|S_i-"
-           r"\overline{O_i^'}\right| + \left|O_i-\overline{O_i^'}\right|}$",
+           r"\overline{O_i^{'}}\right|}$",
+    'D1p': r"$d_{1}^{'} = 1-\frac{\sum_{i=1}^{n}\left|S_i-O_i\right|}{\sum_{i=1}^{n} \left| S_i - \overline{O_i^{'}} "
+           r"\right| + \left| O_i - \overline{O_i^{'}} \right| }$",
     'VE': r'$VE = 1-\frac{\sum_{i=1}^{n} |S_i - O_i|}{\sum_{i=1}^{n} O_i}$',
-    'SA': r'$SA = arccos\left(\frac{\sum_{i=1}^{n} S_i O_i}{(\sum_{i=1}^{n} S_i^2)^{\frac{1}{2}}'
-          r' (\sum_{i=1}^{n} O_i^2)^{\frac{1}{2}}\right)$',
+    'SA': r"$SA = arccos\left( \frac{\langle S, O \rangle}{||S||^{}_2 ||O||^{}_2} \right)$",
     'SC': r'$SC = arccos\left(\frac{\langle(S_i-\overline{S})(O_i-\overline{O})\rangle}{||S_i-'
           r'\overline{S}||_2 ||O_i-\overline{O}||_2}\right)$',
     'SID': r'$\Biggl\langle \left( \frac{O_i}{\overline{O}} - \frac{S_i}{\overline{S}} \right), '
@@ -97,32 +96,32 @@ latex_symbols = {
     'SGA4': r'$Note: SA=Spectral \enspace Angle \enspace Metric$',
     'MHE': r'$\text{Mean H Error} =\frac {1}{n}\sum_{i=1}^{n} H$',
     'AHE': r'$\text{Absolute H Error} =\frac {1}{n}\sum_{i=1}^{n} |H|$',
-    'RMSHE': r'%\text{Root Mean Squared H Error} =\sqrt{\frac {1}{n}\sum_{i=1}^{n} H ^2}%',
-    'H1': r'$H_1 &= \frac {S_i-O_i}{O_i}$',
-    'H2': r'$H_2 &= \frac {S_i-O_i}{S_i}$',
-    'H3': r'$H_3 &= \frac {S_i-O_i}{\frac{1}{2}(S_i+O_i)}$',
-    'H4': r'$H_4 &= \frac {S_i-O_i}{\sqrt{S_iO_i}}$',
-    'H5': r'$H_5 &= \frac{S_i - O_i}{\left [ \frac {1}{2} \left ( O_i^{-1} + S_i^{-1} \right ) '
+    'RMSHE': r'$\text{Root Mean Squared H Error} = \sqrt{\frac {1}{n}\sum_{i=1}^{n} H^2}$',
+    'H1': r'$H_1 = \frac {S_i-O_i}{O_i}$',
+    'H2': r'$H_2 = \frac {S_i-O_i}{S_i}$',
+    'H3': r'$H_3 = \frac {S_i-O_i}{\frac{1}{2}(S_i+O_i)}$',
+    'H4': r'$H_4 = \frac {S_i-O_i}{\sqrt{S_iO_i}}$',
+    'H5': r'$H_5 = \frac{S_i - O_i}{\left [ \frac {1}{2} \left ( O_i^{-1} + S_i^{-1} \right ) '
           r'\right ]^{-1}}$',
-    'H6': r'$H_6 &= \frac{S_i - O_i}{\left [ \frac {1}{2} \left ( O_i^{k} + S_i^{k} \right ) '
+    'H6': r'$H_6 = \frac{S_i - O_i}{\left [ \frac {1}{2} \left ( O_i^{k} + S_i^{k} \right ) '
           r'\right ]^{1/k}}$',
-    'H7': r'$H_7 &= \frac {S_i - O_i}{min(O_i,S_i)}$',
-    'H8': r'$H_8 &= \frac {S_i - O_i}{max(O_i,S_i)}$',
-    'H10': r'$H_{10} &= \ln{ \frac {S_i}{O_i}}$',
+    'H7': r'$H_7 = \frac {S_i - O_i}{min(O_i,S_i)}$',
+    'H8': r'$H_8 = \frac {S_i - O_i}{max(O_i,S_i)}$',
+    'H10': r'$H_{10} = \ln{ \frac {S_i}{O_i}}$',
     'GMD': r'$\text{GM} = e^{\left(\sqrt[n]{\ln(S_1)\ln(S_2)\cdot\cdot\cdot \ln(S_n)} - \sqrt[n]'
            r'{\ln(O_1)\ln(O_2)\cdot\cdot\cdot \ln(O_n)}\right)}$',
     'MV': r'$\text{MV} = \text{var}(\ln(O_1), \ln(O_2),..., \ln(O_n) - \text{var}(\ln(S_1), '
           r'\ln(S_2),..., \ln(S_n)$'
 }
 
-plt.plot(1, 1)
+all_metrics = list(latex_symbols.keys())
+all_metrics.sort()
+for metric in all_metrics:
+    print(metric)
+    sp.preview(latex_symbols[metric], viewer='file',
+               filename='/home/wade/Hydrostats/docs/New_Files/{}.png'.format(metric))
 
-plt.title(latex_symbols['MV'], fontsize=30)
-plt.show()
 
-# for metric in latex_symbols:
-#     plt.rc('text', usetex=True)
-#     plt.rc('font', family='serif')
-#     plt.title(latex_symbols[metric], fontsize=30)
-#     plt.show()
-#     plt.close()
+# sp.preview(, viewer='file', filename="test.png", euler=True)
+
+
