@@ -1,4 +1,5 @@
-import sympy as sp
+from io import BytesIO
+import matplotlib.pyplot as plt
 
 metric_abbr = [
     'ME', 'MAE', 'MSE', 'MLE', 'MALE', 'MSLE', 'MdE', 'MdAE', 'MdSE', 'ED', 'NED', 'RMSE', 'RMSLE',
@@ -13,7 +14,7 @@ metric_abbr = [
 ]
 
 latex_symbols = {
-    'ME': r'$ME = \frac{1}{n} \sum_{i=0}^{n} (S_i - O_i)$',
+    'ME': r'ME $= \frac{1}{n} \sum_{i=0}^{n} (S_i - O_i)$',
     'MAE': r'$MAE = \frac{1}{n} \sum_{i=0}^{n} | S_i - O_i |$',
     'MSE': r'$MSE = \frac{1}{n} \sum_{i=1}^{n}(S_i - O_i)^2$',
     'MLE': r'$MLE = \frac{1}{n} \sum_{i=0}^{n} ln(\frac{S_i}{O_i})$',
@@ -32,7 +33,7 @@ latex_symbols = {
     'NRMSE_IQR': r'$NRMSE_{quartile} = \frac{RMSE}{Quartile_3 - Quartile_1}$',
     'IRMSE1': r'$\Delta_O=(O_2 - O_1, O_3 - O_2, ... , O_n - O_{n-1})$',
     'IRMSE2': r'$\sigma_{\Delta_O}=\sqrt{\sum_{i=1}^{n}\frac{(\Delta_{O_i}-\overline{\Delta_O})^2}'
-              r'{n-1}}=\text{std}(\Delta_O)$',
+              r'{n-1}}=$ std $(\Delta_O)$',
     'IRMSE3': r'$IRMSE = \frac{RMSE}{\sigma_{\Delta_O}}$',
     'MASE': r'$MASE = \frac{\sum_{i=1}^{n}|S_i-O_i|}{\frac{n}{n-1}\sum_{i=1}^{n}|O_i-O_{i-1}|}$',
     'r2': r'$R^2=\frac{(\sum_{i=1}^{n}(O_i-\overline{O})(S_i-\overline{S}))^2}'
@@ -94,9 +95,9 @@ latex_symbols = {
     'SGA2': r'$SG_s = (S_2-S_1, S_3-S_2,...,S_n-S_{n-1})$',
     'SGA3': r'$SGA = SA(SG_o, SG_s)$',
     'SGA4': r'$Note: SA=Spectral \enspace Angle \enspace Metric$',
-    'MHE': r'$\text{Mean H Error} =\frac {1}{n}\sum_{i=1}^{n} H$',
-    'AHE': r'$\text{Absolute H Error} =\frac {1}{n}\sum_{i=1}^{n} |H|$',
-    'RMSHE': r'$\text{Root Mean Squared H Error} = \sqrt{\frac {1}{n}\sum_{i=1}^{n} H^2}$',
+    'MHE': r'Mean H Error $=\frac {1}{n}\sum_{i=1}^{n} H$',
+    'AHE': r'Absolute H Error $=\frac {1}{n}\sum_{i=1}^{n} |H|$',
+    'RMSHE': r'Root Mean Squared H Error $= \sqrt{\frac {1}{n}\sum_{i=1}^{n} H^2}$',
     'H1': r'$H_1 = \frac {S_i-O_i}{O_i}$',
     'H2': r'$H_2 = \frac {S_i-O_i}{S_i}$',
     'H3': r'$H_3 = \frac {S_i-O_i}{\frac{1}{2}(S_i+O_i)}$',
@@ -108,20 +109,23 @@ latex_symbols = {
     'H7': r'$H_7 = \frac {S_i - O_i}{min(O_i,S_i)}$',
     'H8': r'$H_8 = \frac {S_i - O_i}{max(O_i,S_i)}$',
     'H10': r'$H_{10} = \ln{ \frac {S_i}{O_i}}$',
-    'GMD': r'$\text{GM} = e^{\left(\sqrt[n]{\ln(S_1)\ln(S_2)\cdot\cdot\cdot \ln(S_n)} - \sqrt[n]'
+    'GMD': r'GM $= e^{\left(\sqrt[n]{\ln(S_1)\ln(S_2)\cdot\cdot\cdot \ln(S_n)} - \sqrt[n]'
            r'{\ln(O_1)\ln(O_2)\cdot\cdot\cdot \ln(O_n)}\right)}$',
-    'MV': r'$\text{MV} = \text{var}(\ln(O_1), \ln(O_2),..., \ln(O_n) - \text{var}(\ln(S_1), '
-          r'\ln(S_2),..., \ln(S_n)$'
+    'MV': r'MV $=$ var$(\ln(O_1), \ln(O_2),..., \ln(O_n) -$ var$(\ln(S_1),\ln(S_2),..., \ln(S_n)$'
 }
+
+# Code to make latex images from the raw tex above. Note that latex must be installed with the following commands:
+# sudo apt-get install dvipng texlive-latex-extra texlive-fonts-recommended
+# sudo apt-get install texlive-full
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
 
 all_metrics = list(latex_symbols.keys())
 all_metrics.sort()
+
 for metric in all_metrics:
-    print(metric)
-    sp.preview(latex_symbols[metric], viewer='file',
-               filename='/home/wade/Hydrostats/docs/New_Files/{}.png'.format(metric))
-
-
-# sp.preview(, viewer='file', filename="test.png", euler=True)
-
-
+    fig = plt.figure(figsize=(0.01, 0.01))
+    fig.text(0, 0, latex_symbols[metric], fontsize=12)
+    fig.savefig('/home/wade/Hydrostats/docs/test_pics/{}.png'.format(metric), dpi=400, transparent=True, format='png',
+                bbox_inches='tight', pad_inches=0.1)
+    plt.close(fig)
