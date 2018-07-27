@@ -35,6 +35,8 @@ def me(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the mean error of the simulated and observed data.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/ME.png?raw=true)
+
     **Range:** -inf < MAE < inf, data units, closer to zero is better, indicates bias.
 
     **Notes:** The mean error (ME) measures the difference between the simulated data and the
@@ -42,10 +44,6 @@ def me(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     data. Note that if the error is in the form of random noise, the mean error will be very small,
     which can skew the accuracy of this metric. ME is cumulative and will be small even if there
     are large positive and negative errors that balance.
-
-    *x = observed data and y = simulated data*
-
-    ![Mean Error](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/ME.png?raw=true)
 
     **Parameters**
 
@@ -115,6 +113,8 @@ def mae(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
     Compute the mean absolute error of the simulated and observed data.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MAE.png?raw=true)
+
     **Notes:** The ME measures the absolute difference between the simulated data and the observed
     data. For the mean abolute error, a smaller number indicates a better fit to the original data.
     Also note that random errors do not cancel. Also referred to as an L1-norm.
@@ -181,6 +181,8 @@ def mse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
     Compute the mean squared error of the simulated and observed data.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MSE.png?raw=true)
+
     **Range:** 0 ≤ MSE < inf, data units squared, smaller is better, does not indicate bias.
 
     **Notes:** Random errors do not cancel, highlights larger errors, also referred to as a
@@ -238,6 +240,8 @@ def mle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
         remove_neg=False, remove_zero=False):
     """
     Compute the mean log error of the simulated and observed data.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MLE.png?raw=true)
 
     **Range:** -inf < MLE < inf, data units, closer to zero is better, indicates bias.
 
@@ -300,6 +304,8 @@ def male(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
     Compute the mean absolute log error of the simulated and observed data.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MALE.png?raw=true)
+
     **Range:** 0 ≤ MALE < inf, data units squared, smaller is better, does not indicate bias.
 
     **Notes** Same as MAE only use log ratios as the error term. Limits the impact of outliers,
@@ -361,6 +367,8 @@ def msle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
     Compute the mean squared log error of the simulated and observed data.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MSLE.png?raw=true)
+
     **Range:** 0 ≤ MSLE < inf, data units squared, smaller is better, does not indicate bias.
 
     **Notes** Same as the mean squared error (MSE) only use log ratios as the error term. Limits
@@ -421,6 +429,8 @@ def mde(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
     Compute the median error (MdE) between the simulated and observed data.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MdE.png?raw=true)
+
     **Range** -inf < MdE < inf, closer to zero is better.
     **Notes** This metric indicates bias. It is similar to the mean error (ME), only it takes the
     median rather than the mean. Median measures reduces the impact of outliers.
@@ -474,6 +484,8 @@ def mdae(simulated_array, observed_array, replace_nan=None, replace_inf=None,
          remove_neg=False, remove_zero=False):
     """
     Compute the median absolute error (MdAE) between the simulated and observed data.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MdAE.png?raw=true)
 
     **Range** 0 ≤ MdAE < inf, closer to zero is better.
 
@@ -531,6 +543,8 @@ def mdse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
     Compute the median squared error (MdSE) between the simulated and observed data.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MdSE.png?raw=true)
+
     **Range** 0 ≤ MdSE < inf, closer to zero is better.
 
     **Notes** This metric does not indicates bias. Random errors (noise) do not cancel.
@@ -586,6 +600,8 @@ def ed(simulated_array, observed_array, replace_nan=None, replace_inf=None,
        remove_neg=False, remove_zero=False):
     """
     Compute the Euclidean distance between predicted and observed values in vector space.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/ED.png?raw=true)
 
     **Range** 0 ≤ ED < inf, smaller is better.
     **Notes** This metric does not indicate bias. It is also sometimes referred to as the L2-norm.
@@ -645,6 +661,8 @@ def ned(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
     Compute the normalized Euclidian distance between the simulated and observed data in vector
     space.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/NED.png?raw=true)
 
     **Range** 0 ≤ NED < inf, smaller is better.
     **Notes** This metric does not indicate bias. It is also sometimes referred to as the squared
@@ -708,6 +726,8 @@ def rmse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     Compute the root mean square error between the simulated and observed data.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/RMSE.png?raw=true)
 
     **Range** 0 ≤ RMSE < inf, smaller is better.
     **Notes** Random errors do not cancel. This metric will highlights larger errors. It is also
@@ -773,6 +793,8 @@ def rmsle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the root mean square log error between the simulated and observed data.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/RMSLE.png?raw=true)
+
     **Range:** 0 ≤ RMSLE < inf. Smaller is better, and it does not indicate bias.
 
     **Notes:** Random errors do not cancel while using this metric. This metric also limits the
@@ -831,6 +853,8 @@ def nrmse_range(simulated_array, observed_array, replace_nan=None, replace_inf=N
     """
 
     Compute the range normalized root mean square error between the simulated and observed data.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/NRMSE_Range.png?raw=true)
 
     **Range:** 0 ≤ NRMSE < inf.
 
@@ -898,6 +922,8 @@ def nrmse_mean(simulated_array, observed_array, replace_nan=None, replace_inf=No
 
     Compute the range normalized root mean square error between the simulated and observed data.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/NRMSE_Mean.png?raw=true)
+
     **Range:** 0 ≤ NRMSE < inf.
 
     **Notes:** This metric is the RMSE normalized by the mean of the observed time series (x).
@@ -961,6 +987,8 @@ def nrmse_iqr(simulated_array, observed_array, replace_nan=None, replace_inf=Non
     """
 
     Compute the range normalized root mean square error between the simulated and observed data.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/NRMSE_IQR.png?raw=true)
 
     **Range:** 0 ≤ NRMSE < inf.
 
@@ -1029,12 +1057,15 @@ def irmse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the inertial root mean square error (IRMSE) between the simulated and observed data.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/IRMSE1.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/IRMSE2.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/IRMSE3.png?raw=true)
+
     **Range:** 0 ≤ IRMSE < inf, lower is better.
 
     **Notes:** This metric is the RMSE devided by by the standard deviation of the gradient of the
     observed timeseries data. This metric is meant to be help understand the ability of the model
-    to predict changes in observation. Difficult to interpret and must be compared to the
-    RMSE in order to understand fully.
+    to predict changes in observation.
 
     **Parameters**
 
@@ -1101,6 +1132,8 @@ def mase(simulated_array, observed_array, m=1, replace_nan=None, replace_inf=Non
 
     Compute the mean absolute scaled error between the simulated and observed data.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MASE.png?raw=true)
+
     **Range:**
 
     **Notes:**
@@ -1166,6 +1199,8 @@ def pearson_r(simulated_array, observed_array, replace_nan=None, replace_inf=Non
 
     Compute the pearson correlation coefficient.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/R_pearson.png?raw=true)
+
     **Range:** -1 ≤ R (Pearson) ≤ 1. 1 indicates perfect postive correlation, 0 indicates
     complete randomness, -1 indicate perfect negative correlation.
 
@@ -1230,6 +1265,8 @@ def spearman_r(simulated_array, observed_array, replace_nan=None, replace_inf=No
     """
 
     Compute the spearman rank correlation coefficient.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/R_spearman.png?raw=true)
 
     **Range:** -1 ≤ R (Pearson) ≤ 1. 1 indicates perfect postive correlation, 0 indicates
     complete randomness, -1 indicate perfect negative correlation.
@@ -1303,6 +1340,8 @@ def r_squared(simulated_array, observed_array, replace_nan=None, replace_inf=Non
 
     Compute the the Coefficient of Determination (r2).
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/r2.png?raw=true)
+
     **Range:** 0 ≤ r2 ≤ 1. 1 indicates perfect correlation, 0 indicates complete randomness.
 
     **Notes:** The Coefficient of Determination measures the linear relation between simulated and
@@ -1362,6 +1401,8 @@ def acc(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     Compute the the anomaly correlation coefficient (ACC).
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/ACC.png?raw=true)
 
     **Range:** -1 ≤ ACC ≤ 1. -1 indicates perfect negative correlation of the variation pattern of
     the anomalies, 0 indicates complete randomness of the variation pattern of the anomalies,
@@ -1434,6 +1475,8 @@ def mape(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the the mean absolute percentage error (MAPE).
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MAPE.png?raw=true)
+
     **Range:** 0% ≤ MAPE ≤ 100%. 100% indicates perfect correlation, 0% indicates complete
     randomness.
 
@@ -1490,7 +1533,9 @@ def mapd(simulated_array, observed_array, replace_nan=None, replace_inf=None,
          remove_neg=False, remove_zero=False):
     """
 
-    Compute the the mean absolute percentage deviation (MAPE).
+    Compute the the mean absolute percentage deviation (MAPD).
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MAPD.png?raw=true)
 
     **Range:**
 
@@ -1547,6 +1592,8 @@ def maape(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     Compute the the Mean Arctangent Absolute Percentage Error (MAAPE).
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MAAPE.png?raw=true)
 
     **Range:** 0 ≤ MAAPE < π/2, does not indicate bias, smaller is better.
 
@@ -1607,6 +1654,8 @@ def smape1(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     Compute the the Symmetric Mean Absolute Percentage Error (1) (SMAPE1).
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SMAPE1.png?raw=true)
 
     **Range:** 0 ≤ SMAPE1 < 200%, does not indicate bias, smaller is better, symmetrical.
 
@@ -1670,6 +1719,8 @@ def smape2(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the the Symmetric Mean Absolute Percentage Error (2) (SMAPE2).
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SMAPE2.png?raw=true)
+
     **Range:** 0 ≤ SMAPE1 < 200%, does not indicate bias, smaller is better, symmetrical.
 
     **Notes:** This metric is an adjusted version of the MAPE with only positive metric values.
@@ -1732,6 +1783,8 @@ def d(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the the index of agreement (d).
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/d.png?raw=true)
+
     **Range:** 0 ≤ d < 1, does not indicate bias, larger is better.
 
     **Notes:** This metric is a modified approach to the Nash-Sutcliffe Efficiency metric.
@@ -1793,6 +1846,8 @@ def d1(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     Compute the the index of agreement (d1).
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/d1.png?raw=true)
 
     **Range:** 0 ≤ d < 1, does not indicate bias, larger is better.
 
@@ -1857,6 +1912,10 @@ def dr(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the the refined index of agreement (dr).
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/dr1.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/dr2.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/dr3.png?raw=true)
+
     **Range:** -1 ≤ dr < 1, does not indicate bias, larger is better.
 
     **Notes:** This metric was created to address issues in the index of agreement and the
@@ -1920,6 +1979,8 @@ def drel(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the the relative index of agreement (drel).
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/drel.png?raw=true)
+
     **Range:** 0 ≤ drel < 1, does not indicate bias, larger is better.
 
     **Notes:** Instead of absolute differences, this metric uses relative differences.
@@ -1980,6 +2041,8 @@ def dmod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=Non
     """
 
     Compute the the modified index of agreement (dmod).
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/dmod.png?raw=true)
 
     **Range:** 0 ≤ dmod < 1, does not indicate bias, larger is better.
 
@@ -2043,6 +2106,8 @@ def watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute Watterson's M (M).
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/M.png?raw=true)
+
     **Range:** -1 ≤ M < 1, does not indicate bias, larger is better.
 
     # **Notes:**
@@ -2104,6 +2169,8 @@ def mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     Compute Mielke-Berry R value (MB R).
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MB_R.png?raw=true)
 
     **Range:** 0 ≤ MB R < 1, does not indicate bias, larger is better.
 
@@ -2179,6 +2246,8 @@ def nse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the Nash-Sutcliffe Efficiency.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/NSE.png?raw=true)
+
     **Range:** -inf < NSE < 1, does not indicate bias, larger is better.
 
     **Notes:** The Nash-Sutcliffe efficiency metric compares prediction values to naive preditions
@@ -2245,6 +2314,8 @@ def nse_mod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=
 
     Compute the modified Nash-Sutcliffe efficiency (NSE mod).
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/NSEmod.png?raw=true)
+
     **Range:** -inf < NSE (mod) < 1, does not indicate bias, larger is better.
 
     **Notes:** The modified Nash-Sutcliffe efficiency metric gives less weight to outliers if j=1,
@@ -2305,6 +2376,8 @@ def nse_rel(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the relative Nash-Sutcliffe efficiency (NSE rel).
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/NSErel.png?raw=true)
+
     **Range:** -inf < NSE (rel) < 1, does not indicate bias, larger is better.
 
     **Notes:** The modified Nash-Sutcliffe efficiency metric gives less weight to outliers if j=1,
@@ -2364,6 +2437,12 @@ def kge_2009(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
     """
 
     Compute the Kling-Gupta efficiency (2009).
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2009_1.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2009_2.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2009_3.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2009_4.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2009_5.png?raw=true)
 
     **Range:** -inf < KGE (2009) < 1, does not indicate bias, larger is better.
 
@@ -2462,6 +2541,12 @@ def kge_2012(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
     """
 
     Compute the Kling-Gupta efficiency (2012).
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2012_1.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2012_2.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2012_3.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2012_4.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2012_5.png?raw=true)
 
     **Range:** -inf < KGE (2012) < 1, does not indicate bias, larger is better.
 
@@ -2562,6 +2647,8 @@ def lm_index(simulated_array, observed_array, obs_bar_p=None, replace_nan=None,
 
     Compute the Legate-McCabe Efficiency Index.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/E1p.png?raw=true)
+
     **Range:** 0 ≤ E1' < 1, does not indicate bias, larger is better.
 
     **Notes:** The obs_bar_p argument represents a seasonal or other selected average.
@@ -2633,6 +2720,8 @@ def d1_p(simulated_array, observed_array, obs_bar_p=None, replace_nan=None,
 
     Compute the Legate-McCabe Index of Agreement.
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/D1p.png?raw=true)
+
     **Range:** 0 ≤ d1' < 1, does not indicate bias, larger is better.
 
     **Notes:** The obs_bar_p argument represents a seasonal or other selected average.
@@ -2702,6 +2791,8 @@ def ve(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the Volumetric Efficiency (VE).
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/VE.png?raw=true)
+
     **Range:** 0 ≤ VE < 1 smaller is better, does not indicate bias.
 
     **Notes:** Represents the error as a percentage of flow.
@@ -2760,6 +2851,8 @@ def sa(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     Compute the Spectral Angle (SA).
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SA.png?raw=true)
 
     **Range:** -π/2 ≤ SA < π/2, closer to 0 is better.
 
@@ -2821,6 +2914,8 @@ def sc(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     Compute the Spectral Correlation (SC).
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SC.png?raw=true)
 
     **Range:** -π/2 ≤ SA < π/2, closer to 0 is better.
 
@@ -2885,6 +2980,8 @@ def sid(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the Spectral Information Divergence (SID).
 
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SID.png?raw=true)
+
     **Range:** -π/2 ≤ SID < π/2, closer to 0 is better.
 
     **Notes:** The spectral information divergence measures the angle between the two vectors in
@@ -2947,6 +3044,11 @@ def sga(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """
 
     Compute the Spectral Gradient Angle (SGA).
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SGA1.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SGA2.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SGA3.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SGA4.png?raw=true)
 
     **Range:** -π/2 ≤ SID < π/2, closer to 0 is better.
 
@@ -3015,7 +3117,43 @@ def h1_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
            remove_neg=False, remove_zero=False):
     """
 
-    H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985).
+    Compute the H1 mean error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H1.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
 
     """
 
@@ -3038,7 +3176,47 @@ def h1_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
 def h1_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H1 absolute error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H1.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/AHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3059,7 +3237,47 @@ def h1_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def h1_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
              remove_zero=False):
-    """H1 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H1 root mean square error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H1.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/RMSHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3080,7 +3298,48 @@ def h1_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
 
 def h2_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H2 mean error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H2.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3101,7 +3360,47 @@ def h2_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def h2_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H2 mean absolute error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H2.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/AHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3122,7 +3421,47 @@ def h2_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def h2_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
              remove_zero=False):
-    """H2 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H2 root mean square error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H1.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
     if simulated_array.size != observed_array.size:
@@ -3147,7 +3486,47 @@ def h2_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
 
 def h3_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H3 mean error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H3.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3168,7 +3547,47 @@ def h3_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def h3_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H3 mean absolute error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H3.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/AHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3189,7 +3608,47 @@ def h3_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def h3_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
              remove_zero=False):
-    """H3 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H3 root mean square error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H3.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/RMSHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3210,7 +3669,47 @@ def h3_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
 
 def h4_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H4 mean error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H4.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3231,7 +3730,47 @@ def h4_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def h4_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H4 mean absolute error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H4.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/AHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3252,7 +3791,47 @@ def h4_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def h4_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
              remove_zero=False):
-    """H4 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H4 mean error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H4.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/RMSHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3273,7 +3852,47 @@ def h4_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
 
 def h5_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H5 mean error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H5.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3296,7 +3915,47 @@ def h5_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def h5_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H5 mean absolute error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H5.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/AHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3319,7 +3978,47 @@ def h5_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def h5_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
              remove_zero=False):
-    """H5 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H5 root mean square error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H5.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/RMSHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3341,9 +4040,51 @@ def h5_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
 
 
 def h6_mhe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=None,
-           remove_neg=False,
-           remove_zero=False):
-    """H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+           remove_neg=False, remove_zero=False):
+    """
+
+    Compute the H6 mean error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H6.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    k: *float or integer*
+    > Optional parameter to set the value of k.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3367,7 +4108,50 @@ def h6_mhe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=N
 def h6_ahe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=None,
            remove_neg=False,
            remove_zero=False):
-    """H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H6 mean absolute error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H6.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/AHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    k: *float or integer*
+    > Optional parameter to set the value of k.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3391,7 +4175,50 @@ def h6_ahe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=N
 def h6_rmshe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=None,
              remove_neg=False,
              remove_zero=False):
-    """H6 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H6 root mean square error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H6.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/RMSHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    k: *float or integer*
+    > Optional parameter to set the value of k.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3414,7 +4241,47 @@ def h6_rmshe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf
 
 def h7_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H7 mean error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H7.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3435,7 +4302,47 @@ def h7_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def h7_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H7 mean absolute error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H7.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/AHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3456,7 +4363,47 @@ def h7_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def h7_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
              remove_zero=False):
-    """H7 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H7 root mean square error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H7.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/RMSHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3477,7 +4424,47 @@ def h7_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
 
 def h8_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H8 mean error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H8.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3498,7 +4485,47 @@ def h8_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def h8_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
            remove_zero=False):
-    """H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H8 mean absolute error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H8.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/AHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3519,7 +4546,47 @@ def h8_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
 
 def h8_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
              remove_zero=False):
-    """H8 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H8 root mean square error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H8.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/RMSHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3553,7 +4620,47 @@ def h8_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
 
 def h10_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
             remove_zero=False):
-    """H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H10 mean error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H10.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3574,7 +4681,47 @@ def h10_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
 def h10_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
             remove_zero=False):
-    """H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H10 mean absolute error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H10.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/AHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3595,7 +4742,47 @@ def h10_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
 def h10_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
               remove_zero=False):
-    """H10 Metric: Methods from Tornqvist L, Vartia P, and Vartia YO. (1985)."""
+    """
+
+    Compute the H10 root mean square error.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/H10.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/RMSHE.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
+    The American Statistician 43-46.
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3622,7 +4809,44 @@ def h10_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=Non
 def g_mean_diff(simulated_array, observed_array, replace_nan=None, replace_inf=None,
                 remove_neg=False,
                 remove_zero=False):
-    """Returns the geometric mean difference."""
+    """
+
+    Compute the geometric mean difference.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/GMD.png?raw=true)
+
+    **Range:**
+
+    **Notes:** For the difference of geometric means, the geometric mean is computed for each of
+    two samples then their difference is taken.
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
@@ -3644,6 +4868,43 @@ def g_mean_diff(simulated_array, observed_array, replace_nan=None, replace_inf=N
 
 def mean_var(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
              remove_zero=False):
+    """
+
+    Compute the mean variance.
+
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/MV.png?raw=true)
+
+    **Range:**
+
+    **Notes:**
+
+    **Parameters**
+
+    simulated_array: *one dimensional ndarray*
+    > An array of simulated data from the time series.
+
+    observed_array: *one dimensional ndarray*
+    > An array of observed data from the time series.
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    **References:**
+
+    """
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
     if simulated_array.size != observed_array.size:
