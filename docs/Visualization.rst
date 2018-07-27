@@ -1,1 +1,4 @@
+Visualization
+=============
+
 .. automodapi:: hydrostats.visual

@@ -17,14 +17,117 @@ import matplotlib.pyplot as plt
 __all__ = ['make_table', 'time_lag']
 
 
-def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_j=1, nse_mod_j=1, h6_mhe_k=1,
-               h6_ahe_k=1, h6_rmshe_k=1, d1_p_obs_bar_p=None, lm_x_obs_bar_p=None, replace_nan=None, replace_inf=None,
-               remove_neg=False, remove_zero=False, to_csv=None, to_excel=None, location=None):
-    """Creates a table with metrics as specified by the user. Seasonal periods can also be specified in order to compare
-    different seasons and how well the simulated data matches the observed data. Has options to save the table to either
-    a csv or an excel workbook. Also has an option to add a column for the location of the data. See the official
-    documentation at https://waderoberts123.github.io/Hydrostats/ for a full explanation of all of the function
-    arguments as well as examples."""
+def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_j=1,
+               nse_mod_j=1, h6_mhe_k=1, h6_ahe_k=1, h6_rmshe_k=1, d1_p_obs_bar_p=None,
+               lm_x_obs_bar_p=None, replace_nan=None, replace_inf=None, remove_neg=False,
+               remove_zero=False, to_csv=None, to_excel=None, location=None):
+    """
+
+    Create a table of user selected metrics with optional seasonal analysis.
+
+    **Notes:** Creates a table with metrics as specified by the user. Seasonal periods can also be
+    specified in order to compare different seasons and how well the simulated data matches the
+    observed data. Has options to save the table to either a csv or an excel workbook. Also has
+    an option to add a column for the location of the data.
+
+    **Parameters**
+
+    merged_dataframe (required): *DataFrame*
+    > A pandas dataframe input that has two columns of predicted data and observed data with a
+    datetime index.
+
+    metrics (required): *list*
+     > A list of all the metrics that the user wants to calculate. The metrics abbreviations must
+     be used and can be found in the table of all the metrics in the documentation.
+
+    seasonal_periods: "2D List"
+    > If give, specifies the seasonal periods that the user wants to analyze (e.g. [['06-01',
+    '06-30'], ['08-12', '11-23']] would analyze the dates from June 1st to June 30th and also
+    August 8th to November 23). Note that the entire time series is analyzed with the selected
+    metrics by default.
+
+    mase_m: *integer*
+    > Optional parameter for the mean absolute scaled error (MASE) metric.
+
+    dmod_j: *integer or float*
+    > Optional parameter for the modified index of agreement (dmod) metric.
+
+    nse_mod_j: *integer or float*
+    > Optional parameter for the modified Nash Sutcliffe (nse_mod) metric.
+
+    h6_mhe_k: *integer or float*
+    > Optional parameter for the H6 (MHE) metric.
+
+    h6_ahe_k: *integer or float*
+    > Optional parameter for the H6 (AHE) metric
+
+    h6_rmshe_k: *integer or float*
+    > Optional parameter for the H6 (RMSHE) metric
+
+    d1_p_obs_bar_p: *float*
+    > Optional parameter fot the Legate McCabe Index of Agreement (d1_p).
+
+    lm_x_obs_bar_p: *float*
+    > Optional parameter for the Lagate McCabe Efficiency Index (lm_index).
+
+    replace_nan: *float, optional*
+    > If given, indicates which value to replace NaN values with in the two arrays. If None, when
+    a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    replace_inf *float, optional*
+    > If given, indicates which value to replace Inf values with in the two arrays. If None, when
+    an inf value is found at the i-th position in the observed OR simulated array, the i-th value
+    of the observed and simulated array are removed before the computation.
+
+    remove_neg *boolean, optional*
+    > If true, negative numbers will be removed from the observed and simulated arrays.
+
+    remove_zero *boolean, optional*
+    > If true, zeros will be removed from the observed and simulated arrays.
+
+    to_csv: *string*
+    > Filepath and file name of the csv that is written (e.g. r'/path/to/output_dir/file.csv').
+
+    to_excel: *string*
+    > Filepath and file name of the excel workbook that is written
+    (e.g. r'/path/to/output_dir/file.xlsx').
+
+    location: *string*
+    > The name of the location that will be created as a column in the table that is created.
+    Useful for creating a large table with different datasets.
+
+    **Example**
+
+    ```python
+
+    import hydrostats as hs
+    import hydrostats.data as hd
+
+    # Defining the URLs of the datasets
+    sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
+    glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
+
+    # Merging the data
+    merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['SFPT', 'GLOFAS'])
+
+    # Printing the table
+    print(hs.make_table(merged_dataframe=merged_df,
+                        metrics=['MAE', 'r2', 'ACC', 'NSE', 'SA'],
+                        seasonal_periods=[['01-01', '03-31'], ['04-01', '06-30'], ['07-01', '09-30'],
+                                          ['10-01', '12-31']],
+                        remove_neg=True, remove_zero=True, location='Magdalena'))
+
+    # Writing the table to a csv
+    hs.make_table(merged_dataframe=merged_df,
+                        metrics=['MAE', 'r2', 'ACC', 'NSE', 'SA'],
+                        seasonal_periods=[['01-01', '03-31'], ['04-01', '06-30'], ['07-01', '09-30'],
+                                          ['10-01', '12-31']],
+                        remove_neg=True, remove_zero=True, location='Magdalena',
+                        to_csv='magdalena_table.csv')
+    ```
+
+    """
 
     # Creating a list for all of the metrics for all of the seasons
     complete_metric_list = []
@@ -90,16 +193,20 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
         table_df_final.to_csv(to_csv, index_label='Datetime')
 
 
-def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip', shift_range=[-30, 30], mase_m=1,
-             dmod_j=1, nse_mod_j=1, h6_mhe_k=1, h6_ahe_k=1, h6_rmshe_k=1, d1_p_obs_bar_p=None, lm_x_obs_bar_p=None,
-             replace_nan=None, replace_inf=None, remove_neg=False, remove_zero=False,
-             plot_title='Metric Values as Different Lags', ylabel='Metric Value', xlabel='Number of Lags',
-             save_fig=None, figsize=(10, 6), station=None, to_csv=None, to_excel=None):
-    """Runs a time lag analysis to check for potential timing errors in datasets. Returns a dataframe with all of the
-    metric values at different time lag, as well as the max and min metric value throughout the time lag as well as the
-    position of the max and min time lag values. See the official documentation at
-    https://waderoberts123.github.io/Hydrostats/ for a full explanation of all of the function arguments as well
-    as examples."""
+def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
+             shift_range=[-30, 30], mase_m=1, dmod_j=1, nse_mod_j=1, h6_mhe_k=1,
+             h6_ahe_k=1, h6_rmshe_k=1, d1_p_obs_bar_p=None, lm_x_obs_bar_p=None, replace_nan=None,
+             replace_inf=None, remove_neg=False, remove_zero=False,
+             plot_title='Metric Values as Different Lags', ylabel='Metric Value',
+             xlabel='Number of Lags', save_fig=None, figsize=(10, 6), station=None, to_csv=None,
+             to_excel=None):
+    """
+
+    Check metric values between simulated and observed data at different time lags.
+
+
+
+    """
 
     metrics_list = metric_names
     abbreviations = metric_abbr
