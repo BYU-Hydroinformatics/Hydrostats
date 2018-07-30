@@ -294,8 +294,8 @@ def mle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
         remove_zero=remove_zero
     )
 
-    sim_log = np.log(simulated_array)
-    obs_log = np.log(observed_array)
+    sim_log = np.log1p(simulated_array)
+    obs_log = np.log1p(observed_array)
     return np.mean(sim_log - obs_log)
 
 
@@ -357,8 +357,8 @@ def male(simulated_array, observed_array, replace_nan=None, replace_inf=None,
         remove_zero=remove_zero
     )
 
-    sim_log = np.log(simulated_array)
-    obs_log = np.log(observed_array)
+    sim_log = np.log1p(simulated_array)
+    obs_log = np.log1p(observed_array)
     return np.mean(np.abs(sim_log - obs_log))
 
 
@@ -419,8 +419,8 @@ def msle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
         remove_zero=remove_zero
     )
 
-    sim_log = np.log(simulated_array)
-    obs_log = np.log(observed_array)
+    sim_log = np.log1p(simulated_array)
+    obs_log = np.log1p(observed_array)
     return np.mean((sim_log - obs_log) ** 2)
 
 
@@ -977,7 +977,7 @@ def nrmse_mean(simulated_array, observed_array, replace_nan=None, replace_inf=No
         remove_zero=remove_zero
     )
 
-    rmse_value = rmse(simulated_array=simulated_array, observed_array=observed_array)
+    rmse_value = np.sqrt(np.mean((simulated_array - observed_array) ** 2))
     obs_mean = np.mean(observed_array)
     return rmse_value / obs_mean
 
@@ -1044,7 +1044,7 @@ def nrmse_iqr(simulated_array, observed_array, replace_nan=None, replace_inf=Non
         remove_zero=remove_zero
     )
 
-    rmse_value = rmse(simulated_array=simulated_array, observed_array=observed_array)
+    rmse_value = np.sqrt(np.mean((simulated_array - observed_array) ** 2))
     q1 = np.percentile(observed_array, 25)
     q3 = np.percentile(observed_array, 75)
     iqr = q3 - q1
@@ -1116,7 +1116,7 @@ def irmse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     # Getting the gradient of the observed data
     obs_len = observed_array.size
-    obs_grad = observed_array[1:obs_len] - observed_array[obs_len - 1]
+    obs_grad = observed_array[1:obs_len] - observed_array[0:obs_len - 1]
 
     # Standard deviation of the gradient
     obs_grad_std = np.std(obs_grad)
@@ -1145,6 +1145,9 @@ def mase(simulated_array, observed_array, m=1, replace_nan=None, replace_inf=Non
 
     observed_array: *one dimensional ndarray*
     > An array of observed data from the time series.
+
+    m: *integer*
+    >
 
     replace_nan: *float, optional*
     > If given, indicates which value to replace NaN values with in the two arrays. If None, when 
@@ -1465,7 +1468,7 @@ def acc(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     a = simulated_array - np.mean(simulated_array)
     b = observed_array - np.mean(observed_array)
-    c = np.std(observed_array) * np.std(simulated_array) * simulated_array.size
+    c = np.std(observed_array, ddof=1) * np.std(simulated_array, ddof=1) * simulated_array.size
     return np.dot(a, b / c)
 
 
@@ -2157,8 +2160,8 @@ def watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     )
 
     a = 2 / np.pi
-    b = mse(simulated_array, observed_array)
-    c = np.std(observed_array) ** 2 + np.std(simulated_array) ** 2
+    b = np.mean((simulated_array - observed_array) ** 2)  # MSE
+    c = np.std(observed_array, ddof=1) ** 2 + np.std(simulated_array, ddof=1) ** 2
     e = (np.mean(simulated_array) - np.mean(observed_array)) ** 2
     f = c + e
     return a * np.arcsin(1 - (b / f))
@@ -2237,7 +2240,8 @@ def mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     # Using NumPy for the vectorized calculations
     total, size = numba_loop(simulated_array, observed_array)
-    return 1 - (mae(simulated_array, observed_array) * size ** 2 / total)
+    mae_value = np.mean(np.abs(simulated_array - observed_array))
+    return 1 - (mae_value * size ** 2 / total)
 
 
 def nse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
@@ -2505,8 +2509,8 @@ def kge_2009(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
     obs_mean = np.mean(observed_array)
 
     # Standard Deviations
-    sim_sigma = np.std(simulated_array)
-    obs_sigma = np.std(observed_array)
+    sim_sigma = np.std(simulated_array, ddof=1)
+    obs_sigma = np.std(observed_array, ddof=1)
 
     # Pearson R
     top_pr = np.sum((observed_array - obs_mean) * (simulated_array - sim_mean))
@@ -4985,11 +4989,13 @@ def remove_values(simulated_array, observed_array, replace_nan=None, replace_inf
     """Removes the nan, negative, and inf values in two numpy arrays"""
     # Filtering warnings so that user doesn't see them while we remove the nans
     warnings.filterwarnings("ignore")
+
     # Checking to see if the vectors are the same length
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
         raise HydrostatsError("One or both of the ndarrays are not 1 dimensional.")
     if simulated_array.size != observed_array.size:
         raise HydrostatsError("The two ndarrays are not the same size.")
+
     # Finding the original length of the two arrays
     original_length = simulated_array.size
     if replace_nan is not None:
@@ -5175,7 +5181,16 @@ def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=
 
 
 if __name__ == "__main__":
-    pass
+    import pandas as pd
+
+    data_path = r'C:\Users\wadear\Google Drive\Work\Dr. Nelson Research\hydroinformatics ' \
+                r'group\Observed Global Streamflow Data\Colombia\MergedCSV\11017010.csv '
+    df = pd.read_csv(data_path, index_col=0)
+    sim = df.iloc[:, 0].values
+    obs = df.iloc[:, 1].values
+
+    print(spearman_r(sim, obs))
+
     # long_str = ''
     # for i in __all__:
     #     long_str += i + ', '
