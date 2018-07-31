@@ -105,7 +105,8 @@ latex_symbols = {
     'H10': r'$H_{10} = \ln{ \frac {S_i}{O_i}}$',
     'GMD': r'GM $= e^{\left(\sqrt[n]{\ln(S_1)\ln(S_2)\cdot\cdot\cdot \ln(S_n)} - \sqrt[n]'
            r'{\ln(O_1)\ln(O_2)\cdot\cdot\cdot \ln(O_n)}\right)}$',
-    'MV': r'MV $=$ var$(\ln(O_1), \ln(O_2),..., \ln(O_n) -$ var$(\ln(S_1),\ln(S_2),..., \ln(S_n)$'
+    'MV': r'MV $=$ var$\left(\ln(O_1), \ln(O_2),..., \ln(O_n)\right) -$ var$\left(\ln(S_1),'
+          r'\ln(S_2),..., \ln(S_n)\right)$'
 }
 
 # Code to make latex images from the raw tex above. Note that latex must be installed with the following commands:
