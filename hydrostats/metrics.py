@@ -3283,7 +3283,7 @@ def h1_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     )
 
     h = (simulated_array - observed_array) / observed_array
-    return np.mean(np.sqrt((h ** 2)))
+    return np.sqrt(np.mean(h ** 2))
 
 
 def h2_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -3471,7 +3471,7 @@ def h2_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     )
 
     h = (simulated_array - observed_array) / simulated_array
-    return np.mean(np.sqrt((h ** 2)))
+    return np.sqrt(np.mean(h ** 2))
 
 
 def h3_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -3654,7 +3654,7 @@ def h3_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     )
 
     h = (simulated_array - observed_array) / (0.5 * (simulated_array + observed_array))
-    return np.mean(np.sqrt((h ** 2)))
+    return np.sqrt(np.mean(h ** 2))
 
 
 def h4_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -3837,7 +3837,7 @@ def h4_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     )
 
     h = (simulated_array - observed_array) / np.sqrt(simulated_array * observed_array)
-    return np.mean(np.sqrt((h ** 2)))
+    return np.sqrt(np.mean(h ** 2))
 
 
 def h5_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -4026,7 +4026,7 @@ def h5_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     top = (simulated_array - observed_array)
     bot = np.reciprocal(0.5 * (np.reciprocal(observed_array) + np.reciprocal(simulated_array)))
     h = top / bot
-    return np.mean(np.sqrt((h ** 2)))
+    return np.sqrt(np.mean(h ** 2))
 
 
 def h6_mhe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=None,
@@ -4226,7 +4226,7 @@ def h6_rmshe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf
     top = (simulated_array / observed_array - 1)
     bot = np.power(0.5 * (1 + np.power(simulated_array / observed_array, k)), 1 / k)
     h = top / bot
-    return np.mean(np.sqrt((h ** 2)))
+    return np.sqrt(np.mean(h ** 2))
 
 
 def h7_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -4409,7 +4409,7 @@ def h7_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     )
 
     h = (simulated_array / observed_array - 1) / np.min(simulated_array / observed_array)
-    return np.mean(np.sqrt((h ** 2)))
+    return np.sqrt(np.mean(h ** 2))
 
 
 def h8_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
@@ -4592,7 +4592,7 @@ def h8_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     )
 
     h = (simulated_array / observed_array - 1) / np.max(simulated_array / observed_array)
-    return np.mean(np.sqrt((h ** 2)))
+    return np.sqrt(np.mean(h ** 2))
 
 
 # def h9(simulated_array, observed_array, h_type='mhe', k=1):
@@ -4788,7 +4788,7 @@ def h10_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=Non
     )
 
     h = np.log1p(simulated_array) - np.log1p(observed_array)
-    return np.mean(np.sqrt((h ** 2)))
+    return np.sqrt(np.mean(h ** 2))
 
 
 ###################################################################################################
