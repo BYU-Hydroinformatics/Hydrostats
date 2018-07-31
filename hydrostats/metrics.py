@@ -1117,7 +1117,7 @@ def irmse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     obs_grad = observed_array[1:obs_len] - observed_array[0:obs_len - 1]
 
     # Standard deviation of the gradient
-    obs_grad_std = np.std(obs_grad)
+    obs_grad_std = np.std(obs_grad, ddof=1)
 
     # Divide RMSE by the standard deviation of the gradient of the observed data
     rmse_value = np.sqrt(np.mean((simulated_array - observed_array) ** 2))
