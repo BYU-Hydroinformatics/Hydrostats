@@ -31,11 +31,10 @@ latex_symbols = {
     'NRMSE_Range': r'$NRMSE_{Range} = \frac{RMSE}{O_{max} - O_{min}}$',
     'NRMSE_Mean': r'$NRMSE_{Mean} = \frac{RMSE}{\overline{O}}$',
     'NRMSE_IQR': r'$NRMSE_{quartile} = \frac{RMSE}{Quartile_3 - Quartile_1}$',
-    'IRMSE1': r'$\Delta_O=(O_2 - O_1, O_3 - O_2, ... , O_n - O_{n-1})$',
-    'IRMSE2': r'$\sigma_{\Delta_O}=\sqrt{\sum_{i=1}^{n}\frac{(\Delta_{O_i}-\overline{\Delta_O})^2}'
-              r'{n-1}}=$ std $(\Delta_O)$',
-    'IRMSE3': r'$IRMSE = \frac{RMSE}{\sigma_{\Delta_O}}$',
-    'MASE': r'$MASE = \frac{\sum_{i=1}^{n}|S_i-O_i|}{\frac{n}{n-1}\sum_{i=2}^{n}|O_i-O_{i-1}|}$',
+    'IRMSE': r'$\Delta^{}_o=(O_2 - O_1, O_3 - O_2, ... , O_n - O_{n-1})$' + '\n' +
+             r'$\sigma^{}_{\Delta^{}_o}=\sqrt{\sum_{i=1}^{n}\frac{(\Delta_{o^{}_i}-\overline{\Delta_o})^2}{n-1}}=$ '
+             r'std $(\Delta_o)$' + '\n' + r'IRMSE $= \frac{RMSE}{\sigma^{}_{\Delta^{}_o}}$',
+    'MASE': r'$MASE = \frac{\sum_{i=1}^{n}|S_i-O_i|}{\frac{n}{n-1}\sum_{i=1}^{n}|O_i-O_{i-1}|}$',
     'r2': r'$R^2=\frac{(\sum_{i=1}^{n}(O_i-\overline{O})(S_i-\overline{S}))^2}'
           r'{\sum_{i=1}^{n}(O_i-\overline{O})^2\sum_{i=1}^{n}(S_i-\overline{S})^2}$',
     'R_pearson': r'$R_{Pearson}=\frac{\sum_{i=1}^{n}(O_i-\overline{O})(S_i-\overline{S})}{\sqrt{'
@@ -49,8 +48,7 @@ latex_symbols = {
     'MAPD': r'$MAPE=100\%\frac{\sum_{i=1}^{n}|S_i-O_i|}{\sum_{i=1}^{n}|O_i|}$',
     'MAAPE': r'$MAPE=\frac{1}{n}\sum_{i=1}^{n}arctan|\frac{S_i-O_i}{O_i}|$',
     'SMAPE1': r'$sMAPE1=\frac{100\%}{n}\sum_{i=1}^{n}\frac{|S_i-O_i|}{|S_i|+|O_i|}$',
-    'SMAPE2': r'sMAPE2 $=\frac{100\%}{n}\sum_{i=1}^{n} '
-              r'\left|\frac{S_i-O_i}{\frac{(S_i+O_i)}{2}} \right|$',
+    'SMAPE2': r'$sMAPE1=\frac{100\%}{n}\sum_{i=1}^{n}|\frac{S_i-O_i}{\frac{(S_i+O_i)}{2}}|$',
     'd': r'$d=1-\frac{\sum_{i=1}^{n}(S_i-O_i)^2}{\sum_{i=1}^{n}(|S_i-\overline{O}|+|O_i-'
          r'\overline{O}|)^2}$',
     'd1': r'$d_{1}=1-\frac{\sum_{i=1}^{n}|S_i-O_i|}{\sum_{i=1}^{n}(|S_i-\overline{O}|+|O_i-'
@@ -59,10 +57,10 @@ latex_symbols = {
             r'\overline{O}|)^j}$',
     'drel': r'$d_{rel}=1-\frac{\sum_{i=1}^{n}(\frac{S_i-O_i}{O_i})^2}{\sum_{i=1}^{n}(\frac{|S_i-'
             r'\overline{O}|+|O_i-\overline{O}|}{\overline{O}})^2}$',
-    'dr1': r'$Note: \enspace ||S_i-O_i||=\sum_{i=1}^n|S_i-O_i|$',
-    'dr2': r'$when \enspace ||S_i-O_i|| \leq 2||O_i-\overline{O}||, \enspace d_r=1-\frac{||S_i-O_i|'
-           r'|}{2||O_i-\overline{O}||}$',
-    'dr3': r'$when \enspace ||S_i-O_i|| > 2||O_i-\overline{O}||, \enspace d_r=\frac{2||O_i-'
+    'dr': r'Note: \enspace $||S_i-O_i||=\sum_{i=1}^n|S_i-O_i|$' + '\n' +
+           r'When \enspace $||S_i-O_i|| \leq 2||O_i-\overline{O}||, \enspace d_r=1-\frac{||S_i-O_i|'
+           r'|}{2||O_i-\overline{O}||}$' + '\n' +
+           r'When \enspace $||S_i-O_i|| > 2||O_i-\overline{O}||, \enspace d_r=\frac{2||O_i-'
            r'\overline{O}||}{||S_i-O_i||}-1$',
     'M': r'$M=\left(\frac{2}{\pi}\right)sin^{-1}\left(1-\frac{MSE}{\sigma^2_s+\sigma^2_o+'
          r'(\overline{S}-\overline{O})^2}\right)$',
@@ -71,16 +69,12 @@ latex_symbols = {
     'NSEmod': r'$NSE_{mod}=1-\frac{\sum_{i=1}^{n}|S_i-O_i|^j}{\sum_{i=1}^{n}|O_i-\overline{O}|^j}$',
     'NSErel': r'$NSE_{rel}=1-\frac{\sum_{i=1}^{n}\left|\frac{S_i-O_i}{O_i}\right|^2}{\sum_{i=1}^{n}'
               r'\left|\frac{O_i-\overline{O}}{\overline{O}}\right|^2}$',
-    'KGE_2009_1': r'$KGE_{2009}=1-ED$',
-    'KGE_2009_2': r'$ED=\sqrt{(s[1]*(r-1))^2+(s[2]*(\alpha-1))^2+(s[3]*(\beta-1))^2}$',
-    'KGE_2009_3': r'$r = Pearson \enspace Correlation \enspace Coefficient$',
-    'KGE_2009_4': r'$\beta=\mu_s / \mu_o$',
-    'KGE_2009_5': r'$\alpha = \sigma_s / \sigma_o$',
-    'KGE_2012_1': r'$KGE_{2012}=1-ED$',
-    'KGE_2012_2': r'$ED=\sqrt{(s[1]*(r-1))^2+(s[2]*(\gamma-1))^2+(s[3]*(\beta-1))^2}$',
-    'KGE_2012_3': r'$r = Pearson \enspace Correlation \enspace Coefficient$',
-    'KGE_2012_4': r'$\beta=\mu_s / \mu_o$',
-    'KGE_2012_5': r'$\gamma = \frac{CV_s}{CV_o} = \frac{\sigma_s/\mu_s}{\sigma_o/\mu_o}$',
+    'KGE_2009': r'$KGE_{2009}=1-ED$' + '\n' + r'$ED=\sqrt{(s[1]*(r-1))^2+(s[2]*(\alpha-1))^2+(s[3]*(\beta-1))^2}$' +
+                  '\n' + r'$r =$ Pearson Correlation Coefficient' + '\n' + r'$\beta=\mu_s / \mu_o$' + '\n' +
+                  r'$\alpha = \sigma_s / \sigma_o$',
+    'KGE_2012': r'$KGE_{2012}=1-ED$' + '\n' + r'$ED=\sqrt{(s[1]*(r-1))^2+(s[2]*(\gamma-1))^2+(s[3]*(\beta-1))^2}$' +
+                  '\n' + r'$r =$ Pearson Correlation Coefficient' + '\n' + r'$\beta=\mu_s / \mu_o$' + '\n' +
+                  r'$\gamma = \frac{CV_s}{CV_o} = \frac{\sigma_s/\mu_s}{\sigma_o/\mu_o}$',
     'E1p': r"$E_{1}^{'} = 1-\frac{\sum_{i=1}^{n}\left|S_i-O_i\right|}{\sum_{i=1}^{n} \left|O_i-"
            r"\overline{O_i^{'}}\right|}$",
     'D1p': r"$d_{1}^{'} = 1-\frac{\sum_{i=1}^{n}\left|S_i-O_i\right|}{\sum_{i=1}^{n} \left| S_i - \overline{O_i^{'}} "
@@ -92,10 +86,9 @@ latex_symbols = {
     'SID': r'$\Biggl\langle \left( \frac{O_i}{\overline{O}} - \frac{S_i}{\overline{S}} \right), '
            r'\left( log \left( \frac{O_i}{\overline{O}} \right) - log \left( \frac{S_i}'
            r'{\overline{S}} \right) \right)  \Biggr\rangle$',
-    'SGA1': r'$SG_o = (O_2-O_1, O_3-O_2,...,O_n-O_{n-1})$',
-    'SGA2': r'$SG_s = (S_2-S_1, S_3-S_2,...,S_n-S_{n-1})$',
-    'SGA3': r'$SGA = SA(SG_o, SG_s)$',
-    'SGA4': r'$Note: SA=Spectral \enspace Angle \enspace Metric$',
+    'SGA': r'SG$_o = (O_2-O_1, O_3-O_2,...,O_n-O_{n-1})$' + '\n' +
+           r'SG$_s = (S_2-S_1, S_3-S_2,...,S_n-S_{n-1})$' + '\n' + r'SGA $= SA(SG_o, SG_s)$' + '\n'
+           + r'Note: SA=Spectral \enspace Angle \enspace Metric',
     'MHE': r'Mean H Error $=\frac {1}{n}\sum_{i=1}^{n} H$',
     'AHE': r'Absolute H Error $=\frac {1}{n}\sum_{i=1}^{n} |H|$',
     'RMSHE': r'Root Mean Squared H Error $= \sqrt{\frac {1}{n}\sum_{i=1}^{n} H^2}$',
@@ -112,7 +105,7 @@ latex_symbols = {
     'H10': r'$H_{10} = \ln{ \frac {S_i}{O_i}}$',
     'GMD': r'GM $= e^{\left(\sqrt[n]{\ln(S_1)\ln(S_2)\cdot\cdot\cdot \ln(S_n)} - \sqrt[n]'
            r'{\ln(O_1)\ln(O_2)\cdot\cdot\cdot \ln(O_n)}\right)}$',
-    'MV': r'MV $=$ var$(\ln(O_1), \ln(O_2),..., \ln(O_n)) -$ var$(\ln(S_1),\ln(S_2),..., \ln(S_n))$'
+    'MV': r'MV $=$ var$(\ln(O_1), \ln(O_2),..., \ln(O_n) -$ var$(\ln(S_1),\ln(S_2),..., \ln(S_n)$'
 }
 
 # Code to make latex images from the raw tex above. Note that latex must be installed with the following commands:
@@ -124,9 +117,13 @@ plt.rc('font', family='serif')
 all_metrics = list(latex_symbols.keys())
 all_metrics.sort()
 
-for metric in all_metrics:
-    fig = plt.figure(figsize=(0.01, 0.01))
-    fig.text(0, 0, latex_symbols[metric], fontsize=12)
-    fig.savefig('/home/wade/Hydrostats/docs/test_pics/{}.png'.format(metric), dpi=400, transparent=True, format='png',
-                bbox_inches='tight', pad_inches=0.1)
-    plt.close(fig)
+fig = plt.figure(figsize=(0.01, 0.01))
+fig.text(0, 0, latex_symbols['KGE_2012'], fontsize=12)
+fig.savefig('/home/wade/KGE_2012.png', dpi=400, transparent=True, format='png', bbox_inches='tight', pad_inches=0.1)
+
+# for metric in all_metrics:
+#     fig = plt.figure(figsize=(0.01, 0.01))
+#     fig.text(0, 0, latex_symbols[metric], fontsize=12)
+#     fig.savefig('/home/wade/Hydrostats/docs/test_pics/{}.png'.format(metric), dpi=400, transparent=True, format='png',
+#                 bbox_inches='tight', pad_inches=0.1)
+#     plt.close(fig)
