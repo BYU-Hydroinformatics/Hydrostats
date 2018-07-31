@@ -117,13 +117,9 @@ plt.rc('font', family='serif')
 all_metrics = list(latex_symbols.keys())
 all_metrics.sort()
 
-fig = plt.figure(figsize=(0.01, 0.01))
-fig.text(0, 0, latex_symbols['KGE_2012'], fontsize=12)
-fig.savefig('/home/wade/KGE_2012.png', dpi=400, transparent=True, format='png', bbox_inches='tight', pad_inches=0.1)
-
-# for metric in all_metrics:
-#     fig = plt.figure(figsize=(0.01, 0.01))
-#     fig.text(0, 0, latex_symbols[metric], fontsize=12)
-#     fig.savefig('/home/wade/Hydrostats/docs/test_pics/{}.png'.format(metric), dpi=400, transparent=True, format='png',
-#                 bbox_inches='tight', pad_inches=0.1)
-#     plt.close(fig)
+for metric in all_metrics:
+    fig = plt.figure(figsize=(0.01, 0.01))
+    fig.text(0, 0, latex_symbols[metric], fontsize=12)
+    fig.savefig('/home/wade/Hydrostats/docs/pictures/{}.png'.format(metric), dpi=400, transparent=True, format='png',
+                bbox_inches='tight', pad_inches=0.1)
+    plt.close(fig)

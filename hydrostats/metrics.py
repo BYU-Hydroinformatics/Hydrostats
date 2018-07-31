@@ -1057,9 +1057,7 @@ def irmse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the inertial root mean square error (IRMSE) between the simulated and observed data.
 
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/IRMSE1.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/IRMSE2.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/IRMSE3.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/IRMSE.png?raw=true)
 
     **Range:** 0 ≤ IRMSE < inf, lower is better.
 
@@ -1915,9 +1913,7 @@ def dr(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the the refined index of agreement (dr).
 
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/dr1.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/dr2.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/dr3.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/dr.png?raw=true)
 
     **Range:** -1 ≤ dr < 1, does not indicate bias, larger is better.
 
@@ -2442,11 +2438,7 @@ def kge_2009(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
 
     Compute the Kling-Gupta efficiency (2009).
 
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2009_1.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2009_2.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2009_3.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2009_4.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2009_5.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2009.png?raw=true)
 
     **Range:** -inf < KGE (2009) < 1, does not indicate bias, larger is better.
 
@@ -2547,11 +2539,7 @@ def kge_2012(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
 
     Compute the Kling-Gupta efficiency (2012).
 
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2012_1.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2012_2.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2012_3.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2012_4.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2012_5.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/KGE_2012.png?raw=true)
 
     **Range:** -inf < KGE (2012) < 1, does not indicate bias, larger is better.
 
@@ -3050,10 +3038,7 @@ def sga(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Compute the Spectral Gradient Angle (SGA).
 
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SGA1.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SGA2.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SGA3.png?raw=true)
-    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SGA4.png?raw=true)
+    ![](https://github.com/waderoberts123/Hydrostats/blob/master/docs/pictures/SGA.png?raw=true)
 
     **Range:** -π/2 ≤ SID < π/2, closer to 0 is better.
 
