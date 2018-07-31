@@ -19,12 +19,35 @@ import calendar
 __all__ = ['plot', 'hist', 'scatter', 'qqplot']
 
 
-def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_season=False, labels=None,
-         savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False, fig_size=(10, 6), text_adjust=[-0.35, 0.75],
-         plot_adjust=0.27, transparency=0.5, ebars=None, ecolor=None, markersize=2, errorevery=1, markevery=1):
-    """ A function that will plot a simulated and observed data vs time and show metrics to the left of the plot if
-    specified. See the documentation at:
-    https://github.com/waderoberts123/Hydrostats/blob/master/docs/README.md#hydrostatsvisualplot. """
+def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_season=False,
+         labels=None, savefigure=None, linestyles=['ro', 'b^'], tight_xlim=False, fig_size=(10, 6),
+         text_adjust=[-0.35, 0.75], plot_adjust=0.27, transparency=0.5, ebars=None, ecolor=None,
+         markersize=2, errorevery=1, markevery=1):
+    """
+    Create a hydrograph of simulated and observed timeseries data.
+
+
+    :param merged_data_df:
+    :param legend:
+    :param metrics:
+    :param grid:
+    :param title:
+    :param x_season:
+    :param labels:
+    :param savefigure:
+    :param linestyles:
+    :param tight_xlim:
+    :param fig_size:
+    :param text_adjust:
+    :param plot_adjust:
+    :param transparency:
+    :param ebars:
+    :param ecolor:
+    :param markersize:
+    :param errorevery:
+    :param markevery:
+    :return:
+    """
     fig = plt.figure(num=1, figsize=fig_size, dpi=80, facecolor='w', edgecolor='k')
     ax = fig.add_subplot(111)
 
