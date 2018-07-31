@@ -1,8 +1,12 @@
 # python 3.6
 # -*- coding: utf-8 -*-
 """
-Created on Jan 5 3:25:56 2018
-@author: Wade Roberts
+
+The visual module contains different plotting functions for time series visualization. It allows
+users to plot hydrographs, scatter plots, histograms, and quantile-quantile (qq) plots to visualize
+time series data. In some of the visualization functions, metrics can be added to the plots for a
+more complete summary of the data.
+
 """
 from __future__ import division
 from hydrostats.metrics import function_list, metric_abbr, HydrostatsError, remove_values
