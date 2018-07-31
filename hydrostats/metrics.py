@@ -17,10 +17,10 @@ __all__ = ['me', 'mae', 'mse', 'mle', 'male', 'msle', 'mde', 'mdae', 'mdse', 'ed
            'rmsle', 'nrmse_range', 'nrmse_mean', 'nrmse_iqr', 'irmse', 'mase', 'r_squared',
            'pearson_r', 'spearman_r', 'acc', 'mape', 'mapd', 'maape', 'smape1', 'smape2', 'd', 'd1',
            'dmod', 'drel', 'dr', 'watt_m', 'mb_r', 'nse', 'nse_mod', 'nse_rel', 'kge_2009',
-           'kge_2012', 'lm_index', 'd1_p', 've', 'sa', 'sc', 'sid', 'sga', 'h1_mhe', 'h1_ahe',
-           'h1_rmshe', 'h2_mhe', 'h2_ahe', 'h2_rmshe', 'h3_mhe', 'h3_ahe', 'h3_rmshe', 'h4_mhe',
-           'h4_ahe', 'h4_rmshe', 'h5_mhe', 'h5_ahe', 'h5_rmshe', 'h6_mhe', 'h6_ahe', 'h6_rmshe',
-           'h7_mhe', 'h7_ahe', 'h7_rmshe', 'h8_mhe', 'h8_ahe', 'h8_rmshe', 'h10_mhe', 'h10_ahe',
+           'kge_2012', 'lm_index', 'd1_p', 've', 'sa', 'sc', 'sid', 'sga', 'h1_mhe', 'h1_mahe',
+           'h1_rmshe', 'h2_mhe', 'h2_mahe', 'h2_rmshe', 'h3_mhe', 'h3_mahe', 'h3_rmshe', 'h4_mhe',
+           'h4_mahe', 'h4_rmshe', 'h5_mhe', 'h5_mahe', 'h5_rmshe', 'h6_mhe', 'h6_mahe', 'h6_rmshe',
+           'h7_mhe', 'h7_mahe', 'h7_rmshe', 'h8_mhe', 'h8_mahe', 'h8_rmshe', 'h10_mhe', 'h10_mahe',
            'h10_rmshe', 'g_mean_diff', 'mean_var']
 
 
@@ -593,7 +593,7 @@ def mdse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
         remove_zero=remove_zero
     )
 
-    return np.median((simulated_array - observed_array)**2)
+    return np.median((simulated_array - observed_array) ** 2)
 
 
 def ed(simulated_array, observed_array, replace_nan=None, replace_inf=None,
@@ -1052,7 +1052,7 @@ def nrmse_iqr(simulated_array, observed_array, replace_nan=None, replace_inf=Non
 
 
 def irmse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
-              remove_neg=False, remove_zero=False):
+          remove_neg=False, remove_zero=False):
     """
 
     Compute the inertial root mean square error (IRMSE) between the simulated and observed data.
@@ -2525,7 +2525,8 @@ def kge_2009(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
     alpha = sim_sigma / obs_sigma
 
     if obs_mean != 0 and obs_sigma != 0:
-        kge = 1 - np.sqrt((s[0] * (pr - 1)) ** 2 + (s[1] * (alpha - 1)) ** 2 + (s[2] * (beta - 1)) ** 2)
+        kge = 1 - np.sqrt(
+            (s[0] * (pr - 1)) ** 2 + (s[1] * (alpha - 1)) ** 2 + (s[2] * (beta - 1)) ** 2)
     else:
         if obs_mean == 0:
             warnings.warn(
@@ -3037,7 +3038,7 @@ def sid(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     )
 
     first = (observed_array / np.mean(observed_array)) - (
-                simulated_array / np.mean(simulated_array))
+            simulated_array / np.mean(simulated_array))
     second1 = np.log10(observed_array) - np.log10(np.mean(observed_array))
     second2 = np.log10(simulated_array) - np.log10(np.mean(simulated_array))
     return np.dot(first, second1 - second2)
@@ -3178,8 +3179,8 @@ def h1_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     return np.mean(h)
 
 
-def h1_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-           remove_zero=False):
+def h1_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+            remove_neg=False, remove_zero=False):
     """
 
     Compute the H1 absolute error.
@@ -3362,8 +3363,8 @@ def h2_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     return np.mean(h)
 
 
-def h2_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-           remove_zero=False):
+def h2_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+            remove_zero=False):
     """
 
     Compute the H2 mean absolute error.
@@ -3549,8 +3550,8 @@ def h3_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     return np.mean(h)
 
 
-def h3_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-           remove_zero=False):
+def h3_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+            remove_neg=False, remove_zero=False):
     """
 
     Compute the H3 mean absolute error.
@@ -3732,8 +3733,8 @@ def h4_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     return np.mean(h)
 
 
-def h4_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-           remove_zero=False):
+def h4_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
+            remove_neg=False, remove_zero=False):
     """
 
     Compute the H4 mean absolute error.
@@ -3917,8 +3918,8 @@ def h5_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     return np.mean(h)
 
 
-def h5_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-           remove_zero=False):
+def h5_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+            remove_zero=False):
     """
 
     Compute the H5 mean absolute error.
@@ -4109,9 +4110,9 @@ def h6_mhe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=N
     return np.mean(h)
 
 
-def h6_ahe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=None,
-           remove_neg=False,
-           remove_zero=False):
+def h6_mahe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=None,
+            remove_neg=False,
+            remove_zero=False):
     """
 
     Compute the H6 mean absolute error.
@@ -4304,8 +4305,8 @@ def h7_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     return np.mean(h)
 
 
-def h7_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-           remove_zero=False):
+def h7_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+            remove_zero=False):
     """
 
     Compute the H7 mean absolute error.
@@ -4487,8 +4488,8 @@ def h8_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     return np.mean(h)
 
 
-def h8_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-           remove_zero=False):
+def h8_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+            remove_zero=False):
     """
 
     Compute the H8 mean absolute error.
@@ -4683,8 +4684,8 @@ def h10_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     return np.mean(h)
 
 
-def h10_ahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
-            remove_zero=False):
+def h10_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None, remove_neg=False,
+             remove_zero=False):
     """
 
     Compute the H10 mean absolute error.
@@ -4953,11 +4954,16 @@ metric_names = [
     'Kling-Gupta Efficiency (2012)', 'Legate-McCabe Efficiency Index',
     'Legate-McCabe Index of Agreement', 'Volumetric Efficiency', 'Spectral Angle',
     'Spectral Correlation', 'Spectral Information Divergence', 'Spectral Gradient Angle',
-    'H1 - MHE', 'H1 - AHE', 'H1 - RMSHE', 'H2 - MHE', 'H2 - AHE', 'H2 - RMSHE', 'H3 - MHE',
-    'H3 - AHE', 'H3 - RMSHE', 'H4 - MHE', 'H4 - AHE', 'H4 - RMSHE', 'H5 - MHE', 'H5 - AHE',
-    'H5 - RMSHE', 'H6 - MHE', 'H6 - AHE', 'H6 - RMSHE', 'H7 - MHE', 'H7 - AHE', 'H7 - RMSHE',
-    'H8 - MHE', 'H8 - AHE', 'H8 - RMSHE', 'H10 - MHE', 'H10 - AHE', 'H10 - RMSHE',
-    'Geometric Mean Difference', 'Mean Variance'
+    'Mean H1 Error', 'Mean Absolute H1 Error', 'Root Mean Square H1 Error', 'Mean H2 Error',
+    'Mean Absolute H2 Error', 'Root Mean Square H2 Error', 'Mean H3 Error',
+    'Mean Absolute H3 Error', 'Root Mean Square H3 Error', 'Mean H4 Error',
+    'Mean Absolute H4 Error', 'Root Mean Square H4 Error', 'Mean H5 Error',
+    'Mean Absolute H5 Error', 'Root Mean Square H5 Error', 'Mean H6 Error',
+    'Mean Absolute H6 Error', 'Root Mean Square H6 Error', 'Mean H7 Error',
+    'Mean Absolute H7 Error', 'Root Mean Square H7 Error', 'Mean H8 Error',
+    'Mean Absolute H8 Error', 'Root Mean Square H8 Error', 'Mean H10 Error',
+    'Mean Absolute H10 Error', 'Root Mean Square H10 Error', 'Geometric Mean Difference',
+    'Mean Variance'
 ]
 
 metric_abbr = [
@@ -4965,27 +4971,26 @@ metric_abbr = [
     'NRMSE (Range)', 'NRMSE (Mean)', 'NRMSE (IQR)', 'IRMSE', 'MASE', 'r2', 'R (Pearson)',
     'R (Spearman)', 'ACC', 'MAPE', 'MAPD', 'MAAPE', 'SMAPE1', 'SMAPE2', 'd', 'd1', 'd (Mod.)',
     'd (Rel.)', 'dr', 'M', '(MB) R', 'NSE', 'NSE (Mod.)', 'NSE (Rel.)', 'KGE (2009)', 'KGE (2012)',
-    "E1'", "D1'", 'VE', 'SA', 'SC', 'SID', 'SGA', 'H1 (MHE)', 'H1 (AHE)', 'H1 (RMSHE)', 'H2 (MHE)',
-    'H2 (AHE)', 'H2 (RMSHE)', 'H3 (MHE)', 'H3 (AHE)', 'H3 (RMSHE)', 'H4 (MHE)', 'H4 (AHE)',
-    'H4 (RMSHE)', 'H5 (MHE)', 'H5 (AHE)', 'H5 (RMSHE)', 'H6 (MHE)', 'H6 (AHE)', 'H6 (RMSHE)',
-    'H7 (MHE)', 'H7 (AHE)', 'H7 (RMSHE)', 'H8 (MHE)', 'H8 (AHE)', 'H8 (RMSHE)', 'H10 (MHE)',
-    'H10 (AHE)', 'H10 (RMSHE)', 'GMD', 'MV'
+    "E1'", "D1'", 'VE', 'SA', 'SC', 'SID', 'SGA', 'H1 (MHE)', 'H1 (MAHE)', 'H1 (RMSHE)', 'H2 (MHE)',
+    'H2 (MAHE)', 'H2 (RMSHE)', 'H3 (MHE)', 'H3 (MAHE)', 'H3 (RMSHE)', 'H4 (MHE)', 'H4 (MAHE)',
+    'H4 (RMSHE)', 'H5 (MHE)', 'H5 (MAHE)', 'H5 (RMSHE)', 'H6 (MHE)', 'H6 (MAHE)', 'H6 (RMSHE)',
+    'H7 (MHE)', 'H7 (MAHE)', 'H7 (RMSHE)', 'H8 (MHE)', 'H8 (MAHE)', 'H8 (RMSHE)', 'H10 (MHE)',
+    'H10 (MAHE)', 'H10 (RMSHE)', 'GMD', 'MV'
 ]
 
 function_list = [
     me, mae, mse, mle, male, msle, mde, mdae, mdse, ed, ned, rmse, rmsle, nrmse_range, nrmse_mean,
     nrmse_iqr, irmse, mase, r_squared, pearson_r, spearman_r, acc, mape, mapd, maape, smape1,
     smape2, d, d1, dmod, drel, dr, watt_m, mb_r, nse, nse_mod, nse_rel, kge_2009, kge_2012,
-    lm_index, d1_p, ve, sa, sc, sid, sga, h1_mhe, h1_ahe, h1_rmshe, h2_mhe, h2_ahe, h2_rmshe,
-    h3_mhe, h3_ahe, h3_rmshe, h4_mhe, h4_ahe, h4_rmshe, h5_mhe, h5_ahe, h5_rmshe, h6_mhe, h6_ahe,
-    h6_rmshe, h7_mhe, h7_ahe, h7_rmshe, h8_mhe, h8_ahe, h8_rmshe, h10_mhe, h10_ahe, h10_rmshe,
-    g_mean_diff, mean_var,
+    lm_index, d1_p, ve, sa, sc, sid, sga, h1_mhe, h1_mahe, h1_rmshe, h2_mhe, h2_mahe, h2_rmshe,
+    h3_mhe, h3_mahe, h3_rmshe, h4_mhe, h4_mahe, h4_rmshe, h5_mhe, h5_mahe, h5_rmshe, h6_mhe,
+    h6_mahe, h6_rmshe, h7_mhe, h7_mahe, h7_rmshe, h8_mhe, h8_mahe, h8_rmshe, h10_mhe, h10_mahe,
+    h10_rmshe, g_mean_diff, mean_var,
 ]
 
 
 def remove_values(simulated_array, observed_array, replace_nan=None, replace_inf=None,
-                  remove_neg=False,
-                  remove_zero=False):
+                  remove_neg=False, remove_zero=False):
     """Removes the nan, negative, and inf values in two numpy arrays"""
     # Filtering warnings so that user doesn't see them while we remove the nans
     warnings.filterwarnings("ignore")
@@ -5091,19 +5096,19 @@ def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=
                                              replace_nan=replace_nan, replace_inf=replace_inf,
                                              remove_neg=remove_neg, remove_zero=remove_zero))
 
-            elif metric == 'H6 - MHE':
+            elif metric == 'Mean H6 Error':
                 metrics_list.append(h6_mhe(sim_array, obs_array, k=h6_mhe_k,
                                            replace_nan=replace_nan, replace_inf=replace_inf,
                                            remove_neg=remove_neg, remove_zero=remove_zero
                                            ))
 
-            elif metric == 'H6 - AHE':
-                metrics_list.append(h6_ahe(sim_array, obs_array, k=h6_ahe_k,
-                                           replace_nan=replace_nan, replace_inf=replace_inf,
-                                           remove_neg=remove_neg, remove_zero=remove_zero
-                                           ))
+            elif metric == 'Mean Absolute H6 Error':
+                metrics_list.append(h6_mahe(sim_array, obs_array, k=h6_ahe_k,
+                                            replace_nan=replace_nan, replace_inf=replace_inf,
+                                            remove_neg=remove_neg, remove_zero=remove_zero
+                                            ))
 
-            elif metric == 'H6 - RMSHE':
+            elif metric == 'Root Mean Square H6 Error':
                 metrics_list.append(h6_rmshe(sim_array, obs_array, k=h6_rmshe_k,
                                              replace_nan=replace_nan, replace_inf=replace_inf,
                                              remove_neg=remove_neg, remove_zero=remove_zero
@@ -5153,10 +5158,10 @@ def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=
                                            ))
 
             elif metric == 'H6 (AHE)':
-                metrics_list.append(h6_ahe(sim_array, obs_array, k=h6_ahe_k,
-                                           replace_nan=replace_nan, replace_inf=replace_inf,
-                                           remove_neg=remove_neg, remove_zero=remove_zero
-                                           ))
+                metrics_list.append(h6_mahe(sim_array, obs_array, k=h6_ahe_k,
+                                            replace_nan=replace_nan, replace_inf=replace_inf,
+                                            remove_neg=remove_neg, remove_zero=remove_zero
+                                            ))
 
             elif metric == 'H6 (RMSHE)':
                 metrics_list.append(h6_rmshe(sim_array, obs_array, k=h6_rmshe_k,
