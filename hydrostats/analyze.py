@@ -3,7 +3,8 @@
 """
 
 The analyze module contains functions that perform a more complex analysis of simulated and observed
-time series data.
+time series data. It allows users to make tables with metrics that they choose as well as different
+date ranges. It also allows users to run a time lag analysis of two time series.
 
 """
 from __future__ import division

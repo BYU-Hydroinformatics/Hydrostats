@@ -1,8 +1,10 @@
 # python 3.6
 # -*- coding: utf-8 -*-
 """
-Created on Jan 7 1:56:32 2018
-@author: Wade Roberts
+
+The data module contains tools for preprocessing data. It allows users to merge timeseries, compute
+daily and monthly summary statistics, and get seasonal periods of a time series.
+
 """
 from __future__ import division
 from hydrostats.metrics import HydrostatsError
@@ -10,8 +12,8 @@ import pandas as pd
 from numpy import inf, nan
 from math import modf
 
-__all__ = ['merge_data', 'daily_average', 'daily_std_error', 'daily_std_dev', 'monthly_average', 'monthly_std_error',
-           'monthly_std_dev', 'remove_nan_df', 'seasonal_period']
+__all__ = ['merge_data', 'daily_average', 'daily_std_error', 'daily_std_dev', 'monthly_average',
+           'monthly_std_error', 'monthly_std_dev', 'remove_nan_df', 'seasonal_period']
 
 
 def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpolate=None,
