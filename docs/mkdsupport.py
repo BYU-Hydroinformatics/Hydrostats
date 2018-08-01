@@ -3,16 +3,17 @@
 
 import pypandoc
 
-
-# Since pypandoc.convert_text will always return strings ended with \r\n, the separator should also set to it
+# Since pypandoc.convert_text will always return strings ended with \r\n, the separator should
+# also set to it
 SEP = u'\r\n'
 
 
 def setup(app):
-    """Add extension's default value and set new function to ```autodoc-process-docstring``` event"""
+    """Add extension's default value and set new function to ```autodoc-process-docstring```
+    event """
 
-    # The 'rebuild' parameter should set as 'html' rather than 'env' since this extension needs a full rebuild of HTML
-    # document
+    # The 'rebuild' parameter should set as 'html' rather than 'env' since this extension needs a
+    #  full rebuild of HTML document
     app.add_config_value('mkdsupport_use_parser', 'markdown_github', 'html')
     app.connect('autodoc-process-docstring', pandoc_process)
 
@@ -27,8 +28,9 @@ def pandoc_process(app, what, name, obj, options, lines):
     input_format = app.config.mkdsupport_use_parser
     output_format = 'rst'
 
-    # Since default encoding for sphinx.ext.autodoc is unicode and pypandoc.convert_text, which will always return a
-    # unicode string, expects unicode or utf-8 encodes string, there is on need for dealing with coding
+    # Since default encoding for sphinx.ext.autodoc is unicode and pypandoc.convert_text,
+    # which will always return a unicode string, expects unicode or utf-8 encodes string,
+    # there is on need for dealing with coding
     text = SEP.join(lines)
     text = pypandoc.convert_text(text, output_format, format=input_format)
 
