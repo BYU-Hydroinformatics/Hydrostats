@@ -121,6 +121,7 @@ all_metrics.sort()
 for metric in all_metrics:
     fig = plt.figure(figsize=(0.01, 0.01))
     fig.text(0, 0, latex_symbols[metric], fontsize=12)
-    fig.savefig('/home/wade/Hydrostats/docs/pictures/{}.png'.format(metric), dpi=400, transparent=True, format='png',
+    fig.savefig('/home/wade/Hydrostats/docs/pictures/{}.png'.format(metric), dpi=250, transparent=True, format='png',
                 bbox_inches='tight', pad_inches=0.1)
     plt.close(fig)
+
