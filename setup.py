@@ -27,7 +27,8 @@ setup(
     ],
     extras_require={
         'docs': [
-            'sphinx'
+            'sphinx',
+            'numpydoc'
         ]
     },
 )
