@@ -5765,16 +5765,21 @@ def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=
 if __name__ == "__main__":
     pass
     # >>> Creating a table of all the metrics
-    # import pypandoc
-    #
-    # mkd_text = "| Full Metric Name | Abbreviation | Function Name |\n| :--------------- | " \
-    #            ":----------- | :------------ |\n"
-    # for i, j, k in zip(metric_names, metric_abbr, __all__):
-    #     mkd_text += "|{}|{}|{}|\n".format(i, j, k)
-    #
-    # text = pypandoc.convert_text(mkd_text, 'rst', format='markdown')
-    #
-    # print(text)
+    import pypandoc
+
+    mkd_text = "| Full Metric Name | Abbreviation | Function Name |\n| :--------------- | " \
+               ":----------- | :------------ |\n"
+    metric_data = [metric_names, metric_abbr, __all__]
+    metric_array = np.array(metric_data).T
+
+    metric_array = metric_array[metric_array[:, 0].argsort()]
+
+    for i in metric_array:
+        mkd_text += "|{}|{}|{}|\n".format(i[0], i[1], i[2])
+
+    text = pypandoc.convert_text(mkd_text, 'rst', format='markdown')
+
+    print(text)
 
     # >>> Testing Metrics
     # import pandas as pd
