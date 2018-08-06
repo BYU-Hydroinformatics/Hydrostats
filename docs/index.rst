@@ -20,7 +20,10 @@ Contents
    Visualization
    Metrics
    Analysis
-   Quick Reference Table
+   ref_table
+   plot_types
+   timezones
+   matplotlib_linestyles
 
 Indices and tables
 ==================
