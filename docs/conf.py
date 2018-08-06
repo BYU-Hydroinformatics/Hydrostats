@@ -43,7 +43,7 @@ extensions = [
     'sphinx.ext.imgmath',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
-    # 'mkdsupport',
+    'sphinx.ext.intersphinx',
     'numpydoc',
     'sphinx_automodapi.automodapi'
 ]

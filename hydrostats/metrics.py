@@ -5772,6 +5772,7 @@ if __name__ == "__main__":
     metric_data = [metric_names, metric_abbr, __all__]
     metric_array = np.array(metric_data).T
 
+    # Sorting in alphabetical order
     metric_array = metric_array[metric_array[:, 0].argsort()]
 
     for i in metric_array:
