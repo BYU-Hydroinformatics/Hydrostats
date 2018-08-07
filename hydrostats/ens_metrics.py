@@ -8,8 +8,7 @@ missing values as well as remove zero and negative values from the timeseries da
 
 """
 from __future__ import division
-# from hydrostats.metrics import list_of_metrics, metric_names, metric_abbr, remove_values, \
-#     HydrostatsError
+from hydrostats.metrics import pearson_r
 import numpy as np
 import warnings
 
@@ -165,6 +164,42 @@ def ens_rmse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
 
     error = fcst_ens_mean - obs
     return np.sqrt(np.mean(error**2))
+
+
+def ens_pearson_r(obs, fcst_ens, remove_neg=False, remove_zero=False):
+    """Calculate the pearson correlation coefficient between observed values and the ensemble mean.
+
+        Parameters
+        ----------
+        obs: 1D ndarray
+            Array of observations for each start date.
+
+        fcst_ens: 2D ndarray
+            Array of ensemble forecast of dimension n x M, where n = number of start dates and
+            M = number of ensemble members.
+
+        remove_neg: bool
+            If True, when a negative value is found at the i-th position in the observed OR ensemble
+            array, the i-th value of the observed AND ensemble array are removed before the
+            computation.
+
+        remove_zero: bool
+            If true, when a zero value is found at the i-th position in the observed OR ensemble
+            array, the i-th value of the observed AND ensemble array are removed before the
+            computation.
+
+        Returns
+        -------
+        float
+            The mean error between the observed time series data and the ensemble mean.
+
+        """
+    # Treating data
+    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
+
+    fcst_ens_mean = np.mean(fcst_ens, axis=1)
+
+    return pearson_r(fcst_ens_mean, obs)
 
 
 def crps_hersbach(obs, fcst_ens, remove_neg=False, remove_zero=False):
@@ -509,4 +544,4 @@ if __name__ == "__main__":
     obs_array = merged_df.iloc[:, 0].values
     fcst_ens_matrix = merged_df.iloc[:, 1:].values
 
-    print(crps_kernel(obs_array, fcst_ens_matrix))
+    print(ens_pearson_r(obs_array, fcst_ens_matrix))
