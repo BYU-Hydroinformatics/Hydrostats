@@ -19,6 +19,7 @@ Contents
    Preprocessing
    Visualization
    Metrics
+   ens_metrics
    Analysis
    ref_table
    plot_types

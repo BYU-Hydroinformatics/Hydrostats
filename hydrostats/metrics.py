@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 """
 
-The metrics module contains all of the metrics included in hydrostats. Each metric is contained in
-function, and every metric has the ability to treat missing values as well as remove zero and
-negative values from the timeseries data.
+The metrics module contains all of the metrics included in hydrostats that measure hydrologic skill.
+Each metric is contained in function, and every metric has the ability to treat missing values as
+well as remove zero and negative values from the timeseries data.
 
 """
 from __future__ import division
