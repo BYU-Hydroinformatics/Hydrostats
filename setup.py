@@ -6,7 +6,8 @@ setup(
     name='hydrostats',
     packages=['hydrostats'],  # this must be the same as the name above
     version='0.66',
-    description='Error metrics for use in comparison studies, specifically for use in the field of hydrology',
+    description='Error metrics for use in comparison studies, specifically for use in the field '
+                'of hydrology',
     author='Wade Roberts',
     author_email='waderoberts123@gmail.com',
     url='https://github.com/waderoberts123/hydrostats',  # use the URL to the github repo
