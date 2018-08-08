@@ -12,9 +12,11 @@ from hydrostats.metrics import pearson_r
 import numpy as np
 import warnings
 
-__all__ = ["ens_me", "crps_hersbach", "crps_kernel"]
+__all__ = ["ens_me", "ens_mae", "ens_mse", "ens_rmse", "ens_pearson_r", "crps_hersbach",
+           "crps_kernel"]
 
 # TODO: Should there be an error instead of a warning if the observed or forecast values are all 0?
+# TODO: Should we allow users to select if they want to calculate two means for efficiency?
 
 
 def ens_me(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
@@ -44,6 +46,23 @@ def ens_me(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     -------
     float
         The mean error between the observed time series data and the ensemble mean.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import hydrostats as hs
+    >>> np.random.seed(3849590438)
+
+    Creating an observed 1D array and an ensemble 2D array
+
+    >>> ensemble_array = (np.random.rand(100, 52) + 1) * 100
+    >>> observed_array = (np.random.rand(100) + 1) * 100
+
+    Computing the ME between the ensemble mean and the observed data. Note that because the data is
+    random the errors cancel out, leaving a low ME value.
+
+    >>> hs.ens_me(obs=observed_array, fcst_ens=ensemble_array)
+    -2.5217349574908074
 
     """
     # Treating data
@@ -82,6 +101,23 @@ def ens_mae(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     float
         The mean absolute error between the observed time series data and the ensemble mean.
 
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import hydrostats as hs
+    >>> np.random.seed(3849590438)
+
+    Creating an observed 1D array and an ensemble 2D array
+
+    >>> ensemble_array = (np.random.rand(100, 52) + 1) * 100
+    >>> observed_array = (np.random.rand(100) + 1) * 100
+
+    Computing the ME between the ensemble mean and the observed data. Note that because the data is
+    random the errors cancel out, leaving a low ME value.
+
+    >>> hs.ens_mae(obs=observed_array, fcst_ens=ensemble_array)
+    26.35428724003365
+
     """
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
@@ -118,6 +154,22 @@ def ens_mse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     -------
     float
         The mean error between the observed time series data and the ensemble mean.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import hydrostats as hs
+    >>> np.random.seed(3849590438)
+
+    Creating an observed 1D array and an ensemble 2D array
+
+    >>> ensemble_array = (np.random.rand(100, 52) + 1) * 100
+    >>> observed_array = (np.random.rand(100) + 1) * 100
+
+    Computing the MSE between the ensemble mean and the observed data
+
+    >>> hs.ens_mse(obs=observed_array, fcst_ens=ensemble_array)
+    910.5648405687582
 
     """
     # Treating data
@@ -156,6 +208,22 @@ def ens_rmse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     float
         The mean error between the observed time series data and the ensemble mean.
 
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import hydrostats as hs
+    >>> np.random.seed(3849590438)
+
+    Creating an observed 1D array and an ensemble 2D array
+
+    >>> ensemble_array = (np.random.rand(100, 52) + 1) * 100
+    >>> observed_array = (np.random.rand(100) + 1) * 100
+
+    Computing the MSE between the ensemble mean and the observed data
+
+    >>> hs.ens_rmse(obs=observed_array, fcst_ens=ensemble_array)
+    30.17556694693172
+
     """
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
@@ -169,31 +237,48 @@ def ens_rmse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
 def ens_pearson_r(obs, fcst_ens, remove_neg=False, remove_zero=False):
     """Calculate the pearson correlation coefficient between observed values and the ensemble mean.
 
-        Parameters
-        ----------
-        obs: 1D ndarray
-            Array of observations for each start date.
+    Parameters
+    ----------
+    obs: 1D ndarray
+        Array of observations for each start date.
 
-        fcst_ens: 2D ndarray
-            Array of ensemble forecast of dimension n x M, where n = number of start dates and
-            M = number of ensemble members.
+    fcst_ens: 2D ndarray
+        Array of ensemble forecast of dimension n x M, where n = number of start dates and
+        M = number of ensemble members.
 
-        remove_neg: bool
-            If True, when a negative value is found at the i-th position in the observed OR ensemble
-            array, the i-th value of the observed AND ensemble array are removed before the
-            computation.
+    remove_neg: bool
+        If True, when a negative value is found at the i-th position in the observed OR ensemble
+        array, the i-th value of the observed AND ensemble array are removed before the
+        computation.
 
-        remove_zero: bool
-            If true, when a zero value is found at the i-th position in the observed OR ensemble
-            array, the i-th value of the observed AND ensemble array are removed before the
-            computation.
+    remove_zero: bool
+        If true, when a zero value is found at the i-th position in the observed OR ensemble
+        array, the i-th value of the observed AND ensemble array are removed before the
+        computation.
 
-        Returns
-        -------
-        float
-            The mean error between the observed time series data and the ensemble mean.
+    Returns
+    -------
+    float
+        The pearson correlation coefficient between the observed time series data and the ensemble
+        mean.
 
-        """
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import hydrostats as hs
+    >>> np.random.seed(3849590438)
+
+    Creating an observed 1D array and an ensemble 2D array
+
+    >>> ensemble_array = (np.random.rand(100, 52) + 1) * 100
+    >>> observed_array = (np.random.rand(100) + 1) * 100
+
+    Computing the MSE between the ensemble mean and the observed data
+
+    >>> hs.ens_pearson_r(obs=observed_array, fcst_ens=ensemble_array)
+    -0.13236871294739733
+
+    """
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
@@ -241,6 +326,47 @@ def crps_hersbach(obs, fcst_ens, remove_neg=False, remove_zero=False):
     ----------
     - Hersbach, H. (2000) Decomposition of the Continuous Ranked Porbability Score
       for Ensemble Prediction Systems, Weather and Forecasting, 15, 559-570.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import hydrostats as hs
+    >>> np.random.seed(3849590438)
+
+    Creating an observed 1D array and an ensemble 2D array with all random numbers
+
+    >>> ens_array_random = (np.random.rand(100, 52) + 1) * 100
+    >>> obs_array_random = (np.random.rand(100) + 1) * 100
+
+    Creating an observed 1D array and an ensemble 2D array with noise.
+
+    >>> noise = np.random.normal(scale=1, size=(100, 52))
+    >>> x = np.linspace(1, 10, 100)
+    >>> observed_array = np.sin(x) + 10
+    >>> ensemble_array_noise = (np.ones((100, 52)).T * observed_array).T + noise
+
+    Computing the Hersbach CRPS values between the ensemble mean and the observed data with the
+    random data.
+
+    >>> crps_dictionary_rand = hs.crps_hersbach(obs_array_random, ens_array_random)
+    >>> crps_dictionary_rand['crps']
+    array([30.02122432, 17.51513486, 10.88716977, ... 18.69424376, 12.6309656 ,  8.55439875])
+    >>> crps_dictionary_rand['crpsMean1']
+    17.7355079815025
+    >>> crps_dictionary_rand['crpsMean2']
+    17.735507981502497
+
+    Computing the Hersbach CRPS values between the ensemble mean and the observed data with noise
+    in the ensemble data.
+
+    >>> crps_dictionary_noise = hs.crps_hersbach(obs=observed_array, fcst_ens=ensemble_array_noise)
+    >>> crps_dictionary_noise['crps']
+    array([0.22264673, 0.25639179, 0.29489375, ... 0.20510253, 0.28350378, 0.22158528])
+    >>> crps_dictionary_noise['crpsMean1']
+    0.24473649776272008
+    >>> crps_dictionary_noise['crpsMean2']
+    0.2447364977627201
+
     """
 
     # Treating the Data
@@ -515,6 +641,7 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
 
 if __name__ == "__main__":
     import pandas as pd
+    import matplotlib.pyplot as plt
 
     forecast_URL = r'https://raw.githubusercontent.com/waderoberts123/Hydrostats/master' \
                    r'/Sample_data/Forecast_Skill/south_asia_historical_20170809_01-51.csv'
@@ -544,4 +671,31 @@ if __name__ == "__main__":
     obs_array = merged_df.iloc[:, 0].values
     fcst_ens_matrix = merged_df.iloc[:, 1:].values
 
-    print(ens_pearson_r(obs_array, fcst_ens_matrix))
+    np.random.seed(3849590438)
+
+    ensemble_array = (np.random.rand(100, 52) + 1) * 100
+    observed_array = (np.random.rand(100) + 1) * 100
+    print('ME')
+    print(ens_me(obs=observed_array, fcst_ens=ensemble_array))
+    print('MAE')
+    print(ens_mae(obs=observed_array, fcst_ens=ensemble_array))
+    print('RMSE')
+    print(ens_rmse(obs=observed_array, fcst_ens=ensemble_array))
+    print("Corr")
+    print(ens_pearson_r(obs=observed_array, fcst_ens=ensemble_array))
+    print('CRPS Hersbach')
+    print(crps_hersbach(observed_array, ensemble_array))
+
+    noise = np.random.normal(scale=1, size=(100, 51))
+    x = np.linspace(1, 10, 100)
+    obs = np.sin(x) + 10
+    sim = (np.ones((100, 51)).T * obs).T + noise
+
+    print(obs)
+    print(np.mean(sim, axis=1))
+
+    plt.plot(x, obs)
+    plt.plot(x, np.mean(sim, axis=1))
+    plt.show()
+
+    print(crps_hersbach(obs, sim))
