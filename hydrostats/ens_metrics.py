@@ -10,6 +10,7 @@ missing values as well as remove zero and negative values from the timeseries da
 from __future__ import division
 from hydrostats.metrics import pearson_r
 import numpy as np
+import numba as nb
 import warnings
 
 __all__ = ["ens_me", "ens_mae", "ens_mse", "ens_rmse", "ens_pearson_r", "crps_hersbach",
@@ -287,6 +288,107 @@ def ens_pearson_r(obs, fcst_ens, remove_neg=False, remove_zero=False):
     return pearson_r(fcst_ens_mean, obs)
 
 
+def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False):
+    """Calculate the ensemble-adjusted Continuous Ranked Probability Score (CRPS)
+
+    Parameters
+    ----------
+    obs: 1D ndarray
+        Arrar of observations for each start date.
+
+    fcst_ens: 2D ndarray
+        Array of ensemble forecast of dimension n x M, where n = number of start dates and
+        M = number of ensemble members.
+
+    adj: float or int
+        A positive number representing ensemble size for which the scores should be
+        adjusted. If np.nan (default) scores will not be adjusted. This value can be ‘np.inf‘, in
+        which case the adjusted (or fair) crps values will be calculated as per equation 6 in
+        Leutbecher et al. (2018).
+
+    remove_neg: bool
+        If True, when a negative value is found at the i-th position in the observed OR ensemble
+        array, the i-th value of the observed AND ensemble array are removed before the
+        computation.
+
+    remove_zero: bool
+        If true, when a zero value is found at the i-th position in the observed OR ensemble
+        array, the i-th value of the observed AND ensemble array are removed before the
+        computation.
+
+    References
+    ----------
+    - Gneiting, T. and Raftery, A. E. (2007) Strictly proper scoring rules,
+      prediction and estimation, J. Amer. Stat. Asoc., 102, 359-378.
+    - Leutbecher, M. (2018) Ensemble size: How suboptimal is less than infinity?,
+      Q. J. R. Meteorol., Accepted.
+    - Ferro CAT, Richardson SR, Weigel AP (2008) On the effect of ensemble size on the discrete and
+      continuous ranked probability scores. Meteorological Applications. doi: 10.1002/met.45
+    - Stefan Siegert (2017). SpecsVerification: Forecast Verification Routines for
+      Ensemble Forecasts of Weather and Climate. R package version 0.5-2.
+      https://CRAN.R-project.org/package=SpecsVerification
+    """
+    # Treating the Data
+    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
+
+    rows = obs.size
+    cols = fcst_ens.shape[1]
+
+    col_len_array = np.ones(rows) * cols
+    sad_ens_half = np.zeros(rows)
+    sad_obs = np.zeros(rows)
+    crps = np.zeros(rows)
+
+    crps = numba_crps(
+        fcst_ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps, np.float64(adj)
+    )
+
+    # Calc mean crps as simple mean across crps[i]
+    crps_mean = np.mean(crps)
+
+    # Output array as a dictionary
+    output = {'crps': crps, 'crpsMean': crps_mean}
+
+    return output
+
+
+@nb.jit("f8[:](f8[:,:], f8[:], i4, i4, f8[:], f8[:], f8[:], f8[:], f8)",
+        nopython=True, parallel=True)
+def numba_crps(ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps, adj):
+    for i in nb.prange(rows):
+        the_obs = obs[i]
+        the_ens = ens[i, :]
+        the_ens = np.sort(the_ens)
+        sum_xj = 0.
+        sum_jxj = 0.
+
+        j = 0
+        while j < cols:
+            sad_obs[i] += np.abs(the_ens[j] - the_obs)
+            sum_xj += the_ens[j]
+            sum_jxj += (j + 1) * the_ens[j]
+            j += 1
+
+        sad_ens_half[i] = 2.0 * sum_jxj - (col_len_array[i] + 1) * sum_xj
+
+    if np.isnan(adj):
+        for i in range(rows):
+            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / \
+                      (col_len_array[i] * col_len_array[i])
+    elif adj > 1:
+        for i in range(rows):
+            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / \
+                      (col_len_array[i] * (col_len_array[i] - 1)) * (1 - 1 / adj)
+    elif adj == 1:
+        for i in range(rows):
+            crps[i] = sad_obs[i] / col_len_array[i]
+    else:
+        for i in range(rows):
+            crps[i] = np.nan
+
+    return crps
+
+
 def crps_hersbach(obs, fcst_ens, remove_neg=False, remove_zero=False):
     """Calculate the the continuous ranked probability score (CRPS) as per equation 25-27 in
     Hersbach et al. (2000)
@@ -549,6 +651,8 @@ def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
         crps_adj[i] = (1. / m * t1[i]) - (
                     1. / (2 * m * (m - 1)) * t2[i])  # kernel representation of adjusted crps
 
+    print(np.mean(t1))
+
     # Calculate mean crps
     crps_mean = crps.mean()
     crps_adj_mean = crps_adj.mean()
@@ -561,30 +665,6 @@ def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
 
 
 def treat_data(obs, fcst_ens, remove_zero, remove_neg):
-    """Check the data to make sure it makes sense.
-
-    Parameters
-    ----------
-    obs: 1D ndarray
-        Arrar of observations for each start date.
-
-    fcst_ens: 2D ndarray
-        Array of ensemble forecast of dimension n x M, where n = number of start dates and
-        M = number of ensemble members.
-
-    remove_zero: bool
-        If True, zeros will be removed at the i-th value from both the observed time series data
-        and the ensemble data at the i-th position.
-
-    remove_neg: bool
-        If True, negative values will be removed at the i-th value from both the observed time
-        series data and the ensemble data at the i-th position.
-
-    Returns
-    -------
-    tuple of ndarrays
-        Returns the treated observed data and the ensemble data in a tuple.
-    """
     assert obs.ndim == 1, "obs is not a 1D numpy array."
     assert fcst_ens.ndim == 2, "fcst_ens is not a 2D numpy array."
     assert obs.size == fcst_ens[:, 0].size, "obs and fcst_ens do not have the same amount " \
@@ -595,24 +675,26 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
         warnings.warn("All zero values in either 'obs' or 'fcst', "
                       "crpsHersbach() will run, but check if data OK!")
 
+    all_treatment_array = np.ones(obs.size, dtype=bool)
+
     # Treat missing data in obs and fcst_ens, rows in fcst_ens or obs that contain nan values
-    if np.isnan(obs).any() or np.isnan(fcst_ens).any():
+    if np.any(np.isnan(obs)) or np.any(np.isnan(fcst_ens)):
         nan_indices_fcst = ~(np.any(np.isnan(fcst_ens), axis=1))
         nan_indices_obs = ~np.isnan(obs)
         all_nan_indices = np.logical_and(nan_indices_fcst, nan_indices_obs)
-        obs = obs[all_nan_indices]
-        fcst_ens = fcst_ens[all_nan_indices, :]
+        all_treatment_array = np.logical_and(all_treatment_array, all_nan_indices)
 
-        warnings.warn("The observed data contained NaN values and they have been removed.")
+        warnings.warn("Row(s) {} contained NaN values and the row(s) have been "
+                      "removed (zero indexed).".format(np.where(~all_nan_indices)[0]))
 
-    if np.isinf(obs).any() or np.isinf(fcst_ens).any():
-        inf_indices_fcst = ~(np.any(np.isnan(fcst_ens), axis=1))
-        inf_indices_obs = ~np.isnan(obs)
+    if np.any(np.isinf(obs)) or np.any(np.isinf(fcst_ens)):
+        inf_indices_fcst = ~(np.any(np.isinf(fcst_ens), axis=1))
+        inf_indices_obs = ~np.isinf(obs)
         all_inf_indices = np.logical_and(inf_indices_fcst, inf_indices_obs)
-        obs = obs[all_inf_indices]
-        fcst_ens = fcst_ens[all_inf_indices, :]
+        all_treatment_array = np.logical_and(all_treatment_array, all_inf_indices)
 
-        warnings.warn("The observed data contained inf values and they have been removed.")
+        warnings.warn("Row(s) {} contained Inf or -Inf values and the row(s) have been "
+                      "removed (zero indexed).".format(np.where(~all_inf_indices)[0]))
 
     # Treat zero data in obs and fcst_ens, rows in fcst_ens or obs that contain zero values
     if remove_zero:
@@ -620,10 +702,10 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
             zero_indices_fcst = ~(np.any(fcst_ens == 0, axis=1))
             zero_indices_obs = ~(obs == 0)
             all_zero_indices = np.logical_and(zero_indices_fcst, zero_indices_obs)
-            obs = obs[all_zero_indices]
-            fcst_ens = fcst_ens[all_zero_indices, :]
+            all_treatment_array = np.logical_and(all_treatment_array, all_zero_indices)
 
-            warnings.warn("The observed data contained zero values and they have been removed.")
+            warnings.warn("Row(s) {} contained zero values and the row(s) have been "
+                          "removed (zero indexed).".format(np.where(~all_zero_indices)[0]))
 
     # Treat negative data in obs and fcst_ens, rows in fcst_ens or obs that contain negative values
     if remove_neg:
@@ -631,10 +713,12 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
             neg_indices_fcst = ~(np.any(fcst_ens < 0, axis=1))
             neg_indices_obs = ~(obs < 0)
             all_neg_indices = np.logical_and(neg_indices_fcst, neg_indices_obs)
-            obs = obs[all_neg_indices]
-            fcst_ens = fcst_ens[all_neg_indices, :]
+            all_treatment_array = np.logical_and(all_treatment_array, all_neg_indices)
 
-        warnings.warn("The observed data contained negative values and they have been removed.")
+            warnings.warn("Row(s) {} contained negative values and the row(s) have been "
+                          "removed (zero indexed).".format(np.where(~all_neg_indices)[0]))
+    obs = obs[all_treatment_array]
+    fcst_ens = fcst_ens[all_treatment_array, :]
 
     return obs, fcst_ens
 
@@ -673,29 +757,28 @@ if __name__ == "__main__":
 
     np.random.seed(3849590438)
 
-    ensemble_array = (np.random.rand(100, 52) + 1) * 100
-    observed_array = (np.random.rand(100) + 1) * 100
+    ens_array_random = (np.random.rand(10000, 52) + 1) * 1000
+    obs_array_random = (np.random.rand(10000) + 1) * 1000
+
     print('ME')
-    print(ens_me(obs=observed_array, fcst_ens=ensemble_array))
+    print(ens_me(obs=obs_array_random, fcst_ens=ens_array_random))
     print('MAE')
-    print(ens_mae(obs=observed_array, fcst_ens=ensemble_array))
+    print(ens_mae(obs=obs_array_random, fcst_ens=ens_array_random))
     print('RMSE')
-    print(ens_rmse(obs=observed_array, fcst_ens=ensemble_array))
+    print(ens_rmse(obs=obs_array_random, fcst_ens=ens_array_random))
     print("Corr")
-    print(ens_pearson_r(obs=observed_array, fcst_ens=ensemble_array))
-    print('CRPS Hersbach')
-    print(crps_hersbach(observed_array, ensemble_array))
+    print(ens_pearson_r(obs=obs_array_random, fcst_ens=ens_array_random))
+    print('CRPS')
+    print(ens_crps(obs_array_random, ens_array_random, adj=np.inf))
+    print(crps_kernel(obs_array_random, ens_array_random))
+    # noise = np.random.normal(scale=1, size=(100, 51))
+    # x = np.linspace(1, 10, 100)
+    # obs = np.sin(x) + 10
+    # sim = (np.ones((100, 51)).T * obs).T + noise
 
-    noise = np.random.normal(scale=1, size=(100, 51))
-    x = np.linspace(1, 10, 100)
-    obs = np.sin(x) + 10
-    sim = (np.ones((100, 51)).T * obs).T + noise
-
-    print(obs)
-    print(np.mean(sim, axis=1))
-
-    plt.plot(x, obs)
-    plt.plot(x, np.mean(sim, axis=1))
-    plt.show()
-
-    print(crps_hersbach(obs, sim))
+    # print(obs)
+    # print(np.mean(sim, axis=1))
+    #
+    # plt.plot(x, obs)
+    # plt.plot(x, np.mean(sim, axis=1))
+    # plt.show()
