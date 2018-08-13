@@ -142,8 +142,8 @@ def mae(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when 
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation. 
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated 
@@ -231,8 +231,8 @@ def mse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -299,8 +299,8 @@ def mle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -369,8 +369,8 @@ def male(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -439,8 +439,8 @@ def msle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -509,8 +509,8 @@ def mde(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -574,8 +574,8 @@ def mdae(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -639,8 +639,8 @@ def mdse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -701,8 +701,8 @@ def ed(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -771,8 +771,8 @@ def ned(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -843,8 +843,8 @@ def rmse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -917,8 +917,8 @@ def rmsle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -981,8 +981,8 @@ def nrmse_range(simulated_array, observed_array, replace_nan=None, replace_inf=N
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -1052,8 +1052,8 @@ def nrmse_mean(simulated_array, observed_array, replace_nan=None, replace_inf=No
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -1124,8 +1124,8 @@ def nrmse_iqr(simulated_array, observed_array, replace_nan=None, replace_inf=Non
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -1200,8 +1200,8 @@ def irmse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -1278,8 +1278,8 @@ def mase(simulated_array, observed_array, m=1, replace_nan=None, replace_inf=Non
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -1353,8 +1353,8 @@ def pearson_r(simulated_array, observed_array, replace_nan=None, replace_inf=Non
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -1428,8 +1428,8 @@ def spearman_r(simulated_array, observed_array, replace_nan=None, replace_inf=No
 
     replace_inf: float, optional
         If given, indicates which value to replace Inf values with in the two arrays. If None, when
-        an inf value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation.
+        an inf value is found at the i-th position in the observed OR simulated array, the i-th
+        value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
         If True, when a negative value is found at the i-th position in the observed OR simulated
@@ -1602,8 +1602,8 @@ def acc(simulated_array, observed_array, replace_nan=None, replace_inf=None,
       Deterministic Forecast Skill.” Tellus A: Dynamic Meteorology and Oceanography 64,
       no. 1 (2012): 17531.
     - Miyakoda, K., G. D. Hembree, R. F. Strickler, and I. Shulman. “Cumulative Results of Extended
-      Forecast Experiments I. Model Performance for Winter Cases.” Monthly Weather Review 100, no. 12
-      (1972): 836–55.
+      Forecast Experiments I. Model Performance for Winter Cases.” Monthly Weather Review 100, no.
+      12(1972): 836–55.
     - Murphy, Allan H., and Edward S. Epstein. “Skill Scores and Correlation Coefficients in Model
       Verification.” Monthly Weather Review 117, no. 3 (1989): 572–82.
 
