@@ -16,7 +16,7 @@ from numba import jit, prange
 import warnings
 
 __all__ = ["ens_me", "ens_mae", "ens_mse", "ens_rmse", "ens_pearson_r", "crps_hersbach",
-           "crps_kernel"]
+           "crps_kernel", "ens_crps", "ens_brier", "auroc"]
 
 # TODO: Should there be an error instead of a warning if the observed or forecast values are all 0?
 # TODO: Should we allow users to select if they want to calculate two means for efficiency?
