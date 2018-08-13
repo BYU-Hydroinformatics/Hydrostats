@@ -4,13 +4,15 @@
 
 The ens_metrics module contains all of the metrics included in hydrostats that measure forecast
 skill. Each forecast metric is contained in a function, and every metric has the ability to treat
-missing values as well as remove zero and negative values from the timeseries data.
+missing values as well as remove zero and negative values from the timeseries data. Users will be
+warned which start dates have been removed in the warnings that display during the function
+execution.
 
 """
 from __future__ import division
-from hydrostats.metrics import pearson_r
+from hydrostats.metrics import pearson_r, HydrostatsError
 import numpy as np
-import numba as nb
+from numba import jit, prange
 import warnings
 
 __all__ = ["ens_me", "ens_mae", "ens_mse", "ens_rmse", "ens_pearson_r", "crps_hersbach",
@@ -294,7 +296,7 @@ def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False):
     Parameters
     ----------
     obs: 1D ndarray
-        Arrar of observations for each start date.
+        array of observations for each start date.
 
     fcst_ens: 2D ndarray
         Array of ensemble forecast of dimension n x M, where n = number of start dates and
@@ -352,10 +354,10 @@ def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False):
     return output
 
 
-@nb.jit("f8[:](f8[:,:], f8[:], i4, i4, f8[:], f8[:], f8[:], f8[:], f8)",
+@jit("f8[:](f8[:,:], f8[:], i4, i4, f8[:], f8[:], f8[:], f8[:], f8)",
         nopython=True, parallel=True)
 def numba_crps(ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps, adj):
-    for i in nb.prange(rows):
+    for i in prange(rows):
         the_obs = obs[i]
         the_ens = ens[i, :]
         the_ens = np.sort(the_ens)
@@ -577,7 +579,7 @@ def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
     Parameters
     ----------
     obs: 1D ndarray
-        Arrar of observations for each start date.
+        array of observations for each start date.
 
     fcst_ens: 2D ndarray
         Array of ensemble forecast of dimension n x M, where n = number of start dates and
@@ -664,6 +666,151 @@ def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
     return output
 
 
+def ens_brier(fcst_ens, obs, adj=None):
+    """Calculate the ensemble-adjusted Brier Score.
+
+    Parameters
+    ----------
+    obs: 1D ndarray
+        Array of observations for each start date.
+
+    fcst_ens: 2D ndarray
+        Array of ensemble forecast of dimension n x M, where n = number of start dates and
+        M = number of ensemble members.
+
+    adj: float or int
+        A positive number representing ensemble size for which the scores should be
+        adjusted. If None (default) scores will not be adjusted. This value can be ‘np.inf‘, in
+        which case the adjusted (or fair) Brier scores will be calculated.
+
+    Returns
+    -------
+    1D ndarray
+        Array of length with the ensemble-adjusted Brier scores. Length may not equal n if data
+        has been removed due to NaN or Inf values.
+
+    Notes
+    -----
+    **NaN and inf treatment:** If any value in obs or fcst_ens is NaN or inf, then the
+    corresponding row in both fcst_ens (for all ensemble members) and in obs will be deleted.
+
+
+    References
+    ----------
+    - Ferro CAT, Richardson SR, Weigel AP (2008) On the effect of ensemble size on the discrete and
+      continuous ranked probability scores. Meteorological Applications. doi: 10.1002/met.45
+    - Stefan Siegert (2017). SpecsVerification: Forecast Verification Routines for
+      Ensemble Forecasts of Weather and Climate. R package version 0.5-2.
+      https://CRAN.R-project.org/package=SpecsVerification
+    """
+    # Treat missing data and warn users of columns being removed
+    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=False, remove_zero=False)
+
+    # Count number of ensemble members that predict the event
+    i = np.sum(fcst_ens, axis=1)
+
+    # Calculate ensemble size
+    num_cols = fcst_ens.shape[1]
+
+    # No correction for ensemble size is performed if True
+    if adj is None:
+        adj = num_cols
+
+    # calculate ensemble-adjusted brier scores
+    br = (i / num_cols - obs) ** 2 - i * (num_cols - i) / num_cols / \
+         (num_cols - 1) * (1 / num_cols - 1 / adj)
+
+    # return the vector of brier scores
+    return br
+
+
+def auroc(fcst_ens, obs, replace_nan=False, replace_inf=False):
+    """Calculates Area Under the Relative Operating characteristic Curve (AUROC) for a forecast and
+    its verifying binary observation, and estimates the variance of the AUROC
+
+    Parameters
+    ----------
+    fcst_ens: 2D ndarray
+        Binary ensemble forecast must be given (0 for non-occurrence, 1 for occurrence of the
+        event).
+
+    obs: 1D ndarray
+        Array of binary observations (0 for non-occurrence, 1 for occurrence of the event).
+
+    Notes
+    -----
+    **NaN and inf treatment:** If any value in obs or fcst_ens is NaN or inf, then the
+    corresponding row in both fcst_ens (for all ensemble members) and in obs will be deleted. A
+    warning will be shown that informs the user of the rows that have been removed.
+
+    Returns
+    -------
+    1D ndarray
+        An array of two elements, the AUROC and the estimated variance, respectively.
+    """
+    obs, fcst = treat_data(obs, fcst_ens, remove_neg=False, remove_zero=False)
+
+    if np.all(fcst == 0) or np.all(fcst == 1) or np.all(obs == 0) or np.all(obs == 1):
+        raise HydrostatsError("Both arrays need at least one event and one non-event, otherwise, "
+                              "division by zero will occur!")
+
+    ens_forecast_means = np.mean(fcst_ens, axis=1)
+
+    results = auroc_numba(ens_forecast_means, obs)
+
+    return results
+
+
+@jit(nopython=True)
+def auroc_numba(fcst, obs):
+    num_start_dates = obs.size
+
+    i_ord = fcst.argsort()
+
+    sum_v = 0.
+    sum_v2 = 0.
+    sum_w = 0.
+    sum_w2 = 0.
+    n = 0
+    m = 0
+    i = 0
+
+    x = 1
+    y = 0
+
+    while True:
+        nn = mm = 0
+        while x > y:
+            j = i_ord[i]
+            if obs[j]:
+                mm += 1
+            else:
+                nn += 1
+            if i == num_start_dates - 1:
+                break
+            jp1 = i_ord[i + 1]
+            if fcst[j] != fcst[jp1]:
+                break
+            i += 1
+        sum_w += nn * (m + mm / 2.0)
+        sum_w2 += nn * (m + mm / 2.0) * (m + mm / 2.0)
+        sum_v += mm * (n + nn / 2.0)
+        sum_v2 += mm * (n + nn / 2.0) * (n + nn / 2.0)
+        n += nn
+        m += mm
+        i += 1
+        if i >= num_start_dates:
+            break
+
+    theta = sum_v / (m * n)
+    v = sum_v2 / ((m - 1) * n * n) - sum_v * sum_v / (m * (m - 1) * n * n)
+    w = sum_w2 / ((n - 1) * m * m) - sum_w * sum_w / (n * (n - 1) * m * m)
+
+    sd_auc = np.sqrt(v / m + w / n)
+
+    return np.array([theta, sd_auc])
+
+
 def treat_data(obs, fcst_ens, remove_zero, remove_neg):
     assert obs.ndim == 1, "obs is not a 1D numpy array."
     assert fcst_ens.ndim == 2, "fcst_ens is not a 2D numpy array."
@@ -673,7 +820,7 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
     # Give user warning, but let run, if eith obs or fcst are all zeros
     if obs.sum() == 0 or fcst_ens.sum() == 0:
         warnings.warn("All zero values in either 'obs' or 'fcst', "
-                      "crpsHersbach() will run, but check if data OK!")
+                      "function might run, but check if data OK!")
 
     all_treatment_array = np.ones(obs.size, dtype=bool)
 
@@ -724,53 +871,61 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
 
 
 if __name__ == "__main__":
-    import pandas as pd
-    import matplotlib.pyplot as plt
+    pass
+    # obs = np.array([1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0,
+    #                 1], dtype=np.int8)
+    # ens = np.genfromtxt(r"C:\Users\wadear\Desktop\binary_fcst.csv",
+    #                     delimiter=",", dtype=np.int8)
+    # ens = ens[:, 1:]
+    #
+    # print(auroc(ens, obs))
 
-    forecast_URL = r'https://raw.githubusercontent.com/waderoberts123/Hydrostats/master' \
-                   r'/Sample_data/Forecast_Skill/south_asia_historical_20170809_01-51.csv'
-    observed_URL = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/' \
-                   r'Forecast_Skill/West_Rapti_Kusum_River_Discharge_2017-08-05_2017-08-15_' \
-                   r'Hourly.csv'
+    # auroc(fcst_rand, obs_rand)
 
-    ensemble_df = pd.read_csv(forecast_URL, index_col=0)
-    hydrologic_df = pd.read_csv(observed_URL, index_col=0)
-
-    # Converting ensemble DF index to datetime
-    ensemble_df.index = pd.to_datetime(ensemble_df.index)
-    time_values = ensemble_df.index
-
-    # Cleaning up the observed_data
-    hydrologic_df = hydrologic_df.dropna()
-    hydrologic_df.index = pd.to_datetime(hydrologic_df.index)
-    new_index = pd.date_range(hydrologic_df.index[0], hydrologic_df.index[-1], freq='1H')
-    hydrologic_df = hydrologic_df.reindex(new_index)
-    hydrologic_df = hydrologic_df.interpolate('pchip')
-    hydrologic_df = hydrologic_df.reindex(time_values).dropna()
-
-    # Merging the data
-    merged_df = pd.DataFrame.join(hydrologic_df, ensemble_df)
-    # merged_df.to_csv('merged_ensemble_df.csv')
-
-    obs_array = merged_df.iloc[:, 0].values
-    fcst_ens_matrix = merged_df.iloc[:, 1:].values
-
-    np.random.seed(3849590438)
-
-    ens_array_random = (np.random.rand(10000, 52) + 1) * 1000
-    obs_array_random = (np.random.rand(10000) + 1) * 1000
-
-    print('ME')
-    print(ens_me(obs=obs_array_random, fcst_ens=ens_array_random))
-    print('MAE')
-    print(ens_mae(obs=obs_array_random, fcst_ens=ens_array_random))
-    print('RMSE')
-    print(ens_rmse(obs=obs_array_random, fcst_ens=ens_array_random))
-    print("Corr")
-    print(ens_pearson_r(obs=obs_array_random, fcst_ens=ens_array_random))
-    print('CRPS')
-    print(ens_crps(obs_array_random, ens_array_random, adj=np.inf))
-    print(crps_kernel(obs_array_random, ens_array_random))
+    # forecast_URL = r'https://raw.githubusercontent.com/waderoberts123/Hydrostats/master' \
+    #                r'/Sample_data/Forecast_Skill/south_asia_historical_20170809_01-51.csv'
+    # observed_URL = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/' \
+    #                r'Forecast_Skill/West_Rapti_Kusum_River_Discharge_2017-08-05_2017-08-15_' \
+    #                r'Hourly.csv'
+    #
+    # ensemble_df = pd.read_csv(forecast_URL, index_col=0)
+    # hydrologic_df = pd.read_csv(observed_URL, index_col=0)
+    #
+    # # Converting ensemble DF index to datetime
+    # ensemble_df.index = pd.to_datetime(ensemble_df.index)
+    # time_values = ensemble_df.index
+    #
+    # # Cleaning up the observed_data
+    # hydrologic_df = hydrologic_df.dropna()
+    # hydrologic_df.index = pd.to_datetime(hydrologic_df.index)
+    # new_index = pd.date_range(hydrologic_df.index[0], hydrologic_df.index[-1], freq='1H')
+    # hydrologic_df = hydrologic_df.reindex(new_index)
+    # hydrologic_df = hydrologic_df.interpolate('pchip')
+    # hydrologic_df = hydrologic_df.reindex(time_values).dropna()
+    #
+    # # Merging the data
+    # merged_df = pd.DataFrame.join(hydrologic_df, ensemble_df)
+    # # merged_df.to_csv('merged_ensemble_df.csv')
+    #
+    # obs_array = merged_df.iloc[:, 0].values
+    # fcst_ens_matrix = merged_df.iloc[:, 1:].values
+    #
+    # np.random.seed(3849590438)
+    #
+    # ens_array_random = (np.random.rand(10000, 52) + 1) * 1000
+    # obs_array_random = (np.random.rand(10000) + 1) * 1000
+    #
+    # print('ME')
+    # print(ens_me(obs=obs_array_random, fcst_ens=ens_array_random))
+    # print('MAE')
+    # print(ens_mae(obs=obs_array_random, fcst_ens=ens_array_random))
+    # print('RMSE')
+    # print(ens_rmse(obs=obs_array_random, fcst_ens=ens_array_random))
+    # print("Corr")
+    # print(ens_pearson_r(obs=obs_array_random, fcst_ens=ens_array_random))
+    # print('CRPS')
+    # print(ens_crps(obs_array_random, ens_array_random, adj=np.inf))
+    # print(crps_kernel(obs_array_random, ens_array_random))
     # noise = np.random.normal(scale=1, size=(100, 51))
     # x = np.linspace(1, 10, 100)
     # obs = np.sin(x) + 10
