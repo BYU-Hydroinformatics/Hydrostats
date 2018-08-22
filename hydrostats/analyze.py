@@ -8,11 +8,10 @@ date ranges. It also allows users to run a time lag analysis of two time series.
 
 """
 from __future__ import division
-from hydrostats.metrics import list_of_metrics, metric_names, metric_abbr, remove_values, \
-    HydrostatsError
+from hydrostats.HydroErr import list_of_metrics, treat_values, HydrostatsError
+import pandas as pd
 from hydrostats.data import seasonal_period
 import calendar
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -112,7 +111,7 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
     First we need to get some data. The data here is pulled from the Streamflow Predication Tool
     model and the ECMWF forecasting model. We are comparing the two models in this example.
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.analyze as ha
     >>> import hydrostats.data as hd
     >>>
     >>> # Defining the URLs of the datasets
@@ -123,25 +122,31 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
 
     Here we make a table and print the results
 
-    >>> table = hs.make_table(merged_dataframe=merged_df, metrics=['MAE', 'r2', 'NSE', 'KGE (2012)'],
-    >>>                       seasonal_periods=[['01-01', '03-31'], ['04-01', '06-30'],
-    >>>                                         ['07-01', '09-30'], ['10-01', '12-31']],
-    >>>                       remove_neg=True, remove_zero=True, location='Magdalena')
+    >>> my_metrics = ['MAE', 'r2', 'NSE', 'KGE (2012)']
+    >>> seasonal = [['01-01', '03-31'], ['04-01', '06-30'], ['07-01', '09-30'], ['10-01', '12-31']]
+    >>> table = ha.make_table(merged_df, my_metrics, seasonal, remove_neg=True, remove_zero=True, location='Magdalena')
     >>> table
-                             Location          MAE        r2       NSE  KGE (2012)
-    Full Time Series        Magdalena  1157.669988  0.907503  0.873684    0.872871
-    January-01:March-31     Magdalena   631.984177  0.887249  0.861163    0.858187
-    April-01:June-30        Magdalena  1394.640050  0.882599  0.813737    0.876890
-    July-01:September-30    Magdalena  1188.542871  0.884249  0.829492    0.831188
-    October-01:December-31  Magdalena  1410.852917  0.863800  0.793927    0.791257
+                             Location          MAE     ...           NSE  KGE (2012)
+    Full Time Series        Magdalena  1157.669988     ...      0.873684    0.872871
+    January-01:March-31     Magdalena   631.984177     ...      0.861163    0.858187
+    April-01:June-30        Magdalena  1394.640050     ...      0.813737    0.876890
+    July-01:September-30    Magdalena  1188.542871     ...      0.829492    0.831188
+    October-01:December-31  Magdalena  1410.852917     ...      0.793927    0.791257
+    <BLANKLINE>
+    [5 rows x 5 columns]
 
     We can also write the table to a CSV or Excel worksheet.
 
-    >>> hs.make_table(merged_dataframe=merged_df, metrics=['MAE', 'r2', 'NSE', 'KGE (2012)'],
-    >>>               seasonal_periods=[['01-01', '03-31'], ['04-01', '06-30'], ['07-01', '09-30'],
-    >>>                                 ['10-01', '12-31']],
-    >>>               remove_neg=True, remove_zero=True, location='Magdalena',
-    >>>               to_csv='magdalena_table.csv')
+    >>> ha.make_table(merged_df, my_metrics, seasonal, remove_neg=True, remove_zero=True, location='Magdalena', to_csv='magdalena_table.csv')
+                             Location          MAE     ...           NSE  KGE (2012)
+    Full Time Series        Magdalena  1157.669988     ...      0.873684    0.872871
+    January-01:March-31     Magdalena   631.984177     ...      0.861163    0.858187
+    April-01:June-30        Magdalena  1394.640050     ...      0.813737    0.876890
+    July-01:September-30    Magdalena  1188.542871     ...      0.829492    0.831188
+    October-01:December-31  Magdalena  1410.852917     ...      0.793927    0.791257
+    <BLANKLINE>
+    [5 rows x 5 columns]
+
     """
 
     # Creating a list for all of the metrics for all of the seasons
@@ -163,11 +168,14 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
     obs_array = merged_dataframe.iloc[:, 1].values
 
     # Getting a list of the full time series
-    full_time_series_list = list_of_metrics(metrics=metrics, abbr=True, sim_array=sim_array, obs_array=obs_array,
-                                            mase_m=mase_m, dmod_j=dmod_j, nse_mod_j=nse_mod_j, h6_mhe_k=h6_mhe_k,
-                                            h6_ahe_k=h6_ahe_k, h6_rmshe_k=h6_rmshe_k, d1_p_obs_bar_p=d1_p_obs_bar_p,
+    full_time_series_list = list_of_metrics(metrics=metrics, abbr=True, sim_array=sim_array,
+                                            obs_array=obs_array, mase_m=mase_m, dmod_j=dmod_j,
+                                            nse_mod_j=nse_mod_j, h6_mhe_k=h6_mhe_k,
+                                            h6_ahe_k=h6_ahe_k, h6_rmshe_k=h6_rmshe_k,
+                                            d1_p_obs_bar_p=d1_p_obs_bar_p,
                                             lm_x_obs_bar_p=lm_x_obs_bar_p, replace_nan=replace_nan,
-                                            replace_inf=replace_inf, remove_neg=remove_neg, remove_zero=remove_zero)
+                                            replace_inf=replace_inf, remove_neg=remove_neg,
+                                            remove_zero=remove_zero)
 
     # Appending the full time series list to the entire list:
     complete_metric_list.append(full_time_series_list)
@@ -329,6 +337,7 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
 
     >>> import hydrostats as hs
     >>> import hydrostats.data as hd
+    >>> pd.options.display.max_columns = 50
     >>>
     >>> # Defining the URLs of the datasets
     >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
@@ -339,33 +348,19 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
     There are two dataframes that are returned as part of the analysis.
 
     >>> # Running the lag analysis
-    >>> time_lag_df, summary_df = hs.time_lag(merged_df, 
-    >>>                                       metrics=['ME', 'r2', 'RMSE', 'KGE (2012)', 'NSE'])
-    >>> time_lag_df
-                      r2         RMSE  KGE (2012)        dr
-    Lag Number
-    -30         0.646193  3142.795474    0.775328  0.691058
-    -29         0.656472  3093.387478    0.780866  0.696401
-    -28         0.666937  3042.665168    0.786412  0.701858
-    -27         0.677580  2990.611706    0.791957  0.707464
-    -26         0.688392  2937.216405    0.797488  0.713215
-    ...              ...          ...         ...       ...
-     26         0.715202  2802.314966    0.810747  0.746523
-     27         0.707765  2840.121175    0.807136  0.742619
-     28         0.700400  2877.262117    0.803508  0.738752
-     29         0.693112  2913.738136    0.799870  0.734911
-     30         0.685907  2949.540402    0.796226  0.731107
-     >>> summary_df
-                         Max  Max Lag Number          Min  Min Lag Number
+    >>> time_lag_df, summary_df = hs.time_lag(merged_df, metrics=['ME', 'r2', 'RMSE', 'KGE (2012)', 'NSE'])
+    >>> summary_df
+                        Max  Max Lag Number          Min  Min Lag Number
+    ME           174.740510           -28.0   174.740510           -24.0
     r2             0.891854            -2.0     0.646193           -30.0
     RMSE        3142.795474           -30.0  1754.455598            -2.0
     KGE (2012)     0.877116            -2.0     0.775328           -30.0
-    dr             0.840604             0.0     0.691058           -30.0
+    NSE            0.856358            -2.0     0.539076           -30.0
     
     A plot can be created that visualizes the different metrics throughout the time lags. It can be
     saved using the savefig parameter as well if desired.
 
-    >>> hs.time_lag(merged_df, metrics=['r2', 'KGE (2012)', 'dr'], plot=True)
+    >>> _, _ = hs.time_lag(merged_df, metrics=['r2', 'KGE (2012)', 'dr'], plot=True)
 
     .. image:: /Figures/lag_plot1.png
 
@@ -387,8 +382,8 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
     sim_array = merged_dataframe.iloc[:, 0].values
     obs_array = merged_dataframe.iloc[:, 1].values
 
-    sim_array, obs_array = remove_values(sim_array, obs_array, replace_nan=replace_nan, replace_inf=replace_inf,
-                                         remove_zero=remove_zero, remove_neg=remove_neg)
+    sim_array, obs_array = treat_values(sim_array, obs_array, replace_nan=replace_nan, replace_inf=replace_inf,
+                                        remove_zero=remove_zero, remove_neg=remove_neg)
 
     # Creating a list to append the values of shift to
     shift_list = []
@@ -425,6 +420,7 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
         plt.legend()
         if save_fig is None:
             plt.show()
+            plt.close()
         else:
             plt.savefig(save_fig)
             plt.close()
