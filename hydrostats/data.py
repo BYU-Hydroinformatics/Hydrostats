@@ -7,7 +7,7 @@ daily and monthly summary statistics, and get seasonal periods of a time series.
 
 """
 from __future__ import division
-from hydrostats.metrics import HydrostatsError
+from hydrostats.HydroErr import HydrostatsError
 import pandas as pd
 from numpy import inf, nan
 from math import modf

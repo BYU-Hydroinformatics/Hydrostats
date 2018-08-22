@@ -9,7 +9,7 @@ more complete summary of the data.
 
 """
 from __future__ import division
-from hydrostats.metrics import function_list, metric_abbr, HydrostatsError, remove_values
+from hydrostats.HydroErr import function_list, metric_abbr, HydrostatsError, treat_values
 import numpy as np
 import matplotlib.pyplot as plt
 from sympy import symbols, S
@@ -586,8 +586,8 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
     else:
         raise HydrostatsError("You must either pass in a dataframe or two arrays.")
 
-    sim, obs = remove_values(sim, obs, replace_nan=replace_nan, replace_inf=replace_inf, remove_neg=remove_neg,
-                             remove_zero=remove_zero)
+    sim, obs = treat_values(sim, obs, replace_nan=replace_nan, replace_inf=replace_inf, remove_neg=remove_neg,
+                            remove_zero=remove_zero)
 
     # Finding the size of n and creating a percentile vector:
     n = sim.size
