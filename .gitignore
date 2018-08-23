@@ -8,3 +8,4 @@ docs/make.bat
 docs/pandoc-2.2.2.1-windows-x86_64.msi
 __pycache__/
 venv
+magdalena_table.csv
