@@ -10,7 +10,7 @@ execution.
 
 """
 from __future__ import division
-from hydrostats.metrics import pearson_r, HydrostatsError
+from hydrostats.HydroErr import pearson_r, HydrostatsError
 import numpy as np
 from numba import jit, prange
 import warnings
@@ -53,18 +53,18 @@ def ens_me(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     Examples
     --------
     >>> import numpy as np
-    >>> import hydrostats as hs
+    >>> import hydrostats.ens_metrics as em
     >>> np.random.seed(3849590438)
 
     Creating an observed 1D array and an ensemble 2D array
 
-    >>> ensemble_array = (np.random.rand(100, 52) + 1) * 100
+    >>> ensemble_array = (np.random.rand(100, 52) + 1) * 100  # 52 Ensembles
     >>> observed_array = (np.random.rand(100) + 1) * 100
 
     Computing the ME between the ensemble mean and the observed data. Note that because the data is
     random the errors cancel out, leaving a low ME value.
 
-    >>> hs.ens_me(obs=observed_array, fcst_ens=ensemble_array)
+    >>> em.ens_me(obs=observed_array, fcst_ens=ensemble_array)
     -2.5217349574908074
 
     """
@@ -107,18 +107,18 @@ def ens_mae(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     Examples
     --------
     >>> import numpy as np
-    >>> import hydrostats as hs
+    >>> import hydrostats.ens_metrics as em
     >>> np.random.seed(3849590438)
 
     Creating an observed 1D array and an ensemble 2D array
 
-    >>> ensemble_array = (np.random.rand(100, 52) + 1) * 100
+    >>> ensemble_array = (np.random.rand(100, 52) + 1) * 100  # 52 Ensembles
     >>> observed_array = (np.random.rand(100) + 1) * 100
 
     Computing the ME between the ensemble mean and the observed data. Note that because the data is
     random the errors cancel out, leaving a low ME value.
 
-    >>> hs.ens_mae(obs=observed_array, fcst_ens=ensemble_array)
+    >>> em.ens_mae(obs=observed_array, fcst_ens=ensemble_array)
     26.35428724003365
 
     """
@@ -161,17 +161,17 @@ def ens_mse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     Examples
     --------
     >>> import numpy as np
-    >>> import hydrostats as hs
+    >>> import hydrostats.ens_metrics as em
     >>> np.random.seed(3849590438)
 
     Creating an observed 1D array and an ensemble 2D array
 
-    >>> ensemble_array = (np.random.rand(100, 52) + 1) * 100
+    >>> ensemble_array = (np.random.rand(100, 52) + 1) * 100  # 52 Ensembles
     >>> observed_array = (np.random.rand(100) + 1) * 100
 
     Computing the MSE between the ensemble mean and the observed data
 
-    >>> hs.ens_mse(obs=observed_array, fcst_ens=ensemble_array)
+    >>> em.ens_mse(obs=observed_array, fcst_ens=ensemble_array)
     910.5648405687582
 
     """
@@ -214,17 +214,17 @@ def ens_rmse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     Examples
     --------
     >>> import numpy as np
-    >>> import hydrostats as hs
+    >>> import hydrostats.ens_metrics as em
     >>> np.random.seed(3849590438)
 
     Creating an observed 1D array and an ensemble 2D array
 
-    >>> ensemble_array = (np.random.rand(100, 52) + 1) * 100
+    >>> ensemble_array = (np.random.rand(100, 52) + 1) * 100  # 52 Ensembles
     >>> observed_array = (np.random.rand(100) + 1) * 100
 
     Computing the MSE between the ensemble mean and the observed data
 
-    >>> hs.ens_rmse(obs=observed_array, fcst_ens=ensemble_array)
+    >>> em.ens_rmse(obs=observed_array, fcst_ens=ensemble_array)
     30.17556694693172
 
     """
@@ -268,7 +268,7 @@ def ens_pearson_r(obs, fcst_ens, remove_neg=False, remove_zero=False):
     Examples
     --------
     >>> import numpy as np
-    >>> import hydrostats as hs
+    >>> import hydrostats.ens_metrics as em
     >>> np.random.seed(3849590438)
 
     Creating an observed 1D array and an ensemble 2D array
@@ -278,7 +278,7 @@ def ens_pearson_r(obs, fcst_ens, remove_neg=False, remove_zero=False):
 
     Computing the MSE between the ensemble mean and the observed data
 
-    >>> hs.ens_pearson_r(obs=observed_array, fcst_ens=ensemble_array)
+    >>> em.ens_pearson_r(obs=observed_array, fcst_ens=ensemble_array)
     -0.13236871294739733
 
     """
@@ -317,6 +317,56 @@ def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False):
         If true, when a zero value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
+
+    Returns
+    -------
+    dict
+        Dictionary contains two keys, crps and crpsMean. The value of crps is a list of the crps
+        values. Note that if the ensemble forecast or the observed values contained NaN or inf
+        values, or negative or zero values if specified, these start dates will not show up in the
+        crps values. The crpsMean value is the arithmatic mean of the crps values.
+
+    Examples
+    --------
+
+    >>> import numpy as np
+    >>> import hydrostats.ens_metrics as em
+    >>> np.random.seed(3849590438)
+
+    Creating an observed 1D array and an ensemble 2D array with all random numbers
+
+    >>> ens_array_random = (np.random.rand(15, 52) + 1) * 100  # 52 Ensembles
+    >>> obs_array_random = (np.random.rand(15) + 1) * 100
+
+    Creating an observed 1D array and an ensemble 2D array with noise.
+
+    >>> noise = np.random.normal(scale=1, size=(15, 52))
+    >>> x = np.linspace(1, 10, 15)
+    >>> observed_array = np.sin(x) + 10
+    >>> ensemble_array_noise = (np.ones((15, 52)).T * observed_array).T + noise  # 52 Ensembles
+
+    Computing the crps values between the ensemble mean and the observed data with the
+    random data. Note that the crps is relatively high because it is random.
+
+    >>> crps_dictionary_rand = em.ens_crps(obs_array_random, ens_array_random)
+    >>> print(crps_dictionary_rand['crps'])
+    [ 7.73360237  9.59248626 34.46719655 30.10271075  7.451665   16.07882352
+     14.59543529  8.55181637 15.4833089   8.32422363 16.55108154 19.20821296
+      8.39452279 12.59949378 27.82543302]
+    >>> crps_dictionary_rand['crpsMean']
+    15.797334183277709
+
+    Computing the crps values between the ensemble mean and the observed data with noise
+    in the ensemble data. Note that the crps values are better because the forecast is closer to
+    observed values.
+
+    >>> crps_dictionary_noise = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array_noise)
+    >>> print(crps_dictionary_noise['crps'])
+    [0.26921152 0.21388687 0.24927151 0.26047667 0.30234843 0.1996493
+     0.2779844  0.29478927 0.275383   0.25682693 0.21485236 0.22824711
+     0.2813889  0.21264652 0.18141063]
+    >>> crps_dictionary_noise['crpsMean']
+    0.24789156041214638
 
     References
     ----------
@@ -433,43 +483,48 @@ def crps_hersbach(obs, fcst_ens, remove_neg=False, remove_zero=False):
 
     Examples
     --------
+
     >>> import numpy as np
-    >>> import hydrostats as hs
+    >>> import hydrostats.ens_metrics as em
     >>> np.random.seed(3849590438)
 
     Creating an observed 1D array and an ensemble 2D array with all random numbers
 
-    >>> ens_array_random = (np.random.rand(100, 52) + 1) * 100
-    >>> obs_array_random = (np.random.rand(100) + 1) * 100
+    >>> ens_array_random = (np.random.rand(15, 52) + 1) * 100
+    >>> obs_array_random = (np.random.rand(15) + 1) * 100
 
     Creating an observed 1D array and an ensemble 2D array with noise.
 
-    >>> noise = np.random.normal(scale=1, size=(100, 52))
-    >>> x = np.linspace(1, 10, 100)
+    >>> noise = np.random.normal(scale=1, size=(15, 52))
+    >>> x = np.linspace(1, 10, 15)
     >>> observed_array = np.sin(x) + 10
-    >>> ensemble_array_noise = (np.ones((100, 52)).T * observed_array).T + noise
+    >>> ensemble_array_noise = (np.ones((15, 52)).T * observed_array).T + noise
 
     Computing the Hersbach CRPS values between the ensemble mean and the observed data with the
     random data.
 
-    >>> crps_dictionary_rand = hs.crps_hersbach(obs_array_random, ens_array_random)
-    >>> crps_dictionary_rand['crps']
-    array([30.02122432, 17.51513486, 10.88716977, ... 18.69424376, 12.6309656 ,  8.55439875])
+    >>> crps_dictionary_rand = em.crps_hersbach(obs_array_random, ens_array_random)
+    >>> print(crps_dictionary_rand['crps'])
+    [ 7.73360237  9.59248626 34.46719655 30.10271075  7.451665   16.07882352
+     14.59543529  8.55181637 15.4833089   8.32422363 16.55108154 19.20821296
+      8.39452279 12.59949378 27.82543302]
     >>> crps_dictionary_rand['crpsMean1']
-    17.7355079815025
+    15.797334183277723
     >>> crps_dictionary_rand['crpsMean2']
-    17.735507981502497
+    15.797334183277725
 
     Computing the Hersbach CRPS values between the ensemble mean and the observed data with noise
     in the ensemble data.
 
-    >>> crps_dictionary_noise = hs.crps_hersbach(obs=observed_array, fcst_ens=ensemble_array_noise)
-    >>> crps_dictionary_noise['crps']
-    array([0.22264673, 0.25639179, 0.29489375, ... 0.20510253, 0.28350378, 0.22158528])
+    >>> crps_dictionary_noise = em.crps_hersbach(obs=observed_array, fcst_ens=ensemble_array_noise)
+    >>> print(crps_dictionary_noise['crps'])
+    [0.26921152 0.21388687 0.24927151 0.26047667 0.30234843 0.1996493
+     0.2779844  0.29478927 0.275383   0.25682693 0.21485236 0.22824711
+     0.2813889  0.21264652 0.18141063]
     >>> crps_dictionary_noise['crpsMean1']
-    0.24473649776272008
+    0.24789156041214705
     >>> crps_dictionary_noise['crpsMean2']
-    0.2447364977627201
+    0.24789156041214705
 
     """
 
@@ -602,13 +657,66 @@ def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
         Dictionary of outputs includes:
             - ["crps"] 1D ndarray with crps values of length n.
             - ["crpsAdjusted"] 1D ndarray with adjusted crps values of length n.
-            - ["crps_mean"] Arithmetic mean of crps values as a float.
+            - ["crpsMean"] Arithmetic mean of crps values as a float.
             - ["crpsAdjustedMean"] Arithmetic mean of adjusted crps values as a float.
 
     Notes
     -----
     **NaN treatment:** If any start date in obs is NaN, then the corresponding row in fcst
     (for all ensemble members) will also be deleted.
+
+    Examples
+    --------
+
+    >>> import numpy as np
+    >>> import hydrostats.ens_metrics as em
+    >>> np.random.seed(3849590438)
+
+    Creating an observed 1D array and an ensemble 2D array with all random numbers
+
+    >>> ens_array_random = (np.random.rand(15, 52) + 1) * 100
+    >>> obs_array_random = (np.random.rand(15) + 1) * 100
+
+    Creating an observed 1D array and an ensemble 2D array with noise.
+
+    >>> noise = np.random.normal(scale=1, size=(15, 52))
+    >>> x = np.linspace(1, 10, 15)
+    >>> observed_array = np.sin(x) + 10
+    >>> ensemble_array_noise = (np.ones((15, 52)).T * observed_array).T + noise
+
+    Computing the Hersbach CRPS values between the ensemble mean and the observed data with the
+    random data.
+
+    >>> crps_dictionary_rand = em.crps_kernel(obs_array_random, ens_array_random)
+    >>> print(crps_dictionary_rand['crps'])
+    [ 7.73360237  9.59248626 34.46719655 30.10271075  7.451665   16.07882352
+     14.59543529  8.55181637 15.4833089   8.32422363 16.55108154 19.20821296
+      8.39452279 12.59949378 27.82543302]
+    >>> print(crps_dictionary_rand['crpsAdjusted'])
+    [ 7.43000827  9.29100065 34.14067524 29.76359191  7.14776152 15.75147589
+     14.25192856  8.23647876 15.19419171  8.05998301 16.26113448 18.90686679
+      8.09725139 12.24021268 27.45673444]
+    >>> crps_dictionary_rand['crpsMean']
+    15.797334183277723
+    >>> crps_dictionary_rand['crpsAdjustedMean']
+    15.481953018707593
+
+    Computing the Hersbach CRPS values between the ensemble mean and the observed data with noise
+    in the ensemble data.
+
+    >>> crps_dictionary_noise = em.crps_kernel(obs=observed_array, fcst_ens=ensemble_array_noise)
+    >>> print(crps_dictionary_noise['crps'])
+    [0.26921152 0.21388687 0.24927151 0.26047667 0.30234843 0.1996493
+     0.2779844  0.29478927 0.275383   0.25682693 0.21485236 0.22824711
+     0.2813889  0.21264652 0.18141063]
+    >>> print(crps_dictionary_noise['crpsAdjusted'])
+    [0.25850726 0.20482797 0.23908004 0.25032814 0.28996894 0.18961905
+     0.2670867  0.2821429  0.2634554  0.24573507 0.20457832 0.21730326
+     0.26951946 0.2034818  0.17198615]
+    >>> crps_dictionary_noise['crpsMean']
+    0.2478915604121471
+    >>> crps_dictionary_noise['crpsAdjustedMean']
+    0.23717469718824744
 
     References
     ----------
@@ -653,8 +761,6 @@ def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
         crps_adj[i] = (1. / m * t1[i]) - (
                     1. / (2 * m * (m - 1)) * t2[i])  # kernel representation of adjusted crps
 
-    print(np.mean(t1))
-
     # Calculate mean crps
     crps_mean = crps.mean()
     crps_adj_mean = crps_adj.mean()
@@ -666,7 +772,7 @@ def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
     return output
 
 
-def ens_brier(fcst_ens, obs, adj=None):
+def ens_brier(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bin=None, adj=None):
     """Calculate the ensemble-adjusted Brier Score.
 
     Parameters
@@ -677,6 +783,17 @@ def ens_brier(fcst_ens, obs, adj=None):
     fcst_ens: 2D ndarray
         Array of ensemble forecast of dimension n x M, where n = number of start dates and
         M = number of ensemble members.
+
+    threshold: float
+        The threshold for an event (e.g. if the event is a 100 year flood, the streamflow value
+        that a 100 year flood would have to exceed.
+
+    fcst_ens_bin: 1D ndarray
+        Binary array of observations for each start date. 1 for an event and 0 for a non-event.
+
+    obs_bin: 2D ndarray
+        Binary array of ensemble forecast of dimension n x M, where n = number of start dates and
+        M = number of ensemble members. 1 for an event and 0 for a non-event.
 
     adj: float or int
         A positive number representing ensemble size for which the scores should be
@@ -694,6 +811,36 @@ def ens_brier(fcst_ens, obs, adj=None):
     **NaN and inf treatment:** If any value in obs or fcst_ens is NaN or inf, then the
     corresponding row in both fcst_ens (for all ensemble members) and in obs will be deleted.
 
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import hydrostats.ens_metrics as em
+    >>> np.random.seed(3849590438)  # For reproducibility
+
+    Creating an observed 1D array and an ensemble 2D array
+
+    >>> ensemble_array = (np.random.rand(15, 52) + 1) * 100  # 52 Ensembles
+    >>> observed_array = (np.random.rand(15) + 1) * 100
+
+    Computing the ensemble-adjusted Brier score between the ensemble mean and the observed data.
+
+    >>> print(em.ens_brier(obs=observed_array, fcst_ens=ensemble_array, threshold=175))
+    [0.08321006 0.05325444 0.53402367 0.45303254 0.02995562 0.08321006
+     0.08321006 0.03698225 0.02366864 0.0625     0.04474852 0.71597633
+     0.04474852 0.04474852 0.09467456]
+    >>> np.mean(em.ens_brier(obs=observed_array, fcst_ens=ensemble_array, threshold=175))
+    0.15919625246548325
+
+    When we manually create binary data we get the same result
+
+    >>> ensemble_array_bin = (ensemble_array > 175).astype(np.int)
+    >>> observed_array_bin = (observed_array > 175).astype(np.int)
+    >>> print(em.ens_brier(obs_bin=observed_array_bin, fcst_ens_bin=ensemble_array_bin))
+    [0.08321006 0.05325444 0.53402367 0.45303254 0.02995562 0.08321006
+     0.08321006 0.03698225 0.02366864 0.0625     0.04474852 0.71597633
+     0.04474852 0.04474852 0.09467456]
+    >>> np.mean(em.ens_brier(obs_bin=observed_array_bin, fcst_ens_bin=ensemble_array_bin))
+    0.15919625246548325
 
     References
     ----------
@@ -703,39 +850,62 @@ def ens_brier(fcst_ens, obs, adj=None):
       Ensemble Forecasts of Weather and Climate. R package version 0.5-2.
       https://CRAN.R-project.org/package=SpecsVerification
     """
+
+    if obs_bin is not None and fcst_ens_bin is not None:
+        pass
+    elif fcst_ens is not None and obs is not None and threshold is not None:
+        # Convert the observed data and forecast data to binary data.
+        obs_bin = (obs > threshold).astype(np.int)
+        fcst_ens_bin = (fcst_ens > threshold).astype(np.int)
+    else:
+        raise HydrostatsError(" You must either supply fcst_ens, obs, and threshold or you must "
+                              "supply fcst_ens_bin and obs_bin.")
+
     # Treat missing data and warn users of columns being removed
-    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=False, remove_zero=False)
+    obs_bin, fcst_ens_bin = treat_data(obs_bin, fcst_ens_bin, remove_neg=False,
+                                       remove_zero=False)
 
     # Count number of ensemble members that predict the event
-    i = np.sum(fcst_ens, axis=1)
+    i = np.sum(fcst_ens_bin, axis=1)
 
     # Calculate ensemble size
-    num_cols = fcst_ens.shape[1]
+    num_cols = fcst_ens_bin.shape[1]
 
     # No correction for ensemble size is performed if True
     if adj is None:
         adj = num_cols
 
     # calculate ensemble-adjusted brier scores
-    br = (i / num_cols - obs) ** 2 - i * (num_cols - i) / num_cols / \
+    br = (i / num_cols - obs_bin) ** 2 - i * (num_cols - i) / num_cols / \
          (num_cols - 1) * (1 / num_cols - 1 / adj)
 
     # return the vector of brier scores
     return br
 
 
-def auroc(fcst_ens, obs, replace_nan=False, replace_inf=False):
-    """Calculates Area Under the Relative Operating characteristic Curve (AUROC) for a forecast and
-    its verifying binary observation, and estimates the variance of the AUROC
+def auroc(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bin=None):
+    """Calculates Area Under the Relative Operating Characteristic curve (AUROC)
+    for a forecast and its verifying binary observation, and estimates the variance of the AUROC
 
     Parameters
     ----------
-    fcst_ens: 2D ndarray
-        Binary ensemble forecast must be given (0 for non-occurrence, 1 for occurrence of the
-        event).
-
     obs: 1D ndarray
-        Array of binary observations (0 for non-occurrence, 1 for occurrence of the event).
+        Array of observations for each start date.
+
+    fcst_ens: 2D ndarray
+        Array of ensemble forecast of dimension n x M, where n = number of start dates and
+        M = number of ensemble members.
+
+    threshold: float
+        The threshold for an event (e.g. if the event is a 100 year flood, the streamflow value
+        that a 100 year flood would have to exceed.
+
+    fcst_ens_bin: 1D ndarray
+        Binary array of observations for each start date. 1 for an event and 0 for a non-event.
+
+    obs_bin: 2D ndarray
+        Binary array of ensemble forecast of dimension n x M, where n = number of start dates and
+        M = number of ensemble members. 1 for an event and 0 for a non-event.
 
     Notes
     -----
@@ -747,16 +917,69 @@ def auroc(fcst_ens, obs, replace_nan=False, replace_inf=False):
     -------
     1D ndarray
         An array of two elements, the AUROC and the estimated variance, respectively.
-    """
-    obs, fcst = treat_data(obs, fcst_ens, remove_neg=False, remove_zero=False)
 
-    if np.all(fcst == 0) or np.all(fcst == 1) or np.all(obs == 0) or np.all(obs == 1):
+    Examples
+    --------
+
+    >>> import numpy as np
+    >>> import hydrostats.ens_metrics as em
+    >>> np.random.seed(3849590438)
+
+    Creating an observed 1D array and an ensemble 2D array with all random numbers
+
+    >>> ens_array_random = (np.random.rand(100, 52) + 1) * 100
+    >>> obs_array_random = (np.random.rand(100) + 1) * 100
+
+    Creating an observed 1D array and an ensemble 2D array with noise.
+
+    >>> noise = np.random.normal(scale=1, size=(100, 52))
+    >>> x = np.linspace(1, 10, 100)
+    >>> observed_array = np.sin(x) + 10
+    >>> ensemble_array_noise = (np.ones((100, 52)).T * observed_array).T + noise
+
+    Calculating the ROC with random values. Note that the area under the curve is close to 0.5
+    because the data is random.
+
+    >>> print(em.auroc(obs=obs_array_random, fcst_ens=ens_array_random, threshold=175))
+    [0.45560516 0.06406262]
+
+    Calculating the ROC with noise in the forecast values. Note that the ROC value is high because
+    the forecast is more accurate.
+
+    >>> print(em.auroc(obs=observed_array, fcst_ens=ensemble_array_noise, threshold=10))
+    [0.99137931 0.00566026]
+
+    References
+    ----------
+    - DeLong et al (1988): Comparing the Areas under Two or More Correlated Receiver Operating
+      Characteristic Curves: A Nonparametric Approach. Biometrics. doi: 10.2307/2531595
+    - Sun and Xu (2014): Fast Implementation of DeLong's Algorithm for Comparing the Areas Under
+      Correlated Receiver Operating Characteristic Curves. IEEE Sign Proc Let 21(11).
+      doi: 10.1109/LSP.2014.2337313
+    - Stefan Siegert (2017). SpecsVerification: Forecast Verification Routines for Ensemble
+      Forecasts of Weather and Climate. R package version 0.5-2.
+      https://CRAN.R-project.org/package=SpecsVerification
+
+    """
+    if obs_bin is not None and fcst_ens_bin is not None:
+        pass
+    elif fcst_ens is not None and obs is not None and threshold is not None:
+        # Convert the observed data and forecast data to binary data.
+        obs_bin = (obs > threshold).astype(np.int)
+        fcst_ens_bin = (fcst_ens > threshold).astype(np.int)
+    else:
+        raise HydrostatsError(" You must either supply fcst_ens, obs, and threshold or you must "
+                              "supply fcst_ens_bin and obs_bin.")
+
+    obs_bin, fcst_ens_bin = treat_data(obs_bin, fcst_ens_bin, remove_neg=False, remove_zero=False)
+
+    if np.all(fcst_ens_bin == 0) or np.all(fcst_ens_bin == 1) or np.all(obs_bin == 0) or np.all(obs_bin == 1):
         raise HydrostatsError("Both arrays need at least one event and one non-event, otherwise, "
                               "division by zero will occur!")
 
-    ens_forecast_means = np.mean(fcst_ens, axis=1)
+    ens_forecast_means = np.mean(fcst_ens_bin, axis=1)
 
-    results = auroc_numba(ens_forecast_means, obs)
+    results = auroc_numba(ens_forecast_means, obs_bin)
 
     return results
 
@@ -872,68 +1095,3 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
 
 if __name__ == "__main__":
     pass
-    # obs = np.array([1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0,
-    #                 1], dtype=np.int8)
-    # ens = np.genfromtxt(r"C:\Users\wadear\Desktop\binary_fcst.csv",
-    #                     delimiter=",", dtype=np.int8)
-    # ens = ens[:, 1:]
-    #
-    # print(auroc(ens, obs))
-
-    # auroc(fcst_rand, obs_rand)
-
-    # forecast_URL = r'https://raw.githubusercontent.com/waderoberts123/Hydrostats/master' \
-    #                r'/Sample_data/Forecast_Skill/south_asia_historical_20170809_01-51.csv'
-    # observed_URL = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/' \
-    #                r'Forecast_Skill/West_Rapti_Kusum_River_Discharge_2017-08-05_2017-08-15_' \
-    #                r'Hourly.csv'
-    #
-    # ensemble_df = pd.read_csv(forecast_URL, index_col=0)
-    # hydrologic_df = pd.read_csv(observed_URL, index_col=0)
-    #
-    # # Converting ensemble DF index to datetime
-    # ensemble_df.index = pd.to_datetime(ensemble_df.index)
-    # time_values = ensemble_df.index
-    #
-    # # Cleaning up the observed_data
-    # hydrologic_df = hydrologic_df.dropna()
-    # hydrologic_df.index = pd.to_datetime(hydrologic_df.index)
-    # new_index = pd.date_range(hydrologic_df.index[0], hydrologic_df.index[-1], freq='1H')
-    # hydrologic_df = hydrologic_df.reindex(new_index)
-    # hydrologic_df = hydrologic_df.interpolate('pchip')
-    # hydrologic_df = hydrologic_df.reindex(time_values).dropna()
-    #
-    # # Merging the data
-    # merged_df = pd.DataFrame.join(hydrologic_df, ensemble_df)
-    # # merged_df.to_csv('merged_ensemble_df.csv')
-    #
-    # obs_array = merged_df.iloc[:, 0].values
-    # fcst_ens_matrix = merged_df.iloc[:, 1:].values
-    #
-    # np.random.seed(3849590438)
-    #
-    # ens_array_random = (np.random.rand(10000, 52) + 1) * 1000
-    # obs_array_random = (np.random.rand(10000) + 1) * 1000
-    #
-    # print('ME')
-    # print(ens_me(obs=obs_array_random, fcst_ens=ens_array_random))
-    # print('MAE')
-    # print(ens_mae(obs=obs_array_random, fcst_ens=ens_array_random))
-    # print('RMSE')
-    # print(ens_rmse(obs=obs_array_random, fcst_ens=ens_array_random))
-    # print("Corr")
-    # print(ens_pearson_r(obs=obs_array_random, fcst_ens=ens_array_random))
-    # print('CRPS')
-    # print(ens_crps(obs_array_random, ens_array_random, adj=np.inf))
-    # print(crps_kernel(obs_array_random, ens_array_random))
-    # noise = np.random.normal(scale=1, size=(100, 51))
-    # x = np.linspace(1, 10, 100)
-    # obs = np.sin(x) + 10
-    # sim = (np.ones((100, 51)).T * obs).T + noise
-
-    # print(obs)
-    # print(np.mean(sim, axis=1))
-    #
-    # plt.plot(x, obs)
-    # plt.plot(x, np.mean(sim, axis=1))
-    # plt.show()

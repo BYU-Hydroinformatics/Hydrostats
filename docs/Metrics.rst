@@ -1,4 +1,4 @@
 Metrics of Hydrological Skill
 =============================
 
-.. automodapi:: hydrostats.metrics
+.. automodapi:: hydrostats.HydroErr

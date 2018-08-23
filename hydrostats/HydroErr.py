@@ -13,9 +13,6 @@ from numba import njit, prange
 from scipy.stats import gmean, rankdata
 import warnings
 
-warnings.warn("'import hydrostats.metrics' is deprecated. Please use 'import hydrostats.HydroErr' "
-              "in order to access the goodness of fit metrics.", DeprecationWarning)
-
 __all__ = ['me', 'mae', 'mse', 'mle', 'male', 'msle', 'mde', 'mdae', 'mdse', 'ed', 'ned', 'rmse',
            'rmsle', 'nrmse_range', 'nrmse_mean', 'nrmse_iqr', 'irmse', 'mase', 'r_squared',
            'pearson_r', 'spearman_r', 'acc', 'mape', 'mapd', 'maape', 'smape1', 'smape2', 'd', 'd1',
@@ -37,9 +34,9 @@ def me(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """Compute the mean error of the simulated and observed data.
 
     .. image:: /pictures/ME.png
-    
+
     **Range:** -inf < MAE < inf, data units, closer to zero is better, indicates bias.
-    
+
     **Notes:** The mean error (ME) measures the difference between the simulated data and the
     observed data. For the mean error, a smaller number indicates a better fit to the original
     data. Note that if the error is in the form of random noise, the mean error will be very small,
@@ -55,23 +52,23 @@ def me(simulated_array, observed_array, replace_nan=None, replace_inf=None,
         An array of observed data from the time series.
 
     replace_nan: float, optional
-        If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+        If given, indicates which value to replace NaN values with in the two arrays. If None, when
         a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation. 
+        of the observed and simulated array are removed before the computation.
 
     replace_inf: float, optional
-        If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+        If given, indicates which value to replace Inf values with in the two arrays. If None, when
         an inf value is found at the i-th position in the observed OR simulated array, the i-th
         value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
-        If True, when a negative value is found at the i-th position in the observed OR simulated 
-        array, the i-th value of the observed AND simulated array are removed before the 
+        If True, when a negative value is found at the i-th position in the observed OR simulated
+        array, the i-th value of the observed AND simulated array are removed before the
         computation.
 
     remove_zero: boolean, optional
-        If true, when a zero value is found at the i-th position in the observed OR simulated 
-        array, the i-th value of the observed AND simulated array are removed before the 
+        If true, when a zero value is found at the i-th position in the observed OR simulated
+        array, the i-th value of the observed AND simulated array are removed before the
         computation.
 
     Returns
@@ -83,7 +80,7 @@ def me(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     --------
     Note that in this example the random noise cancels, leaving a very small ME.
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> # Seed for reproducibility
@@ -92,7 +89,7 @@ def me(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     >>> x = np.arange(100) / 20
     >>> sim = np.sin(x) + 2
     >>> obs = sim * (((np.random.rand(100) - 0.5) / 10) + 1)
-    >>> hs.me(sim, obs)
+    >>> he.me(sim, obs)
     -0.006832220968967168
 
     References
@@ -100,7 +97,6 @@ def me(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     - Fisher, R.A., 1920. A Mathematical Examination of the Methods of Determining the Accuracy of
       an Observation by the Mean Error, and by the Mean Square Error. Monthly Notices of the Royal
       Astronomical Society 80 758 - 770.
-
     """
 
     # Checking data to make sure it will work and the arrays are correct
@@ -123,9 +119,9 @@ def mae(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     """Compute the mean absolute error of the simulated and observed data.
 
     .. image:: /pictures/MAE.png
-    
+
     **Range:** 0 ≤ MAE < inf, data units, smaller is better, does not indicate bias.
-    
+
     **Notes:** The ME measures the absolute difference between the simulated data and the observed
     data. For the mean abolute error, a smaller number indicates a better fit to the original data.
     Also note that random errors do not cancel. Also referred to as an L1-norm.
@@ -139,23 +135,23 @@ def mae(simulated_array, observed_array, replace_nan=None, replace_inf=None,
         An array of observed data from the time series.
 
     replace_nan: float, optional
-        If given, indicates which value to replace NaN values with in the two arrays. If None, when 
+        If given, indicates which value to replace NaN values with in the two arrays. If None, when
         a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
-        of the observed and simulated array are removed before the computation. 
+        of the observed and simulated array are removed before the computation.
 
     replace_inf: float, optional
-        If given, indicates which value to replace Inf values with in the two arrays. If None, when 
+        If given, indicates which value to replace Inf values with in the two arrays. If None, when
         an inf value is found at the i-th position in the observed OR simulated array, the i-th
         value of the observed and simulated array are removed before the computation.
 
     remove_neg: boolean, optional
-        If True, when a negative value is found at the i-th position in the observed OR simulated 
-        array, the i-th value of the observed AND simulated array are removed before the 
+        If True, when a negative value is found at the i-th position in the observed OR simulated
+        array, the i-th value of the observed AND simulated array are removed before the
         computation.
 
     remove_zero: boolean, optional
-        If true, when a zero value is found at the i-th position in the observed OR simulated 
-        array, the i-th value of the observed AND simulated array are removed before the 
+        If true, when a zero value is found at the i-th position in the observed OR simulated
+        array, the i-th value of the observed AND simulated array are removed before the
         computation.
 
     Returns
@@ -175,12 +171,12 @@ def mae(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     Examples
     --------
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 6.8])
-    >>> hs.mae(sim, obs)
+    >>> he.mae(sim, obs)
     0.5666666666666665
     """
 
@@ -249,12 +245,12 @@ def mse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     Examples
     --------
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 6.8])
-    >>> hs.mse(sim, obs)
+    >>> he.mse(sim, obs)
     0.4333333333333333
 
     References
@@ -330,12 +326,12 @@ def mle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Note that the value is very small because it is in log space.
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 6.8])
-    >>> hs.mle(sim, obs)
+    >>> he.mle(sim, obs)
     0.002961767058151136
 
     References
@@ -413,12 +409,12 @@ def male(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Note that the value is very small because it is in log space.
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 6.8])
-    >>> hs.male(sim, obs)
+    >>> he.male(sim, obs)
     0.09041652188064815
 
     References
@@ -496,12 +492,12 @@ def msle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Note that the value is very small because it is in log space.
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 6.8])
-    >>> hs.msle(sim, obs)
+    >>> he.msle(sim, obs)
     0.010426437593600499
 
     References
@@ -574,12 +570,12 @@ def mde(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Note that the last outlier residual in the time series is negated using the median.
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 100])
-    >>> hs.mde(sim, obs)
+    >>> he.mde(sim, obs)
     -0.10000000000000009
 
     Returns
@@ -652,12 +648,12 @@ def mdae(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Note that the last outlier residual in the time series is negated using the median.
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 100])
-    >>> hs.mdae(sim, obs)
+    >>> he.mdae(sim, obs)
     0.75
 
     Returns
@@ -730,12 +726,12 @@ def mdse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Note that the last outlier residual in the time series is negated using the median.
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 100])
-    >>> hs.mdse(sim, obs)
+    >>> he.mdse(sim, obs)
     0.625
 
     Returns
@@ -803,12 +799,12 @@ def ed(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     Examples
     --------
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-    >>> hs.ed(sim, obs)
+    >>> he.ed(sim, obs)
     1.63707055437449
 
     Returns
@@ -888,12 +884,12 @@ def ned(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Examples
     --------
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-    >>> hs.ned(sim, obs)
+    >>> he.ned(sim, obs)
     0.2872053604165771
 
     References
@@ -972,12 +968,12 @@ def rmse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     Examples
     --------
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-    >>> hs.rmse(sim, obs)
+    >>> he.rmse(sim, obs)
     0.668331255192114
 
     References
@@ -1059,12 +1055,12 @@ def rmsle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     Notice that the value is very small because it is in log space.
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-    >>> hs.rmsle(sim, obs)
+    >>> he.rmsle(sim, obs)
     0.10316086856191362
 
     References
@@ -1134,12 +1130,12 @@ def nrmse_range(simulated_array, observed_array, replace_nan=None, replace_inf=N
     Examples
     --------
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-    >>> hs.nrmse_range(sim, obs)
+    >>> he.nrmse_range(sim, obs)
     0.0891108340256152
 
     References
@@ -1216,12 +1212,12 @@ def nrmse_mean(simulated_array, observed_array, replace_nan=None, replace_inf=No
     Examples
     --------
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-    >>> hs.nrmse_mean(sim, obs)
+    >>> he.nrmse_mean(sim, obs)
     0.11725109740212526
 
     References
@@ -1299,12 +1295,12 @@ def nrmse_iqr(simulated_array, observed_array, replace_nan=None, replace_inf=Non
     Examples
     --------
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-    >>> hs.nrmse_iqr(sim, obs)
+    >>> he.nrmse_iqr(sim, obs)
     0.2595461185212093
 
     References
@@ -1386,12 +1382,12 @@ def irmse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     Examples
     --------
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-    >>> hs.irmse(sim, obs)
+    >>> he.irmse(sim, obs)
     0.14572738134831856
 
     References
@@ -1475,12 +1471,12 @@ def mase(simulated_array, observed_array, m=1, replace_nan=None, replace_inf=Non
     Examples
     --------
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.HydroErr as he
     >>> import numpy as np
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-    >>> hs.irmse(sim, obs)
+    >>> he.mase(sim, obs)
     0.17341040462427745
 
     References
@@ -1556,6 +1552,17 @@ def pearson_r(simulated_array, observed_array, replace_nan=None, replace_inf=Non
     -------
     float
         The Pearson correlation coefficient.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.pearson_r(sim, obs)
+    0.9610793632835262
 
     References
     ----------
@@ -1634,6 +1641,17 @@ def spearman_r(simulated_array, observed_array, replace_nan=None, replace_inf=No
     -------
     float
         The Spearman rank correlation coefficient.
+
+    Parameters
+    ----------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.spearman_r(sim, obs)
+    0.942857142857143
 
     References
     ----------
@@ -1714,6 +1732,14 @@ def r_squared(simulated_array, observed_array, replace_nan=None, replace_inf=Non
     float
         The coefficient of determination (R^2).
 
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.r_squared(sim, obs)
+    0.9236735425294681
+
     References
     ----------
 
@@ -1785,6 +1811,16 @@ def acc(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     float
         The anomaly correlation coefficient.
 
+    Examples
+    --------
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.acc(sim, obs)
+    0.8008994694029383
+
     References
     ----------
     - Langland, Rolf H., and Ryan N. Maue. “Recent Northern Hemisphere Mid-Latitude Medium-Range
@@ -1825,8 +1861,8 @@ def mape(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     .. image:: /pictures/MAPE.png
 
-    **Range:** 0% ≤ MAPE ≤ 100%. 100% indicates perfect correlation, 0% indicates complete
-    randomness.
+    **Range:** 0% ≤ MAPE ≤ inf. 0% indicates perfect correlation, a larger error indicates a
+    larger percent error in the data.
 
     **Notes:**
 
@@ -1862,6 +1898,17 @@ def mape(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         The mean absolute percentage error.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.mape(sim, obs)
+    11.639226612630866
 
     References
     ----------
@@ -1929,9 +1976,19 @@ def mapd(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     float
         The mean absolute percentage deviation.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.mapd(sim, obs)
+    0.10526315789473682
+
     References
     ----------
-
     """
 
     if len(simulated_array.shape) != 1 or len(observed_array.shape) != 1:
@@ -1995,6 +2052,17 @@ def maape(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         The mean arctangent absolute percentage error.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.mape(sim, obs)
+    11.639226612630866
 
     References
     ----------
@@ -2064,6 +2132,21 @@ def smape1(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         The symmetric mean absolute percentage error (1).
+
+    Examples
+    --------
+
+    Note that if we switch the simulated and observed arrays the result is the same
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.smape1(sim, obs)
+    5.871915694397428
+    >>> he.smape1(obs, sim)
+    5.871915694397428
 
     References
     ----------
@@ -2138,6 +2221,22 @@ def smape2(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     float
         The symmetric mean absolute percentage error (2).
 
+    Examples
+    --------
+
+    Note that switching the simulated and observed arrays yields the same results
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.smape2(sim, obs)
+    11.743831388794856
+    >>> he.smape2(obs, sim)
+    11.743831388794856
+
+
     References
     ----------
     - Flores, B.E., 1986. A pragmatic view of accuracy measurement in forecasting. Omega 14(2)
@@ -2209,6 +2308,16 @@ def d(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         The index of agreement (1).
+
+    Examples
+    --------
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.d(sim, obs)
+    0.978477353035657
 
     References
     ----------
@@ -2282,6 +2391,17 @@ def d1(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         The index of agreement (d1).
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.d1(sim, obs)
+    0.8434782608695652
 
     References
     ----------
@@ -2357,6 +2477,17 @@ def dr(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     float
         The refined index of agreement.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.dr(sim, obs)
+    0.847457627118644
+
     References
     ----------
     - Willmott, C.J., Robeson, S.M., Matsuura, K., 2012. A refined index of model performance.
@@ -2426,6 +2557,17 @@ def drel(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         The relative index of agreement.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.drel(sim, obs)
+    0.9740868625579597
 
     References
     ----------
@@ -2503,6 +2645,22 @@ def dmod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=Non
     float
         The modified index of agreement.
 
+    Examples
+    --------
+
+    Note that using the default is the same as calculating the d1 metric. Changing the value of j
+    modification of the metric.
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.dmod(sim, obs)  # Same as d1
+    0.8434782608695652
+    >>> he.dmod(sim, obs, j=1.5)
+    0.9413310986805733
+
     References
     ----------
 
@@ -2573,6 +2731,17 @@ def watt_m(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         Watterson's M value.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.watt_m(sim, obs)
+    0.8307913876595929
 
     References
     ----------
@@ -2645,6 +2814,17 @@ def mb_r(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         The Mielke-Berry R value.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.mb_r(sim, obs)
+    0.7726315789473684
 
     References
     ----------
@@ -2733,6 +2913,17 @@ def nse(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     float
         The Nash-Sutcliffe Efficiency value.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.nse(sim, obs)
+    0.922093023255814
+
     References
     ----------
     - Krause, P., Boyle, D., Bäse, F., 2005. Comparison of different efficiency criteria for
@@ -2811,6 +3002,17 @@ def nse_mod(simulated_array, observed_array, j=1, replace_nan=None, replace_inf=
     float
         The modified Nash-Sutcliffe efficiency value.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.nse_mod(sim, obs)
+    0.6949152542372882
+
     References
     ----------
     - Krause, P., Boyle, D., Bäse, F., 2005. Comparison of different efficiency criteria for
@@ -2881,6 +3083,17 @@ def nse_rel(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         The relative Nash-Sutcliffe efficiency value.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.nse_rel(sim, obs)
+    0.9062004687708474
 
     References
     ----------
@@ -2954,6 +3167,17 @@ def kge_2009(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
     -------
     float
         The Kling-Gupta (2009) efficiency value.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.kge_2009(sim, obs)
+    0.912223072345668
 
     References
     ----------
@@ -3061,6 +3285,17 @@ def kge_2012(simulated_array, observed_array, s=(1, 1, 1), replace_nan=None,
     -------
     float
         The Kling-Gupta (2012) efficiency value.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.kge_2012(sim, obs)
+    0.9122230723456678
 
     References
     ----------
@@ -3170,6 +3405,17 @@ def lm_index(simulated_array, observed_array, obs_bar_p=None, replace_nan=None,
     float
         The Legate-McCabe Efficiency index value.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.lm_index(sim, obs)
+    0.6949152542372882
+
     References
     ----------
     - Legates, D.R., McCabe Jr, G.J., 1999. Evaluating the use of “goodness‐of‐fit” Measures in
@@ -3248,6 +3494,17 @@ def d1_p(simulated_array, observed_array, obs_bar_p=None, replace_nan=None,
     float
         The Legate-McCabe Efficiency index of agreement.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.d1_p(sim, obs)
+    0.8434782608695652
+
     References
     ----------
     - Legates, D.R., McCabe Jr, G.J., 1999. Evaluating the use of “goodness‐of‐fit” Measures in
@@ -3324,6 +3581,17 @@ def ve(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     float
         The Volumetric Efficiency value.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.ve(sim, obs)
+    0.8947368421052632
+
     References
     ----------
     - Criss, R.E., Winston, W.E., 2008. Do Nash values have value? Discussion and alternate
@@ -3391,6 +3659,17 @@ def sa(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         The Spectral Angle value.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.sa(sim, obs)
+    0.10816831366492945
 
     References
     ----------
@@ -3460,6 +3739,17 @@ def sc(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         The Spectral Correlation value.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.sc(sim, obs)
+    0.27991341383646606
 
     References
     ----------
@@ -3532,6 +3822,17 @@ def sid(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     float
         The Spectral information divergence value.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.sid(sim, obs)
+    0.03517616895318012
+
     References
     ----------
     - Robila, S.A., Gershman, A., 2005. Spectral matching accuracy in processing hyperspectral
@@ -3603,6 +3904,17 @@ def sga(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         The Spectral Gradient Angle.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.sga(sim, obs)
+    0.26764286472739834
 
     References
     ----------
@@ -3680,6 +3992,17 @@ def h1_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     float
         The mean H1 error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h1_mhe(sim, obs)
+    0.002106551840594386
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -3749,6 +4072,17 @@ def h1_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     float
         The H1 absolute error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h1_mahe(sim, obs)
+    0.11639226612630865
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -3815,6 +4149,17 @@ def h1_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     -------
     float
         The root mean squared H1 error.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h1_rmshe(sim, obs)
+    0.12865571253672756
 
     References
     ----------
@@ -3886,6 +4231,17 @@ def h2_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     float
         The mean H2 error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h2_mhe(sim, obs)
+    -0.015319829424307036
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -3954,6 +4310,17 @@ def h2_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         The mean absolute H2 error.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h2_mahe(sim, obs)
+    0.11997591408039167
 
     References
     ----------
@@ -4024,6 +4391,17 @@ def h2_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     -------
     float
         The root mean square H2 error.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h2_rmshe(sim, obs)
+    0.1373586680669673
 
     References
     ----------
@@ -4099,6 +4477,17 @@ def h3_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     float
         The mean H3 error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h3_mhe(sim, obs)
+    -0.006322019630356533
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -4168,6 +4557,17 @@ def h3_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         The mean absolute H3 error.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h3_mahe(sim, obs)
+    0.11743831388794855
 
     References
     ----------
@@ -4239,6 +4639,17 @@ def h3_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     float
         The root mean square H3 error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h3_rmshe(sim, obs)
+    0.13147667616722278
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -4308,6 +4719,17 @@ def h4_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     -------
     float
         The mean H4 error.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h4_mhe(sim, obs)
+    -0.0064637371129817
 
     References
     ----------
@@ -4379,6 +4801,17 @@ def h4_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     float
         The mean absolute H4 error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h4_mahe(sim, obs)
+    0.11781032209144082
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -4449,6 +4882,17 @@ def h4_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     float
         The root mean square H4 error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h4_rmshe(sim, obs)
+    0.13200901963465006
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -4518,6 +4962,17 @@ def h5_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     -------
     float
         The mean H5 error.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h5_mhe(sim, obs)
+    -0.006606638791856322
 
     References
     ----------
@@ -4591,6 +5046,17 @@ def h5_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     float
         The mean absolute H5 error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h5_mahe(sim, obs)
+    0.11818409010335018
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -4662,6 +5128,17 @@ def h5_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     -------
     float
         The root mean square H5 error.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h5_rmshe(sim, obs)
+    0.13254476469410933
 
     References
     ----------
@@ -4738,6 +5215,17 @@ def h6_mhe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=N
     float
         The mean H6 error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h6_mhe(sim, obs)
+    -0.006322019630356514
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -4811,6 +5299,17 @@ def h6_mahe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf=
     -------
     float
         The mean absolute H6 error.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h6_mahe(sim, obs)
+    0.11743831388794852
 
     References
     ----------
@@ -4888,6 +5387,17 @@ def h6_rmshe(simulated_array, observed_array, k=1, replace_nan=None, replace_inf
     float
         The root mean square H6 error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h6_rmshe(sim, obs)
+    0.13147667616722278
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -4960,6 +5470,17 @@ def h7_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     float
         The mean H7 error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h7_mhe(sim, obs)
+    0.0026331898007430263
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -5029,6 +5550,17 @@ def h7_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     -------
     float
         The mean absolute H7 error.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h7_mahe(sim, obs)
+    0.14549033265788583
 
     References
     ----------
@@ -5100,6 +5632,17 @@ def h7_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     float
         The root mean square H7 error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h7_rmshe(sim, obs)
+    0.16081964067090945
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -5167,6 +5710,17 @@ def h8_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None, 
     -------
     float
         The mean H8 error.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h8_mhe(sim, obs)
+    0.0018056158633666466
 
     References
     ----------
@@ -5238,6 +5792,17 @@ def h8_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     float
         The mean absolute H8 error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h8_mahe(sim, obs)
+    0.099764799536836
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -5307,6 +5872,17 @@ def h8_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     -------
     float
         The root mean square H8 error.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h8_rmshe(sim, obs)
+    0.11027632503148076
 
     References
     ----------
@@ -5391,6 +5967,17 @@ def h10_mhe(simulated_array, observed_array, replace_nan=None, replace_inf=None,
     float
         The mean H10 error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h10_mhe(sim, obs)
+    -0.0012578676058971154
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -5461,6 +6048,17 @@ def h10_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None
     float
         The mean absolute H10 error.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h10_mahe(sim, obs)
+    0.09463615654469641
+
     References
     ----------
     - Tornquist, L., Vartia, P., Vartia, Y.O., 1985. How Should Relative Changes be Measured?
@@ -5530,6 +6128,17 @@ def h10_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=Non
     -------
     float
         The root mean square H10 error.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.h10_rmshe(sim, obs)
+    0.10316086856191362
 
     References
     ----------
@@ -5607,6 +6216,17 @@ def g_mean_diff(simulated_array, observed_array, replace_nan=None, replace_inf=N
     float
         The geometric mean difference value.
 
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.g_mean_diff(sim, obs)
+    0.988855412098022
+
     References
     ----------
 
@@ -5674,6 +6294,17 @@ def mean_var(simulated_array, observed_array, replace_nan=None, replace_inf=None
     -------
     float
         The mean variance.
+
+    Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.mean_var(sim, obs)
+    0.010640582571534449
 
     References
     ----------
@@ -5990,4 +6621,64 @@ def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=
 
 
 if __name__ == "__main__":
-    pass
+
+    the_functions = [h1_rmshe, h2_mhe, h2_mahe, h2_rmshe,
+                     h3_mhe, h3_mahe, h3_rmshe, h4_mhe, h4_mahe, h4_rmshe, h5_mhe, h5_mahe,
+                     h5_rmshe, h6_mhe,
+                     h6_mahe, h6_rmshe, h7_mhe, h7_mahe, h7_rmshe, h8_mhe, h8_mahe, h8_rmshe,
+                     h10_mhe, h10_mahe,
+                     h10_rmshe, g_mean_diff, mean_var]
+
+    the_function_names = ['h1_rmshe', 'h2_mhe', 'h2_mahe', 'h2_rmshe', 'h3_mhe', 'h3_mahe',
+                          'h3_rmshe', 'h4_mhe',
+                          'h4_mahe', 'h4_rmshe', 'h5_mhe', 'h5_mahe', 'h5_rmshe', 'h6_mhe',
+                          'h6_mahe', 'h6_rmshe',
+                          'h7_mhe', 'h7_mahe', 'h7_rmshe', 'h8_mhe', 'h8_mahe', 'h8_rmshe',
+                          'h10_mhe', 'h10_mahe',
+                          'h10_rmshe', 'g_mean_diff', 'mean_var']
+
+    template = """>>>>>>>>>>>>>>{}<<<<<<<<<<<<<<<
+Examples
+    --------
+
+    >>> import hydrostats.HydroErr as he
+    >>> import numpy as np
+
+    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+    >>> he.{}(sim, obs)
+    {}"""
+
+    for fun, name in zip(the_functions, the_function_names):
+        sim = np.array([5, 7, 9, 2, 4.5, 6.7])
+        obs = np.array([4.7, 6, 10, 2.5, 4, 7])
+        value = fun(sim, obs)
+
+        print(template.format(name, name, value))
+
+    # import doctest
+    # doctest.testmod(f, globals())
+
+    # >>> Creating a table of all the metrics
+    # import pypandoc
+    #
+    # mkd_text = "| Full Metric Name | Abbreviation | Function Name |\n| :--------------- | " \
+    #            ":----------- | :------------ |\n"
+    # metric_data = [metric_names, metric_abbr, __all__]
+    # metric_array = np.array(metric_data).T
+    #
+    # # Sorting in alphabetical order
+    # metric_array = metric_array[metric_array[:, 0].argsort()]
+    #
+    # for i in metric_array:
+    #     mkd_text += "|{}|{}|{}|\n".format(i[0], i[1], i[2])
+    #
+    # text = pypandoc.convert_text(mkd_text, 'rst', format='markdown')
+    #
+    # print(text)
+
+    # >>> Printing all of the function names
+    # long_str = ''
+    # for i in __all__:
+    #     long_str += i + ', '
+    # print(long_str)
