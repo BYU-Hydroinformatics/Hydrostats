@@ -6,7 +6,7 @@ setup(
     name='hydrostats',
     packages=['hydrostats'],  # this must be the same as the name above
     version='0.68',
-    description='Error metrics for use in comparison studies, specifically for use in the field '
+    description='Tools for use in comparison studies, specifically for use in the field '
                 'of hydrology',
     author='Wade Roberts',
     author_email='waderoberts123@gmail.com',
