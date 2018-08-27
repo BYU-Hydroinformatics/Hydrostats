@@ -1,9 +1,9 @@
 import sys
+import os
 
-if '/home/wade/GitHub/Hydrostats' not in sys.path:
-    sys.path.insert(0, '/home/wade/GitHub/Hydrostats')
-if '/opt/pycharm-2018.2.2/helpers/pycharm_matplotlib_backend' not in sys.path:
-    sys.path.insert(0, '/opt/pycharm-2018.2.2/helpers/pycharm_matplotlib_backend')
+package_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+if package_path not in sys.path:
+    sys.path.insert(0, package_path)
 
 import hydrostats.HydroErr as he
 import hydrostats.ens_metrics as em
@@ -14,6 +14,7 @@ import doctest
 import numpy as np
 import pandas as pd
 import warnings
+
 
 
 class HelperFunctionsTests(unittest.TestCase):
