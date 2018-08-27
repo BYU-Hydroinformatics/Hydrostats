@@ -1,13 +1,22 @@
+import sys
+
+if '/home/wade/GitHub/Hydrostats' not in sys.path:
+    sys.path.insert(0, '/home/wade/GitHub/Hydrostats')
+if '/opt/pycharm-2018.2.2/helpers/pycharm_matplotlib_backend' not in sys.path:
+    sys.path.insert(0, '/opt/pycharm-2018.2.2/helpers/pycharm_matplotlib_backend')
+
 import hydrostats.HydroErr as he
 import hydrostats.ens_metrics as em
 import hydrostats.analyze as ha
-import unittest as test
+import hydrostats.data as hd
+import unittest
 import doctest
 import numpy as np
+import pandas as pd
 import warnings
 
 
-class MetricsTests(test.TestCase):
+class HelperFunctionsTests(unittest.TestCase):
 
     def test_treat_values_remove(self):
         a = np.random.rand(30, 2)
@@ -93,9 +102,74 @@ class MetricsTests(test.TestCase):
                             "been replaced (Elements are zero indexed)." in str(w[1].message))
 
 
+class AnalysisTests(unittest.TestCase):
+
+    def setUp(self):
+        pd.options.display.max_columns = 100
+
+        # Defining the URLs of the datasets
+        sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
+        glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
+        # Merging the data
+        self.merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['SFPT', 'GLOFAS'])
+
+    def test_make_table(self):
+        my_metrics = ['MAE', 'r2', 'NSE', 'KGE (2012)']
+        seasonal = [['01-01', '03-31'], ['04-01', '06-30'], ['07-01', '09-30'], ['10-01', '12-31']]
+        # Using the Function
+        table = ha.make_table(self.merged_df, my_metrics, seasonal, remove_neg=True, remove_zero=True)
+
+        # Calculating manually to test
+        metric_functions = [he.mae, he.r_squared, he.nse, he.kge_2012]
+
+        season0 = self.merged_df
+        season1 = hd.seasonal_period(self.merged_df, daily_period=['01-01', '03-31'])
+        season2 = hd.seasonal_period(self.merged_df, daily_period=['04-01', '06-30'])
+        season3 = hd.seasonal_period(self.merged_df, daily_period=['07-01', '09-30'])
+        season4 = hd.seasonal_period(self.merged_df, daily_period=['10-01', '12-31'])
+
+        all_seasons = [season0, season1, season2, season3, season4]
+
+        test_list = []
+
+        for season in all_seasons:
+            temp_list = []
+            for metric in metric_functions:
+                sim = season.iloc[:, 0].values
+                obs = season.iloc[:, 1].values
+                temp_list.append(metric(sim, obs, remove_neg=True, remove_zero=True))
+            test_list.append(temp_list)
+
+        test_table = pd.DataFrame(
+            test_list,
+            index=['Full Time Series', 'January-01:March-31', 'April-01:June-30',
+                   'July-01:September-30', 'October-01:December-31'],
+            columns=['MAE', 'r2', 'NSE', 'KGE (2012)']
+        )
+
+        self.assertIsNone(pd.testing.assert_frame_equal(test_table, table))
+
+    def test_lag_analysis(self):
+        # Running the lag analysis
+        time_lag_df, summary_df = ha.time_lag(self.merged_df, metrics=['ME', 'r2', 'RMSE', 'KGE (2012)', 'NSE'])
+
+        time_lag_df_original = pd.read_csv(r'/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/'
+                                           r'time_lag_df.csv', index_col=0)
+
+        summary_df_original = pd.read_csv(r'/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/'
+                                          r'summary_df.csv', index_col=0)
+
+        self.assertIsNone(pd.testing.assert_frame_equal(time_lag_df, time_lag_df_original))
+        self.assertIsNone(pd.testing.assert_frame_equal(summary_df, summary_df_original))
+
+    def tearDown(self):
+        pass
+
+
 if __name__ == "__main__":
-    suite = test.TestLoader().loadTestsFromTestCase(MetricsTests)
+    suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
+
     suite.addTest(doctest.DocTestSuite(he))
     suite.addTest(doctest.DocTestSuite(em))
-    suite.addTest(doctest.DocTestSuite(ha))
-    test.TextTestRunner(verbosity=2).run(suite)
+
+    unittest.TextTestRunner(verbosity=2).run(suite)

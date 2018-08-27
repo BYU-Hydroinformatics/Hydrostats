@@ -1,5 +1,7 @@
 .idea
-hydrostats_venv
+
+venv
+
 test.py
 docs/_build/
 docs/__pycache__/
@@ -7,5 +9,9 @@ docs/api/
 docs/make.bat
 docs/pandoc-2.2.2.1-windows-x86_64.msi
 __pycache__/
-venv
+
 magdalena_table.csv
+hydrostats/Useful_Code_For_Hydrostats.py
+
+hydrostats/tests/.coverage
+hydrostats/tests/coverage.xml
