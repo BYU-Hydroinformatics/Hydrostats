@@ -1,16 +1,14 @@
 # python 3.6
 # -*- coding: utf-8 -*-
 """
-
 The ens_metrics module contains all of the metrics included in hydrostats that measure forecast
 skill. Each forecast metric is contained in a function, and every metric has the ability to treat
 missing values as well as remove zero and negative values from the timeseries data. Users will be
 warned which start dates have been removed in the warnings that display during the function
 execution.
-
 """
 from __future__ import division
-from hydrostats.HydroErr import pearson_r, HydrostatsError
+from hydrostats.metrics import pearson_r
 import numpy as np
 from numba import jit, prange
 import warnings
@@ -19,7 +17,6 @@ __all__ = ["ens_me", "ens_mae", "ens_mse", "ens_rmse", "ens_pearson_r", "crps_he
            "crps_kernel", "ens_crps", "ens_brier", "auroc"]
 
 # TODO: Should there be an error instead of a warning if the observed or forecast values are all 0?
-# TODO: Should we allow users to select if they want to calculate two means for efficiency?
 
 
 def ens_me(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
@@ -858,7 +855,7 @@ def ens_brier(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bi
         obs_bin = (obs > threshold).astype(np.int)
         fcst_ens_bin = (fcst_ens > threshold).astype(np.int)
     else:
-        raise HydrostatsError(" You must either supply fcst_ens, obs, and threshold or you must "
+        raise RuntimeError(" You must either supply fcst_ens, obs, and threshold or you must "
                               "supply fcst_ens_bin and obs_bin.")
 
     # Treat missing data and warn users of columns being removed
@@ -968,13 +965,13 @@ def auroc(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bin=No
         obs_bin = (obs > threshold).astype(np.int)
         fcst_ens_bin = (fcst_ens > threshold).astype(np.int)
     else:
-        raise HydrostatsError(" You must either supply fcst_ens, obs, and threshold or you must "
+        raise RuntimeError(" You must either supply fcst_ens, obs, and threshold or you must "
                               "supply fcst_ens_bin and obs_bin.")
 
     obs_bin, fcst_ens_bin = treat_data(obs_bin, fcst_ens_bin, remove_neg=False, remove_zero=False)
 
     if np.all(fcst_ens_bin == 0) or np.all(fcst_ens_bin == 1) or np.all(obs_bin == 0) or np.all(obs_bin == 1):
-        raise HydrostatsError("Both arrays need at least one event and one non-event, otherwise, "
+        raise RuntimeError("Both arrays need at least one event and one non-event, otherwise, "
                               "division by zero will occur!")
 
     ens_forecast_means = np.mean(fcst_ens_bin, axis=1)
