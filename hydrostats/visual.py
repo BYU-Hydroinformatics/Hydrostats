@@ -9,7 +9,7 @@ more complete summary of the data.
 
 """
 from __future__ import division
-from hydrostats.HydroErr import function_list, metric_abbr, HydrostatsError, treat_values
+from hydrostats.metrics import function_list, metric_abbr, HydrostatsError, treat_values
 import numpy as np
 import matplotlib.pyplot as plt
 from sympy import symbols, S

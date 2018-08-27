@@ -7,7 +7,6 @@ daily and monthly summary statistics, and get seasonal periods of a time series.
 
 """
 from __future__ import division
-from hydrostats.HydroErr import HydrostatsError
 import pandas as pd
 from numpy import inf, nan
 from math import modf
@@ -116,20 +115,20 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
             sim_df.index = pd.to_datetime(sim_df.index, infer_datetime_format=True, errors='coerce')
 
     else:
-        raise HydrostatsError('either sim_fpath and obs_fpath or sim_df and obs_df are required inputs.')
+        raise RuntimeError('either sim_fpath and obs_fpath or sim_df and obs_df are required inputs.')
 
     # Checking to see if the necessary arguments in the function are fulfilled
     if simulated_tz is None and observed_tz is not None:
 
-        raise HydrostatsError('Either Both Timezones are required or neither')
+        raise RuntimeError('Either Both Timezones are required or neither')
 
     elif simulated_tz is not None and observed_tz is None:
 
-        raise HydrostatsError('Either Both Timezones are required or neither')
+        raise RuntimeError('Either Both Timezones are required or neither')
 
     elif simulated_tz is not None and observed_tz is not None and interpolate is None:
 
-        raise HydrostatsError("You must specify whether to interpolate the 'simulated' or 'observed' data.")
+        raise RuntimeError("You must specify whether to interpolate the 'simulated' or 'observed' data.")
 
     elif simulated_tz is None and observed_tz is None and interpolate is None:
         """Scenario 1"""
@@ -155,7 +154,7 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
             obs_df = obs_df.reindex(observed_index_interpolate).interpolate(interp_type)
 
         else:
-            raise HydrostatsError("The interpolate argument must be either 'simulated' or 'observed'.")
+            raise RuntimeError("The interpolate argument must be either 'simulated' or 'observed'.")
 
         return pd.DataFrame.join(sim_df, obs_df).dropna()
 
@@ -201,7 +200,7 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
             obs_df = obs_df.reindex(observed_index_interpolate).interpolate(interp_type)
 
         else:
-            raise HydrostatsError("You must specify the interpolation argument to be either 'simulated' or "
+            raise RuntimeError("You must specify the interpolation argument to be either 'simulated' or "
                                         "'observed'.")
 
         return pd.DataFrame.join(sim_df, obs_df).dropna()
