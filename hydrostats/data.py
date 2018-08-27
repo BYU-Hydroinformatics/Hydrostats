@@ -304,3 +304,7 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
         return merged_df_copy.iloc[:, 0].values, merged_df_copy.iloc[:, 1].values
     else:
         return merged_df_copy
+
+
+if __name__ == "__main__":
+    pass

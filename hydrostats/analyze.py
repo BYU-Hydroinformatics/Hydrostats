@@ -132,7 +132,7 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
     April-01:June-30        Magdalena  1394.640050     ...      0.813737    0.876890
     July-01:September-30    Magdalena  1188.542871     ...      0.829492    0.831188
     October-01:December-31  Magdalena  1410.852917     ...      0.793927    0.791257
-    <BLANKLINE>
+
     [5 rows x 5 columns]
 
     We can also write the table to a CSV or Excel worksheet.
@@ -144,7 +144,7 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
     April-01:June-30        Magdalena  1394.640050     ...      0.813737    0.876890
     July-01:September-30    Magdalena  1188.542871     ...      0.829492    0.831188
     October-01:December-31  Magdalena  1410.852917     ...      0.793927    0.791257
-    <BLANKLINE>
+
     [5 rows x 5 columns]
 
     """
@@ -335,7 +335,7 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
     Using data from the Streamflow prediction tool RAPID model and the ECMWF model, we can conpare
     the two at different time lags
 
-    >>> import hydrostats as hs
+    >>> import hydrostats.analyze as ha
     >>> import hydrostats.data as hd
     >>> pd.options.display.max_columns = 50
     >>>
@@ -348,7 +348,7 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
     There are two dataframes that are returned as part of the analysis.
 
     >>> # Running the lag analysis
-    >>> time_lag_df, summary_df = hs.time_lag(merged_df, metrics=['ME', 'r2', 'RMSE', 'KGE (2012)', 'NSE'])
+    >>> time_lag_df, summary_df = ha.time_lag(merged_df, metrics=['ME', 'r2', 'RMSE', 'KGE (2012)', 'NSE'])
     >>> summary_df
                         Max  Max Lag Number          Min  Min Lag Number
     ME           174.740510           -28.0   174.740510           -24.0
@@ -360,7 +360,7 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
     A plot can be created that visualizes the different metrics throughout the time lags. It can be
     saved using the savefig parameter as well if desired.
 
-    >>> _, _ = hs.time_lag(merged_df, metrics=['r2', 'KGE (2012)', 'dr'], plot=True)
+    >>> _, _ = ha.time_lag(merged_df, metrics=['r2', 'KGE (2012)', 'dr'], plot=True)
 
     .. image:: /Figures/lag_plot1.png
 
@@ -458,48 +458,4 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
 
 
 if __name__ == "__main__":
-    import pandas as pd
-    import hydrostats as hs
-    import hydrostats.data as hd
-
-    pd.options.display.max_columns = 10
-    pd.options.display.max_rows = 10
-
-    # Defining the URLs of the datasets
-    sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    # Merging the data
-    merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['SFPT', 'GLOFAS'])
-
-    # Running the lag analysis
-    lags_df, summary_df = hs.time_lag(merged_df, metrics=['r2', 'KGE (2012)', 'dr'])
-
-    hs.time_lag(merged_df, metrics=['r2', 'KGE (2012)', 'dr'], plot=True,
-                save_fig=r'C:\Users\wadear\Documents\GitHub\Hydrostats\docs\Figures\lag_plot1.png')
-
-    print(lags_df)
-    print(summary_df)
-
-    # import matplotlib.pyplot as plt
-
-    # >>> make_table example
-    # import hydrostats.data as hd
-    #
-    # # Defining the URLs of the datasets
-    # sfpt_url = r'https://raw.githubusercontent.com/waderoberts123/Hydrostats/master/Sample_data/' \
-    #            r'sfpt_data/magdalena-calamar_interim_data.csv'
-    # glofas_url = r'https://raw.githubusercontent.com/waderoberts123/Hydrostats/master/Sample_data' \
-    #              r'/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    #
-    # # Merging the data
-    # merged_df = hd.merge_data(sim_fpath=sfpt_url, obs_fpath=glofas_url, column_names=['SFPT', 'GLOFAS'])
-    #
-    # # print(pd.read_csv(sfpt_url, delimiter=','))
-    #
-    # pd.options.display.max_columns = 10
-    #
-    # table = make_table(merged_dataframe=merged_df, metrics=['MAE', 'r2', 'NSE', 'KGE (2012)'],
-    #                    seasonal_periods=[['01-01', '03-31'], ['04-01', '06-30'],
-    #                                      ['07-01', '09-30'], ['10-01', '12-31']],
-    #                    remove_neg=True, remove_zero=True, location='Magdalena')
-    # print(table)
+    pass
