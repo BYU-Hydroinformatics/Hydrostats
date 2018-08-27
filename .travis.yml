@@ -3,14 +3,7 @@ language: python
 sudo: false
 
 install:
-  - pip install numpy
-  - pip install numba
-  - pip install pandas
-  - pip install matplotlib
-  - pip install scipy
-  - pip install sympy
-  - pip install openpyxl
-  - pip install HydroErr
+  - pip install Hydrostats
 
 script:
     - python hydrostats/tests/tests.py
