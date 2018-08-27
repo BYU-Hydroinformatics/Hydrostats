@@ -17,6 +17,9 @@ import pandas as pd
 
 
 class MetricsTests(unittest.TestCase):
+    """
+    Tests the metrics included in HydroErr package to make sure that they are working correctly.
+    """
 
     def setUp(self):
         self.sim = np.array([5, 7, 9, 2, 4.5, 6.7])
