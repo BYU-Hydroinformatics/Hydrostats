@@ -25,6 +25,7 @@ setup(
         'scipy >= 1.0.0',
         'sympy >= 1.1.1',
         'openpyxl >= 2.5.2',
+        'HydroErr'
     ],
     extras_require={
         'docs': [
