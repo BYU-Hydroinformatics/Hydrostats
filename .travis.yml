@@ -12,4 +12,4 @@ install:
   - pip install openpyxl
 
 script:
-    - hydrostats/tests/tests.py
+    - python hydrostats/tests/tests.py
