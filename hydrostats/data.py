@@ -17,26 +17,79 @@ __all__ = ['merge_data', 'daily_average', 'daily_std_error', 'daily_std_dev', 'm
 
 
 def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpolate=None,
-               column_names=['Simulated', 'Observed'], simulated_tz=None, observed_tz=None, interp_type='pchip'):
-    """Takes two csv files or two pandas dataframes that have been formatted with 1 row as a header with date in the
-    first column and streamflow values in the second column and combines them into a pandas dataframe with datetime type
-     for the dates and float type for the streamflow value. Please note that the only acceptable time deltas are 15min,
-    30min, 45min, and any number of hours in between.
+               column_names=('Simulated', 'Observed'), simulated_tz=None, observed_tz=None,
+               interp_type='pchip'):
+    """Merges two dataframes or csv files, depending on the input.
 
-        There are three scenarios to consider when merging your data.
+    Parameters
+    ----------
 
-        The first scenario is that the timezones and the spacing of the time series matches (eg. 1 Day). In this case,
-        you will want to leave the simulated_tz, observed_tz, and interpolate arguments empty, and the function will
-        simply join the two csv's into a dataframe.
+    sim_fpath: str
+        The filepath to the simulated csv of data. Can be a url if the page is formatted correctly.
+        The csv must be formatted with the dates in the left column and the data in the right
+        column.
 
-        The second scenario is that you have two time series with matching time zones but not matching spacing. In this
-        case you will want to leave the simulated_tz and observed_tz empty, and use the interpolate argument to tell the
-        function which time series you would like to interpolate to match the other time series.
+    obs_fpath: str
+        The filepath to the observed csv. Can be a url if the page is formatted correctly.
+        The csv must be formatted with the dates in the left column and the data in the right
+        column.
 
-        The third scenario is that you have two time series with different time zones and possibly different spacings.
-        In this case you will want to fill in the simulated_tz, observed_tz, and interpolate arguments. This will then
-        take timezones into account when interpolating the selected time series.
-        """
+    sim_df: DataFrame
+        A pandas DataFrame containing the simulated data. Must be formatted with a datetime index
+        and the simulated data values in column 0.
+
+    obs_df: DataFrame
+        A pandas DataFrame containing the simulated data. Must be formatted with a datetime index
+        and the simulated data values in column 0.
+
+    interpolate: str
+        Must be either 'observed' or 'simulated'. Specifies which dataset you would like to
+        interpolate if interpolation is needed to properly merge the data.
+
+    column_names: tuple of str
+        Tuple of length two containing the column names that the user would like to set for the
+        DataFrame that is returned. Note that the simulated data will be in the left column and the
+        observed data will be in the right column
+
+    simulated_tz: str
+        The timezone of the simulated data. A full list of timezones can be found in the
+        :ref:`timezones`.
+
+    observed_tz: str
+        The timezone of the simulated data. A full list of timezones can be found in the
+        :ref:`timezones`.
+
+    interp_type: str
+        Which interpolation method to use. Uses the default pandas interpolater.
+        Available types are found here_.
+
+    .. _here: http://pandas.pydata.org/pandas-docs/version/0.16.2/generated/pandas.DataFrame.interpolate.html
+
+    Notes
+    -----
+    The only acceptable time deltas in the data are 15min, 30min, 45min, and any number of hours or
+    days in between.
+
+    There are three scenarios to consider when merging your data:
+
+    1. The first scenario is that the timezones and the spacing of the time series matches
+       (eg. 1 Day). In this case, you will want to leave the simulated_tz, observed_tz, and
+       interpolate arguments empty, and the function will simply join the two csv's into a dataframe.
+    2. The second scenario is that you have two time series with matching time zones but not
+       matching spacing. In this case you will want to leave the simulated_tz and observed_tz empty,
+       and use the interpolate argument to tell the function which time series you would like to
+       interpolate to match the other time series.
+    3. The third scenario is that you have two time series with different time zones and possibly
+       different spacings. In this case you will want to fill in the simulated_tz, observed_tz, and
+       interpolate arguments. This will then take timezones into account when interpolating
+       the selected time series.
+
+    Examples
+    --------
+
+
+
+    """
     # Reading the data into dataframes if from file
     if sim_fpath is not None and obs_fpath is not None:
         # Importing data into a data-frame
