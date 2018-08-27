@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 
 # TODO: Finish tests on ens_metrics, data, and visual
+# TODO: The import doesn't work for testing on Python 2.7, need to find out why
 
 
 class MetricsTests(unittest.TestCase):
