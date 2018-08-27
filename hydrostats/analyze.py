@@ -1,14 +1,13 @@
 # python 3.6
 # -*- coding: utf-8 -*-
 """
-
 The analyze module contains functions that perform a more complex analysis of simulated and observed
 time series data. It allows users to make tables with metrics that they choose as well as different
 date ranges. It also allows users to run a time lag analysis of two time series.
-
 """
 from __future__ import division
-from hydrostats.HydroErr import list_of_metrics, treat_values, HydrostatsError
+from hydrostats.metrics import list_of_metrics
+from HydroErr.HydroErr import treat_values
 import pandas as pd
 from hydrostats.data import seasonal_period
 import calendar
@@ -375,7 +374,7 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
         merged_dataframe = merged_dataframe.reindex(new_index)
         merged_dataframe = merged_dataframe.interpolate(interp_type)
     except Exception as e:
-        raise HydrostatsError("Error while interpolating, please make sure that you don't have "
+        raise RuntimeError("Error while interpolating, please make sure that you don't have "
                               "duplicate dates in your time series data.")
 
     # Making arrays to compare the metric value at different time steps
