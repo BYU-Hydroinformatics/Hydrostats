@@ -8,7 +8,7 @@ Hydrostats provides:
 
 - Preprocessing Tools
 - Visualization Tools
-- A library of over 60 metrics to measure hydrologic skill
+- Access to over 60 error metrics through the HydroErr package dependency
 - A library of relevant metrics to measure forecast skill
 
 [![Powered by BYU Hydroinformatics](https://img.shields.io/badge/powered%20by-BYU%20HydroInformatics-blue.svg)](http://worldwater.byu.edu/)
