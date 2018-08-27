@@ -3,13 +3,13 @@ language: python
 sudo: false
 
 install:
-  - pip install numpy >= 1.14.2
-  - pip install numba >= 0.37.0
-  - pip install pandas >= 0.22.0
-  - pip install matplotlib >= 2.2.0
-  - pip install scipy >= 1.0.0
-  - pip install sympy >= 1.1.1
-  - pip install openpyxl >= 2.5.2
+  - pip install numpy
+  - pip install numba
+  - pip install pandas
+  - pip install matplotlib
+  - pip install scipy
+  - pip install sympy
+  - pip install openpyxl
 
 script:
     - hydrostats/tests/tests.py
