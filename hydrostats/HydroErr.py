@@ -414,8 +414,8 @@ def male(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 6.8])
-    >>> he.male(sim, obs)
-    0.09041652188064815
+    >>> np.round(he.male(sim, obs), 6)
+    0.090417
 
     References
     ----------
@@ -497,8 +497,8 @@ def msle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 6.8])
-    >>> he.msle(sim, obs)
-    0.010426437593600499
+    >>> np.round(he.msle(sim, obs), 6)
+    0.010426
 
     References
     ----------
@@ -1060,8 +1060,8 @@ def rmsle(simulated_array, observed_array, replace_nan=None, replace_inf=None,
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-    >>> he.rmsle(sim, obs)
-    0.10316086856191362
+    >>> np.round(he.rmsle(sim, obs), 6)
+    0.103161
 
     References
     ----------
@@ -6056,8 +6056,8 @@ def h10_mahe(simulated_array, observed_array, replace_nan=None, replace_inf=None
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-    >>> he.h10_mahe(sim, obs)
-    0.09463615654469641
+    >>> np.round(he.h10_mahe(sim, obs), 6)
+    0.094636
 
     References
     ----------
@@ -6137,8 +6137,8 @@ def h10_rmshe(simulated_array, observed_array, replace_nan=None, replace_inf=Non
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-    >>> he.h10_rmshe(sim, obs)
-    0.10316086856191362
+    >>> np.round(he.h10_rmshe(sim, obs), 6)
+    0.103161
 
     References
     ----------
@@ -6303,8 +6303,8 @@ def mean_var(simulated_array, observed_array, replace_nan=None, replace_inf=None
 
     >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
     >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-    >>> he.mean_var(sim, obs)
-    0.010640582571534449
+    >>> np.round(he.mean_var(sim, obs), 6)
+    0.010641
 
     References
     ----------
@@ -6621,64 +6621,4 @@ def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=
 
 
 if __name__ == "__main__":
-
-    the_functions = [h1_rmshe, h2_mhe, h2_mahe, h2_rmshe,
-                     h3_mhe, h3_mahe, h3_rmshe, h4_mhe, h4_mahe, h4_rmshe, h5_mhe, h5_mahe,
-                     h5_rmshe, h6_mhe,
-                     h6_mahe, h6_rmshe, h7_mhe, h7_mahe, h7_rmshe, h8_mhe, h8_mahe, h8_rmshe,
-                     h10_mhe, h10_mahe,
-                     h10_rmshe, g_mean_diff, mean_var]
-
-    the_function_names = ['h1_rmshe', 'h2_mhe', 'h2_mahe', 'h2_rmshe', 'h3_mhe', 'h3_mahe',
-                          'h3_rmshe', 'h4_mhe',
-                          'h4_mahe', 'h4_rmshe', 'h5_mhe', 'h5_mahe', 'h5_rmshe', 'h6_mhe',
-                          'h6_mahe', 'h6_rmshe',
-                          'h7_mhe', 'h7_mahe', 'h7_rmshe', 'h8_mhe', 'h8_mahe', 'h8_rmshe',
-                          'h10_mhe', 'h10_mahe',
-                          'h10_rmshe', 'g_mean_diff', 'mean_var']
-
-    template = """>>>>>>>>>>>>>>{}<<<<<<<<<<<<<<<
-Examples
-    --------
-
-    >>> import hydrostats.HydroErr as he
-    >>> import numpy as np
-
-    >>> sim = np.array([5, 7, 9, 2, 4.5, 6.7])
-    >>> obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-    >>> he.{}(sim, obs)
-    {}"""
-
-    for fun, name in zip(the_functions, the_function_names):
-        sim = np.array([5, 7, 9, 2, 4.5, 6.7])
-        obs = np.array([4.7, 6, 10, 2.5, 4, 7])
-        value = fun(sim, obs)
-
-        print(template.format(name, name, value))
-
-    # import doctest
-    # doctest.testmod(f, globals())
-
-    # >>> Creating a table of all the metrics
-    # import pypandoc
-    #
-    # mkd_text = "| Full Metric Name | Abbreviation | Function Name |\n| :--------------- | " \
-    #            ":----------- | :------------ |\n"
-    # metric_data = [metric_names, metric_abbr, __all__]
-    # metric_array = np.array(metric_data).T
-    #
-    # # Sorting in alphabetical order
-    # metric_array = metric_array[metric_array[:, 0].argsort()]
-    #
-    # for i in metric_array:
-    #     mkd_text += "|{}|{}|{}|\n".format(i[0], i[1], i[2])
-    #
-    # text = pypandoc.convert_text(mkd_text, 'rst', format='markdown')
-    #
-    # print(text)
-
-    # >>> Printing all of the function names
-    # long_str = ''
-    # for i in __all__:
-    #     long_str += i + ', '
-    # print(long_str)
+    pass
