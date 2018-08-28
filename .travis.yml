@@ -2,8 +2,18 @@ language: python
 
 sudo: false
 
+python:
+  - 2.7
+  - 3.4
+  - 3.5
+  - 3.6
+
 install:
   - pip install Hydrostats
+  - pip install codecov
 
 script:
-    - python hydrostats/tests/tests.py
+    - coverage run hydrostats/tests/tests.py
+    
+after_success:
+  - codecov
