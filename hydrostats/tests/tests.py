@@ -9,9 +9,18 @@ import hydrostats.metrics as he
 import hydrostats.ens_metrics as em
 import hydrostats.analyze as ha
 import hydrostats.data as hd
+import hydrostats.visual as hv
+import matplotlib.image as mpimg
 import unittest
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+
+try:
+    from io import BytesIO
+except ImportError:
+    from BytesIO import BytesIO
+
 
 # TODO: Finish tests on ens_metrics, data, and visual
 
@@ -25,7 +34,8 @@ class MetricsTests(unittest.TestCase):
         self.sim = np.array([5, 7, 9, 2, 4.5, 6.7])
         self.obs = np.array([4.7, 6, 10, 2.5, 4, 6.8])
         self.sim_bad_data = np.array([6, np.nan, 100, np.inf, 200, -np.inf, 300, 0, 400, -0.1, 5, 7, 9, 2, 4.5, 6.7])
-        self.obs_bad_data = np.array([np.nan, 100, np.inf, 200, -np.inf, 300, 0, 400, -0.1, 500, 4.7, 6, 10, 2.5, 4, 6.8])
+        self.obs_bad_data = np.array(
+            [np.nan, 100, np.inf, 200, -np.inf, 300, 0, 400, -0.1, 500, 4.7, 6, 10, 2.5, 4, 6.8])
 
     def test_me(self):
         expected_value = 0.03333333333333336
@@ -632,7 +642,7 @@ class MetricsTests(unittest.TestCase):
         del self.obs
 
 
-class ens_metricsTests(unittest.TestCase):
+class EnsMetricsTests(unittest.TestCase):
 
     def setUp(self):
         np.random.seed(3849590438)
@@ -725,6 +735,192 @@ class AnalysisTests(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+
+class VisualTests(unittest.TestCase):
+
+    def setUp(self):
+        sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/' \
+                   r'magdalena-calamar_interim_data.csv'
+        glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/' \
+                     r'magdalena-calamar_ECMWF_data.csv'
+        self.merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['SFPT', 'GLOFAS'])
+
+    def test_plot_full1(self):
+        # Creating Test Image
+        hv.plot(merged_data_df=self.merged_df,
+                title='Hydrograph of Entire Time Series',
+                linestyles=['r-', 'k-'],
+                legend=('SFPT', 'GLOFAS'),
+                labels=['Datetime', 'Streamflow (cfs)'],
+                metrics=['ME', 'NSE', 'SA'],
+                grid=True)
+        buf = BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        img_test = mpimg.imread(buf)
+        buf.close()
+
+        # Reading Original Image
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'plot_full1.png'))
+
+        # Comparing
+        self.assertTrue(np.all(np.isclose(img_test, img_original)))
+
+    def test_plot_seasonal(self):
+        daily_avg_df = hd.daily_average(merged_data=self.merged_df)
+        daily_std_error = hd.daily_std_error(merged_data=self.merged_df)
+
+        # Creating test image array
+        hv.plot(merged_data_df=daily_avg_df,
+                title='Daily Average Streamflow (Standard Error)',
+                legend=('SFPT', 'GLOFAS'),
+                x_season=True,
+                labels=['Datetime', 'Streamflow (csm)'],
+                linestyles=['r-', 'k-'],
+                fig_size=(14, 8),
+                ebars=daily_std_error,
+                ecolor=('r', 'k'),
+                tight_xlim=True
+                )
+        buf = BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        img_test = mpimg.imread(buf)
+        buf.close()
+
+        # Reading Original Image
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'plot_seasonal.png'))
+
+        # Comparing
+        self.assertTrue(np.all(np.isclose(img_test, img_original)))
+
+    def test_hist_df(self):
+        # Creating test image array
+        hv.hist(merged_data_df=self.merged_df,
+                num_bins=100,
+                title='Histogram of Streamflows',
+                legend=('SFPT', 'GLOFAS'),
+                labels=('Bins', 'Frequency'),
+                grid=True)
+        buf = BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        img_test = mpimg.imread(buf)
+        buf.close()
+
+        # Reading original image
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'hist1.png'))
+
+        # Comparing the images
+        self.assertTrue(np.all(np.isclose(img_test, img_original)))
+
+    def test_hist_arrays(self):
+        # Creating test image array
+        sim_array = self.merged_df.iloc[:, 0].values
+        obs_array = self.merged_df.iloc[:, 1].values
+
+        hv.hist(sim_array=sim_array,
+                obs_array=obs_array,
+                num_bins=100,
+                title='Histogram of Streamflows',
+                legend=('SFPT', 'GLOFAS'),
+                labels=('Bins', 'Frequency'),
+                grid=True)
+        buf = BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        img_test = mpimg.imread(buf)
+        buf.close()
+
+        # Reading original image
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'hist1.png'))
+
+        # Comparing the images
+        self.assertTrue(np.all(np.isclose(img_test, img_original)))
+
+    def test_hist_znorm(self):
+        # Creating test image array
+        hv.hist(merged_data_df=self.merged_df,
+                num_bins=100,
+                title='Histogram of Streamflows',
+                labels=('Bins', 'Frequency'),
+                grid=True,
+                z_norm=True,
+                legend=None,
+                prob_dens=True)
+        buf = BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        img_test = mpimg.imread(buf)
+        buf.close()
+
+        # Reading original image
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'hist_znorm.png'))
+
+        # Comparing the images
+        self.assertTrue(np.all(np.isclose(img_test, img_original)))
+
+    def test_hist_error(self):
+        df = self.merged_df
+        sim_array = df.iloc[:, 0].values
+        with self.assertRaises(RuntimeError):
+            hv.hist(merged_data_df=self.merged_df, sim_array=sim_array)
+
+    def test_scatter(self):
+        # Creating test image array
+        hv.scatter(merged_data_df=self.merged_df, grid=True, title='Scatter Plot (Normal Scale)',
+                   labels=('SFPT', 'GLOFAS'), best_fit=True)
+        buf = BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        img_test = mpimg.imread(buf)
+        buf.close()
+
+        # Reading original image
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'scatter.png'))
+
+        # Comparing the images
+        self.assertTrue(np.all(np.isclose(img_test, img_original)))
+
+    def test_scatterlog(self):
+        sim_array = self.merged_df.iloc[:, 0].values
+        obs_array = self.merged_df.iloc[:, 1].values
+
+        # Creating test image array
+        hv.scatter(sim_array=sim_array, obs_array=obs_array, grid=True, title='Scatter Plot (Log-Log Scale)',
+                   labels=('SFPT', 'GLOFAS'), line45=True, metrics=['ME', 'KGE (2012)'])
+        buf = BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        img_test = mpimg.imread(buf)
+        buf.close()
+
+        # Reading original image
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'scatterlog.png'))
+
+        # Comparing the images
+        self.assertTrue(np.all(np.isclose(img_test, img_original)))
+
+    def test_qq_plot(self):
+        # Creating test image array
+        hv.qqplot(merged_data_df=self.merged_df, title='Quantile-Quantile Plot of Data',
+                  xlabel='SFPT Data Quantiles', ylabel='GLOFAS Data Quantiles', legend=True,
+                  figsize=(8, 6))
+        buf = BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        img_test = mpimg.imread(buf)
+        buf.close()
+
+        # Reading original image
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'qqplot.png'))
+
+        # Comparing the images
+        self.assertTrue(np.all(np.isclose(img_test, img_original)))
+
+    def tearDown(self):
+        del self.merged_df
 
 
 if __name__ == "__main__":

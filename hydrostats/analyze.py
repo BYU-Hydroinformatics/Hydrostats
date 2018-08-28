@@ -105,6 +105,13 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
         Dataframe with rows containing the metric values at the different time ranges, and columns
         containing the metrics specified.
 
+    Notes
+    -----
+    If desired, users can export the tables to a CSV or Excel Workbook. This can be done using the built in methods
+    of pandas. A link to CSV method is `here <https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.
+    to_csv.html>`_ and a link to the Excel method is `here <https://pandas.pydata.org/pandas-docs/stable/generated/
+    pandas.DataFrame.to_excel.html>`_
+
     Examples
     --------
     First we need to get some data. The data here is pulled from the Streamflow Predication Tool
@@ -202,16 +209,6 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
         col_values = [location for i in range(table_df_final.shape[0])]
         table_df_final.insert(loc=0, column='Location', value=np.array(col_values))
 
-    if to_csv is None and to_excel is not None:
-        table_df_final.to_excel(to_excel, index_label='Datetime')
-
-    elif to_csv is not None and to_excel is None:
-        table_df_final.to_csv(to_csv, index_label='Datetime')
-
-    elif to_csv is not None and to_excel is not None:
-        table_df_final.to_excel(to_excel, index_label='Datetime')
-        table_df_final.to_csv(to_csv, index_label='Datetime')
-
     return table_df_final
 
 
@@ -224,7 +221,7 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
              to_excel=None):
     """Check metric values between simulated and observed data at different time lags.
 
-    Runs a time lag analysis to check for potential timing errors in datasets. Also can create a
+    Runs a time lag analysis to check for potential timing errors in the simulated data. Can also create a
     plot using matplotlib of the metric values at different shifts.
 
     Parameters
@@ -314,12 +311,12 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
     station: str
         The station of analysis. Includes the station in the table if given.
 
-    to_csv: str
-        Filepath and file name of the csv that is written (e.g. r'/path/to/output_dir/file.csv').
-
-    to_excel: str
-        Filepath and file name of the excel workbook that is written
-        (e.g. r'/path/to/output_dir/file.xlsx').
+    Notes
+    -----
+    If desired, users can export the tables to a CSV or Excel Workbook. This can be done using the built in methods
+    of pandas. A link to CSV method is `here <https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.
+    to_csv.html>`_ and a link to the Excel method is `here <https://pandas.pydata.org/pandas-docs/stable/generated/
+    pandas.DataFrame.to_excel.html>`_
 
     Returns
     -------
@@ -327,6 +324,8 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
         The first DataFrame contains all of the metric values at different time lags, while the 
         second dataframe contains the maximum and minimum metric values throughout the time lag, 
         and the index of the maximum and minimum time lag values.
+
+
 
     Examples
     --------
