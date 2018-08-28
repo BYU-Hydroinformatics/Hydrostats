@@ -1,15 +1,14 @@
 # python 3.6
 # -*- coding: utf-8 -*-
 """
-
 The visual module contains different plotting functions for time series visualization. It allows
 users to plot hydrographs, scatter plots, histograms, and quantile-quantile (qq) plots to visualize
 time series data. In some of the visualization functions, metrics can be added to the plots for a
 more complete summary of the data.
-
 """
 from __future__ import division
-from hydrostats.metrics import function_list, metric_abbr, HydrostatsError, treat_values
+from hydrostats.metrics import function_list, metric_abbr
+from HydroErr.HydroErr import treat_values
 import numpy as np
 import matplotlib.pyplot as plt
 from sympy import symbols, S
@@ -19,8 +18,8 @@ import calendar
 __all__ = ['plot', 'hist', 'scatter', 'qqplot']
 
 
-def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_season=False,
-         labels=None, savefigure=None, linestyles=('ro', 'b^'), tight_xlim=False, fig_size=(10, 6),
+def plot(merged_data_df, legend=('Simulated Data', 'Observed Data'), metrics=None, grid=False, title=None,
+         x_season=False, labels=None, linestyles=('ro', 'b^'), tight_xlim=False, fig_size=(10, 6),
          text_adjust=(-0.35, 0.75), plot_adjust=0.27, transparency=0.5, ebars=None, ecolor=None,
          markersize=2, errorevery=1, markevery=1):
     """
@@ -36,9 +35,9 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
         DataFrame must contain datetime index and floating point type numbers in the two columns.
         The left columns must be simulated data and the right column observed data.
 
-    legend: list of str
-        Adds a Legend in the 'best' location determined by matplotlib. The entries in the list are
-        ['Simulated Data Label', 'Predicted Data Label'].
+    legend: tuple of str
+        Adds a Legend in the 'best' location determined by matplotlib. The entries in the tuple describe the left and
+        right columns of the merged_data_df data.
 
     metrics: list of str
         Adds Metrics to the left side of the plot. Any metric from the Hydrostats library can
@@ -57,10 +56,6 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
 
     labels: list of str
         List of two str type inputs specifying x-axis labels and y-axis labels, respectively.
-
-    savefigure: str
-        Saves the plot to the specified path as a filetype specified by the user
-        (eg. path/to/file.png). Available file types are in :ref:`plot_types`.
 
     linestyles: list of str
         List of two string type inputs thet will change the linestyle of the predicted and
@@ -110,26 +105,26 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
 
     Returns
     -------
-    None
-        The plot will be generated automatically if the savefig argument is not specified.
-        Otherwise, the plot will be saved to the specified location.
+    fig : Matplotlib figure instance
+        A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show() command.
 
     """
-    fig = plt.figure(num=1, figsize=fig_size, dpi=80, facecolor='w', edgecolor='k')
+    fig = plt.figure(figsize=fig_size, facecolor='w', edgecolor='k')
     ax = fig.add_subplot(111)
 
     # Setting Variable for the simulated data, observed data, and time stamps
     sim = merged_data_df.iloc[:, 0].values
     obs = merged_data_df.iloc[:, 1].values
-    time = merged_data_df.index
+    time = merged_data_df.index.values
 
-    if legend is not None and ebars is None:
+    # Plotting the Data
+    if ebars is None:
         plt.plot(time, sim, linestyles[0], markersize=markersize,
                  label=legend[0], alpha=transparency, markevery=markevery)
         plt.plot(time, obs, linestyles[1], markersize=markersize,
                  label=legend[1], alpha=transparency, markevery=markevery)
         plt.legend(fontsize=14)
-    elif legend is not None and ebars is not None:
+    elif ebars is not None:
         plt.errorbar(x=time, y=sim, yerr=ebars.iloc[:, 0].values,
                      fmt=linestyles[0], markersize=markersize, label=legend[0], alpha=transparency, ecolor=ecolor[0],
                      markevery=markevery, errorevery=errorevery)
@@ -137,20 +132,12 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
                      fmt=linestyles[1], markersize=markersize, label=legend[1], alpha=transparency, ecolor=ecolor[1],
                      markevery=markevery, errorevery=errorevery)
         plt.legend(fontsize=14)
-    elif legend is None and ebars is not None:
-        plt.errorbar(time, sim, fmt=linestyles[0], yerr=ebars.iloc[:, 0].values,
-                     markersize=markersize, alpha=transparency, ecolor=ecolor[0], markevery=markevery,
-                     errorevery=errorevery)
-        plt.errorbar(time, obs, fmt=linestyles[1], yerr=ebars.iloc[:, 0].values,
-                     markersize=markersize, alpha=transparency, ecolor=ecolor[1], markevery=markevery,
-                     errorevery=errorevery)
-    else:
-        plt.plot(time, sim, linestyles[0], markersize=markersize,
-                 alpha=transparency, markevery=markevery)
-        plt.plot(time, obs, linestyles[1], markersize=markersize,
-                 alpha=transparency, markevery=markevery)
+
+    # Adjusting the plot if user wants tight x axis limits
     if tight_xlim:
         plt.xlim(time[0], time[-1])
+
+    # Changing the X axis for a better seasonal plot if seasonal and adjusting tick sizes
     if x_season:
         seasons = calendar.month_abbr[1:13]
         day_month = np.array([31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
@@ -161,7 +148,10 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
         plt.xticks(time[index], seasons, fontsize=14, rotation=45)
     else:
         plt.xticks(fontsize=14, rotation=45)
+
     plt.yticks(fontsize=14)
+
+    # Placing Labels if requested
     if labels:
         # Plotting Labels
         plt.xlabel(labels[0], fontsize=18)
@@ -174,41 +164,48 @@ def plot(merged_data_df, legend=None, metrics=None, grid=False, title=None, x_se
                       }
         ax.set_title(label=title, fontdict=title_dict, pad=25)
 
+    # Placing a grid if requested
     if grid:
         plt.grid(True)
 
+    # Fixes issues with parts of plot being cut off
     plt.tight_layout()
 
+    # Placing Metrics on the Plot if requested
     if metrics:
         function_list_str = metric_abbr
+
         assert isinstance(metrics, list)
+
         for metric in metrics:
             assert metric in function_list_str
+
         index = []
         for metric in metrics:
             index.append(function_list_str.index(metric))
+
         selected_metrics = []
         for i in index:
             selected_metrics.append(
                 function_list_str[i] + '=' + str(round(function_list[i](sim, obs), 3)))
+
         formatted_selected_metrics = ''
         for i in selected_metrics:
             formatted_selected_metrics += i + '\n'
+
         font = {'family': 'sans-serif',
                 'weight': 'normal',
                 'size': 14}
         plt.text(text_adjust[0], text_adjust[1], formatted_selected_metrics, ha='left', va='center',
                  transform=ax.transAxes, fontdict=font)
+
         plt.subplots_adjust(left=plot_adjust)
-    if savefigure is not None:
-        plt.savefig(savefigure)
-        plt.close()
-    else:
-        plt.show()
+
+    return fig
 
 
 def hist(merged_data_df=None, sim_array=None, obs_array=None, num_bins=100, z_norm=False,
-         legend=None, grid=False, title=None, labels=None, savefigure=None, prob_dens=False,
+         legend=('Simulated', 'Observed'), grid=False, title=None, labels=None, prob_dens=False,
          figsize=(12, 6)):
     """Plots a histogram comparing simulated and observed data.
 
@@ -250,10 +247,6 @@ def hist(merged_data_df=None, sim_array=None, obs_array=None, num_bins=100, z_no
     labels: tuple of str
         Tuple of two string type objects to set the x-axis labels and y-axis labels, respectively.
 
-    savefigure: str
-        Saves the plot to the specified path as a filetype specified by the user
-        (eg. path/to/file.png). Available file types are in :ref:`plot_types`.
-
     prob_dens: bool
         If True, normalizes both histograms to form a probability density, i.e., the area
         (or integral) under each histogram will sum to 1.
@@ -264,22 +257,22 @@ def hist(merged_data_df=None, sim_array=None, obs_array=None, num_bins=100, z_no
 
     Returns
     -------
-    None
-        The plot will be generated automatically if the savefig argument is not specified.
-        Otherwise, the plot will be saved to the specified location.
+    fig : Matplotlib figure instance
+        A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show() command.
+
     """
     # Getting the fig and axis handles
     fig, ax1 = plt.subplots(figsize=figsize)
 
-    if merged_data_df is not None:
+    if merged_data_df is not None and sim_array is None and obs_array is None:
         # Creating a simulated and observed data array
         sim = merged_data_df.iloc[:, 0].values
         obs = merged_data_df.iloc[:, 1].values
-    elif sim_array is not None and obs_array is not None:
+    elif sim_array is not None and obs_array is not None and merged_data_df is None:
         sim = sim_array
         obs = obs_array
     else:
-        raise HydrostatsError("You must either pass in a dataframe or two arrays.")
+        raise RuntimeError("You must either pass in a dataframe or two arrays.")
 
     if z_norm:
         # Calculating the Z Scores for the simulated data
@@ -353,17 +346,11 @@ def hist(merged_data_df=None, sim_array=None, obs_array=None, num_bins=100, z_no
     # Assuring a tight layout
     plt.tight_layout()
 
-    if savefigure is not None:
-        # Saving the figure
-        plt.savefig(savefigure)
-        plt.close()
-    else:
-        # Showing the figure
-        plt.show()
+    return fig
 
 
 def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, title=None, labels=None, best_fit=False,
-            savefigure=None, marker_style='ko', metrics=None, log_scale=False, line45=False, figsize=(12, 8)):
+            marker_style='ko', metrics=None, log_scale=False, line45=False, figsize=(12, 8)):
     """Creates a scatter plot of the observed and simulated data.
 
     Parameters
@@ -394,10 +381,6 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
         If True, adds a best linear regression line on the graph
         with the equation for the line in the legend.
 
-    savefigure: str
-        Saves the plot to the specified path as a filetype specified by the user
-        (eg. path/to/file.png). Available file types are in :ref:`plot_types`.
-
     marker_style: str
         If give, changes the markerstyle of the points on the scatter plot. Matplotlib styling
         guides are found in :ref:`matplotlib_linestyles`.
@@ -419,23 +402,22 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
 
     Returns
     -------
-    None
-        The plot will be generated automatically if the savefig argument is not specified.
-        Otherwise, the plot will be saved to the specified location.
+    fig : Matplotlib figure instance
+        A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show() command.
 
     """
-    fig = plt.figure(num=1, figsize=figsize, dpi=80, facecolor='w', edgecolor='k')
+    fig = plt.figure(figsize=figsize, facecolor='w', edgecolor='k')
     ax = fig.add_subplot(111)
 
-    if merged_data_df is not None:
+    if merged_data_df is not None and sim_array is None and obs_array is None:
         # Creating a simulated and observed data array
         sim = merged_data_df.iloc[:, 0].values
         obs = merged_data_df.iloc[:, 1].values
-    elif sim_array is not None and obs_array is not None:
+    elif sim_array is not None and obs_array is not None and merged_data_df is None:
         sim = sim_array
         obs = obs_array
     else:
-        raise HydrostatsError("You must either pass in a dataframe or two arrays.")
+        raise RuntimeError("You must either pass in a dataframe or two arrays.")
 
     max_both = max([np.max(sim), np.max(obs)])
 
@@ -443,17 +425,23 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
         plt.plot(sim, obs, marker_style)
     else:
         plt.loglog(sim, obs, marker_style)
+
     if line45:
         plt.plot(np.arange(0, int(max_both) + 1), np.arange(0, int(max_both) + 1), 'r--', label='45$^\circ$ Line')
+
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
+
     if grid:
         plt.grid(True)
+
     if title:
         plt.title(title, fontsize=20)
+
     if labels:
         plt.xlabel(labels[0], fontsize=18)
         plt.ylabel(labels[1], fontsize=18)
+
     if best_fit:
         # Getting a polynomial fit and defining a function with it
         p = np.polyfit(sim, obs, 1)
@@ -495,16 +483,13 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
                 'size': 14}
         plt.text(-0.35, 0.75, formatted_selected_metrics, ha='left', va='center', transform=ax.transAxes, fontdict=font)
         plt.subplots_adjust(left=0.25)
-    if savefigure is not None:
-        plt.savefig(savefigure)
-        plt.close()
-    else:
-        plt.show()
+
+    return fig
 
 
 def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='linear', title=None,
            xlabel='Simulated Data Quantiles', ylabel='Observed Data Quantiles', legend=False, replace_nan=None,
-           replace_inf=None, remove_neg=False, remove_zero=False, figsize=(12, 8), savefigure=None):
+           replace_inf=None, remove_neg=False, remove_zero=False, figsize=(12, 8)):
     """Plots a Quantile-Quantile plot of the simulated and observed data.
 
     Useful for comparing to see whether the two datasets come from the same distribution.
@@ -563,18 +548,14 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
         Tuple of length two that specifies the horizontal and vertical lengths of the plot in
         inches, respectively.
 
-    savefigure: str
-        Saves the plot to the specified path as a filetype specified by the user
-        (eg. path/to/file.png). Available file types are in :ref:`plot_types`.
-
     Returns
     -------
-    None
-        The plot will be generated automatically if the savefig argument is not specified.
-        Otherwise, the plot will be saved to the specified location.
+    fig : Matplotlib figure instance
+        A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show() command.
+
     """
 
-    plt.figure(num=1, figsize=figsize, dpi=80, facecolor='w', edgecolor='k')
+    fig = plt.figure(figsize=figsize, facecolor='w', edgecolor='k')
 
     if merged_data_df is not None:
         # Creating a simulated and observed data array
@@ -584,7 +565,7 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
         sim = sim_array
         obs = obs_array
     else:
-        raise HydrostatsError("You must either pass in a dataframe or two arrays.")
+        raise RuntimeError("You must either pass in a dataframe or two arrays.")
 
     sim, obs = treat_values(sim, obs, replace_nan=replace_nan, replace_inf=replace_inf, remove_neg=remove_neg,
                             remove_zero=remove_zero)
@@ -636,15 +617,76 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
     plt.ylabel(ylabel, fontsize=16)
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
+    plt.tight_layout()
 
-    if savefigure is not None:
-        plt.savefig(savefigure)
-        plt.close()
-    else:
-        plt.show()
+    return fig
 
 
 if __name__ == "__main__":
-    sim = np.random.rand(1000)
-    obs = np.random.rand(1000)
-    print(function_list[0](sim, obs))
+    import hydrostats.data as hd
+
+    sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/' \
+               r'magdalena-calamar_interim_data.csv'
+    glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/' \
+                 r'magdalena-calamar_ECMWF_data.csv'
+
+    merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['SFPT', 'GLOFAS'])
+    seasonal_df = hd.seasonal_period(merged_df, ['04-01', '07-31'], time_range=['1986-01-01', '1992-12-31'])
+    daily_avg_df = hd.daily_average(merged_data=merged_df)
+    daily_std_error = hd.daily_std_error(merged_data=merged_df)
+
+    sim_array = merged_df.iloc[:, 0].values
+    obs_array = merged_df.iloc[:, 1].values
+
+    # plot(merged_data_df=merged_df,
+    #      title='Hydrograph of Entire Time Series',
+    #      linestyles=['r-', 'k-'],
+    #      legend=('SFPT', 'GLOFAS'),
+    #      labels=['Datetime', 'Streamflow (cfs)'],
+    #      metrics=['ME', 'NSE', 'SA'],
+    #      grid=True)
+    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/plot_full1.png')
+    #
+    # plot(merged_data_df=daily_avg_df,
+    #      title='Daily Average Streamflow (Standard Error)',
+    #      legend=('SFPT', 'GLOFAS'),
+    #      x_season=True,
+    #      labels=['Datetime', 'Streamflow (csm)'],
+    #      linestyles=['r-', 'k-'],
+    #      fig_size=(14, 8),
+    #      ebars=daily_std_error,
+    #      ecolor=('r', 'k'),
+    #      tight_xlim=True
+    #      )
+    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/plot_seasonal.png')
+
+    # hist(merged_data_df=merged_df,
+    #      num_bins=100,
+    #      title='Histogram of Streamflows',
+    #      legend=('SFPT', 'GLOFAS'),
+    #      labels=('Bins', 'Frequency'),
+    #      grid=True)
+    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/hist1.png')
+    #
+    # hist(merged_data_df=merged_df,
+    #      num_bins=100,
+    #      title='Histogram of Streamflows',
+    #      labels=('Bins', 'Frequency'),
+    #      grid=True,
+    #      z_norm=True,
+    #      legend=None,
+    #      prob_dens=True)
+    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/hist_znorm.png')
+
+    # scatter(merged_data_df=merged_df, grid=True, title='Scatter Plot (Normal Scale)',
+    #         labels=('SFPT', 'GLOFAS'), best_fit=True)
+    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/scatter.png')
+    #
+    # scatter(sim_array=sim_array, obs_array=obs_array, grid=True, title='Scatter Plot (Log-Log Scale)',
+    #         labels=('SFPT', 'GLOFAS'), line45=True, metrics=['ME', 'KGE (2012)'])
+    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/scatterlog.png')
+
+    # qqplot(merged_data_df=merged_df, title='Quantile-Quantile Plot of Data',
+    #        xlabel='SFPT Data Quantiles', ylabel='GLOFAS Data Quantiles', legend=True,
+    #        figsize=(8, 6))
+    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/qqplot.png')
