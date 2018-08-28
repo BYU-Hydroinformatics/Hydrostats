@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/waderoberts123/Hydrostats.svg?branch=master)](https://travis-ci.org/waderoberts123/Hydrostats)
+[![codecov](https://codecov.io/gh/waderoberts123/Hydrostats/branch/master/graph/badge.svg)](https://codecov.io/gh/waderoberts123/Hydrostats)
+
 Tools for use in comparison studies, specifically for use in the field of hydrology
 
 - **Documentation:** https://waderoberts123.github.io/Hydrostats/
