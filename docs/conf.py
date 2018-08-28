@@ -26,7 +26,7 @@ author = 'Wade Roberts'
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = '0.65'
+release = '0.70'
 
 
 # -- General configuration ---------------------------------------------------
@@ -40,8 +40,6 @@ release = '0.65'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.imgmath',
-    'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.intersphinx',
     'numpydoc',

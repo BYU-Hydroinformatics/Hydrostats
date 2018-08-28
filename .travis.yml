@@ -12,7 +12,8 @@ install:
   - pip install codecov
 
 script:
-    - coverage run hydrostats/tests/tests.py
+  - cd hydrostats/tests
+  - coverage run tests.py
     
 after_success:
   - codecov
