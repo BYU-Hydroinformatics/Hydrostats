@@ -14,7 +14,6 @@ import numpy as np
 import pandas as pd
 
 # TODO: Finish tests on ens_metrics, data, and visual
-# TODO: The import doesn't work for testing on Python 2.7, need to find out why
 
 
 class MetricsTests(unittest.TestCase):
@@ -716,11 +715,10 @@ class AnalysisTests(unittest.TestCase):
         # Running the lag analysis
         time_lag_df, summary_df = ha.time_lag(self.merged_df, metrics=['ME', 'r2', 'RMSE', 'KGE (2012)', 'NSE'])
 
-        time_lag_df_original = pd.read_csv(r'/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/'
-                                           r'time_lag_df.csv', index_col=0)
+        time_lag_df_original = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'time_lag_df.csv'),
+                                           index_col=0)
 
-        summary_df_original = pd.read_csv(r'/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/'
-                                          r'summary_df.csv', index_col=0)
+        summary_df_original = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'summary_df.csv'), index_col=0)
 
         self.assertIsNone(pd.testing.assert_frame_equal(time_lag_df, time_lag_df_original))
         self.assertIsNone(pd.testing.assert_frame_equal(summary_df, summary_df_original))
