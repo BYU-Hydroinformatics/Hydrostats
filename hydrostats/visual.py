@@ -557,11 +557,11 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
 
     fig = plt.figure(figsize=figsize, facecolor='w', edgecolor='k')
 
-    if merged_data_df is not None:
+    if merged_data_df is not None and sim_array is None and obs_array is None:
         # Creating a simulated and observed data array
         sim = merged_data_df.iloc[:, 0].values
         obs = merged_data_df.iloc[:, 1].values
-    elif sim_array is not None and obs_array is not None:
+    elif sim_array is not None and obs_array is not None and merged_data_df is None:
         sim = sim_array
         obs = obs_array
     else:
@@ -686,7 +686,11 @@ if __name__ == "__main__":
     #         labels=('SFPT', 'GLOFAS'), line45=True, metrics=['ME', 'KGE (2012)'])
     # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/scatterlog.png')
 
-    # qqplot(merged_data_df=merged_df, title='Quantile-Quantile Plot of Data',
-    #        xlabel='SFPT Data Quantiles', ylabel='GLOFAS Data Quantiles', legend=True,
-    #        figsize=(8, 6))
-    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/qqplot.png')
+    qqplot(merged_data_df=merged_df, title='Quantile-Quantile Plot of Data',
+           xlabel='SFPT Data Quantiles', ylabel='GLOFAS Data Quantiles', legend=True,
+           figsize=(8, 6))
+    plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/qqplot.png')
+
+    qqplot(sim_array=sim_array, obs_array=obs_array, title='Quantile-Quantile Plot of Data',
+           xlabel='SFPT Data Quantiles', ylabel='GLOFAS Data Quantiles', figsize=(8, 6))
+    plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/baseline_images/plot_tests/qqplot2.png')
