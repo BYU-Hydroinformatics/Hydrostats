@@ -943,6 +943,82 @@ class VisualTests(unittest.TestCase):
         del self.merged_df
 
 
+class DataTests(unittest.TestCase):
+
+    def setUp(self):
+        sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/' \
+                   r'magdalena-calamar_interim_data.csv'
+        glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/' \
+                     r'magdalena-calamar_ECMWF_data.csv'
+        self.merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
+
+    def test_daily_average(self):
+        original_df = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'daily_average.csv'), index_col=0)
+        original_df.index = original_df.index.astype(np.object)
+
+        test_df = hd.daily_average(self.merged_df)
+
+        self.assertIsNone(pd.testing.assert_frame_equal(original_df, test_df))
+
+    def test_daily_std_dev(self):
+        original_df = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'daily_std_dev.csv'), index_col=0)
+        original_df.index = original_df.index.astype(np.object)
+
+        test_df = hd.daily_std_dev(self.merged_df)
+
+        self.assertIsNone(pd.testing.assert_frame_equal(original_df, test_df))
+
+    def test_daily_std_error(self):
+        original_df = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'daily_std_error.csv'), index_col=0)
+        original_df.index = original_df.index.astype(np.object)
+
+        test_df = hd.daily_std_error(self.merged_df)
+
+        self.assertIsNone(pd.testing.assert_frame_equal(original_df, test_df))
+
+    def test_monthly_average(self):
+        original_df = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'monthly_average.csv'), index_col=0)
+        original_df.index = np.array(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                                     dtype=np.object)
+
+        test_df = hd.monthly_average(self.merged_df)
+
+        self.assertIsNone(pd.testing.assert_frame_equal(original_df, test_df))
+
+    def test_monthly_std_dev(self):
+        original_df = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'monthly_std_dev.csv'), index_col=0)
+        original_df.index = np.array(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                                     dtype=np.object)
+
+        test_df = hd.monthly_std_dev(self.merged_df)
+
+        self.assertIsNone(pd.testing.assert_frame_equal(original_df, test_df))
+
+    def test_monthly_std_error(self):
+        original_df = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'monthly_std_error.csv'), index_col=0)
+        original_df.index = np.array(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                                     dtype=np.object)
+        
+        test_df = hd.monthly_std_error(self.merged_df)
+
+        self.assertIsNone(pd.testing.assert_frame_equal(original_df, test_df))
+
+    def test_remove_nan_df(self):
+        data = np.random.rand(15, 2)
+        data[0, 0] = data[1, 1] = np.nan
+        data[2, 0] = data[3, 1] = np.inf
+        data[4, 0] = data[5, 1] = 0
+        data[6, 0] = data[7, 1] = -0.1
+        test_df = hd.remove_nan_df(pd.DataFrame(data=data, index=pd.date_range('1980-01-01', periods=15)))
+
+        original_df = pd.DataFrame(data=data[8:, :], index=pd.date_range('1980-01-09', periods=7))
+
+        self.assertIsNone(pd.testing.assert_frame_equal(original_df, test_df))
+
+    def tearDown(self):
+        pass
+
+
 if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 

@@ -623,20 +623,21 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
 
 
 if __name__ == "__main__":
-    import hydrostats.data as hd
-
-    sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/' \
-               r'magdalena-calamar_interim_data.csv'
-    glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/' \
-                 r'magdalena-calamar_ECMWF_data.csv'
-
-    merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['SFPT', 'GLOFAS'])
-    seasonal_df = hd.seasonal_period(merged_df, ['04-01', '07-31'], time_range=['1986-01-01', '1992-12-31'])
-    daily_avg_df = hd.daily_average(merged_data=merged_df)
-    daily_std_error = hd.daily_std_error(merged_data=merged_df)
-
-    sim_array = merged_df.iloc[:, 0].values
-    obs_array = merged_df.iloc[:, 1].values
+    pass
+    # import hydrostats.data as hd
+    #
+    # sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/' \
+    #            r'magdalena-calamar_interim_data.csv'
+    # glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/' \
+    #              r'magdalena-calamar_ECMWF_data.csv'
+    #
+    # merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['SFPT', 'GLOFAS'])
+    # seasonal_df = hd.seasonal_period(merged_df, ['04-01', '07-31'], time_range=['1986-01-01', '1992-12-31'])
+    # daily_avg_df = hd.daily_average(merged_data=merged_df)
+    # daily_std_error = hd.daily_std_error(merged_data=merged_df)
+    #
+    # sim_array = merged_df.iloc[:, 0].values
+    # obs_array = merged_df.iloc[:, 1].values
 
     # plot(merged_data_df=merged_df,
     #      title='Hydrograph of Entire Time Series',
