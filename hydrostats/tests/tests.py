@@ -5,6 +5,9 @@ package_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 if package_path not in sys.path:
     sys.path.insert(0, package_path)
 
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import hydrostats.metrics as he
 import hydrostats.ens_metrics as em
 import hydrostats.analyze as ha
@@ -14,10 +17,6 @@ import matplotlib.image as mpimg
 import unittest
 import numpy as np
 import pandas as pd
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-
 
 try:
     from io import BytesIO
@@ -765,7 +764,7 @@ class VisualTests(unittest.TestCase):
         buf.close()
 
         # Reading Original Image
-        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'plot_full1.png'))
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'baseline_images', 'plot_tests', 'plot_full1.png'))
 
         # Comparing
         self.assertTrue(np.all(np.isclose(img_test, img_original)))
@@ -793,7 +792,7 @@ class VisualTests(unittest.TestCase):
         buf.close()
 
         # Reading Original Image
-        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'plot_seasonal.png'))
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'baseline_images', 'plot_tests', 'plot_seasonal.png'))
 
         # Comparing
         self.assertTrue(np.all(np.isclose(img_test, img_original)))
@@ -813,7 +812,7 @@ class VisualTests(unittest.TestCase):
         buf.close()
 
         # Reading original image
-        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'hist1.png'))
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'baseline_images', 'plot_tests', 'hist1.png'))
 
         # Comparing the images
         self.assertTrue(np.all(np.isclose(img_test, img_original)))
@@ -837,7 +836,7 @@ class VisualTests(unittest.TestCase):
         buf.close()
 
         # Reading original image
-        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'hist1.png'))
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'baseline_images', 'plot_tests', 'hist1.png'))
 
         # Comparing the images
         self.assertTrue(np.all(np.isclose(img_test, img_original)))
@@ -859,7 +858,7 @@ class VisualTests(unittest.TestCase):
         buf.close()
 
         # Reading original image
-        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'hist_znorm.png'))
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'baseline_images', 'plot_tests', 'hist_znorm.png'))
 
         # Comparing the images
         self.assertTrue(np.all(np.isclose(img_test, img_original)))
@@ -881,7 +880,7 @@ class VisualTests(unittest.TestCase):
         buf.close()
 
         # Reading original image
-        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'scatter.png'))
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'baseline_images', 'plot_tests', 'scatter.png'))
 
         # Comparing the images
         self.assertTrue(np.all(np.isclose(img_test, img_original)))
@@ -900,7 +899,7 @@ class VisualTests(unittest.TestCase):
         buf.close()
 
         # Reading original image
-        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'scatterlog.png'))
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'baseline_images', 'plot_tests', 'scatterlog.png'))
 
         # Comparing the images
         self.assertTrue(np.all(np.isclose(img_test, img_original)))
@@ -917,7 +916,25 @@ class VisualTests(unittest.TestCase):
         buf.close()
 
         # Reading original image
-        img_original = mpimg.imread(os.path.join(os.getcwd(), 'Comparison_Files', 'qqplot.png'))
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'baseline_images', 'plot_tests', 'qqplot.png'))
+
+        # Comparing the images
+        self.assertTrue(np.all(np.isclose(img_test, img_original)))
+
+    def test_qq_plot2(self):
+        # Creating test image array
+        sim_array = self.merged_df.iloc[:, 0].values
+        obs_array = self.merged_df.iloc[:, 1].values
+        hv.qqplot(sim_array=sim_array, obs_array=obs_array, title='Quantile-Quantile Plot of Data',
+                  xlabel='SFPT Data Quantiles', ylabel='GLOFAS Data Quantiles', figsize=(8, 6))
+        buf = BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        img_test = mpimg.imread(buf)
+        buf.close()
+
+        # Reading original image
+        img_original = mpimg.imread(os.path.join(os.getcwd(), 'baseline_images', 'plot_tests', 'qqplot2.png'))
 
         # Comparing the images
         self.assertTrue(np.all(np.isclose(img_test, img_original)))
