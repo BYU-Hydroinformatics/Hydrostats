@@ -4,18 +4,16 @@ sudo: false
 
 python:
   - 2.7
-  - 3.4
   - 3.5
   - 3.6
 
 install:
   - pip install Hydrostats
   - pip install codecov
-  - pip install tables
 
 script:
   - cd hydrostats/tests
   - coverage run tests.py
-    
+
 after_success:
   - codecov
