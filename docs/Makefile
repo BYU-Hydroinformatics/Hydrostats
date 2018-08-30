@@ -6,7 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = hydrostats
 SOURCEDIR     = .
-BUILDDIR      = _build
+BUILDDIR      = ../../Hydrostats_docs
 
 # Put it first so that "make" without argument is like "make help".
 help:
