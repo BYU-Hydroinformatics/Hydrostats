@@ -108,9 +108,10 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
     Notes
     -----
     If desired, users can export the tables to a CSV or Excel Workbook. This can be done using the built in methods
-    of pandas. A link to CSV method is `here <https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.
-    to_csv.html>`_ and a link to the Excel method is `here <https://pandas.pydata.org/pandas-docs/stable/generated/
-    pandas.DataFrame.to_excel.html>`_
+    of pandas. A link to CSV method can be found at
+    `<https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_csv.html>`_ and a link to the Excel
+    method can be found at
+    `<https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_excel.html>`_
 
     Examples
     --------
@@ -314,9 +315,10 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
     Notes
     -----
     If desired, users can export the tables to a CSV or Excel Workbook. This can be done using the built in methods
-    of pandas. A link to CSV method is `here <https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.
-    to_csv.html>`_ and a link to the Excel method is `here <https://pandas.pydata.org/pandas-docs/stable/generated/
-    pandas.DataFrame.to_excel.html>`_
+    of pandas. A link to CSV method can be found at
+    `<https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_csv.html>`_ and a link to the Excel
+    method can be found at
+    `<https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_excel.html>`_
 
     Returns
     -------
@@ -324,8 +326,6 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
         The first DataFrame contains all of the metric values at different time lags, while the 
         second dataframe contains the maximum and minimum metric values throughout the time lag, 
         and the index of the maximum and minimum time lag values.
-
-
 
     Examples
     --------
