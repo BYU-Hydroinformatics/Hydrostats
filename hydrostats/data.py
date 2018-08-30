@@ -58,14 +58,16 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
 
     interp_type: str
         Which interpolation method to use. Uses the default pandas interpolater.
-        Available types are found here_.
-        .. _here: http://pandas.pydata.org/pandas-docs/version/0.16.2/generated/pandas.DataFrame.interpolate.html
+        Available types are found at
+        http://pandas.pydata.org/pandas-docs/version/0.16.2/generated/pandas.DataFrame.interpolate.html
 
     Notes
     -----
     The only acceptable time deltas in the data are 15min, 30min, 45min, and any number of hours or
     days in between.
+
     There are three scenarios to consider when merging your data:
+
     1. The first scenario is that the timezones and the spacing of the time series matches
        (eg. 1 Day). In this case, you will want to leave the simulated_tz, observed_tz, and
        interpolate arguments empty, and the function will simply join the two csv's into a dataframe.
@@ -81,6 +83,15 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
     Examples
     --------
 
+    >>> import hydrostats.data as hd
+    >>> import pandas as pd
+    >>> pd.options.display.max_rows = 15
+
+    The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
+
+    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
+    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['Streamflow Prediction Tool', 'GLOFAS'])
 
     """
     # Reading the data into dataframes if from file

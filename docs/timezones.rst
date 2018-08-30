@@ -1,3 +1,5 @@
+.. _timezones:
+
 List of Timezones
 =================
 
