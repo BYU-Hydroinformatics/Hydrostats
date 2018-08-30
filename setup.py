@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup
+import os
+
+with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
+    README = readme.read()
 
 setup(
     name='hydrostats',
@@ -8,6 +12,7 @@ setup(
     version='0.71',
     description='Tools for use in comparison studies, specifically for use in the field '
                 'of hydrology',
+    long_description=README,
     author='Wade Roberts',
     author_email='waderoberts123@gmail.com',
     url='https://github.com/waderoberts123/hydrostats',  # use the URL to the github repo
@@ -26,10 +31,4 @@ setup(
         'openpyxl >= 2.5.2',
         'HydroErr'
     ],
-    extras_require={
-        'docs': [
-            'sphinx',
-            'sphinxcontrib-napoleon'
-        ]
-    },
 )
