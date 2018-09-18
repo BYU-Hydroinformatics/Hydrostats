@@ -658,11 +658,27 @@ class EnsMetricsTests(unittest.TestCase):
         self.ensemble_array_bad_data = np.copy(self.ensemble_array)
         self.observed_array_bad_data = np.copy(self.observed_array)
 
+        # Creating bad data to test functions
+        self.ensemble_array_bad_data[0, 0] = np.nan
+        self.observed_array_bad_data[1] = np.nan
+        self.ensemble_array_bad_data[2, 0] = np.inf
+        self.observed_array_bad_data[3] = np.inf
+        self.ensemble_array_bad_data[4, 0] = 0.
+        self.observed_array_bad_data[5] = 0.
+        self.ensemble_array_bad_data[6, 0] = -0.1
+        self.observed_array_bad_data[7] = -0.1
+
     def test_ens_me(self):
         expected_value = -2.5217349574908074
         test_value = em.ens_me(obs=self.observed_array, fcst_ens=self.ensemble_array)
 
         self.assertTrue(np.isclose(expected_value, test_value))
+
+        expected_value_bad_data = em.ens_me(obs=self.observed_array[8:], fcst_ens=self.ensemble_array[8:, :])
+        test_value_bad_data = em.ens_me(obs=self.observed_array_bad_data, fcst_ens=self.ensemble_array_bad_data,
+                                        remove_zero=True, remove_neg=True)
+
+        self.assertTrue(np.isclose(expected_value_bad_data, test_value_bad_data))
 
     def test_ens_mae(self):
         expected_value = 26.35428724003365
@@ -685,7 +701,7 @@ class AnalysisTests(unittest.TestCase):
         glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena' \
                      r'-calamar_ECMWF_data.csv '
         # Merging the data
-        self.merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['SFPT', 'GLOFAS'])
+        self.merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
 
     def test_make_table(self):
         my_metrics = ['MAE', 'r2', 'NSE', 'KGE (2012)']
@@ -697,10 +713,10 @@ class AnalysisTests(unittest.TestCase):
         metric_functions = [he.mae, he.r_squared, he.nse, he.kge_2012]
 
         season0 = self.merged_df
-        season1 = hd.seasonal_period(self.merged_df, daily_period=['01-01', '03-31'])
-        season2 = hd.seasonal_period(self.merged_df, daily_period=['04-01', '06-30'])
-        season3 = hd.seasonal_period(self.merged_df, daily_period=['07-01', '09-30'])
-        season4 = hd.seasonal_period(self.merged_df, daily_period=['10-01', '12-31'])
+        season1 = hd.seasonal_period(self.merged_df, daily_period=('01-01', '03-31'))
+        season2 = hd.seasonal_period(self.merged_df, daily_period=('04-01', '06-30'))
+        season3 = hd.seasonal_period(self.merged_df, daily_period=('07-01', '09-30'))
+        season4 = hd.seasonal_period(self.merged_df, daily_period=('10-01', '12-31'))
 
         all_seasons = [season0, season1, season2, season3, season4]
 
@@ -891,7 +907,7 @@ class VisualTests(unittest.TestCase):
 
         # Creating test image array
         hv.scatter(sim_array=sim_array, obs_array=obs_array, grid=True, title='Scatter Plot (Log-Log Scale)',
-                   labels=('SFPT', 'GLOFAS'), line45=True, metrics=['ME', 'KGE (2012)'])
+                   labels=('SFPT', 'GLOFAS'), line45=True, metrics=['ME', 'KGE (2012)'], log_scale=True)
         buf = BytesIO()
         plt.savefig(buf, format='png')
         buf.seek(0)

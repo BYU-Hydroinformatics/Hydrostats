@@ -108,6 +108,53 @@ def plot(merged_data_df, legend=('Simulated Data', 'Observed Data'), metrics=Non
     fig : Matplotlib figure instance
         A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show() command.
 
+    Examples
+    --------
+
+    In this example two models are compared.
+
+    >>> import hydrostats.data as hd
+    >>> import hydrostats.visual as hv
+    >>> import matplotlib.pyplot as plt
+
+    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
+    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
+
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
+    >>> seasonal_df = hd.seasonal_period(merged_df, ('04-01', '07-31'), time_range=('1986-01-01', '1992-12-31'))
+    >>> daily_avg_df = hd.daily_average(merged_data=merged_df)  # Seasonal Daily Averages
+    >>> daily_std_error = hd.daily_std_error(merged_data=merged_df)  # Seasonal Daily Standard Deviation
+
+    The entire timeseries is plotted below
+
+    >>> plot(merged_data_df=merged_df,
+    >>>      title='Hydrograph of Entire Time Series',
+    >>>      linestyles=['r-', 'k-'],
+    >>>      legend=('SFPT', 'GLOFAS'),
+    >>>      labels=['Datetime', 'Streamflow (cfs)'],
+    >>>      metrics=['ME', 'NSE', 'SA'],
+    >>>      grid=True)
+    >>> plt.show()
+
+    .. image:: /Figures/plot_full1.png
+
+    The seasonal averages with standard error bars is plotted below
+
+    >>> plot(merged_data_df=daily_avg_df,
+    >>>      title='Daily Average Streamflow (Standard Error)',
+    >>>      legend=('SFPT', 'GLOFAS'),
+    >>>      x_season=True,
+    >>>      labels=['Datetime', 'Streamflow (csm)'],
+    >>>      linestyles=['r-', 'k-'],
+    >>>      fig_size=(14, 8),
+    >>>      ebars=daily_std_error,
+    >>>      ecolor=('r', 'k'),
+    >>>      tight_xlim=True
+    >>>      )
+    >>> plt.show()
+
+    .. image:: /Figures/plot_seasonal.png
+
     """
     fig = plt.figure(figsize=fig_size, facecolor='w', edgecolor='k')
     ax = fig.add_subplot(111)
@@ -260,6 +307,31 @@ def hist(merged_data_df=None, sim_array=None, obs_array=None, num_bins=100, z_no
     fig : Matplotlib figure instance
         A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show() command.
 
+    Examples
+    --------
+
+    In this example the histograms of two models are compared to check their distributions
+
+    >>> import hydrostats.data as hd
+    >>> import hydrostats.visual as hv
+    >>> import matplotlib.pyplot as plt
+
+    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
+    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
+
+    The histogram with 100 bins is plotted below
+
+    >>> hist(merged_data_df=merged_df,
+    >>>      num_bins=100,
+    >>>      title='Histogram of Streamflows',
+    >>>      legend=('SFPT', 'GLOFAS'),
+    >>>      labels=('Bins', 'Frequency'),
+    >>>      grid=True)
+    >>> plt.show()
+
+    .. image:: /Figures/hist1.png
+
     """
     # Getting the fig and axis handles
     fig, ax1 = plt.subplots(figsize=figsize)
@@ -404,6 +476,37 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
     -------
     fig : Matplotlib figure instance
         A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show() command.
+
+
+    Examples
+    --------
+
+    A scatter plot is created in this example comparing two models.
+
+    >>> import hydrostats.data as hd
+    >>> import hydrostats.visual as hv
+    >>> import matplotlib.pyplot as plt
+
+    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
+    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
+
+    >>> sim_array = merged_df.iloc[:, 0].values
+    >>> obs_array = merged_df.iloc[:, 1].values
+
+    >>> scatter(merged_data_df=merged_df, grid=True, title='Scatter Plot (Normal Scale)',
+    >>>         labels=('SFPT', 'GLOFAS'), best_fit=True)
+    >>> plt.show()
+
+    .. image:: /Figures/scatter.png
+
+    Arrays can be used as well in the parameters, as demonstrated below.
+
+    >>> scatter(sim_array=sim_array, obs_array=obs_array, grid=True, title='Scatter Plot (Log-Log Scale)',
+    >>>         labels=('SFPT', 'GLOFAS'), line45=True, metrics=['ME', 'KGE (2012)'])
+    >>> plt.show()
+
+    .. image:: /Figures/scatterlog.png
 
     """
     fig = plt.figure(figsize=figsize, facecolor='w', edgecolor='k')
@@ -553,6 +656,24 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
     fig : Matplotlib figure instance
         A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show() command.
 
+    Examples
+    --------
+
+    >>> import hydrostats.data as hd
+    >>> import hydrostats.visual as hv
+    >>> import matplotlib.pyplot as plt
+
+    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
+    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
+
+    >>> qqplot(merged_data_df=merged_df, title='Quantile-Quantile Plot of Data',
+    >>>        xlabel='SFPT Data Quantiles', ylabel='GLOFAS Data Quantiles', legend=True,
+    >>>        figsize=(8, 6))
+    >>> plt.show()
+
+    .. image:: /Figures/qqplot.png
+
     """
 
     fig = plt.figure(figsize=figsize, facecolor='w', edgecolor='k')
@@ -623,21 +744,21 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
 
 
 if __name__ == "__main__":
-    pass
-    # import hydrostats.data as hd
-    #
-    # sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/' \
-    #            r'magdalena-calamar_interim_data.csv'
-    # glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/' \
-    #              r'magdalena-calamar_ECMWF_data.csv'
-    #
-    # merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['SFPT', 'GLOFAS'])
-    # seasonal_df = hd.seasonal_period(merged_df, ['04-01', '07-31'], time_range=['1986-01-01', '1992-12-31'])
-    # daily_avg_df = hd.daily_average(merged_data=merged_df)
-    # daily_std_error = hd.daily_std_error(merged_data=merged_df)
-    #
-    # sim_array = merged_df.iloc[:, 0].values
-    # obs_array = merged_df.iloc[:, 1].values
+    # pass
+    import hydrostats.data as hd
+
+    sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/' \
+               r'magdalena-calamar_interim_data.csv'
+    glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/' \
+                 r'magdalena-calamar_ECMWF_data.csv'
+
+    merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['SFPT', 'GLOFAS'])
+    seasonal_df = hd.seasonal_period(merged_df, ['04-01', '07-31'], time_range=['1986-01-01', '1992-12-31'])
+    daily_avg_df = hd.daily_average(merged_data=merged_df)
+    daily_std_error = hd.daily_std_error(merged_data=merged_df)
+
+    sim_array = merged_df.iloc[:, 0].values
+    obs_array = merged_df.iloc[:, 1].values
 
     # plot(merged_data_df=merged_df,
     #      title='Hydrograph of Entire Time Series',
@@ -684,7 +805,7 @@ if __name__ == "__main__":
     # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/scatter.png')
     #
     # scatter(sim_array=sim_array, obs_array=obs_array, grid=True, title='Scatter Plot (Log-Log Scale)',
-    #         labels=('SFPT', 'GLOFAS'), line45=True, metrics=['ME', 'KGE (2012)'])
+    #         labels=('SFPT', 'GLOFAS'), line45=True, metrics=['ME', 'KGE (2012)'], log_scale=True)
     # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/scatterlog.png')
 
     # qqplot(merged_data_df=merged_df, title='Quantile-Quantile Plot of Data',
