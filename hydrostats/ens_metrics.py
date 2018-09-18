@@ -14,7 +14,8 @@ from numba import jit, prange
 import warnings
 
 __all__ = ["ens_me", "ens_mae", "ens_mse", "ens_rmse", "ens_pearson_r", "crps_hersbach",
-           "crps_kernel", "ens_crps", "ens_brier", "auroc"]
+           "crps_kernel", "ens_crps", "ens_brier", "auroc", "skill_score"]
+
 
 # TODO: Should there be an error instead of a warning if the observed or forecast values are all 0?
 
@@ -178,7 +179,7 @@ def ens_mse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     fcst_ens_mean = np.mean(fcst_ens, axis=1)
 
     error = fcst_ens_mean - obs
-    return np.mean(error**2)
+    return np.mean(error ** 2)
 
 
 def ens_rmse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
@@ -231,7 +232,7 @@ def ens_rmse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     fcst_ens_mean = np.mean(fcst_ens, axis=1)
 
     error = fcst_ens_mean - obs
-    return np.sqrt(np.mean(error**2))
+    return np.sqrt(np.mean(error ** 2))
 
 
 def ens_pearson_r(obs, fcst_ens, remove_neg=False, remove_zero=False):
@@ -402,7 +403,7 @@ def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False):
 
 
 @jit("f8[:](f8[:,:], f8[:], i4, i4, f8[:], f8[:], f8[:], f8[:], f8)",
-        nopython=True, parallel=True)
+     nopython=True, parallel=True)
 def numba_crps(ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps, adj):
     for i in prange(rows):
         the_obs = obs[i]
@@ -756,7 +757,7 @@ def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
         # of members
         crps[i] = (1. / m * t1[i]) - (1. / (2 * (m ** 2)) * t2[i])  # kernel representation of crps
         crps_adj[i] = (1. / m * t1[i]) - (
-                    1. / (2 * m * (m - 1)) * t2[i])  # kernel representation of adjusted crps
+                1. / (2 * m * (m - 1)) * t2[i])  # kernel representation of adjusted crps
 
     # Calculate mean crps
     crps_mean = crps.mean()
@@ -856,7 +857,7 @@ def ens_brier(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bi
         fcst_ens_bin = (fcst_ens > threshold).astype(np.int)
     else:
         raise RuntimeError(" You must either supply fcst_ens, obs, and threshold or you must "
-                              "supply fcst_ens_bin and obs_bin.")
+                           "supply fcst_ens_bin and obs_bin.")
 
     # Treat missing data and warn users of columns being removed
     obs_bin, fcst_ens_bin = treat_data(obs_bin, fcst_ens_bin, remove_neg=False,
@@ -958,21 +959,22 @@ def auroc(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bin=No
       https://CRAN.R-project.org/package=SpecsVerification
 
     """
-    if obs_bin is not None and fcst_ens_bin is not None:
+    if obs_bin is not None and fcst_ens_bin is not None and fcst_ens is None and obs is None and threshold is None:
         pass
-    elif fcst_ens is not None and obs is not None and threshold is not None:
+    elif fcst_ens is not None and obs is not None and threshold is not None and obs_bin is None and \
+            fcst_ens_bin is None:
         # Convert the observed data and forecast data to binary data.
         obs_bin = (obs > threshold).astype(np.int)
         fcst_ens_bin = (fcst_ens > threshold).astype(np.int)
     else:
         raise RuntimeError(" You must either supply fcst_ens, obs, and threshold or you must "
-                              "supply fcst_ens_bin and obs_bin.")
+                           "supply fcst_ens_bin and obs_bin.")
 
     obs_bin, fcst_ens_bin = treat_data(obs_bin, fcst_ens_bin, remove_neg=False, remove_zero=False)
 
     if np.all(fcst_ens_bin == 0) or np.all(fcst_ens_bin == 1) or np.all(obs_bin == 0) or np.all(obs_bin == 1):
         raise RuntimeError("Both arrays need at least one event and one non-event, otherwise, "
-                              "division by zero will occur!")
+                           "division by zero will occur!")
 
     ens_forecast_means = np.mean(fcst_ens_bin, axis=1)
 
@@ -1031,6 +1033,147 @@ def auroc_numba(fcst, obs):
     return np.array([theta, sd_auc])
 
 
+def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_nan_inf=False):
+    """Calculate the skill score of the given function.
+
+    Parameters
+    ----------
+
+    scores: ndarray
+        The verification scores, or the mean of the verification scores in an ndarray (length 1).
+
+    bench_scores: float or ndarray
+        The reference or benchmark verification scores, or the mean of the benchmark scores in an ndarray (length 1).
+
+    perf_score: int or float
+        The perfect score of the score, typically 1 or 0.
+
+    eff_sample_size: float
+        The effective sample size of the data to be used when estimating the sampling uncertainty. Default is None,
+        which will set the eff_sample_size to the length of scores.
+
+    remove_nan_inf: bool
+        If True, removes NaN and Inf values in the scores if they exist, pairwise. If False (default), the function
+        will raise an exception.
+
+    Returns
+    -------
+    dict
+        Dictionary containing: {"skillScore": Float, the skill score, "standardDeviation": Float, the estimated standard
+        deviation of the skill score}
+
+    References
+    ----------
+    - Stefan Siegert (2017). SpecsVerification: Forecast Verification Routines for Ensemble Forecasts of Weather and
+      Climate. R package version 0.5-2. https://CRAN.R-project.org/package=SpecsVerification
+
+    Examples
+    --------
+
+
+    """
+    # Check data
+    assert type(scores) == np.ndarray, "The scores must be a numpy ndarray type."
+    assert type(bench_scores) == np.ndarray, "The benchmark scores must be a numpy ndarray type."
+    assert scores.size == bench_scores.size, 'The scores and benchmark scores are not the same length'
+    assert np.isfinite(perf_score), 'The perfect score is not finite.'
+    if eff_sample_size is not None:
+        assert eff_sample_size > 0 and np.isfinite(eff_sample_size), 'The effective sample size must be finite and ' \
+                                                                     'greater than 0.'
+
+    # Making a copy to avoid altering original scores
+    scores_copy = np.copy(scores)
+    bench_scores_copy = np.copy(bench_scores)
+
+    # Removing NaN and Inf if requested
+    if remove_nan_inf:
+
+        all_treatment_array = np.ones(scores_copy.size, dtype=bool)
+
+        if np.any(np.isnan(scores_copy)) or np.any(np.isnan(bench_scores_copy)):
+            nan_indices_fcst = ~np.isnan(scores_copy)
+            nan_indices_obs = ~np.isnan(bench_scores_copy)
+            all_nan_indices = np.logical_and(nan_indices_fcst, nan_indices_obs)
+            all_treatment_array = np.logical_and(all_treatment_array, all_nan_indices)
+
+            warnings.warn("Row(s) {} contained NaN values and the row(s) have been "
+                          "removed for the calculation (Rows are zero indexed).".format(np.where(~all_nan_indices)[0]),
+                          UserWarning)
+
+        if np.any(np.isinf(scores_copy)) or np.any(np.isinf(bench_scores_copy)):
+            inf_indices_fcst = ~(np.isinf(scores_copy))
+            inf_indices_obs = ~np.isinf(bench_scores_copy)
+            all_inf_indices = np.logical_and(inf_indices_fcst, inf_indices_obs)
+            all_treatment_array = np.logical_and(all_treatment_array, all_inf_indices)
+
+            warnings.warn(
+                "Row(s) {} contained Inf or -Inf values and the row(s) have been removed for the calculation (Rows "
+                "are zero indexed).".format(np.where(~all_inf_indices)[0]),
+                UserWarning
+            )
+
+        scores_copy = scores_copy[all_treatment_array]
+        bench_scores_copy = bench_scores_copy[all_treatment_array]
+
+    else:  # If User didn't want to remove NaN and Inf
+        if np.any(np.isnan(scores_copy)) or np.any(np.isnan(bench_scores_copy)):
+            nan_indices_fcst = ~np.isnan(scores_copy)
+            nan_indices_obs = ~np.isnan(bench_scores_copy)
+            all_nan_indices = np.logical_and(nan_indices_fcst, nan_indices_obs)
+
+            raise RuntimeError("Row(s) {} contained NaN values "
+                               "(Rows are zero indexed).".format(np.where(~all_nan_indices)[0]))
+
+        if np.any(np.isinf(scores_copy)) or np.any(np.isinf(bench_scores_copy)):
+            inf_indices_fcst = ~(np.isinf(scores_copy))
+            inf_indices_obs = ~np.isinf(bench_scores_copy)
+            all_inf_indices = np.logical_and(inf_indices_fcst, inf_indices_obs)
+
+            raise RuntimeError("Row(s) {} contained Inf or -Inf values "
+                               "(Rows are zero indexed).".format(np.where(~all_inf_indices)[0]))
+
+    # Handle effective sample size
+    if eff_sample_size is None:
+        eff_sample_size = scores.size
+
+    # calculate mean scores, shift by score.perf
+    score = np.mean(scores_copy) - perf_score
+    bench_score = np.mean(bench_scores_copy) - perf_score
+
+    # calculate skill score
+    skillscore = 1 - score / bench_score
+
+    # calculate auxiliary quantities
+    var_score = np.var(scores_copy, ddof=1)
+    var_bench_score = np.var(bench_scores_copy, ddof=1)
+    cov_score = np.cov(scores_copy, bench_scores_copy)[0, 1]
+
+    # Calculate skill score standard deviation by error propagation
+    def sqrt_na(z):
+        if z < 0:
+            z = np.nan
+
+        return np.sqrt(z)
+
+    sqrt_na_val = sqrt_na(
+        var_score / bench_score ** 2 + var_bench_score * score ** 2 / bench_score ** 4 - 2 * cov_score *
+        score / bench_score ** 3
+    )
+
+    skillscore_sigma = (1 / np.sqrt(eff_sample_size)) * sqrt_na_val
+
+    # Set skillscore_sigma to NaN if not finite
+    if not np.isfinite(skillscore_sigma):
+        skillscore_sigma = np.nan
+
+    return_dict = {
+        'skillScore': skillscore,
+        'standardDeviation': skillscore_sigma
+    }
+
+    return return_dict
+
+
 def treat_data(obs, fcst_ens, remove_zero, remove_neg):
     assert obs.ndim == 1, "obs is not a 1D numpy array."
     assert fcst_ens.ndim == 2, "fcst_ens is not a 2D numpy array."
@@ -1040,7 +1183,7 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
     # Give user warning, but let run, if eith obs or fcst are all zeros
     if obs.sum() == 0 or fcst_ens.sum() == 0:
         warnings.warn("All zero values in either 'obs' or 'fcst', "
-                      "function might run, but check if data OK!")
+                      "function might run, but check if data OK.")
 
     all_treatment_array = np.ones(obs.size, dtype=bool)
 
@@ -1075,6 +1218,7 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
                           "removed (zero indexed).".format(np.where(~all_zero_indices)[0]))
 
     # Treat negative data in obs and fcst_ens, rows in fcst_ens or obs that contain negative values
+    warnings.filterwarnings("ignore")  # Ignore Runtime warnings for comparison
     if remove_neg:
         if (obs < 0).any() or (fcst_ens < 0).any():
             neg_indices_fcst = ~(np.any(fcst_ens < 0, axis=1))
@@ -1082,8 +1226,11 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
             all_neg_indices = np.logical_and(neg_indices_fcst, neg_indices_obs)
             all_treatment_array = np.logical_and(all_treatment_array, all_neg_indices)
 
+            warnings.filterwarnings("always")  # Turn warnings back on
+
             warnings.warn("Row(s) {} contained negative values and the row(s) have been "
                           "removed (zero indexed).".format(np.where(~all_neg_indices)[0]))
+
     obs = obs[all_treatment_array]
     fcst_ens = fcst_ens[all_treatment_array, :]
 
@@ -1091,4 +1238,15 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
 
 
 if __name__ == "__main__":
-    pass
+    import numpy as np
+    import pandas as pd
+
+    ens_df = pd.read_csv('/home/wade/Documents/Test_data_skill_score/ens.csv', index_col=0)
+    obs_df = pd.read_csv('/home/wade/Documents/Test_data_skill_score/obs.csv', index_col=0)
+    ens = ens_df.values
+    obs = obs_df.values
+    obs = obs.flatten()
+
+    print(np.cov(ens_crps(obs, ens)['crps'], ens_crps(obs, ens[:, 0:2])['crps']))
+    print(skill_score(ens_crps(obs, ens)['crps'], ens_crps(obs, ens[:, 0:2])['crps'], perf_score=0))
+
