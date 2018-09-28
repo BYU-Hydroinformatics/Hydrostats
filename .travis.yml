@@ -19,7 +19,7 @@ install:
 
 script:
   - cd hydrostats/tests
-  - python run tests.py
+  - python tests.py
   - coverage run tests.py
 
 after_success:
