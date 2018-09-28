@@ -8,7 +8,7 @@ python:
   - 3.6
 
 install:
-  - pip install numpy -- upgrade
+  - pip install numpy
   - pip install numba
   - pip install pandas
   - pip install matplotlib
