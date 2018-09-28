@@ -711,14 +711,4 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
 
 
 if __name__ == "__main__":
-    sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    merged_df = merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
-
-    daily_average(merged_df).to_csv('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/daily_average.csv')
-    daily_std_dev(merged_df).to_csv('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/daily_std_dev.csv')
-    daily_std_error(merged_df).to_csv('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/daily_std_error.csv')
-    monthly_average(merged_df).to_csv('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/monthly_average.csv')
-    monthly_std_dev(merged_df).to_csv('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/monthly_std_dev.csv')
-    monthly_std_error(merged_df).to_csv('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/monthly_std_error.csv')
-
+    pass
