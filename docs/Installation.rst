@@ -22,16 +22,15 @@ by running the following commands in the terminal:
 
 .. code-block:: shell
 
-   sudo apt install nano # If you have not already installed it
-   vi ~/.matplotlib/matplotlibrc # Create a file called matplotlibrc
+   touch ~/.matplotlib/matplotlibrc  # Create a file called matplotlibrc
 
-Add the following code to the file you created (hit i to insert text in vi editor):
+Add the following snippet of text to the file you created:
 
 .. code-block:: shell
 
-   backend: TkAgg
+   backend: TkAgg  # or whatever backend you would like to use
 
-Then close the text document with esc, :wq.
+Then save and close the document.
 
 For more information about backends, read here_
 

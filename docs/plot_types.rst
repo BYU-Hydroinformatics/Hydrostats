@@ -1,7 +1,7 @@
 .. _plot_types:
 
-List of Plot Types
-==================
+List of Plot File Types
+=======================
 
 These are all of different file types that the matplotlib plots created with Hydrostats can be
 saved as. Note that some of these types will require you to switch the backend (Read here_ for
