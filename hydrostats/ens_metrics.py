@@ -1230,6 +1230,10 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
 
             warnings.warn("Row(s) {} contained negative values and the row(s) have been "
                           "removed (zero indexed).".format(np.where(~all_neg_indices)[0]))
+        else:
+            warnings.filterwarnings("always")  # Turn warnings back on
+    else:
+        warnings.filterwarnings("always")  # Turn warnings back on
 
     obs = obs[all_treatment_array]
     fcst_ens = fcst_ens[all_treatment_array, :]
