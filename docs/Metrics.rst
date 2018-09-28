@@ -1,5 +1,5 @@
-Metrics of Hydrological Skill
-=============================
+Metrics of Hydrological Skill (hydrostats.metrics)
+==================================================
 
 The metrics in Hydrostats are available through the HydroErr package. Below is information regarding the package and
 links to the documentation for the metrics in the package.

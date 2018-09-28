@@ -11,8 +11,6 @@ from hydrostats.metrics import function_list, metric_abbr
 from HydroErr.HydroErr import treat_values
 import numpy as np
 import matplotlib.pyplot as plt
-from sympy import symbols, S
-from sympy.printing import latex
 import calendar
 
 __all__ = ['plot', 'hist', 'scatter', 'qqplot']
@@ -555,12 +553,10 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
         y_new = f(x_new)
 
         # Formatting the best fit equation to be able to display in latex
-        x = symbols("x")
-        poly = sum(S("{:6.4f}".format(v)) * x ** i for i, v in enumerate(p[::-1]))
-        eq_latex = latex(poly)
+        equation = "{} x + {}".format(np.round(p[0], 4), np.round(p[1], 4))
 
         # Plotting the best fit line with the equation as a legend in latex
-        plt.plot(x_new, y_new, 'k', label="${}$".format(eq_latex))
+        plt.plot(x_new, y_new, 'k', label="${}$".format(equation))
 
     if line45 or best_fit:
         plt.legend(fontsize=12)
@@ -744,75 +740,4 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
 
 
 if __name__ == "__main__":
-    # pass
-    import hydrostats.data as hd
-
-    sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/' \
-               r'magdalena-calamar_interim_data.csv'
-    glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/' \
-                 r'magdalena-calamar_ECMWF_data.csv'
-
-    merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['SFPT', 'GLOFAS'])
-    seasonal_df = hd.seasonal_period(merged_df, ['04-01', '07-31'], time_range=['1986-01-01', '1992-12-31'])
-    daily_avg_df = hd.daily_average(merged_data=merged_df)
-    daily_std_error = hd.daily_std_error(merged_data=merged_df)
-
-    sim_array = merged_df.iloc[:, 0].values
-    obs_array = merged_df.iloc[:, 1].values
-
-    # plot(merged_data_df=merged_df,
-    #      title='Hydrograph of Entire Time Series',
-    #      linestyles=['r-', 'k-'],
-    #      legend=('SFPT', 'GLOFAS'),
-    #      labels=['Datetime', 'Streamflow (cfs)'],
-    #      metrics=['ME', 'NSE', 'SA'],
-    #      grid=True)
-    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/plot_full1.png')
-    #
-    # plot(merged_data_df=daily_avg_df,
-    #      title='Daily Average Streamflow (Standard Error)',
-    #      legend=('SFPT', 'GLOFAS'),
-    #      x_season=True,
-    #      labels=['Datetime', 'Streamflow (csm)'],
-    #      linestyles=['r-', 'k-'],
-    #      fig_size=(14, 8),
-    #      ebars=daily_std_error,
-    #      ecolor=('r', 'k'),
-    #      tight_xlim=True
-    #      )
-    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/plot_seasonal.png')
-
-    # hist(merged_data_df=merged_df,
-    #      num_bins=100,
-    #      title='Histogram of Streamflows',
-    #      legend=('SFPT', 'GLOFAS'),
-    #      labels=('Bins', 'Frequency'),
-    #      grid=True)
-    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/hist1.png')
-    #
-    # hist(merged_data_df=merged_df,
-    #      num_bins=100,
-    #      title='Histogram of Streamflows',
-    #      labels=('Bins', 'Frequency'),
-    #      grid=True,
-    #      z_norm=True,
-    #      legend=None,
-    #      prob_dens=True)
-    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/hist_znorm.png')
-
-    # scatter(merged_data_df=merged_df, grid=True, title='Scatter Plot (Normal Scale)',
-    #         labels=('SFPT', 'GLOFAS'), best_fit=True)
-    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/scatter.png')
-    #
-    # scatter(sim_array=sim_array, obs_array=obs_array, grid=True, title='Scatter Plot (Log-Log Scale)',
-    #         labels=('SFPT', 'GLOFAS'), line45=True, metrics=['ME', 'KGE (2012)'], log_scale=True)
-    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/Comparison_Files/scatterlog.png')
-
-    # qqplot(merged_data_df=merged_df, title='Quantile-Quantile Plot of Data',
-    #        xlabel='SFPT Data Quantiles', ylabel='GLOFAS Data Quantiles', legend=True,
-    #        figsize=(8, 6))
-    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/baseline_images/plot_tests/qqplot.png')
-    #
-    # qqplot(sim_array=sim_array, obs_array=obs_array, title='Quantile-Quantile Plot of Data',
-    #        xlabel='SFPT Data Quantiles', ylabel='GLOFAS Data Quantiles', figsize=(8, 6))
-    # plt.savefig('/home/wade/GitHub/Hydrostats/hydrostats/tests/baseline_images/plot_tests/qqplot2.png')
+    pass

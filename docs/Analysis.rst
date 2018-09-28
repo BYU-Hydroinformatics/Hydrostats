@@ -1,4 +1,4 @@
-Analysis
-========
+Analysis (hydrostats.analyze)
+=============================
 
 .. automodapi:: hydrostats.analyze

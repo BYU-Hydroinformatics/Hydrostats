@@ -686,6 +686,36 @@ class EnsMetricsTests(unittest.TestCase):
 
         self.assertTrue(np.isclose(expected_value, test_value))
 
+        expected_value_bad_data = em.ens_mae(obs=self.observed_array[8:], fcst_ens=self.ensemble_array[8:, :])
+        test_value_bad_data = em.ens_mae(obs=self.observed_array_bad_data, fcst_ens=self.ensemble_array_bad_data,
+                                         remove_zero=True, remove_neg=True)
+
+        self.assertTrue(np.isclose(expected_value_bad_data, test_value_bad_data))
+
+    def test_ens_mse(self):
+        expected_value = 910.5648405687582
+        test_value = em.ens_mse(obs=self.observed_array, fcst_ens=self.ensemble_array)
+
+        self.assertTrue(np.isclose(expected_value, test_value))
+
+        expected_value_bad_data = em.ens_mse(obs=self.observed_array[8:], fcst_ens=self.ensemble_array[8:, :])
+        test_value_bad_data = em.ens_mse(obs=self.observed_array_bad_data, fcst_ens=self.ensemble_array_bad_data,
+                                         remove_zero=True, remove_neg=True)
+
+        self.assertTrue(np.isclose(expected_value_bad_data, test_value_bad_data))
+
+    def test_ens_rmse(self):
+        expected_value = 30.17556694693172
+        test_value = em.ens_rmse(obs=self.observed_array, fcst_ens=self.ensemble_array)
+
+        self.assertTrue(np.isclose(expected_value, test_value))
+
+        expected_value_bad_data = em.ens_rmse(obs=self.observed_array[8:], fcst_ens=self.ensemble_array[8:, :])
+        test_value_bad_data = em.ens_rmse(obs=self.observed_array_bad_data, fcst_ens=self.ensemble_array_bad_data,
+                                          remove_zero=True, remove_neg=True)
+
+        self.assertTrue(np.isclose(expected_value_bad_data, test_value_bad_data))
+
     def tearDown(self):
         np.random.seed(seed=None)
 

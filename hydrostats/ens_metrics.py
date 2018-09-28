@@ -1238,15 +1238,4 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
 
 
 if __name__ == "__main__":
-    import numpy as np
-    import pandas as pd
-
-    ens_df = pd.read_csv('/home/wade/Documents/Test_data_skill_score/ens.csv', index_col=0)
-    obs_df = pd.read_csv('/home/wade/Documents/Test_data_skill_score/obs.csv', index_col=0)
-    ens = ens_df.values
-    obs = obs_df.values
-    obs = obs.flatten()
-
-    print(np.cov(ens_crps(obs, ens)['crps'], ens_crps(obs, ens[:, 0:2])['crps']))
-    print(skill_score(ens_crps(obs, ens)['crps'], ens_crps(obs, ens[:, 0:2])['crps'], perf_score=0))
-
+    pass
