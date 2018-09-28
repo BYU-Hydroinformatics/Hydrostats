@@ -16,6 +16,7 @@ install:
   - pip install openpyxl
   - pip install HydroErr
   - pip install codecov
+  - pip install coverage
 
 script:
   - cd hydrostats/tests
