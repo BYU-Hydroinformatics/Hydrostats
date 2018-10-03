@@ -3,8 +3,8 @@
 from setuptools import setup
 import os
 
-with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
-    README = readme.read()
+with open('README.md') as f:
+    README = f.read()
 
 setup(
     name='hydrostats',
@@ -13,6 +13,7 @@ setup(
     description='Tools for use in comparison studies, specifically for use in the field '
                 'of hydrology',
     long_description=README,
+    long_description_content_type='text/markdown',
     author='Wade Roberts',
     author_email='waderoberts123@gmail.com',
     url='https://github.com/waderoberts123/hydrostats',
