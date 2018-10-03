@@ -26,7 +26,7 @@ setup(
     license='MIT',
     install_requires=[
         'numpy >= 1.14.2',
-        'numba >= 0.37.0',
+        'numba == 0.39.0',
         'pandas >= 0.22.0',
         'matplotlib >= 2.2.0',
         'scipy >= 1.0.0',
