@@ -1242,18 +1242,4 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
 
 
 if __name__ == "__main__":
-    # Generate random data as an example
-    np.random.seed(6543934)
-    ens_array = (np.random.rand(15, 52) + 1) * 100  # Matrix 15 x 52, range [0, 100)
-    obs_array = (np.random.rand(15) + 1) * 100  # 1D matrix of length 15, range [0, 100)
-
-    # Compute crps metric values
-    crps_forecast = ens_crps(obs_array, ens_array)['crps']  # Only store the scores in our variable
-
-    # Compute example benchmark forecast scores
-    crps_benchmark = ens_crps(obs_array, ens_array[:, 1:3])['crps']  # Only use first two ensembles as a benchmark
-
-    # Compute the skill score
-    skill_score = skill_score(scores=crps_forecast, bench_scores=crps_benchmark, perf_score=0)
-    print(skill_score)
-
+    pass
