@@ -21,7 +21,7 @@ import pandas as pd
 try:
     from io import BytesIO
 except ImportError:
-    from BytesIO import BytesIO
+    from BytesIO import BytesIO  # For python 2.7 compatibility
 
 
 # TODO: Finish tests on ens_metrics, data, and visual
@@ -41,7 +41,6 @@ class MetricsTests(unittest.TestCase):
 
     def test_list_of_metrics(self):
         pass
-
 
     def tearDown(self):
         del self.sim
@@ -196,7 +195,7 @@ class VisualTests(unittest.TestCase):
                    r'magdalena-calamar_interim_data.csv'
         glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/' \
                      r'magdalena-calamar_ECMWF_data.csv'
-        self.merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['SFPT', 'GLOFAS'])
+        self.merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
 
     def test_plot_full1(self):
         # Creating Test Image
@@ -293,6 +292,7 @@ class VisualTests(unittest.TestCase):
 
     def test_hist_znorm(self):
         # Creating test image array
+        # noinspection PyTypeChecker
         hv.hist(merged_data_df=self.merged_df,
                 num_bins=100,
                 title='Histogram of Streamflows',

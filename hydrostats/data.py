@@ -9,14 +9,14 @@ daily and monthly summary statistics, and get seasonal periods of a time series.
 from __future__ import division
 import pandas as pd
 from numpy import inf, nan
-from math import modf
 
 __all__ = ['merge_data', 'daily_average', 'daily_std_error', 'daily_std_dev', 'monthly_average',
            'monthly_std_error', 'monthly_std_dev', 'remove_nan_df', 'seasonal_period']
 
 
 def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpolate=None,
-               column_names=['Simulated', 'Observed'], simulated_tz=None, observed_tz=None, interp_type='pchip'):
+               column_names=('Simulated', 'Observed'), simulated_tz=None, observed_tz=None, interp_type='pchip',
+               return_tz="Etc/UTC"):
     """Merges two dataframes or csv files, depending on the input.
 
     Parameters
@@ -61,9 +61,13 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
         Available types are found at
         http://pandas.pydata.org/pandas-docs/version/0.16.2/generated/pandas.DataFrame.interpolate.html
 
+    return_tz: str
+        What timezone the merged dataframe's index should be returned as. Default is 'Etc/UTC', which is recommended
+        for simplicity.
+
     Notes
     -----
-    The only acceptable time deltas in the data are 15min, 30min, 45min, and any number of hours or
+    The only acceptable time frequencies in the data are 15min, 30min, 45min, and any number of hours or
     days in between.
 
     There are three scenarios to consider when merging your data:
@@ -91,7 +95,7 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
 
     >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
     >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['Streamflow Prediction Tool', 'GLOFAS'])
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
 
     """
     # Reading the data into dataframes if from file
@@ -133,29 +137,25 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
 
     elif simulated_tz is not None and observed_tz is not None and interpolate is None:
 
-        raise RuntimeError("You must specify whether to interpolate the 'simulated' or 'observed' data.")
+        raise RuntimeError("You must specify with the interpolate parameter whether to interpolate the 'simulated' "
+                           "or 'observed' data.")
 
     elif simulated_tz is None and observed_tz is None and interpolate is None:
         # Scenario 1
 
-        # Merging and joining the two dataframes
+        # Merging and joining the two DataFrames
         return pd.DataFrame.join(sim_df, obs_df).dropna()
 
     elif simulated_tz is None and observed_tz is None and interpolate is not None:
         # Scenario 2
 
         if interpolate == 'simulated':
-            simulated_index_interpolate = pd.date_range(sim_df.index[0], sim_df.index[-1],
-                                                        freq='15min', tz=simulated_tz)
-            # Reindexing and interpolating the dataframe to match the observed data
-            sim_df = sim_df.reindex(simulated_index_interpolate).interpolate(interp_type)
+            # Resampling and interpolating the observed data to match
+            sim_df = sim_df.resample("15min").interpolate(interp_type)
 
         elif interpolate == 'observed':
-            # Making a new index of quarter hour time spacing for interpolation
-            observed_index_interpolate = pd.date_range(obs_df.index[0], obs_df.index[-1],
-                                                       freq='15min', tz=observed_tz)
-            # Reindexing and interpolating the dataframe to match the observed data
-            obs_df = obs_df.reindex(observed_index_interpolate).interpolate(interp_type)
+            # Resampling and interpolating the observed data to match
+            obs_df = obs_df.resample("15min").interpolate(interp_type)
 
         else:
             raise RuntimeError("The interpolate argument must be either 'simulated' or 'observed'.")
@@ -163,45 +163,19 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
         return pd.DataFrame.join(sim_df, obs_df).dropna()
 
     elif simulated_tz is not None and observed_tz is not None and interpolate is not None:
-        """Scenario 3"""
+        # Scenario 3
 
-        # Finding the frequency of the timeseries for observed and simulated
-        td_simulated = (sim_df.index[1] - sim_df.index[0]).days + \
-                       ((sim_df.index[1] - sim_df.index[0]).seconds / 3600) / 24
-        td_observed = (obs_df.index[1] - obs_df.index[0]).days + \
-                      ((obs_df.index[1] - obs_df.index[0]).seconds / 3600) / 24
-
-        # converting the time delta to a tuple with days and hours
-        td_tuple_simulated = modf(td_simulated)
-        td_tuple_observed = modf(td_observed)
-
-        # Converting the time delta to a frequency
-        freq_simulated = str(td_tuple_simulated[1]) + 'D' + str(td_tuple_simulated[0] * 24) + 'H'
-        freq_observed = str(td_tuple_observed[1]) + 'D' + str(td_tuple_observed[0] * 24) + 'H'
-
-        # Making a new index for reindexing the time series
-        simulated_df_new_index = pd.date_range(sim_df.index[0], sim_df.index[-1],
-                                               freq=freq_simulated, tz=simulated_tz)
-        observed_df_new_index = pd.date_range(obs_df.index[0], obs_df.index[-1],
-                                              freq=freq_observed, tz=observed_tz)
-
-        # Changing the time series index to reflect the changes in the timezones
-        sim_df.index = simulated_df_new_index
-        obs_df.index = observed_df_new_index
+        # Convert the DateTime Index of both DataFrames to User Specified Timezones
+        sim_df.index = sim_df.index.tz_localize(simulated_tz).tz_convert(return_tz)
+        obs_df.index = obs_df.index.tz_localize(observed_tz).tz_convert(return_tz)
 
         if interpolate == 'simulated':
-            # Making a new index of quarter hour time spacing for interpolation
-            simulated_index_interpolate = pd.date_range(sim_df.index[0], sim_df.index[-1],
-                                                        freq='15min', tz=simulated_tz)
-            # Reindexing and interpolating the dataframe to match the observed data
-            sim_df = sim_df.reindex(simulated_index_interpolate).interpolate(interp_type)
+            # Resampling the simulated DataFrame to 15 minute time increments, then interpolating
+            sim_df = sim_df.resample("15min").interpolate(interp_type)
 
         elif interpolate == 'observed':
-            # Making a new index of quarter hour time spacing for interpolation
-            observed_index_interpolate = pd.date_range(obs_df.index[0], obs_df.index[-1],
-                                                       freq='15min', tz=observed_tz)
-            # Reindexing and interpolating the dataframe to match the observed data
-            obs_df = obs_df.reindex(observed_index_interpolate).interpolate(interp_type)
+            # Resampling the observed DataFrame to 15 minute time increments, then interpolating
+            obs_df = obs_df.resample("15min").interpolate(interp_type)
 
         else:
             raise RuntimeError("You must specify the interpolation argument to be either 'simulated' or "
@@ -236,7 +210,7 @@ def daily_average(merged_data):
 
     >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
     >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['Streamflow Prediction Tool', 'GLOFAS'])
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
 
     >>> hd.daily_average(merged_df)
            Streamflow Prediction Tool       GLOFAS
@@ -288,7 +262,7 @@ def daily_std_error(merged_data):
 
     >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
     >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['Streamflow Prediction Tool', 'GLOFAS'])
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
 
     >>> hd.daily_std_error(merged_df)
            Streamflow Prediction Tool      GLOFAS
@@ -341,7 +315,7 @@ def daily_std_dev(merged_data):
 
     >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
     >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['Streamflow Prediction Tool', 'GLOFAS'])
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
 
     >>> hd.daily_std_dev(merged_df)
            Streamflow Prediction Tool       GLOFAS
@@ -394,7 +368,7 @@ def monthly_average(merged_data):
 
     >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
     >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['Streamflow Prediction Tool', 'GLOFAS'])
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
 
     >>> hd.monthly_average(merged_df)
             Streamflow Prediction Tool        GLOFAS
@@ -443,7 +417,7 @@ def monthly_std_error(merged_data):
 
     >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
     >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['Streamflow Prediction Tool', 'GLOFAS'])
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
 
     >>> hd.monthly_std_error(merged_df)
         Streamflow Prediction Tool      GLOFAS
@@ -492,7 +466,7 @@ def monthly_std_dev(merged_data):
 
     >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
     >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['Streamflow Prediction Tool', 'GLOFAS'])
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
 
     >>> hd.monthly_std_dev(merged_df)
         Streamflow Prediction Tool       GLOFAS
