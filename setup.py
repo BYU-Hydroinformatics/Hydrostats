@@ -30,7 +30,6 @@ setup(
         'pandas >= 0.22.0',
         'matplotlib >= 2.2.0',
         'scipy >= 1.0.0',
-        'openpyxl >= 2.5.2',
-        'HydroErr'
+        'HydroErr >= 1.22'
     ],
 )
