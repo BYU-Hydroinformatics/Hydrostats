@@ -19,8 +19,8 @@ __all__ = ['make_table', 'time_lag']
 
 def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_j=1,
                nse_mod_j=1, h6_mhe_k=1, h6_ahe_k=1, h6_rmshe_k=1, d1_p_obs_bar_p=None,
-               lm_x_obs_bar_p=None, replace_nan=None, replace_inf=None, remove_neg=False,
-               remove_zero=False, to_csv=None, to_excel=None, location=None):
+               lm_x_obs_bar_p=None, kge2009_s=(1, 1, 1), kge2012_s=(1, 1, 1), replace_nan=None, replace_inf=None,
+               remove_neg=False, remove_zero=False, location=None):
     """Create a table of user selected metrics with optional seasonal analysis.
 
     Creates a table with metrics as specified by the user. Seasonal periods can also be
@@ -68,6 +68,14 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
     lm_x_obs_bar_p: float, optional
         Parameter for the Lagate McCabe Efficiency Index (lm_index).
 
+    kge2009_s: tuple of floats
+        A tuple of floats of length three signifying how to weight the three values used in the Kling Gupta (2009)
+        metric.
+
+    kge2012_s: tuple of floats
+        A tuple of floats of length three signifying how to weight the three values used in the Kling Gupta (2012)
+        metric.
+
     replace_nan: float, optional
         If given, indicates which value to replace NaN values with in the two arrays. If None, when
         a NaN value is found at the i-th position in the observed OR simulated array, the i-th value
@@ -87,13 +95,6 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
         If true, when a zero value is found at the i-th position in the observed OR simulated
         array, the i-th value of the observed AND simulated array are removed before the
         computation.
-
-    to_csv: str
-        Filepath and file name of the csv that is written (e.g. r'/path/to/output_dir/file.csv').
-
-    to_excel: str
-        Filepath and file name of the excel workbook that is written
-        (e.g. r'/path/to/output_dir/file.xlsx').
 
     location: str
         The name of the location that will be created as a column in the table that is created.
@@ -125,7 +126,7 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
     >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
     >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
     >>> # Merging the data
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['SFPT', 'GLOFAS'])
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
 
     Here we make a table and print the results
 
@@ -179,7 +180,7 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
                                             obs_array=obs_array, mase_m=mase_m, dmod_j=dmod_j,
                                             nse_mod_j=nse_mod_j, h6_mhe_k=h6_mhe_k,
                                             h6_ahe_k=h6_ahe_k, h6_rmshe_k=h6_rmshe_k,
-                                            d1_p_obs_bar_p=d1_p_obs_bar_p,
+                                            d1_p_obs_bar_p=d1_p_obs_bar_p, kge2009_s=kge2009_s, kge2012_s=kge2012_s,
                                             lm_x_obs_bar_p=lm_x_obs_bar_p, replace_nan=replace_nan,
                                             replace_inf=replace_inf, remove_neg=remove_neg,
                                             remove_zero=remove_zero)
@@ -198,7 +199,8 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
                 metrics=metrics, sim_array=sim_array, abbr=True, obs_array=obs_array,
                 mase_m=mase_m, dmod_j=dmod_j, nse_mod_j=nse_mod_j, h6_mhe_k=h6_mhe_k,
                 h6_ahe_k=h6_ahe_k, h6_rmshe_k=h6_rmshe_k, d1_p_obs_bar_p=d1_p_obs_bar_p,
-                lm_x_obs_bar_p=lm_x_obs_bar_p, replace_nan=replace_nan, replace_inf=replace_inf,
+                lm_x_obs_bar_p=lm_x_obs_bar_p, kge2009_s=kge2009_s, kge2012_s=kge2012_s,
+                replace_nan=replace_nan, replace_inf=replace_inf,
                 remove_neg=remove_neg, remove_zero=remove_zero
             )
 
@@ -218,8 +220,7 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
              h6_ahe_k=1, h6_rmshe_k=1, d1_p_obs_bar_p=None, lm_x_obs_bar_p=None, replace_nan=None,
              replace_inf=None, remove_neg=False, remove_zero=False, plot=False,
              plot_title='Metric Values as Different Lags', ylabel='Metric Value',
-             xlabel='Number of Lags', save_fig=None, figsize=(10, 6), station=None, to_csv=None,
-             to_excel=None):
+             xlabel='Number of Lags', save_fig=None, figsize=(10, 6), station=None):
     """Check metric values between simulated and observed data at different time lags.
 
     Runs a time lag analysis to check for potential timing errors in the simulated data. Can also create a
@@ -341,7 +342,7 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
     >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
     >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
     >>> # Merging the data
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=['SFPT', 'GLOFAS'])
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
 
     There are two dataframes that are returned as part of the analysis.
 
@@ -442,15 +443,6 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
     if station is not None:
         col_values = [station for i in range(summary_df.shape[0])]
         summary_df.insert(loc=0, column='Station', value=np.array(col_values))
-
-    # Writing the table to CSV or XLSX if user requested it
-    if to_csv is None and to_excel is not None:
-        summary_df.to_excel(to_excel, index_label='Metric')
-    elif to_csv is not None and to_excel is None:
-        summary_df.to_csv(to_csv, index_label='Metric')
-    elif to_csv is not None and to_excel is not None:
-        summary_df.to_excel(to_excel, index_label='Metric')
-        summary_df.to_csv(to_csv, index_label='Metric')
 
     return lag_df, summary_df
 

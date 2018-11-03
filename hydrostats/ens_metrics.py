@@ -1232,22 +1232,25 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
                           "removed (zero indexed).".format(np.where(~all_zero_indices)[0]))
 
     # Treat negative data in obs and fcst_ens, rows in fcst_ens or obs that contain negative values
-    warnings.filterwarnings("ignore")  # Ignore Runtime warnings for comparison
+    # warnings.filterwarnings("ignore")  # Ignore Runtime warnings for comparison
     if remove_neg:
-        if (obs < 0).any() or (fcst_ens < 0).any():
-            neg_indices_fcst = ~(np.any(fcst_ens < 0, axis=1))
-            neg_indices_obs = ~(obs < 0)
+        with np.errstate(invalid='ignore'):
+            obs_bool = obs < 0
+            fcst_ens_bool = fcst_ens < 0
+        if obs_bool.any() or fcst_ens_bool.any():
+            neg_indices_fcst = ~(np.any(fcst_ens_bool, axis=1))
+            neg_indices_obs = ~obs_bool
             all_neg_indices = np.logical_and(neg_indices_fcst, neg_indices_obs)
             all_treatment_array = np.logical_and(all_treatment_array, all_neg_indices)
 
-            warnings.filterwarnings("always")  # Turn warnings back on
+            # warnings.filterwarnings("always")  # Turn warnings back on
 
             warnings.warn("Row(s) {} contained negative values and the row(s) have been "
                           "removed (zero indexed).".format(np.where(~all_neg_indices)[0]))
         else:
-            warnings.filterwarnings("always")  # Turn warnings back on
+            pass  # warnings.filterwarnings("always")  # Turn warnings back on
     else:
-        warnings.filterwarnings("always")  # Turn warnings back on
+        pass  # warnings.filterwarnings("always")  # Turn warnings back on
 
     obs = obs[all_treatment_array]
     fcst_ens = fcst_ens[all_treatment_array, :]
