@@ -11,9 +11,9 @@ from HydroErr.HydroErr import metric_names, metric_abbr, function_list
 
 def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=1,
                     nse_mod_j=1, h6_mhe_k=1, h6_ahe_k=1, h6_rmshe_k=1, d1_p_obs_bar_p=None,
-                    lm_x_obs_bar_p=None, replace_nan=None, replace_inf=None, remove_neg=False,
+                    lm_x_obs_bar_p=None, kge2009_s=(1, 1, 1), kge2012_s=(1, 1, 1), replace_nan=None, replace_inf=None, remove_neg=False,
                     remove_zero=False):
-    if len(sim_array.shape) != 1 or len(obs_array.shape) != 1:
+    if sim_array.ndim != 1 or obs_array.ndim != 1:
         raise RuntimeError("One or both of the ndarrays are not 1 dimensional.")
     if sim_array.size != obs_array.size:
         raise RuntimeError("The two ndarrays are not the same size.")
@@ -65,6 +65,16 @@ def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=
                                          replace_nan=replace_nan, replace_inf=replace_inf,
                                          remove_neg=remove_neg, remove_zero=remove_zero
                                          ))
+            elif metric == 'Kling-Gupta Efficiency (2009)':
+                metrics_list.append(kge_2009(sim_array, obs_array, s=kge2009_s,
+                                             replace_nan=replace_nan, replace_inf=replace_inf,
+                                             remove_neg=remove_neg, remove_zero=remove_zero
+                                             ))
+            elif metric == 'Kling-Gupta Efficiency (2012)':
+                metrics_list.append(kge_2012(sim_array, obs_array, s=kge2012_s,
+                                             replace_nan=replace_nan, replace_inf=replace_inf,
+                                             remove_neg=remove_neg, remove_zero=remove_zero
+                                             ))
             else:
                 index = metric_names.index(metric)
                 metric_func = function_list[index]
@@ -121,6 +131,16 @@ def list_of_metrics(metrics, sim_array, obs_array, abbr=False, mase_m=1, dmod_j=
                                          replace_nan=replace_nan, replace_inf=replace_inf,
                                          remove_neg=remove_neg, remove_zero=remove_zero
                                          ))
+            elif metric == 'KGE (2009)':
+                metrics_list.append(kge_2009(sim_array, obs_array, s=kge2009_s,
+                                             replace_nan=replace_nan, replace_inf=replace_inf,
+                                             remove_neg=remove_neg, remove_zero=remove_zero
+                                             ))
+            elif metric == 'KGE (2012)':
+                metrics_list.append(kge_2012(sim_array, obs_array, s=kge2012_s,
+                                             replace_nan=replace_nan, replace_inf=replace_inf,
+                                             remove_neg=remove_neg, remove_zero=remove_zero
+                                             ))
             else:
                 index = metric_abbr.index(metric)
                 metric_func = function_list[index]

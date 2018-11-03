@@ -1039,11 +1039,11 @@ def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_n
     Parameters
     ----------
 
-    scores: ndarray
-        The verification scores, or the mean of the verification scores in an ndarray (length 1).
+    scores: float or ndarray
+        The verification scores, or the mean of the verification scores in an ndarray (float).
 
     bench_scores: float or ndarray
-        The reference or benchmark verification scores, or the mean of the benchmark scores in an ndarray (length 1).
+        The reference or benchmark verification scores, or the mean of the benchmark scores (float).
 
     perf_score: int or float
         The perfect score of the score, typically 1 or 0.
@@ -1060,7 +1060,8 @@ def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_n
     -------
     dict
         Dictionary containing: {"skillScore": Float, the skill score, "standardDeviation": Float, the estimated standard
-        deviation of the skill score}
+        deviation of the skill score} If the scores and bench scores given were floats, the standard deviation will be
+        NaN.
 
     References
     ----------
@@ -1070,101 +1071,114 @@ def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_n
     Examples
     --------
 
-
     """
     # Check data
-    assert type(scores) == np.ndarray, "The scores must be a numpy ndarray type."
-    assert type(bench_scores) == np.ndarray, "The benchmark scores must be a numpy ndarray type."
-    assert scores.size == bench_scores.size, 'The scores and benchmark scores are not the same length'
     assert np.isfinite(perf_score), 'The perfect score is not finite.'
     if eff_sample_size is not None:
         assert eff_sample_size > 0 and np.isfinite(eff_sample_size), 'The effective sample size must be finite and ' \
                                                                      'greater than 0.'
 
-    # Making a copy to avoid altering original scores
-    scores_copy = np.copy(scores)
-    bench_scores_copy = np.copy(bench_scores)
+    if isinstance(scores, np.ndarray) and isinstance(bench_scores, np.ndarray):
+        assert scores.size == bench_scores.size, 'The scores and benchmark scores are not the same length'
 
-    # Removing NaN and Inf if requested
-    if remove_nan_inf:
+        # Making a copy to avoid altering original scores
+        scores_copy = np.copy(scores)
+        bench_scores_copy = np.copy(bench_scores)
 
-        all_treatment_array = np.ones(scores_copy.size, dtype=bool)
+        # Removing NaN and Inf if requested
+        if remove_nan_inf:
 
-        if np.any(np.isnan(scores_copy)) or np.any(np.isnan(bench_scores_copy)):
-            nan_indices_fcst = ~np.isnan(scores_copy)
-            nan_indices_obs = ~np.isnan(bench_scores_copy)
-            all_nan_indices = np.logical_and(nan_indices_fcst, nan_indices_obs)
-            all_treatment_array = np.logical_and(all_treatment_array, all_nan_indices)
+            all_treatment_array = np.ones(scores_copy.size, dtype=bool)
 
-            warnings.warn("Row(s) {} contained NaN values and the row(s) have been "
-                          "removed for the calculation (Rows are zero indexed).".format(np.where(~all_nan_indices)[0]),
-                          UserWarning)
+            if np.any(np.isnan(scores_copy)) or np.any(np.isnan(bench_scores_copy)):
+                nan_indices_fcst = ~np.isnan(scores_copy)
+                nan_indices_obs = ~np.isnan(bench_scores_copy)
+                all_nan_indices = np.logical_and(nan_indices_fcst, nan_indices_obs)
+                all_treatment_array = np.logical_and(all_treatment_array, all_nan_indices)
 
-        if np.any(np.isinf(scores_copy)) or np.any(np.isinf(bench_scores_copy)):
-            inf_indices_fcst = ~(np.isinf(scores_copy))
-            inf_indices_obs = ~np.isinf(bench_scores_copy)
-            all_inf_indices = np.logical_and(inf_indices_fcst, inf_indices_obs)
-            all_treatment_array = np.logical_and(all_treatment_array, all_inf_indices)
+                warnings.warn("Row(s) {} contained NaN values and the row(s) have been "
+                              "removed for the calculation (Rows are zero indexed).".format(np.where(~all_nan_indices)[0]),
+                              UserWarning)
 
-            warnings.warn(
-                "Row(s) {} contained Inf or -Inf values and the row(s) have been removed for the calculation (Rows "
-                "are zero indexed).".format(np.where(~all_inf_indices)[0]),
-                UserWarning
-            )
+            if np.any(np.isinf(scores_copy)) or np.any(np.isinf(bench_scores_copy)):
+                inf_indices_fcst = ~(np.isinf(scores_copy))
+                inf_indices_obs = ~np.isinf(bench_scores_copy)
+                all_inf_indices = np.logical_and(inf_indices_fcst, inf_indices_obs)
+                all_treatment_array = np.logical_and(all_treatment_array, all_inf_indices)
 
-        scores_copy = scores_copy[all_treatment_array]
-        bench_scores_copy = bench_scores_copy[all_treatment_array]
+                warnings.warn(
+                    "Row(s) {} contained Inf or -Inf values and the row(s) have been removed for the calculation (Rows "
+                    "are zero indexed).".format(np.where(~all_inf_indices)[0]),
+                    UserWarning
+                )
 
-    else:  # If User didn't want to remove NaN and Inf
-        if np.any(np.isnan(scores_copy)) or np.any(np.isnan(bench_scores_copy)):
-            nan_indices_fcst = ~np.isnan(scores_copy)
-            nan_indices_obs = ~np.isnan(bench_scores_copy)
-            all_nan_indices = np.logical_and(nan_indices_fcst, nan_indices_obs)
+            scores_copy = scores_copy[all_treatment_array]
+            bench_scores_copy = bench_scores_copy[all_treatment_array]
 
-            raise RuntimeError("Row(s) {} contained NaN values "
-                               "(Rows are zero indexed).".format(np.where(~all_nan_indices)[0]))
+        else:  # If User didn't want to remove NaN and Inf
+            if np.any(np.isnan(scores_copy)) or np.any(np.isnan(bench_scores_copy)):
+                nan_indices_fcst = ~np.isnan(scores_copy)
+                nan_indices_obs = ~np.isnan(bench_scores_copy)
+                all_nan_indices = np.logical_and(nan_indices_fcst, nan_indices_obs)
 
-        if np.any(np.isinf(scores_copy)) or np.any(np.isinf(bench_scores_copy)):
-            inf_indices_fcst = ~(np.isinf(scores_copy))
-            inf_indices_obs = ~np.isinf(bench_scores_copy)
-            all_inf_indices = np.logical_and(inf_indices_fcst, inf_indices_obs)
+                raise RuntimeError("Row(s) {} contained NaN values "
+                                   "(Rows are zero indexed).".format(np.where(~all_nan_indices)[0]))
 
-            raise RuntimeError("Row(s) {} contained Inf or -Inf values "
-                               "(Rows are zero indexed).".format(np.where(~all_inf_indices)[0]))
+            if np.any(np.isinf(scores_copy)) or np.any(np.isinf(bench_scores_copy)):
+                inf_indices_fcst = ~(np.isinf(scores_copy))
+                inf_indices_obs = ~np.isinf(bench_scores_copy)
+                all_inf_indices = np.logical_and(inf_indices_fcst, inf_indices_obs)
 
-    # Handle effective sample size
-    if eff_sample_size is None:
-        eff_sample_size = scores.size
+                raise RuntimeError("Row(s) {} contained Inf or -Inf values "
+                                   "(Rows are zero indexed).".format(np.where(~all_inf_indices)[0]))
 
-    # calculate mean scores, shift by score.perf
-    score = np.mean(scores_copy) - perf_score
-    bench_score = np.mean(bench_scores_copy) - perf_score
+        # Handle effective sample size
+        if eff_sample_size is None:
+            eff_sample_size = scores.size
 
-    # calculate skill score
-    skillscore = 1 - score / bench_score
+        # calculate mean scores, shift by score.perf
+        score = np.mean(scores_copy) - perf_score
+        bench_score = np.mean(bench_scores_copy) - perf_score
 
-    # calculate auxiliary quantities
-    var_score = np.var(scores_copy, ddof=1)
-    var_bench_score = np.var(bench_scores_copy, ddof=1)
-    cov_score = np.cov(scores_copy, bench_scores_copy)[0, 1]
+        # calculate skill score
+        skillscore = 1 - score / bench_score
 
-    # Calculate skill score standard deviation by error propagation
-    def sqrt_na(z):
-        if z < 0:
-            z = np.nan
+        # calculate auxiliary quantities
+        var_score = np.var(scores_copy, ddof=1)
+        var_bench_score = np.var(bench_scores_copy, ddof=1)
+        cov_score = np.cov(scores_copy, bench_scores_copy)[0, 1]
 
-        return np.sqrt(z)
+        # Calculate skill score standard deviation by error propagation
+        def sqrt_na(z):
+            if z < 0:
+                z = np.nan
 
-    sqrt_na_val = sqrt_na(
-        var_score / bench_score ** 2 + var_bench_score * score ** 2 / bench_score ** 4 - 2 * cov_score *
-        score / bench_score ** 3
-    )
+            return np.sqrt(z)
 
-    skillscore_sigma = (1 / np.sqrt(eff_sample_size)) * sqrt_na_val
+        sqrt_na_val = sqrt_na(
+            var_score / bench_score ** 2 + var_bench_score * score ** 2 / bench_score ** 4 - 2 * cov_score *
+            score / bench_score ** 3
+        )
 
-    # Set skillscore_sigma to NaN if not finite
-    if not np.isfinite(skillscore_sigma):
+        skillscore_sigma = (1 / np.sqrt(eff_sample_size)) * sqrt_na_val
+
+        # Set skillscore_sigma to NaN if not finite
+        if not np.isfinite(skillscore_sigma):
+            skillscore_sigma = np.nan
+
+    elif isinstance(scores, float) and isinstance(bench_scores, float):
+
+        # shift mean scores by perfect score
+        score = scores - perf_score
+        bench_score = bench_scores - perf_score
+
+        # calculate skill score
+        skillscore = 1 - score / bench_score
+
         skillscore_sigma = np.nan
+
+    else:
+        raise RuntimeError("The scores and benchmark_scores must either both be ndarrays or both be floats.")
 
     return_dict = {
         'skillScore': skillscore,
@@ -1218,22 +1232,25 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
                           "removed (zero indexed).".format(np.where(~all_zero_indices)[0]))
 
     # Treat negative data in obs and fcst_ens, rows in fcst_ens or obs that contain negative values
-    warnings.filterwarnings("ignore")  # Ignore Runtime warnings for comparison
+    # warnings.filterwarnings("ignore")  # Ignore Runtime warnings for comparison
     if remove_neg:
-        if (obs < 0).any() or (fcst_ens < 0).any():
-            neg_indices_fcst = ~(np.any(fcst_ens < 0, axis=1))
-            neg_indices_obs = ~(obs < 0)
+        with np.errstate(invalid='ignore'):
+            obs_bool = obs < 0
+            fcst_ens_bool = fcst_ens < 0
+        if obs_bool.any() or fcst_ens_bool.any():
+            neg_indices_fcst = ~(np.any(fcst_ens_bool, axis=1))
+            neg_indices_obs = ~obs_bool
             all_neg_indices = np.logical_and(neg_indices_fcst, neg_indices_obs)
             all_treatment_array = np.logical_and(all_treatment_array, all_neg_indices)
 
-            warnings.filterwarnings("always")  # Turn warnings back on
+            # warnings.filterwarnings("always")  # Turn warnings back on
 
             warnings.warn("Row(s) {} contained negative values and the row(s) have been "
                           "removed (zero indexed).".format(np.where(~all_neg_indices)[0]))
         else:
-            warnings.filterwarnings("always")  # Turn warnings back on
+            pass  # warnings.filterwarnings("always")  # Turn warnings back on
     else:
-        warnings.filterwarnings("always")  # Turn warnings back on
+        pass  # warnings.filterwarnings("always")  # Turn warnings back on
 
     obs = obs[all_treatment_array]
     fcst_ens = fcst_ens[all_treatment_array, :]
@@ -1243,3 +1260,4 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
 
 if __name__ == "__main__":
     pass
+
