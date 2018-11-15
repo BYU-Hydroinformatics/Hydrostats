@@ -671,10 +671,10 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
     # Getting the seasonal period
     if start < end:
         merged_df_copy = merged_df_copy.loc[(merged_df_copy['placeholder'] >= start) &
-                                                (merged_df_copy['placeholder'] <= end)]
+                                            (merged_df_copy['placeholder'] <= end)]
     else:
         merged_df_copy = merged_df_copy.loc[(merged_df_copy['placeholder'] >= start) |
-                                                (merged_df_copy['placeholder'] <= end)]
+                                            (merged_df_copy['placeholder'] <= end)]
     # Dropping the placeholder
     merged_df_copy = merged_df_copy.drop(columns=['placeholder'])
 
@@ -682,6 +682,76 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
         return merged_df_copy.iloc[:, 0].values, merged_df_copy.iloc[:, 1].values
     else:
         return merged_df_copy
+
+
+def julian_to_gregorian(dataframe, frequency=None, inplace=False):
+    """
+    Converts the index of the merged dataframe from julian float values to gregorian datetime
+    values.
+
+    Parameters
+    ----------
+    dataframe: Pandas DataFrame
+        A DataFrame with an index of type float
+
+    frequency: string
+        Optional. Sometimes when converting from julian to gregorian there will be rounding errors
+        due to the inability of computers to store floats as perfect decimals. Providing the
+        frequency will automatically attempt to round the dates.
+
+    inplace: bool
+        Default False. If True, will modify the index of the dataframe in place rather than
+        creating a copy and returning the copy. Use when the time series are very long and making
+        a copy would take a large amount of memory
+
+    Returns
+    -------
+    Pandas DataFrame
+        A pandas DataFrame with gregorian index.
+
+    Examples
+    --------
+
+    >>> import pandas as pd
+    >>> import hydrostats.data as hd
+    >>> import numpy as np
+
+    >>> # The julian dates in an array
+    >>> julian_dates = np.array([2444239.5, 2444239.5416666665, 2444239.5833333335, 2444239.625,
+    >>>                          2444239.6666666665, 2444239.7083333335, 2444239.75,
+    >>>                          2444239.7916666665, 2444239.8333333335, 2444239.875])
+    >>> # Creating a test dataframe
+    >>> test_df = pd.DataFrame(data=np.random.rand(10, 2),  # Random data in the columns
+    >>>                        columns=("Simulated Data", "Observed Data"),
+    >>>                        index=julian_dates)
+    >>> test_df
+                      Simulated Data  Observed Data
+    2.444240e+06        0.764719       0.126610
+    2.444240e+06        0.372736       0.141392
+    2.444240e+06        0.008645       0.686477
+    2.444240e+06        0.656825       0.480444
+    2.444240e+06        0.555247       0.869409
+    2.444240e+06        0.643896       0.549590
+    2.444240e+06        0.242720       0.799617
+    2.444240e+06        0.432421       0.185760
+    2.444240e+06        0.694631       0.136986
+    2.444240e+06        0.700422       0.390415
+
+    >>> # Making a new df with gregorian index
+    >>> test_df_gregorian = hd.julian_to_gregorian(test_df)
+    >>> test_df_gregorian
+    """
+    # TODO: Add the inplace option and finish docs
+    # Copying to avoid modifying the original dataframe
+    return_df = dataframe.copy()
+
+    # Converting the dataframe index from julian to gregorian
+    return_df.index = pd.to_datetime(return_df.index, origin="julian", unit="D")
+
+    if frequency is not None:
+        return_df.index = return_df.index.round(frequency)
+
+    return return_df
 
 
 if __name__ == "__main__":
