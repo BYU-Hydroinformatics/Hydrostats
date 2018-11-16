@@ -10,13 +10,134 @@ from __future__ import division
 import pandas as pd
 from numpy import inf, nan
 
-__all__ = ['merge_data', 'daily_average', 'daily_std_error', 'daily_std_dev', 'monthly_average',
+__all__ = ['julian_to_gregorian', 'merge_data', 'daily_average', 'daily_std_error', 'daily_std_dev', 'monthly_average',
            'monthly_std_error', 'monthly_std_dev', 'remove_nan_df', 'seasonal_period']
+
+
+def julian_to_gregorian(dataframe, frequency=None, inplace=False):
+    """
+    Converts the index of the merged dataframe from julian float values to gregorian datetime
+    values.
+
+    Parameters
+    ----------
+    dataframe: Pandas DataFrame
+        A DataFrame with an index of type float
+
+    frequency: string
+        Optional. Sometimes when converting from julian to gregorian there will be rounding errors
+        due to the inability of computers to store floats as perfect decimals. Providing the
+        frequency will automatically attempt to round the dates. A list of all the frequencies pandas provides is found
+        here `here<http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases/>`_ Common frequencies
+        include daily ("D") and hourly ("H").
+
+    inplace: bool
+        Default False. If True, will modify the index of the dataframe in place rather than
+        creating a copy and returning the copy. Use when the time series are very long and making
+        a copy would take a large amount of memory
+
+    Returns
+    -------
+    Pandas DataFrame
+        A pandas DataFrame with gregorian index.
+
+    Examples
+    --------
+
+    >>> import pandas as pd
+    >>> import hydrostats.data as hd
+    >>> import numpy as np
+
+    >>> # The julian dates in an array
+    >>> julian_dates = np.array([2444239.5, 2444239.5416666665, 2444239.5833333335, 2444239.625,
+    >>>                          2444239.6666666665, 2444239.7083333335, 2444239.75,
+    >>>                          2444239.7916666665, 2444239.8333333335, 2444239.875])
+    >>> # Creating a test dataframe
+    >>> test_df = pd.DataFrame(data=np.random.rand(10, 2),  # Random data in the columns
+    >>>                        columns=("Simulated Data", "Observed Data"),
+    >>>                        index=julian_dates)
+    >>> test_df
+                  Simulated Data  Observed Data
+    2.444240e+06        0.764719       0.126610
+    2.444240e+06        0.372736       0.141392
+    2.444240e+06        0.008645       0.686477
+    2.444240e+06        0.656825       0.480444
+    2.444240e+06        0.555247       0.869409
+    2.444240e+06        0.643896       0.549590
+    2.444240e+06        0.242720       0.799617
+    2.444240e+06        0.432421       0.185760
+    2.444240e+06        0.694631       0.136986
+    2.444240e+06        0.700422       0.390415
+
+    >>> # Making a new df with gregorian index
+    >>> test_df_gregorian = hd.julian_to_gregorian(test_df)
+    >>> test_df_gregorian
+                              Simulated Data   Observed Data
+    1980-01-01 00:00:00.000000	    0.585454	    0.457238
+    1980-01-01 01:00:00.028800	    0.524764	    0.083464
+    1980-01-01 01:59:59.971200	    0.516821	    0.416683
+    1980-01-01 03:00:00.000000	    0.948483	    0.553874
+    1980-01-01 04:00:00.028800	    0.492280	    0.232901
+    1980-01-01 04:59:59.971200	    0.527967	    0.296395
+    1980-01-01 06:00:00.000000	    0.650018	    0.212802
+    1980-01-01 07:00:00.028800	    0.585592	    0.802971
+    1980-01-01 07:59:59.971200	    0.448243	    0.665814
+    1980-01-01 09:00:00.000000	    0.137395	    0.201721
+
+    >>> # Rounding can be applied due to floating point inaccuracy
+    >>> test_df_gregorian_rounded = julian_to_gregorian(test_df, frequency="H")  # Hourly Rounding Frequency
+    >>> test_df_gregorian_rounded
+                         Simulated Data  Observed Data
+    1980-01-01 00:00:00        0.309527       0.938991
+    1980-01-01 01:00:00        0.872284       0.497708
+    1980-01-01 02:00:00        0.168046       0.225845
+    1980-01-01 03:00:00        0.954494       0.275607
+    1980-01-01 04:00:00        0.875885       0.194380
+    1980-01-01 05:00:00        0.236849       0.992770
+    1980-01-01 06:00:00        0.639346       0.029808
+    1980-01-01 07:00:00        0.855828       0.903927
+    1980-01-01 08:00:00        0.638805       0.916124
+    1980-01-01 09:00:00        0.273430       0.443980
+
+    >>> # The DataFrame can also be modified in place, increasing efficiency with large time series
+    >>> julian_to_gregorian(test_df, inplace=True, frequency="H")
+    >>> test_df
+                         Simulated Data  Observed Data
+    1980-01-01 00:00:00        0.309527       0.938991
+    1980-01-01 01:00:00        0.872284       0.497708
+    1980-01-01 02:00:00        0.168046       0.225845
+    1980-01-01 03:00:00        0.954494       0.275607
+    1980-01-01 04:00:00        0.875885       0.194380
+    1980-01-01 05:00:00        0.236849       0.992770
+    1980-01-01 06:00:00        0.639346       0.029808
+    1980-01-01 07:00:00        0.855828       0.903927
+    1980-01-01 08:00:00        0.638805       0.916124
+    1980-01-01 09:00:00        0.273430       0.443980
+
+    """
+
+    if inplace:
+        dataframe.index = pd.to_datetime(dataframe.index, origin="julian", unit="D")
+
+        if frequency is not None:
+            dataframe.index = dataframe.index.round(frequency)
+
+    else:
+        # Copying to avoid modifying the original dataframe
+        return_df = dataframe.copy()
+
+        # Converting the dataframe index from julian to gregorian
+        return_df.index = pd.to_datetime(return_df.index, origin="julian", unit="D")
+
+        if frequency is not None:
+            return_df.index = return_df.index.round(frequency)
+
+        return return_df
 
 
 def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpolate=None,
                column_names=('Simulated', 'Observed'), simulated_tz=None, observed_tz=None, interp_type='pchip',
-               return_tz="Etc/UTC"):
+               return_tz="Etc/UTC", julian=False, julian_freq=None):
     """Merges two dataframes or csv files, depending on the input.
 
     Parameters
@@ -40,7 +161,7 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
         and the simulated data values in column 0.
 
     interpolate: str
-        Must be either 'observed' or 'simulated'. Specifies which dataset you would like to
+        Must be either 'observed' or 'simulated'. Specifies which data set you would like to
         interpolate if interpolation is needed to properly merge the data.
 
     column_names: tuple of str
@@ -64,6 +185,15 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
     return_tz: str
         What timezone the merged dataframe's index should be returned as. Default is 'Etc/UTC', which is recommended
         for simplicity.
+
+    julian: bool
+        If True, will parse the first column of the file to a datetime index from julian floating point time
+        representation, this is only valid when supplying the sim_fpath and obs_fpath parameters. Users supplying two
+        DataFrame objects must convert the index from Julian to Gregorian using the julian_to_gregorian function in this
+        module
+
+    julian_freq: str
+        A string representing the frequency of the julian dates so that they can be rounded. See examples for usage.
 
     Notes
     -----
@@ -101,42 +231,39 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
     # Reading the data into dataframes if from file
     if sim_fpath is not None and obs_fpath is not None:
         # Importing data into a data-frame
-        sim_df = pd.read_csv(sim_fpath, delimiter=",", header=None, names=[column_names[0]],
-                             index_col=0, infer_datetime_format=True, skiprows=1)
-        obs_df = pd.read_csv(obs_fpath, delimiter=",", header=None, names=[column_names[1]],
-                             index_col=0, infer_datetime_format=True, skiprows=1)
+        sim_df_copy = pd.read_csv(sim_fpath, delimiter=",", header=None, names=[column_names[0]],
+                                  index_col=0, infer_datetime_format=True, skiprows=1)
+        obs_df_copy = pd.read_csv(obs_fpath, delimiter=",", header=None, names=[column_names[1]],
+                                  index_col=0, infer_datetime_format=True, skiprows=1)
+
         # Converting the index to datetime type
-        obs_df.index = pd.to_datetime(obs_df.index, infer_datetime_format=True, errors='coerce')
-        sim_df.index = pd.to_datetime(sim_df.index, infer_datetime_format=True, errors='coerce')
+        if julian:
+            julian_to_gregorian(sim_df_copy, frequency=julian_freq, inplace=True)
+            julian_to_gregorian(obs_df_copy, frequency=julian_freq, inplace=True)
+        else:
+            sim_df_copy.index = pd.to_datetime(sim_df_copy.index, infer_datetime_format=True, errors='coerce')
+            obs_df_copy.index = pd.to_datetime(obs_df_copy.index, infer_datetime_format=True, errors='coerce')
 
     elif sim_df is not None and obs_df is not None:
-        # Overriding the column names to match the column name input
-        sim_df.columns = sim_df.columns.astype(str)
-        sim_df.columns.values[0] = column_names[0]
-        obs_df.columns = obs_df.columns.astype(str)
-        obs_df.columns.values[0] = column_names[1]
-
         # Checking to make sure that both dataframes have datetime indices if they are not read from file.
-        if sim_df.index.dtype == "datetime64[ns]" and obs_df.index.dtype == "datetime64[ns]":
-            pass
-        else:
-            obs_df.index = pd.to_datetime(obs_df.index, infer_datetime_format=True, errors='coerce')
-            sim_df.index = pd.to_datetime(sim_df.index, infer_datetime_format=True, errors='coerce')
+        if not isinstance(sim_df.index, pd.DatetimeIndex) and not isinstance(obs_df.index, pd.DatetimeIndex):
+            raise RuntimeError("Both the obs_df and the sim_df need to have a datetime index.")
+
+        # Copying the user supplied DataFrame objects
+        sim_df_copy = sim_df.copy()
+        obs_df_copy = obs_df.copy()
 
     else:
         raise RuntimeError('either sim_fpath and obs_fpath or sim_df and obs_df are required inputs.')
 
     # Checking to see if the necessary arguments in the function are fulfilled
     if simulated_tz is None and observed_tz is not None:
-
         raise RuntimeError('Either Both Timezones are required or neither')
 
     elif simulated_tz is not None and observed_tz is None:
-
         raise RuntimeError('Either Both Timezones are required or neither')
 
     elif simulated_tz is not None and observed_tz is not None and interpolate is None:
-
         raise RuntimeError("You must specify with the interpolate parameter whether to interpolate the 'simulated' "
                            "or 'observed' data.")
 
@@ -144,44 +271,55 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
         # Scenario 1
 
         # Merging and joining the two DataFrames
-        return pd.DataFrame.join(sim_df, obs_df).dropna()
+        merged_df = pd.DataFrame.join(sim_df_copy, obs_df_copy).dropna()
+        merged_df.columns = column_names
+
+        return merged_df
 
     elif simulated_tz is None and observed_tz is None and interpolate is not None:
         # Scenario 2
 
         if interpolate == 'simulated':
             # Resampling and interpolating the observed data to match
-            sim_df = sim_df.resample("15min").interpolate(interp_type)
+            sim_df_copy = sim_df_copy.resample("15min").interpolate(interp_type)
 
         elif interpolate == 'observed':
             # Resampling and interpolating the observed data to match
-            obs_df = obs_df.resample("15min").interpolate(interp_type)
+            obs_df_copy = obs_df_copy.resample("15min").interpolate(interp_type)
 
         else:
             raise RuntimeError("The interpolate argument must be either 'simulated' or 'observed'.")
 
-        return pd.DataFrame.join(sim_df, obs_df).dropna()
+        # Merging and joining the two DataFrames
+        merged_df = pd.DataFrame.join(sim_df_copy, obs_df_copy).dropna()
+        merged_df.columns = column_names
+
+        return merged_df
 
     elif simulated_tz is not None and observed_tz is not None and interpolate is not None:
         # Scenario 3
 
         # Convert the DateTime Index of both DataFrames to User Specified Timezones
-        sim_df.index = sim_df.index.tz_localize(simulated_tz).tz_convert(return_tz)
-        obs_df.index = obs_df.index.tz_localize(observed_tz).tz_convert(return_tz)
+        sim_df_copy.index = sim_df_copy.index.tz_localize(simulated_tz).tz_convert(return_tz)
+        obs_df_copy.index = obs_df_copy.index.tz_localize(observed_tz).tz_convert(return_tz)
 
         if interpolate == 'simulated':
             # Resampling the simulated DataFrame to 15 minute time increments, then interpolating
-            sim_df = sim_df.resample("15min").interpolate(interp_type)
+            sim_df_copy = sim_df_copy.resample("15min").interpolate(interp_type)
 
         elif interpolate == 'observed':
             # Resampling the observed DataFrame to 15 minute time increments, then interpolating
-            obs_df = obs_df.resample("15min").interpolate(interp_type)
+            obs_df_copy = obs_df_copy.resample("15min").interpolate(interp_type)
 
         else:
             raise RuntimeError("You must specify the interpolation argument to be either 'simulated' or "
                                "'observed'.")
 
-        return pd.DataFrame.join(sim_df, obs_df).dropna()
+        # Merging and joining the two DataFrames
+        merged_df = pd.DataFrame.join(sim_df_copy, obs_df_copy).dropna()
+        merged_df.columns = column_names
+
+        return merged_df
 
 
 def daily_average(merged_data):
@@ -684,75 +822,9 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
         return merged_df_copy
 
 
-def julian_to_gregorian(dataframe, frequency=None, inplace=False):
-    """
-    Converts the index of the merged dataframe from julian float values to gregorian datetime
-    values.
-
-    Parameters
-    ----------
-    dataframe: Pandas DataFrame
-        A DataFrame with an index of type float
-
-    frequency: string
-        Optional. Sometimes when converting from julian to gregorian there will be rounding errors
-        due to the inability of computers to store floats as perfect decimals. Providing the
-        frequency will automatically attempt to round the dates.
-
-    inplace: bool
-        Default False. If True, will modify the index of the dataframe in place rather than
-        creating a copy and returning the copy. Use when the time series are very long and making
-        a copy would take a large amount of memory
-
-    Returns
-    -------
-    Pandas DataFrame
-        A pandas DataFrame with gregorian index.
-
-    Examples
-    --------
-
-    >>> import pandas as pd
-    >>> import hydrostats.data as hd
-    >>> import numpy as np
-
-    >>> # The julian dates in an array
-    >>> julian_dates = np.array([2444239.5, 2444239.5416666665, 2444239.5833333335, 2444239.625,
-    >>>                          2444239.6666666665, 2444239.7083333335, 2444239.75,
-    >>>                          2444239.7916666665, 2444239.8333333335, 2444239.875])
-    >>> # Creating a test dataframe
-    >>> test_df = pd.DataFrame(data=np.random.rand(10, 2),  # Random data in the columns
-    >>>                        columns=("Simulated Data", "Observed Data"),
-    >>>                        index=julian_dates)
-    >>> test_df
-                      Simulated Data  Observed Data
-    2.444240e+06        0.764719       0.126610
-    2.444240e+06        0.372736       0.141392
-    2.444240e+06        0.008645       0.686477
-    2.444240e+06        0.656825       0.480444
-    2.444240e+06        0.555247       0.869409
-    2.444240e+06        0.643896       0.549590
-    2.444240e+06        0.242720       0.799617
-    2.444240e+06        0.432421       0.185760
-    2.444240e+06        0.694631       0.136986
-    2.444240e+06        0.700422       0.390415
-
-    >>> # Making a new df with gregorian index
-    >>> test_df_gregorian = hd.julian_to_gregorian(test_df)
-    >>> test_df_gregorian
-    """
-    # TODO: Add the inplace option and finish docs
-    # Copying to avoid modifying the original dataframe
-    return_df = dataframe.copy()
-
-    # Converting the dataframe index from julian to gregorian
-    return_df.index = pd.to_datetime(return_df.index, origin="julian", unit="D")
-
-    if frequency is not None:
-        return_df.index = return_df.index.round(frequency)
-
-    return return_df
-
-
 if __name__ == "__main__":
-    pass
+    # TODO: Finish testing on the merge_data function as well as the
+    merged_df = merge_data(sim_fpath="/home/wade/GitHub/Hydrostats/hydrostats/tests/Files_for_tests/Julian_Simulated.csv",
+                           obs_fpath="/home/wade/GitHub/Hydrostats/hydrostats/tests/Files_for_tests/Julian_Observed.csv",
+                           julian=True, julian_freq="H")
+    print(merged_df)
