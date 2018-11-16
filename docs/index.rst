@@ -4,10 +4,23 @@
 
 Welcome to hydrostats's documentation!
 ======================================
-Hydrostats is a library of tools and functions for users working with timeseries data. It has tools
-for preprocessing data, visualizing data, and for calculating error metrics on observed and
-predicted time series. It has over 60 error metrics, with many metrics specific to the field of
+Hydrostats is a library of tools and functions for users working with time series data, with some tools specific to the
+field of hydrology (hence **Hydro**\stats). All of the tools contained in Hydrostats are based on a few different python
+libraries including numpy, scipy, pandas, matplotlib, and numba. It is meant to provide a high-level interface for users
+to be able to perform common tasks regarding time series analysis.
+
+Hydrostats contains tools for for preprocessing data, visualizing data, calculating error metrics on observed and
+predicted time series, and forecast validation. It contains over 70 error metrics, with many metrics specific to the field of
 hydrology.
+
+.. TODO: Provide a link to the jupyter notebook for users to get an introduction
+
+.. image:: https://img.shields.io/badge/powered%20by-BYU%20HydroInformatics-blue.svg
+    :target: http://worldwater.byu.edu/
+.. image:: https://travis-ci.org/waderoberts123/Hydrostats.svg?branch=master
+    :target: https://travis-ci.org/waderoberts123/Hydrostats
+.. image:: https://codecov.io/gh/waderoberts123/Hydrostats/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/waderoberts123/Hydrostats
 
 Contents
 ========
