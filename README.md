@@ -17,6 +17,6 @@ Hydrostats provides:
 Publications:
 - Roberts, W., Williams, G., Jackson, E., Nelson, E., Ames, D., 2018. Hydrostats: A Python Package for Characterizing Errors between Observed and Predicted Time Series. Hydrology 5(4) 66, doi:10.3390/hydrology5040066
 
-We would request that if you use this paper that you please cite it. The official site can be found at https://doi.org/10.3390/hydrology5040066, and BibTeX, EndNote, and RIS files can be downloaded on the menu to the left.
+We would request that if you use this package that you please cite the above paper. The journal paper is open access and can be found at https://doi.org/10.3390/hydrology5040066. BibTeX, EndNote, and RIS files can be downloaded at the journal site.
 
 [![Powered by BYU Hydroinformatics](https://img.shields.io/badge/powered%20by-BYU%20HydroInformatics-blue.svg)](http://worldwater.byu.edu/)
