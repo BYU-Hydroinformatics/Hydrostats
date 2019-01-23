@@ -13,14 +13,14 @@ Hydrostats contains tools for for preprocessing data, visualizing data, calculat
 predicted time series, and forecast validation. It contains over 70 error metrics, with many metrics specific to the field of
 hydrology.
 
-.. TODO: Provide a link to the jupyter notebook for users to get an introduction
+See the examples folder in this repository for a Jupyter notebook highlighting some of the main features of Hydrostats.
 
 .. image:: https://img.shields.io/badge/powered%20by-BYU%20HydroInformatics-blue.svg
     :target: http://worldwater.byu.edu/
-.. image:: https://travis-ci.org/waderoberts123/Hydrostats.svg?branch=master
-    :target: https://travis-ci.org/waderoberts123/Hydrostats
-.. image:: https://codecov.io/gh/waderoberts123/Hydrostats/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/waderoberts123/Hydrostats
+.. image:: https://travis-ci.org/BYU-Hydroinformatics/Hydrostats.svg?branch=master
+    :target: https://travis-ci.org/BYU-Hydroinformatics/Hydrostats
+.. image:: https://codecov.io/gh/BYU-Hydroinformatics/Hydrostats/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/BYU-Hydroinformatics/Hydrostats
 
 Contents
 ========
@@ -38,6 +38,7 @@ Contents
    plot_types
    timezones
    matplotlib_linestyles
+   change_log
 
 Indices and tables
 ==================

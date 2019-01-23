@@ -1,4 +1,3 @@
-# python 3.6
 # -*- coding: utf-8 -*-
 """
 
@@ -28,7 +27,7 @@ def julian_to_gregorian(dataframe, frequency=None, inplace=False):
         Optional. Sometimes when converting from julian to gregorian there will be rounding errors
         due to the inability of computers to store floats as perfect decimals. Providing the
         frequency will automatically attempt to round the dates. A list of all the frequencies pandas provides is found
-        here `here<http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases/>`_ Common frequencies
+        `here <http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases/>`_. Common frequencies
         include daily ("D") and hourly ("H").
 
     inplace: bool
@@ -823,8 +822,4 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
 
 
 if __name__ == "__main__":
-    # TODO: Finish testing on the merge_data function as well as the
-    merged_df = merge_data(sim_fpath="/home/wade/GitHub/Hydrostats/hydrostats/tests/Files_for_tests/Julian_Simulated.csv",
-                           obs_fpath="/home/wade/GitHub/Hydrostats/hydrostats/tests/Files_for_tests/Julian_Observed.csv",
-                           julian=True, julian_freq="H")
-    print(merged_df)
+    pass
