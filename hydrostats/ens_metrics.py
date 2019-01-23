@@ -17,9 +17,6 @@ __all__ = ["ens_me", "ens_mae", "ens_mse", "ens_rmse", "ens_pearson_r", "crps_he
            "crps_kernel", "ens_crps", "ens_brier", "auroc", "skill_score"]
 
 
-# TODO: Should there be an error instead of a warning if the observed or forecast values are all 0?
-
-
 def ens_me(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     """Calculate the mean error between observed values and the ensemble mean.
 
