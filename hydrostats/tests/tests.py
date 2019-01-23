@@ -472,6 +472,37 @@ class DataTests(unittest.TestCase):
                      r'magdalena-calamar_ECMWF_data.csv'
         self.merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
 
+    def test_julian_to_gregorian(self):
+        julian_dates = np.array([2444239.5, 2444239.5416666665, 2444239.5833333335, 2444239.625,
+                                 2444239.6666666665, 2444239.7083333335, 2444239.75,
+                                 2444239.7916666665, 2444239.8333333335, 2444239.875])
+        expected_dates = pd.date_range('1980-01-01', periods=10, freq='H')
+
+        test_df = pd.DataFrame(data=np.random.rand(10, 2),  # Random data in the columns
+                               columns=("Simulated Data", "Observed Data"),
+                               index=julian_dates)
+
+        test_df_gregorian = hd.julian_to_gregorian(test_df, frequency="H")
+        self.assertTrue(np.all(test_df_gregorian.index == expected_dates))
+
+        hd.julian_to_gregorian(test_df, inplace=True, frequency="H")  # Change index values inplace
+        self.assertTrue(np.all(test_df.index == expected_dates))
+
+    def test_merge_data(self):
+
+        # TODO: Finish these tests
+
+        random_data = np.random.rand(31)
+
+        # Scenario 1 from docs
+        sim_dates = pd.date_range('1980-01-01', '1980-01-31')
+        obs_dates = pd.date_range('1980-01-15', '1980-02-16')
+        expected_merged_dates = pd.date_range('1980-01-15', '1980-01-31')
+
+        # sim_df =
+
+        # merged_df_1 = hd.merge_data(sim_df=)
+
     def test_daily_average(self):
         original_df = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'daily_average.csv'), index_col=0)
         original_df.index = original_df.index.astype(np.object)
