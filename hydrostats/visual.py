@@ -12,6 +12,8 @@ from HydroErr.HydroErr import treat_values
 import numpy as np
 import matplotlib.pyplot as plt
 import calendar
+from pandas.plotting import register_matplotlib_converters
+register_matplotlib_converters()
 
 __all__ = ['plot', 'hist', 'scatter', 'qqplot']
 
