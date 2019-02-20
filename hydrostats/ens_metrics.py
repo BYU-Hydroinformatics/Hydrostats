@@ -285,7 +285,7 @@ def ens_pearson_r(obs, fcst_ens, remove_neg=False, remove_zero=False):
     return pearson_r(fcst_ens_mean, obs)
 
 
-def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False):
+def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False, llvm=True):
     """Calculate the ensemble-adjusted Continuous Ranked Probability Score (CRPS)
 
     Parameters
@@ -312,6 +312,11 @@ def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False):
         If true, when a zero value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
+
+    llvm: bool
+        If true (default) the crps will be calculated using the numba module, which uses the LLVM compiler
+        infrastructure for enhanced performance. If this is not wanted, then set it to false for a pure python
+        implementation.
 
     Returns
     -------
@@ -386,9 +391,14 @@ def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False):
     sad_obs = np.zeros(rows)
     crps = np.zeros(rows)
 
-    crps = numba_crps(
-        fcst_ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps, np.float64(adj)
-    )
+    if llvm:
+        crps = numba_crps(
+            fcst_ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps, np.float64(adj)
+        )
+    else:
+        crps = python_crps(
+            fcst_ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps, np.float64(adj)
+        )
 
     # Calc mean crps as simple mean across crps[i]
     crps_mean = np.mean(crps)
@@ -399,9 +409,43 @@ def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False):
     return output
 
 
-@jit("f8[:](f8[:,:], f8[:], i4, i4, f8[:], f8[:], f8[:], f8[:], f8)",
-     nopython=True, parallel=True)
+@jit(nopython=True, parallel=True)
 def numba_crps(ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps, adj):
+    for i in prange(rows):
+        the_obs = obs[i]
+        the_ens = ens[i, :]
+        the_ens = np.sort(the_ens)
+        sum_xj = 0.
+        sum_jxj = 0.
+
+        j = 0
+        while j < cols:
+            sad_obs[i] += np.abs(the_ens[j] - the_obs)
+            sum_xj += the_ens[j]
+            sum_jxj += (j + 1) * the_ens[j]
+            j += 1
+
+        sad_ens_half[i] = 2.0 * sum_jxj - (col_len_array[i] + 1) * sum_xj
+
+    if np.isnan(adj):
+        for i in range(rows):
+            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / \
+                      (col_len_array[i] * col_len_array[i])
+    elif adj > 1:
+        for i in range(rows):
+            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / \
+                      (col_len_array[i] * (col_len_array[i] - 1)) * (1 - 1 / adj)
+    elif adj == 1:
+        for i in range(rows):
+            crps[i] = sad_obs[i] / col_len_array[i]
+    else:
+        for i in range(rows):
+            crps[i] = np.nan
+
+    return crps
+
+
+def python_crps(ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps, adj):
     for i in prange(rows):
         the_obs = obs[i]
         the_ens = ens[i, :]
@@ -1256,5 +1300,24 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
 
 
 if __name__ == "__main__":
-    pass
+    import time
+    ensemble_array = np.load(r"tests/Files_for_tests/ensemble_array.npz")["arr_0.npy"]
+    observed_array = np.load(r"tests/Files_for_tests/observed_array.npz")["arr_0.npy"]
 
+    ens_bin = np.load(r"tests/Files_for_tests/ens_bin.npz")["arr_0.npy"]
+    obs_bin = np.load(r"tests/Files_for_tests/obs_bin.npz")["arr_0.npy"]
+
+    ensemble_array_bad_data = np.load(r"tests/Files_for_tests/ensemble_array_bad_data.npz")["arr_0.npy"]
+    observed_array_bad_data = np.load(r"tests/Files_for_tests/observed_array_bad_data.npz")["arr_0.npy"]
+
+    start = time.time()
+    crps_numba = ens_crps(obs=observed_array, fcst_ens=ensemble_array)["crpsMean"]
+    print(time.time() - start)
+
+    start = time.time()
+    crps_python = ens_crps(obs=observed_array, fcst_ens=ensemble_array, llvm=False)["crpsMean"]
+    print(time.time() - start)
+
+    assert np.isclose(crps_numba, crps_python)
+
+    print(crps_numba, crps_python)
