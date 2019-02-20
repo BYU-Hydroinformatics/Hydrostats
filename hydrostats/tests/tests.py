@@ -272,11 +272,6 @@ class AnalysisTests(unittest.TestCase):
 class VisualTests(unittest.TestCase):
 
     def setUp(self):
-        # sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/' \
-        #            r'magdalena-calamar_interim_data.csv'
-        # glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/' \
-        #              r'magdalena-calamar_ECMWF_data.csv'
-        # self.merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
         self.merged_df = pd.read_pickle("Files_for_tests/merged_df.pkl")
 
     def test_plot_full1(self):
