@@ -120,26 +120,14 @@ class MetricsTests(unittest.TestCase):
 class EnsMetricsTests(unittest.TestCase):
 
     def setUp(self):
-        np.random.seed(3849590438)
+        self.ensemble_array = np.load(r"Files_for_tests/ensemble_array.npz")["arr_0.npy"]
+        self.observed_array = np.load(r"Files_for_tests/observed_array.npz")["arr_0.npy"]
 
-        self.ensemble_array = (np.random.rand(100, 52) + 1) * 100  # 52 Ensembles
-        self.observed_array = (np.random.rand(100) + 1) * 100
+        self.ens_bin = np.load(r"Files_for_tests/ens_bin.npz")["arr_0.npy"]
+        self.obs_bin = np.load(r"Files_for_tests/obs_bin.npz")["arr_0.npy"]
 
-        self.ens_bin = (self.ensemble_array > 75).astype(np.int)
-        self.obs_bin = (self.observed_array > 75).astype(np.int)
-
-        self.ensemble_array_bad_data = np.copy(self.ensemble_array)
-        self.observed_array_bad_data = np.copy(self.observed_array)
-
-        # Creating bad data to test functions
-        self.ensemble_array_bad_data[0, 0] = np.nan
-        self.observed_array_bad_data[1] = np.nan
-        self.ensemble_array_bad_data[2, 0] = np.inf
-        self.observed_array_bad_data[3] = np.inf
-        self.ensemble_array_bad_data[4, 0] = 0.
-        self.observed_array_bad_data[5] = 0.
-        self.ensemble_array_bad_data[6, 0] = -0.1
-        self.observed_array_bad_data[7] = -0.1
+        self.ensemble_array_bad_data = np.load(r"Files_for_tests/ensemble_array_bad_data.npz")["arr_0.npy"]
+        self.observed_array_bad_data = np.load(r"Files_for_tests/observed_array_bad_data.npz")["arr_0.npy"]
 
     def test_ens_me(self):
         expected_value = -2.5217349574908074
@@ -189,22 +177,45 @@ class EnsMetricsTests(unittest.TestCase):
 
         self.assertTrue(np.isclose(expected_value_bad_data, test_value_bad_data))
 
+    def test_ens_crps(self):
+        expected_crps = np.load("Files_for_tests/expected_crps.npy")
+        expected_mean_crps = 17.735507981502494
+
+        crps_numba = em.ens_crps(obs=self.observed_array, fcst_ens=self.ensemble_array)["crps"]
+        crps_python = em.ens_crps(obs=self.observed_array, fcst_ens=self.ensemble_array, llvm=False)["crps"]
+
+        self.assertTrue(np.all(np.isclose(expected_crps, crps_numba)))
+        self.assertTrue(np.all(np.isclose(expected_crps, crps_python)))
+
+        crps_mean_numba = em.ens_crps(obs=self.observed_array, fcst_ens=self.ensemble_array)["crpsMean"]
+        crps_mean_python = em.ens_crps(obs=self.observed_array, fcst_ens=self.ensemble_array, llvm=False)["crpsMean"]
+
+        self.assertTrue(np.isclose(expected_mean_crps, crps_mean_numba))
+        self.assertTrue(np.isclose(expected_mean_crps, crps_mean_python))
+
+        # TODO: Finish this
+        # expected_value_bad_data = em.ens_rmse(obs=self.observed_array[8:], fcst_ens=self.ensemble_array[8:, :])
+        # test_value_bad_data = em.ens_rmse(obs=self.observed_array_bad_data, fcst_ens=self.ensemble_array_bad_data,
+        #                                   remove_zero=True, remove_neg=True)
+        #
+        # self.assertTrue(np.isclose(expected_value_bad_data, test_value_bad_data))
+
     def tearDown(self):
-        np.random.seed(seed=None)
+        del self.ensemble_array
+        del self.observed_array
+
+        del self.ens_bin
+        del self.obs_bin
+
+        del self.ensemble_array_bad_data
+        del self.observed_array_bad_data
 
 
 class AnalysisTests(unittest.TestCase):
 
     def setUp(self):
-        pd.options.display.max_columns = 100
-
-        # Defining the URLs of the datasets
-        sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena' \
-                   r'-calamar_interim_data.csv '
-        glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena' \
-                     r'-calamar_ECMWF_data.csv '
-        # Merging the data
-        self.merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
+        # Reading the merged data from pickle
+        self.merged_df = pd.read_pickle("Files_for_tests/merged_df.pkl")
 
     def test_make_table(self):
         my_metrics = ['MAE', 'r2', 'NSE', 'KGE (2012)']
@@ -255,17 +266,18 @@ class AnalysisTests(unittest.TestCase):
         self.assertIsNone(pd.testing.assert_frame_equal(summary_df, summary_df_original))
 
     def tearDown(self):
-        pass
+        del self.merged_df
 
 
 class VisualTests(unittest.TestCase):
 
     def setUp(self):
-        sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/' \
-                   r'magdalena-calamar_interim_data.csv'
-        glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/' \
-                     r'magdalena-calamar_ECMWF_data.csv'
-        self.merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
+        # sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/' \
+        #            r'magdalena-calamar_interim_data.csv'
+        # glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/' \
+        #              r'magdalena-calamar_ECMWF_data.csv'
+        # self.merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
+        self.merged_df = pd.read_pickle("Files_for_tests/merged_df.pkl")
 
     def test_plot_full1(self):
         # Creating Test Image
@@ -283,7 +295,7 @@ class VisualTests(unittest.TestCase):
         buf.close()
 
         # Reading Original Image
-        img_original = mpimg.imread(os.path.join(os.getcwd(), 'baseline_images', 'plot_tests', 'plot_full1.png'))
+        img_original = mpimg.imread(r'baseline_images/plot_tests/plot_full1.png')
 
         # Comparing
         self.assertTrue(np.all(np.isclose(img_test, img_original)))
@@ -311,7 +323,7 @@ class VisualTests(unittest.TestCase):
         buf.close()
 
         # Reading Original Image
-        img_original = mpimg.imread(os.path.join(os.getcwd(), 'baseline_images', 'plot_tests', 'plot_seasonal.png'))
+        img_original = mpimg.imread(r'baseline_images/plot_tests/plot_seasonal.png')
 
         # Comparing
         self.assertTrue(np.all(np.isclose(img_test, img_original)))
@@ -466,11 +478,7 @@ class VisualTests(unittest.TestCase):
 class DataTests(unittest.TestCase):
 
     def setUp(self):
-        sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/' \
-                   r'magdalena-calamar_interim_data.csv'
-        glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/' \
-                     r'magdalena-calamar_ECMWF_data.csv'
-        self.merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
+        self.merged_df = pd.read_pickle("Files_for_tests/merged_df.pkl")
 
     def test_julian_to_gregorian(self):
         julian_dates = np.array([2444239.5, 2444239.5416666665, 2444239.5833333335, 2444239.625,
@@ -504,7 +512,7 @@ class DataTests(unittest.TestCase):
         # merged_df_1 = hd.merge_data(sim_df=)
 
     def test_daily_average(self):
-        original_df = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'daily_average.csv'), index_col=0)
+        original_df = pd.read_csv(r'Comparison_Files/daily_average.csv', index_col=0)
         original_df.index = original_df.index.astype(np.object)
 
         test_df = hd.daily_average(self.merged_df)
@@ -512,7 +520,7 @@ class DataTests(unittest.TestCase):
         self.assertIsNone(pd.testing.assert_frame_equal(original_df, test_df))
 
     def test_daily_std_dev(self):
-        original_df = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'daily_std_dev.csv'), index_col=0)
+        original_df = pd.read_csv(r'Comparison_Files/daily_std_dev.csv', index_col=0)
         original_df.index = original_df.index.astype(np.object)
 
         test_df = hd.daily_std_dev(self.merged_df)
@@ -520,7 +528,7 @@ class DataTests(unittest.TestCase):
         self.assertIsNone(pd.testing.assert_frame_equal(original_df, test_df))
 
     def test_daily_std_error(self):
-        original_df = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'daily_std_error.csv'), index_col=0)
+        original_df = pd.read_csv(r'Comparison_Files/daily_std_error.csv', index_col=0)
         original_df.index = original_df.index.astype(np.object)
 
         test_df = hd.daily_std_error(self.merged_df)
@@ -528,7 +536,7 @@ class DataTests(unittest.TestCase):
         self.assertIsNone(pd.testing.assert_frame_equal(original_df, test_df))
 
     def test_monthly_average(self):
-        original_df = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'monthly_average.csv'), index_col=0)
+        original_df = pd.read_csv(r'Comparison_Files/monthly_average.csv', index_col=0)
         original_df.index = np.array(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
                                      dtype=np.object)
 
@@ -537,7 +545,7 @@ class DataTests(unittest.TestCase):
         self.assertIsNone(pd.testing.assert_frame_equal(original_df, test_df))
 
     def test_monthly_std_dev(self):
-        original_df = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'monthly_std_dev.csv'), index_col=0)
+        original_df = pd.read_csv(r'Comparison_Files/monthly_std_dev.csv', index_col=0)
         original_df.index = np.array(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
                                      dtype=np.object)
 
@@ -546,7 +554,7 @@ class DataTests(unittest.TestCase):
         self.assertIsNone(pd.testing.assert_frame_equal(original_df, test_df))
 
     def test_monthly_std_error(self):
-        original_df = pd.read_csv(os.path.join(os.getcwd(), 'Comparison_Files', 'monthly_std_error.csv'), index_col=0)
+        original_df = pd.read_csv(r'Comparison_Files/monthly_std_error.csv', index_col=0)
         original_df.index = np.array(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
                                      dtype=np.object)
 
@@ -560,14 +568,14 @@ class DataTests(unittest.TestCase):
         data[2, 0] = data[3, 1] = np.inf
         data[4, 0] = data[5, 1] = 0
         data[6, 0] = data[7, 1] = -0.1
-        test_df = hd.remove_nan_df(pd.DataFrame(data=data, index=pd.date_range('1980-01-01', periods=15)))
 
+        test_df = hd.remove_nan_df(pd.DataFrame(data=data, index=pd.date_range('1980-01-01', periods=15)))
         original_df = pd.DataFrame(data=data[8:, :], index=pd.date_range('1980-01-09', periods=7))
 
         self.assertIsNone(pd.testing.assert_frame_equal(original_df, test_df))
 
     def tearDown(self):
-        pass
+        del self.merged_df
 
 
 if __name__ == "__main__":
