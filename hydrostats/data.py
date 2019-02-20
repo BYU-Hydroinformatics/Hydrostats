@@ -822,12 +822,13 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
 
 
 if __name__ == "__main__":
+    pass
     # Defining the URLs of the datasets
-    sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena' \
-               r'-calamar_interim_data.csv '
-    glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena' \
-                 r'-calamar_ECMWF_data.csv '
-    # Merging the data
-    merged_df = merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
-
-    merged_df.to_pickle("tests/Files_for_tests/merged_df.pkl")
+    # sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena' \
+    #            r'-calamar_interim_data.csv '
+    # glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena' \
+    #              r'-calamar_ECMWF_data.csv '
+    # # Merging the data
+    # merged_df = merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
+    #
+    # merged_df.to_pickle("tests/Files_for_tests/merged_df.pkl", protocol=2)
