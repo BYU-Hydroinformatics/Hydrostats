@@ -741,3 +741,29 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
 
 if __name__ == "__main__":
     pass
+
+    # import pandas as pd
+    #
+    # merged_df = pd.read_pickle("tests/Files_for_tests/merged_df.pkl")
+    #
+    # plot(merged_data_df=merged_df,
+    #      title='Hydrograph of Entire Time Series',
+    #      linestyles=['r-', 'k-'],
+    #      legend=('SFPT', 'GLOFAS'),
+    #      labels=['Datetime', 'Streamflow (cfs)'],
+    #      metrics=['ME', 'NSE', 'SA'],
+    #      grid=True)
+    #
+    # plt.savefig(r"tests/baseline_images/plot_tests/plot_full1_test.png")
+    #
+    # plot(merged_data_df=daily_avg_df,
+    #         title='Daily Average Streamflow (Standard Error)',
+    #         legend=('SFPT', 'GLOFAS'),
+    #         x_season=True,
+    #         labels=['Datetime', 'Streamflow (csm)'],
+    #         linestyles=['r-', 'k-'],
+    #         fig_size=(14, 8),
+    #         ebars=daily_std_error,
+    #         ecolor=('r', 'k'),
+    #         tight_xlim=True
+    #         )
