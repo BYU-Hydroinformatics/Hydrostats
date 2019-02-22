@@ -8,7 +8,7 @@ with the following command using either pip, virtualenv, or Anaconda::
 
 The extension is also available through conda package management system. It can be installed with::
 
-    conda install -c conda-forge hydroerr
+    conda install -c conda-forge hydrostats
 
 When installing hydrostats on Mac OSX operating system, you may get the following error when trying
 to run python scripts using hydrostats::
