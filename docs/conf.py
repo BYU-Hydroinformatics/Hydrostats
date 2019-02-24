@@ -14,14 +14,15 @@
 
 import os
 import sys
+import datetime
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('.'))
 
 # -- Project information -----------------------------------------------------
 
 project = 'hydrostats'
-copyright = '2018, Wade Roberts'
 author = 'Wade Roberts'
+copyright = '{}, {}'.format(datetime.datetime.now().year, author)
 
 # The short X.Y version
 version = ''
@@ -78,7 +79,7 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinxdoc'
+html_theme = 'classic'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -89,7 +90,7 @@ html_theme = 'sphinxdoc'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = []
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -133,7 +134,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'hydrostats.tex', 'hydrostats Documentation',
-     'Wade Roberts', 'manual'),
+     author, 'manual'),
 ]
 
 
