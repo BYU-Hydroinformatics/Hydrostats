@@ -2,8 +2,8 @@
    sphinx-quickstart on Thu Jul 19 13:18:58 2018. * :ref:`modindex`
 
 
-Welcome to hydrostats's documentation!
-======================================
+Hydrostats Documentation
+==========================
 Hydrostats is a library of tools and functions for users working with time series data, with some tools specific to the
 field of hydrology (hence **Hydro**\stats). All of the tools contained in Hydrostats are based on a few different python
 libraries including numpy, scipy, pandas, matplotlib, and numba. It is meant to provide a high-level interface for users
