@@ -321,7 +321,7 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
         return merged_df
 
 
-def daily_average(merged_data):
+def daily_average(merged_data, rolling=False):  # TODO: Add a rolling average
     """Calculates daily seasonal averages of the timeseries data in a DataFrame
 
     Parameters
@@ -329,6 +329,9 @@ def daily_average(merged_data):
 
     merged_data: DataFrame
         A pandas DataFrame with a datetime index and columns containing float type values.
+
+    rolling: bool
+        If True, will calculate the rolling seasonal average.
 
     Returns
     -------
@@ -369,7 +372,11 @@ def daily_average(merged_data):
     [366 rows x 2 columns]
     """
     # Calculating the daily average from the database
-    a = merged_data.groupby(merged_data.index.strftime("%m/%d"))
+    if not rolling:
+        a = merged_data.groupby(merged_data.index.strftime("%m/%d"))
+    else:
+        pass
+        # TODO: Finish this
     return a.mean()
 
 

@@ -128,7 +128,7 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
     >>> # Merging the data
     >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
 
-    Here we make a table and print the results
+    Here we make a table and print the results:
 
     >>> my_metrics = ['MAE', 'r2', 'NSE', 'KGE (2012)']
     >>> seasonal = [['01-01', '03-31'], ['04-01', '06-30'], ['07-01', '09-30'], ['10-01', '12-31']]
@@ -140,20 +140,6 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
     April-01:June-30        Magdalena  1394.640050     ...      0.813737    0.876890
     July-01:September-30    Magdalena  1188.542871     ...      0.829492    0.831188
     October-01:December-31  Magdalena  1410.852917     ...      0.793927    0.791257
-
-    [5 rows x 5 columns]
-
-    We can also write the table to a CSV or Excel worksheet.
-
-    >>> ha.make_table(merged_df, my_metrics, seasonal, remove_neg=True, remove_zero=True, location='Magdalena', to_csv='magdalena_table.csv')
-                             Location          MAE     ...           NSE  KGE (2012)
-    Full Time Series        Magdalena  1157.669988     ...      0.873684    0.872871
-    January-01:March-31     Magdalena   631.984177     ...      0.861163    0.858187
-    April-01:June-30        Magdalena  1394.640050     ...      0.813737    0.876890
-    July-01:September-30    Magdalena  1188.542871     ...      0.829492    0.831188
-    October-01:December-31  Magdalena  1410.852917     ...      0.793927    0.791257
-
-    [5 rows x 5 columns]
 
     """
 
