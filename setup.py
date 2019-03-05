@@ -29,6 +29,6 @@ setup(
         'pandas',
         'matplotlib',
         'scipy',
-        'HydroErr'
+        'HydroErr',
     ],
 )

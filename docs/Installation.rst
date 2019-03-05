@@ -7,8 +7,8 @@ with the following command using either virtualenv or Anaconda.
 
    pip install hydrostats
 
-When installing hydrostats on Mac OSX operating system, you may get the following error when trying
-to run python scripts using hydrostats in an IDE such as PyCharm.
+When installing hydrostats on Mac OSX operating system, you may get the following error when trying to run scripts
+that import Hydrostats.
 
 .. code-block:: shell
 
@@ -24,7 +24,7 @@ by running the following commands in the terminal:
 
    touch ~/.matplotlib/matplotlibrc  # Create a file called matplotlibrc
 
-Add the following snippet of text to the file you created:
+Add the following snippet of text to the file you created using nano, vim, or your preferred text editor:
 
 .. code-block:: shell
 

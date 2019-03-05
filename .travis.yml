@@ -13,7 +13,6 @@ install:
   - pip install pandas
   - pip install matplotlib
   - pip install scipy
-  - pip install openpyxl
   - pip install HydroErr
   - pip install codecov
 
