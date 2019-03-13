@@ -16,7 +16,6 @@ setup(
     author='Wade Roberts',
     author_email='waderoberts123@gmail.com',
     url='https://github.com/waderoberts123/hydrostats',
-    download_url='https://github.com/waderoberts123/Hydrostats/archive/0.75.tar.gz',
     keywords=['hydrology', 'error', 'metrics', 'comparison', 'statistics', 'forecast', 'observed'],
     classifiers=["Programming Language :: Python :: 2.7",
                  "Programming Language :: Python :: 3.5",
