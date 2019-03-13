@@ -6,4 +6,4 @@ source = hydrostats
 exclude_lines =
     if __name__ == .__main__.:
 ignore_errors = True
-omit = tests/*, tests.py, /home/wade/GitHub/Hydrostats/hydrostats/Useful_Code_For_Hydrostats.py
+omit = tests/*, tests.py
