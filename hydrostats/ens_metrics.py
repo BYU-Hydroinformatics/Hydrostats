@@ -812,7 +812,10 @@ def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
 
 
 def ens_brier(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bin=None, adj=None):
-    """Calculate the ensemble-adjusted Brier Score.
+    """
+    Calculate the ensemble-adjusted Brier Score.
+
+    Range: 0 ≤ Brier ≤ 1, lower is better.
 
     Parameters
     ----------
@@ -923,8 +926,11 @@ def ens_brier(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bi
 
 
 def auroc(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bin=None):
-    """Calculates Area Under the Relative Operating Characteristic curve (AUROC)
+    """
+    Calculates Area Under the Relative Operating Characteristic curve (AUROC)
     for a forecast and its verifying binary observation, and estimates the variance of the AUROC
+
+    Range: 0 ≤ AUROC ≤ 1, Higher is better.
 
     Parameters
     ----------
