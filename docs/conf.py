@@ -30,7 +30,7 @@ MOCK_MODULES = [
     'numba',
     'matplotlib',
     'matplotlib.pyplot',
-
+    'pandas.plotting',
 ]
 
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
