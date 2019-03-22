@@ -15,6 +15,26 @@
 import os
 import sys
 import datetime
+from unittest.mock import MagicMock
+
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
+
+
+# Don't need these for documentation
+MOCK_MODULES = [
+    'numpy',
+    'scipy',
+    'pandas',
+    'numba',
+    'matplotlib',
+    'HydroErr',
+]
+
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('.'))
 
