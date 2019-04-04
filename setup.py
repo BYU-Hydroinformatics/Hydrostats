@@ -8,7 +8,7 @@ with open('README.md') as f:
 setup(
     name='hydrostats',
     packages=['hydrostats'],
-    version='0.75',
+    version='0.76',
     description='Tools for use in comparison studies, specifically for use in the field '
                 'of hydrology',
     long_description=README,
