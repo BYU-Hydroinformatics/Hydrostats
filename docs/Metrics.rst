@@ -6,7 +6,7 @@ documentation page that lists all of the metrics contained in the package.
 
 Link
 ^^^^
-https://byu-hydroinformatics.github.io/HydroErr/list_of_metrics.html
+https://hydroerr.readthedocs.io/en/stable/
 
 Examples
 ^^^^^^^^

@@ -3,7 +3,7 @@
 
 Tools for use in comparison studies, specifically for use in the field of hydrology
 
-- **Documentation:** https://readthedocs.org/projects/hydrostats/
+- **Documentation:** https://hydrostats.readthedocs.io/en/stable/
 - **Source:** https://github.com/BYU-Hydroinformatics/Hydrostats
 - **Bug reports:** https://github.com/BYU-Hydroinformatics/Hydrostats/issues
 
