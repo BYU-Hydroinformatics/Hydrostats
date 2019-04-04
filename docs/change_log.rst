@@ -1,9 +1,12 @@
 Release Notes
 =============
 
-
 This is the list of changes to Hydrostats between each release. For full details, see the commit logs at
 https://github.com/BYU-Hydroinformatics/Hydrostats.
+
+Version 0.76
+^^^^^^^^^^^^
+- Moved the documentation to new location at https://hydrostats.readthedocs.io/
 
 Version 0.75
 ^^^^^^^^^^^^

@@ -5,9 +5,9 @@
 Hydrostats Documentation
 ==========================
 Hydrostats is a library of tools and functions for users working with time series data, with some tools specific to the
-field of hydrology (hence **Hydro**\stats). All of the tools contained in Hydrostats are based on a few different python
-libraries including numpy, scipy, pandas, matplotlib, and numba. It is meant to provide a high-level interface for users
-to be able to perform common tasks regarding time series analysis.
+field of hydrology (hence **Hydro**\stats). All of the tools contained in Hydrostats are built using a few different
+python libraries including numpy, scipy, pandas, matplotlib, and numba. It is meant to provide a high-level interface
+for users to be able to perform common tasks regarding time series analysis.
 
 Hydrostats contains tools for for preprocessing data, visualizing data, calculating error metrics on observed and
 predicted time series, and forecast validation. It contains over 70 error metrics, with many metrics specific to the field of
