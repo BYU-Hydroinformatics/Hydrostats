@@ -24,9 +24,6 @@ except ImportError:
     from BytesIO import BytesIO  # For python 2.7 compatibility
 
 
-# TODO: Finish tests on ens_metrics, data, and visual
-
-
 class MetricsTests(unittest.TestCase):
     """
     Tests the metrics included in HydroErr package to make sure that they are working correctly.
@@ -123,8 +120,8 @@ class EnsMetricsTests(unittest.TestCase):
         self.ensemble_array = np.load(r"Files_for_tests/ensemble_array.npz")["arr_0.npy"]
         self.observed_array = np.load(r"Files_for_tests/observed_array.npz")["arr_0.npy"]
 
-        self.ens_bin = np.load(r"Files_for_tests/ens_bin.npz")["arr_0.npy"]
-        self.obs_bin = np.load(r"Files_for_tests/obs_bin.npz")["arr_0.npy"]
+        self.ens_bin = np.load(r"Files_for_tests/ens_bin.npy")
+        self.obs_bin = np.load(r"Files_for_tests/obs_bin.npy")
 
         self.ensemble_array_bad_data = np.load(r"Files_for_tests/ensemble_array_bad_data.npz")["arr_0.npy"]
         self.observed_array_bad_data = np.load(r"Files_for_tests/observed_array_bad_data.npz")["arr_0.npy"]
@@ -193,12 +190,101 @@ class EnsMetricsTests(unittest.TestCase):
         self.assertTrue(np.isclose(expected_mean_crps, crps_mean_numba))
         self.assertTrue(np.isclose(expected_mean_crps, crps_mean_python))
 
-        # TODO: Finish this
-        # expected_value_bad_data = em.ens_rmse(obs=self.observed_array[8:], fcst_ens=self.ensemble_array[8:, :])
-        # test_value_bad_data = em.ens_rmse(obs=self.observed_array_bad_data, fcst_ens=self.ensemble_array_bad_data,
-        #                                   remove_zero=True, remove_neg=True)
-        #
-        # self.assertTrue(np.isclose(expected_value_bad_data, test_value_bad_data))
+        expected_value_bad_data = em.ens_crps(
+            obs=self.observed_array[8:], fcst_ens=self.ensemble_array[8:, :]
+        )
+        test_value_bad_data = em.ens_crps(
+            obs=self.observed_array_bad_data, fcst_ens=self.ensemble_array_bad_data, remove_zero=True, remove_neg=True
+        )
+
+        self.assertTrue(np.all(np.isclose(expected_value_bad_data["crps"], test_value_bad_data["crps"])))
+        self.assertEqual(expected_value_bad_data["crpsMean"], test_value_bad_data["crpsMean"])
+
+    def test_ens_pearson_r(self):
+        expected_pearson_r = -0.13236871294739733
+        test_pearson_r = em.ens_pearson_r(obs=self.observed_array, fcst_ens=self.ensemble_array)
+
+        self.assertTrue(np.isclose(expected_pearson_r, test_pearson_r))
+
+        expected_pearson_r_bad_data = em.ens_pearson_r(obs=self.observed_array[8:], fcst_ens=self.ensemble_array[8:, :])
+        test_pearson_r_bad_data = em.ens_pearson_r(obs=self.observed_array_bad_data,
+                                                   fcst_ens=self.ensemble_array_bad_data,
+                                                   remove_zero=True, remove_neg=True)
+
+        self.assertTrue(np.isclose(expected_pearson_r_bad_data, test_pearson_r_bad_data))
+
+    def test_crps_hersbach(self):
+        expected_crps = np.load("Files_for_tests/expected_crps.npy")
+        expected_mean_crps = 17.735507981502494
+
+        crps_dictionary_test = em.crps_hersbach(obs=self.observed_array, fcst_ens=self.ensemble_array)
+
+        self.assertTrue(np.all(np.isclose(expected_crps, crps_dictionary_test["crps"])))
+        self.assertTrue(np.all(np.isclose(expected_mean_crps, crps_dictionary_test["crpsMean1"])))
+        self.assertTrue(np.all(np.isclose(expected_mean_crps, crps_dictionary_test["crpsMean2"])))
+
+    def test_crps_kernel(self):
+        expected_crps = np.load("Files_for_tests/expected_crps.npy")
+        expected_mean_crps = 17.735507981502494
+
+        crps_dictionary_test = em.crps_kernel(obs=self.observed_array, fcst_ens=self.ensemble_array)
+
+        self.assertTrue(np.all(np.isclose(expected_crps, crps_dictionary_test["crps"])))
+        self.assertTrue(np.all(np.isclose(expected_mean_crps, crps_dictionary_test["crpsMean"])))
+
+    def test_ens_brier(self):
+        # With the binary array
+        expected_scores_bin = np.load("Files_for_tests/expected_brier_bin.npy")
+        expected_mean_score_bin = 0.26351701183431947
+
+        brier_scores_test_bin = em.ens_brier(fcst_ens_bin=self.ens_bin, obs_bin=self.obs_bin)
+
+        np.testing.assert_allclose(expected_scores_bin, brier_scores_test_bin)
+        self.assertAlmostEqual(expected_mean_score_bin, brier_scores_test_bin.mean())
+
+        # With the data arrays
+        expected_scores = np.load("Files_for_tests/expected_brier.npy")
+        expected_mean_score = 0.17164571005917162
+
+        brier_scores_test = em.ens_brier(self.ensemble_array, self.observed_array, 180)
+
+        np.testing.assert_allclose(expected_scores, brier_scores_test)
+        self.assertAlmostEqual(expected_mean_score, brier_scores_test.mean())
+
+    def test_auroc(self):
+        auroc_expected = np.array([0.45599759, 0.07259804])
+        auroc_expected_bin = np.array([0.43596949, 0.05864427])
+
+        auroc_test = em.auroc(fcst_ens=self.ensemble_array, obs=self.observed_array, threshold=180)
+        auroc_test_bin = em.auroc(fcst_ens_bin=self.ens_bin, obs_bin=self.obs_bin)
+
+        np.testing.assert_allclose(auroc_expected, auroc_test)
+        np.testing.assert_allclose(auroc_expected_bin, auroc_test_bin)
+
+    def test_skill_score(self):
+        expected_skill_score = 0.5714285714285713
+        expected_std = 0.04713063421956128
+
+        skill_score_test = em.skill_score(np.array([0.1, 0.2, 0.15]), np.array([0.3, 0.4, 0.35]), 0)
+
+        self.assertAlmostEqual(expected_skill_score, skill_score_test["skillScore"])
+        self.assertAlmostEqual(expected_std, skill_score_test["standardDeviation"])
+
+        nan_skill_score = em.skill_score(np.array([0.1, 0.2, 0.15]), np.array([0.0, 0.0, 0.0]), 0)
+
+        self.assertTrue(np.isnan(nan_skill_score["skillScore"]))
+        self.assertTrue(np.isnan(nan_skill_score["standardDeviation"]))
+
+    def test_skill_score_floats(self):
+        expected_skill_score = 1 / 3
+        test_skill_score = em.skill_score(0.8, 0.7, 1)
+
+        self.assertAlmostEqual(expected_skill_score, test_skill_score["skillScore"])
+        self.assertTrue(np.isnan(test_skill_score["standardDeviation"]))
+
+        nan_skill_score = em.skill_score(0., 0., 0)
+        self.assertTrue(np.isnan(nan_skill_score["skillScore"]))
+        self.assertTrue(np.isnan(nan_skill_score["standardDeviation"]))
 
     def tearDown(self):
         del self.ensemble_array
@@ -296,7 +382,7 @@ class VisualTests(unittest.TestCase):
         self.assertTrue(np.all(np.isclose(img_test, img_original)))
 
     def test_plot_seasonal(self):
-        daily_avg_df = hd.daily_average(merged_data=self.merged_df)
+        daily_avg_df = hd.daily_average(df=self.merged_df)
         daily_std_error = hd.daily_std_error(merged_data=self.merged_df)
 
         # Creating test image array
