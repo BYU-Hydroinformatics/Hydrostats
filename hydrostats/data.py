@@ -321,17 +321,22 @@ def merge_data(sim_fpath=None, obs_fpath=None, sim_df=None, obs_df=None, interpo
         return merged_df
 
 
-def daily_average(merged_data, rolling=False):  # TODO: Add a rolling average
+def daily_average(df, rolling=False, **kwargs):
     """Calculates daily seasonal averages of the timeseries data in a DataFrame
 
     Parameters
     ----------
 
-    merged_data: DataFrame
+    df: DataFrame
         A pandas DataFrame with a datetime index and columns containing float type values.
 
     rolling: bool
         If True, will calculate the rolling seasonal average.
+
+    **kwargs: pandas.DataFrame.rolling() properties, optional
+        Options for how to compute the rolling averages. If not provided, the default is to use the following
+        parameters: {window=6, min_periods=1, center=True, closed="right"}. Specifying **kwargs will clear the
+        defaults, however.
 
     Returns
     -------
@@ -373,11 +378,16 @@ def daily_average(merged_data, rolling=False):  # TODO: Add a rolling average
     """
     # Calculating the daily average from the database
     if not rolling:
-        a = merged_data.groupby(merged_data.index.strftime("%m/%d"))
+        daily_averages = df.groupby(df.index.strftime("%m/%d")).mean()
     else:
-        pass
-        # TODO: Finish this
-    return a.mean()
+        if kwargs:
+            rolling_averages = df.rolling(**kwargs).mean()
+            daily_averages = daily_average(rolling_averages, rolling=False)
+        else:
+            rolling_averages = df.rolling(window=6, min_periods=1, center=True, closed="right").mean()
+            daily_averages = daily_average(rolling_averages, rolling=False)
+
+    return daily_averages
 
 
 def daily_std_error(merged_data):
@@ -714,7 +724,7 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
 
     daily_period: tuple of str
         A list of length two with strings representing the start and end dates of the seasonal period (e.g.
-        [01-01, 01-31] for Jan 1 to Jan 31.
+        (01-01, 01-31) for Jan 1 to Jan 31.
 
     time_range: tuple of str
         A tuple of string values representing the start and end dates of the time range. Format is YYYY-MM-DD.
@@ -830,12 +840,3 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
 
 if __name__ == "__main__":
     pass
-    # Defining the URLs of the datasets
-    # sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena' \
-    #            r'-calamar_interim_data.csv '
-    # glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena' \
-    #              r'-calamar_ECMWF_data.csv '
-    # # Merging the data
-    # merged_df = merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
-    #
-    # merged_df.to_pickle("tests/Files_for_tests/merged_df.pkl", protocol=2)

@@ -482,7 +482,11 @@ def python_crps(ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps
 
 def crps_hersbach(obs, fcst_ens, remove_neg=False, remove_zero=False):
     """Calculate the the continuous ranked probability score (CRPS) as per equation 25-27 in
-    Hersbach et al. (2000)
+    Hersbach et al. (2000).
+
+    It is strongly recommended to use the `hydrostats.ens_metric.ens_crps()` function for the improved performance,
+    instead of using this particular implementation. This is meant more for a proof of concept of the algorithm
+    presented in the literature.
 
     Parameters
     ----------
@@ -669,6 +673,10 @@ def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
     same paper. Note that it was Gneiting and Raftery (2007) who show the kernel representation as
     calculated here is equivalent to the standard definition based on the integral
     over the squared error of the cumulative distribution.
+
+    It is strongly recommended to use the `hydrostats.ens_metric.ens_crps()` function for the improved performance,
+    instead of using this particular implementation, this is meant more for a proof of concept and an algorithm
+    implementation.
 
     Parameters
     ----------
@@ -1187,31 +1195,37 @@ def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_n
         score = np.mean(scores_copy) - perf_score
         bench_score = np.mean(bench_scores_copy) - perf_score
 
-        # calculate skill score
-        skillscore = 1 - score / bench_score
-
-        # calculate auxiliary quantities
-        var_score = np.var(scores_copy, ddof=1)
-        var_bench_score = np.var(bench_scores_copy, ddof=1)
-        cov_score = np.cov(scores_copy, bench_scores_copy)[0, 1]
-
-        # Calculate skill score standard deviation by error propagation
-        def sqrt_na(z):
-            if z < 0:
-                z = np.nan
-
-            return np.sqrt(z)
-
-        sqrt_na_val = sqrt_na(
-            var_score / bench_score ** 2 + var_bench_score * score ** 2 / bench_score ** 4 - 2 * cov_score *
-            score / bench_score ** 3
-        )
-
-        skillscore_sigma = (1 / np.sqrt(eff_sample_size)) * sqrt_na_val
-
-        # Set skillscore_sigma to NaN if not finite
-        if not np.isfinite(skillscore_sigma):
+        if bench_score == 0.0:
+            skillscore = np.nan
             skillscore_sigma = np.nan
+            warnings.warn("The difference between the perfect score and benchmark score is zero, setting the skill"
+                          " score value and standard deviation to NaN.")
+        else:
+            # calculate skill score
+            skillscore = 1 - score / bench_score
+
+            # calculate auxiliary quantities
+            var_score = np.var(scores_copy, ddof=1)
+            var_bench_score = np.var(bench_scores_copy, ddof=1)
+            cov_score = np.cov(scores_copy, bench_scores_copy)[0, 1]
+
+            # Calculate skill score standard deviation by error propagation
+            def sqrt_na(z):
+                if z < 0:
+                    z = np.nan
+
+                return np.sqrt(z)
+
+            sqrt_na_val = sqrt_na(
+                var_score / bench_score ** 2 + var_bench_score * score ** 2 / bench_score ** 4 - 2 * cov_score *
+                score / bench_score ** 3
+            )
+
+            skillscore_sigma = (1 / np.sqrt(eff_sample_size)) * sqrt_na_val
+
+            # Set skillscore_sigma to NaN if not finite
+            if not np.isfinite(skillscore_sigma):
+                skillscore_sigma = np.nan
 
     elif isinstance(scores, float) and isinstance(bench_scores, float):
 
@@ -1219,8 +1233,13 @@ def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_n
         score = scores - perf_score
         bench_score = bench_scores - perf_score
 
-        # calculate skill score
-        skillscore = 1 - score / bench_score
+        if bench_score == 0.0:
+            skillscore = np.nan
+            warnings.warn("The difference between the perfect score and benchmark score is zero, setting the skill"
+                          " score value to NaN.")
+        else:
+            # calculate skill score
+            skillscore = 1 - score / bench_score
 
         skillscore_sigma = np.nan
 
@@ -1306,24 +1325,4 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
 
 
 if __name__ == "__main__":
-    import time
-    ensemble_array = np.load(r"tests/Files_for_tests/ensemble_array.npz")["arr_0.npy"]
-    observed_array = np.load(r"tests/Files_for_tests/observed_array.npz")["arr_0.npy"]
-
-    ens_bin = np.load(r"tests/Files_for_tests/ens_bin.npz")["arr_0.npy"]
-    obs_bin = np.load(r"tests/Files_for_tests/obs_bin.npz")["arr_0.npy"]
-
-    ensemble_array_bad_data = np.load(r"tests/Files_for_tests/ensemble_array_bad_data.npz")["arr_0.npy"]
-    observed_array_bad_data = np.load(r"tests/Files_for_tests/observed_array_bad_data.npz")["arr_0.npy"]
-
-    start = time.time()
-    crps_numba = ens_crps(obs=observed_array, fcst_ens=ensemble_array)["crpsMean"]
-    print(time.time() - start)
-
-    start = time.time()
-    crps_python = ens_crps(obs=observed_array, fcst_ens=ensemble_array, llvm=False)["crpsMean"]
-    print(time.time() - start)
-
-    assert np.isclose(crps_numba, crps_python)
-
-    print(crps_numba, crps_python)
+    pass
