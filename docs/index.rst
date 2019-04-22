@@ -39,6 +39,7 @@ Contents
    timezones
    matplotlib_linestyles
    change_log
+   contribute
 
 Indices and tables
 ==================
