@@ -36,7 +36,8 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
 
     metrics: list of str
         A list of all the metrics that the user wants to calculate. The metrics abbreviations must
-        be used and can be found in the table of all the metrics in the documentation.
+        be used (e.g. the abbreviation for the mean error is "ME". Each function has an attribute with the name
+        and abbreviation, so this can be used instead (see example).
 
     seasonal_periods: 2D list of str, optional
         If given, specifies the seasonal periods that the user wants to analyze (e.g. [['06-01',
@@ -121,6 +122,7 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
 
     >>> import hydrostats.analyze as ha
     >>> import hydrostats.data as hd
+    >>> from hydrostats.metrics import mae, r_squared, nse, kge_2012
     >>>
     >>> # Defining the URLs of the datasets
     >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
@@ -130,7 +132,7 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
 
     Here we make a table and print the results:
 
-    >>> my_metrics = ['MAE', 'r2', 'NSE', 'KGE (2012)']
+    >>> my_metrics = [mae.abbr, r_squared.abbr, nse.abbr, kge_2012.abbr]
     >>> seasonal = [['01-01', '03-31'], ['04-01', '06-30'], ['07-01', '09-30'], ['10-01', '12-31']]
     >>> table = ha.make_table(merged_df, my_metrics, seasonal, remove_neg=True, remove_zero=True, location='Magdalena')
     >>> table
