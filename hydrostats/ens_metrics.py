@@ -819,7 +819,8 @@ def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
     return output
 
 
-def ens_brier(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bin=None, adj=None):
+def ens_brier(fcst_ens=None, obs=None, threshold=None, ens_threshold=None, obs_threshold=None, fcst_ens_bin=None,
+              obs_bin=None, adj=None):
     """
     Calculate the ensemble-adjusted Brier Score.
 
@@ -837,6 +838,14 @@ def ens_brier(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bi
     threshold: float
         The threshold for an event (e.g. if the event is a 100 year flood, the streamflow value
         that a 100 year flood would have to exceed.
+
+    ens_threshold: float
+        If different threshholds for the ensemble forecast and the observed data is desired, then this parameter can be
+        set along with the 'obs_threshold' parameter to set different thresholds.
+
+    obs_threshold: float
+        If different threshholds for the ensemble forecast and the observed data is desired, then this parameter can be
+        set along with the 'ens_threshold' parameter to set different thresholds.
 
     fcst_ens_bin: 1D ndarray
         Binary array of observations for each start date. 1 for an event and 0 for a non-event.
@@ -901,15 +910,31 @@ def ens_brier(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bi
       https://CRAN.R-project.org/package=SpecsVerification
     """
 
-    if obs_bin is not None and fcst_ens_bin is not None:
+    # User supplied the binary matrices
+    if obs_bin is not None and fcst_ens_bin is not None and fcst_ens is None and obs is None \
+            and threshold is None and ens_threshold is None and obs_threshold is None:
+
         pass
-    elif fcst_ens is not None and obs is not None and threshold is not None:
-        # Convert the observed data and forecast data to binary data.
+
+    # User supplied normal matrices with a threshold value to apply to each of them
+    elif obs_bin is None and fcst_ens_bin is None and fcst_ens is not None and obs is not None \
+            and threshold is not None and ens_threshold is None and obs_threshold is None:
+
+        # Convert the observed data and forecast data to binary data
         obs_bin = (obs > threshold).astype(np.int)
         fcst_ens_bin = (fcst_ens > threshold).astype(np.int)
+
+    # User supplied normal matrices with different thresholds for the forecast ensemble and the observed data
+    elif obs_bin is None and fcst_ens_bin is None and fcst_ens is not None and obs is not None \
+            and threshold is None and ens_threshold is not None and obs_threshold is not None:
+
+        # Convert the observed data and forecast data to binary data
+        obs_bin = (obs > obs_threshold).astype(np.int)
+        fcst_ens_bin = (fcst_ens > ens_threshold).astype(np.int)
+
     else:
-        raise RuntimeError(" You must either supply fcst_ens, obs, and threshold or you must "
-                           "supply fcst_ens_bin and obs_bin.")
+        raise RuntimeError(" You must either supply fcst_ens, obs, and threshold (or obs_threshold and ens_threshold "
+                           "if there are different thresholds) or you must supply fcst_ens_bin and obs_bin.")
 
     # Treat missing data and warn users of columns being removed
     obs_bin, fcst_ens_bin = treat_data(obs_bin, fcst_ens_bin, remove_neg=False,
@@ -933,7 +958,8 @@ def ens_brier(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bi
     return br
 
 
-def auroc(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bin=None):
+def auroc(fcst_ens=None, obs=None, threshold=None, ens_threshold=None, obs_threshold=None,
+          fcst_ens_bin=None, obs_bin=None):
     """
     Calculates Area Under the Relative Operating Characteristic curve (AUROC)
     for a forecast and its verifying binary observation, and estimates the variance of the AUROC
@@ -952,6 +978,14 @@ def auroc(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bin=No
     threshold: float
         The threshold for an event (e.g. if the event is a 100 year flood, the streamflow value
         that a 100 year flood would have to exceed.
+
+    ens_threshold: float
+        If different threshholds for the ensemble forecast and the observed data is desired, then this parameter can be
+        set along with the 'obs_threshold' parameter to set different thresholds.
+
+    obs_threshold: float
+        If different threshholds for the ensemble forecast and the observed data is desired, then this parameter can be
+        set along with the 'ens_threshold' parameter to set different thresholds.
 
     fcst_ens_bin: 1D ndarray
         Binary array of observations for each start date. 1 for an event and 0 for a non-event.
@@ -1014,16 +1048,31 @@ def auroc(fcst_ens=None, obs=None, threshold=None, fcst_ens_bin=None, obs_bin=No
       https://CRAN.R-project.org/package=SpecsVerification
 
     """
-    if obs_bin is not None and fcst_ens_bin is not None and fcst_ens is None and obs is None and threshold is None:
+    # User supplied the binary matrices
+    if obs_bin is not None and fcst_ens_bin is not None and fcst_ens is None and obs is None \
+            and threshold is None and ens_threshold is None and obs_threshold is None:
+
         pass
-    elif fcst_ens is not None and obs is not None and threshold is not None and obs_bin is None and \
-            fcst_ens_bin is None:
-        # Convert the observed data and forecast data to binary data.
+
+    # User supplied normal matrices with a threshold value to apply to each of them
+    elif obs_bin is None and fcst_ens_bin is None and fcst_ens is not None and obs is not None \
+            and threshold is not None and ens_threshold is None and obs_threshold is None:
+
+        # Convert the observed data and forecast data to binary data
         obs_bin = (obs > threshold).astype(np.int)
         fcst_ens_bin = (fcst_ens > threshold).astype(np.int)
+
+    # User supplied normal matrices with different thresholds for the forecast ensemble and the observed data
+    elif obs_bin is None and fcst_ens_bin is None and fcst_ens is not None and obs is not None \
+            and threshold is None and ens_threshold is not None and obs_threshold is not None:
+
+        # Convert the observed data and forecast data to binary data
+        obs_bin = (obs > obs_threshold).astype(np.int)
+        fcst_ens_bin = (fcst_ens > ens_threshold).astype(np.int)
+
     else:
-        raise RuntimeError(" You must either supply fcst_ens, obs, and threshold or you must "
-                           "supply fcst_ens_bin and obs_bin.")
+        raise RuntimeError(" You must either supply fcst_ens, obs, and threshold (or obs_threshold and ens_threshold "
+                           "if there are different thresholds) or you must supply fcst_ens_bin and obs_bin.")
 
     obs_bin, fcst_ens_bin = treat_data(obs_bin, fcst_ens_bin, remove_neg=False, remove_zero=False)
 
@@ -1151,9 +1200,11 @@ def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_n
                 all_nan_indices = np.logical_and(nan_indices_fcst, nan_indices_obs)
                 all_treatment_array = np.logical_and(all_treatment_array, all_nan_indices)
 
-                warnings.warn("Row(s) {} contained NaN values and the row(s) have been "
-                              "removed for the calculation (Rows are zero indexed).".format(np.where(~all_nan_indices)[0]),
-                              UserWarning)
+                warnings.warn(
+                    "Row(s) {} contained NaN values and the row(s) have been removed for the calculation (Rows are "
+                    "zero indexed).".format(np.where(~all_nan_indices)[0]),
+                    UserWarning
+                )
 
             if np.any(np.isinf(scores_copy)) or np.any(np.isinf(bench_scores_copy)):
                 inf_indices_fcst = ~(np.isinf(scores_copy))

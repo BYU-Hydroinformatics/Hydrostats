@@ -37,7 +37,8 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
     metrics: list of str
         A list of all the metrics that the user wants to calculate. The metrics abbreviations must
         be used (e.g. the abbreviation for the mean error is "ME". Each function has an attribute with the name
-        and abbreviation, so this can be used instead (see example).
+        and abbreviation, so this can be used instead (see example). Also, strings can be typed and found in the
+        quick reference table in this documentation.
 
     seasonal_periods: 2D list of str, optional
         If given, specifies the seasonal periods that the user wants to analyze (e.g. [['06-01',
@@ -132,7 +133,7 @@ def make_table(merged_dataframe, metrics, seasonal_periods=None, mase_m=1, dmod_
 
     Here we make a table and print the results:
 
-    >>> my_metrics = [mae.abbr, r_squared.abbr, nse.abbr, kge_2012.abbr]
+    >>> my_metrics = [mae.abbr, r_squared.abbr, nse.abbr, kge_2012.abbr]  # HydroErr 1.24 or greater is required to use these properties
     >>> seasonal = [['01-01', '03-31'], ['04-01', '06-30'], ['07-01', '09-30'], ['10-01', '12-31']]
     >>> table = ha.make_table(merged_df, my_metrics, seasonal, remove_neg=True, remove_zero=True, location='Magdalena')
     >>> table
@@ -221,7 +222,8 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
         with a datetime index.
 
     metrics: list of str
-        Metric abbreviations that the user would like to use in their lag analysis.
+        Metric abbreviations that the user would like to use in their lag analysis. Each metric function has a property
+        that contains their abbreviation for convenience (see example).
 
     interp_freq: str, optional
         Frequency of the interpolation for both the simulated and observed time series.
@@ -324,7 +326,7 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
 
     >>> import hydrostats.analyze as ha
     >>> import hydrostats.data as hd
-    >>> pd.options.display.max_columns = 50
+    >>> from hydrostats.metrics import me, r_squared, rmse, kge_2012, nse, dr
     >>>
     >>> # Defining the URLs of the datasets
     >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
@@ -334,8 +336,8 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
 
     There are two dataframes that are returned as part of the analysis.
 
-    >>> # Running the lag analysis
-    >>> time_lag_df, summary_df = ha.time_lag(merged_df, metrics=['ME', 'r2', 'RMSE', 'KGE (2012)', 'NSE'])
+    >>> # Running the lag analysis, not that HydroErr > 1.24 must be used to access the .abbr property
+    >>> time_lag_df, summary_df = ha.time_lag(merged_df, metrics=[me.abbr, r_squared.abbr, rmse.abbr, kge_2012.abbr, nse.abbr])
     >>> summary_df
                         Max  Max Lag Number          Min  Min Lag Number
     ME           174.740510           -28.0   174.740510           -24.0
@@ -347,7 +349,7 @@ def time_lag(merged_dataframe, metrics, interp_freq='6H', interp_type='pchip',
     A plot can be created that visualizes the different metrics throughout the time lags. It can be
     saved using the savefig parameter as well if desired.
 
-    >>> _, _ = ha.time_lag(merged_df, metrics=['r2', 'KGE (2012)', 'dr'], plot=True)
+    >>> _, _ = ha.time_lag(merged_df, metrics=[r_squared.abbr, kge_2012.abbr, dr.abbr], plot=True)
 
     .. image:: /Figures/lag_plot1.png
 

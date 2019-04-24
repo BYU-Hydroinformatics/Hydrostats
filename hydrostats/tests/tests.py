@@ -252,14 +252,30 @@ class EnsMetricsTests(unittest.TestCase):
         np.testing.assert_allclose(expected_scores, brier_scores_test)
         self.assertAlmostEqual(expected_mean_score, brier_scores_test.mean())
 
+        # With the data array and different thresholds
+        expected_scores_diff_thresh = np.load("Files_for_tests/expected_brier_diff_thresh.npy")
+        expected_scores_diff_thresh_mean = 0.181926775147929
+
+        brier_scores_test_diff_thresh = em.ens_brier(
+            fcst_ens=self.ensemble_array, obs=self.observed_array, obs_threshold=180, ens_threshold=170,
+        )
+
+        np.testing.assert_allclose(expected_scores_diff_thresh, brier_scores_test_diff_thresh)
+        self.assertAlmostEqual(expected_scores_diff_thresh_mean, brier_scores_test_diff_thresh.mean())
+
     def test_auroc(self):
         auroc_expected = np.array([0.45599759, 0.07259804])
         auroc_expected_bin = np.array([0.43596949, 0.05864427])
+        auroc_expected_diff_thresh = np.array([0.3812537673297167, 0.06451017097609267])
 
         auroc_test = em.auroc(fcst_ens=self.ensemble_array, obs=self.observed_array, threshold=180)
+        auroc_test_diff_thresh = em.auroc(
+            fcst_ens=self.ensemble_array, obs=self.observed_array, obs_threshold=180, ens_threshold=170,
+        )
         auroc_test_bin = em.auroc(fcst_ens_bin=self.ens_bin, obs_bin=self.obs_bin)
 
         np.testing.assert_allclose(auroc_expected, auroc_test)
+        np.testing.assert_allclose(auroc_expected_diff_thresh, auroc_test_diff_thresh)
         np.testing.assert_allclose(auroc_expected_bin, auroc_test_bin)
 
     def test_skill_score(self):
