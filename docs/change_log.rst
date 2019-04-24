@@ -4,6 +4,13 @@ Release Notes
 This is the list of changes to Hydrostats between each release. For full details, see the commit logs at
 https://github.com/BYU-Hydroinformatics/Hydrostats.
 
+Version 0.78
+^^^^^^^^^^^^
+- Added the ability to use different thresholds for the ensemble forecast for the observed and ensemble forecast data in
+  the hydrostats.ens_metrics.auroc() and hydrostats.ens_metrics.ens_brier() methods.
+- Changes to documentation to reflect the addition of the .name and .abbr properties to metrics from the HydroErr
+  package.
+
 Version 0.77
 ^^^^^^^^^^^^
 - Added a new rolling average feature to the hydrostats.data.daily_average(). Set rolling=True as a parameter to use the
