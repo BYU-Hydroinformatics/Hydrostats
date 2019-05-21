@@ -20,6 +20,7 @@ setup(
     classifiers=["Programming Language :: Python :: 2.7",
                  "Programming Language :: Python :: 3.5",
                  "Programming Language :: Python :: 3.6",
+                 'Topic :: Scientific/Engineering :: Hydrology',
                  ],
     license='MIT',
     install_requires=[
