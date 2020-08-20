@@ -17,7 +17,7 @@ __all__ = ["ens_me", "ens_mae", "ens_mse", "ens_rmse", "ens_pearson_r", "crps_he
            "crps_kernel", "ens_crps", "ens_brier", "auroc", "skill_score"]
 
 
-def ens_me(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
+def ens_me(obs, fcst_ens=None, remove_zero=False, remove_neg=False, reference='mean'):
     """Calculate the mean error between observed values and the ensemble mean.
 
     Parameters
@@ -40,10 +40,13 @@ def ens_me(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
 
+    reference: str
+        Determines the reference series against which to calculate the error. Choices are 'mean' and 'median'.
+
     Returns
     -------
     float
-        The mean error between the observed time series data and the ensemble mean.
+        The mean error between the observed time series data and the ensemble reference series.
 
     Examples
     --------
@@ -63,16 +66,26 @@ def ens_me(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     -2.5217349574908074
 
     """
+
+    # Check that the user reference is understood
+    assert reference == 'mean' or reference == 'median', "Reference series is not understood."
+
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
-    fcst_ens_mean = np.mean(fcst_ens, axis=1)
+    # Extract the reference dataset
+    if reference == 'mean':
+        fcst_ens_reference = np.mean(fcst_ens, axis=1)
+    elif reference == 'median':
+        fcst_ens_reference = np.median(fcst_ens, axis=1)
 
-    error = fcst_ens_mean - obs
+    # Difference the observation and the ensemble reference
+    error = fcst_ens_reference - obs
+
     return np.mean(error)
 
 
-def ens_mae(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
+def ens_mae(obs, fcst_ens=None, remove_zero=False, remove_neg=False, reference='mean'):
     """Calculate the mean absolute error between observed values and the ensemble mean.
 
     Parameters
@@ -93,6 +106,9 @@ def ens_mae(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
         If true, when a zero value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
+
+    reference: str
+        Determines the reference series against which to calculate the error. Choices are 'mean' and 'median'.
 
     Returns
     -------
@@ -117,16 +133,26 @@ def ens_mae(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     26.35428724003365
 
     """
+
+    # Check that the user reference is understood
+    assert reference == 'mean' or reference == 'median', "Reference series is not understood."
+
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
-    fcst_ens_mean = np.mean(fcst_ens, axis=1)
+    # Extract the reference dataset
+    if reference == 'mean':
+        fcst_ens_reference = np.mean(fcst_ens, axis=1)
+    elif reference == 'median':
+        fcst_ens_reference = np.median(fcst_ens, axis=1)
 
-    error = fcst_ens_mean - obs
+    # Difference the observation and the ensemble reference
+    error = fcst_ens_reference - obs
+
     return np.mean(np.abs(error))
 
 
-def ens_mse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
+def ens_mse(obs, fcst_ens=None, remove_zero=False, remove_neg=False, reference='mean'):
     """Calculate the mean squared error between observed values and the ensemble mean.
 
     Parameters
@@ -147,6 +173,9 @@ def ens_mse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
         If true, when a zero value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
+
+    reference: str
+        Determines the reference series against which to calculate the error. Choices are 'mean' and 'median'.
 
     Returns
     -------
@@ -170,16 +199,26 @@ def ens_mse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     910.5648405687582
 
     """
+
+    # Check that the user reference is understood
+    assert reference == 'mean' or reference == 'median', "Reference series is not understood."
+
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
-    fcst_ens_mean = np.mean(fcst_ens, axis=1)
+    # Extract the reference dataset
+    if reference == 'mean':
+        fcst_ens_reference = np.mean(fcst_ens, axis=1)
+    elif reference == 'median':
+        fcst_ens_reference = np.median(fcst_ens, axis=1)
 
-    error = fcst_ens_mean - obs
+    # Difference the observation and the ensemble reference
+    error = fcst_ens_reference - obs
+
     return np.mean(error ** 2)
 
 
-def ens_rmse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
+def ens_rmse(obs, fcst_ens=None, remove_zero=False, remove_neg=False, reference='mean'):
     """Calculate the root mean squared error between observed values and the ensemble mean.
 
     Parameters
@@ -200,6 +239,9 @@ def ens_rmse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
         If true, when a zero value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
+
+    reference: str
+        Determines the reference series against which to calculate the error. Choices are 'mean' and 'median'.
 
     Returns
     -------
@@ -223,16 +265,26 @@ def ens_rmse(obs, fcst_ens=None, remove_zero=False, remove_neg=False):
     30.17556694693172
 
     """
+
+    # Check that the user reference is understood
+    assert reference == 'mean' or reference == 'median', "Reference series is not understood."
+
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
-    fcst_ens_mean = np.mean(fcst_ens, axis=1)
+    # Extract the reference dataset
+    if reference == 'mean':
+        fcst_ens_reference = np.mean(fcst_ens, axis=1)
+    elif reference == 'median':
+        fcst_ens_reference = np.median(fcst_ens, axis=1)
 
-    error = fcst_ens_mean - obs
+    # Difference the observation and the ensemble reference
+    error = fcst_ens_reference - obs
+
     return np.sqrt(np.mean(error ** 2))
 
 
-def ens_pearson_r(obs, fcst_ens, remove_neg=False, remove_zero=False):
+def ens_pearson_r(obs, fcst_ens, remove_neg=False, remove_zero=False, reference='mean'):
     """Calculate the pearson correlation coefficient between observed values and the ensemble mean.
 
     Parameters
@@ -253,6 +305,9 @@ def ens_pearson_r(obs, fcst_ens, remove_neg=False, remove_zero=False):
         If true, when a zero value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
+
+    reference: str
+        Determines the reference series against which to calculate the error. Choices are 'mean' and 'median'.
 
     Returns
     -------
@@ -277,12 +332,20 @@ def ens_pearson_r(obs, fcst_ens, remove_neg=False, remove_zero=False):
     -0.13236871294739733
 
     """
+
+    # Check that the user reference is understood
+    assert reference == 'mean' or reference == 'median', "Reference series is not understood."
+
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
-    fcst_ens_mean = np.mean(fcst_ens, axis=1)
+    # Extract the reference dataset
+    if reference == 'mean':
+        fcst_ens_reference = np.mean(fcst_ens, axis=1)
+    elif reference == 'median':
+        fcst_ens_reference = np.median(fcst_ens, axis=1)
 
-    return pearson_r(fcst_ens_mean, obs)
+    return pearson_r(fcst_ens_reference, obs)
 
 
 def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False, llvm=True):
