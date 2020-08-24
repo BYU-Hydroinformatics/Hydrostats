@@ -409,17 +409,6 @@ def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False, llv
     return output
 
 
-def ens_crps_decomposition(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False):
-
-    # Calculate the Psam quantity
-    Psam = fcst_ens - obs               # Difference the bins
-    Psam[Psam < 0] = 0                  # Apply the heavyside function
-    Psam = np.sum(Psam, axis=0)         # Aggregate across the ensembles
-
-    # Calculate the Pcli quantity
-
-
-
 @jit(nopython=True, parallel=True)
 def numba_crps(ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps, adj):
     for i in prange(rows):
