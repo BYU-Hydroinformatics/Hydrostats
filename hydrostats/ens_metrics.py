@@ -645,8 +645,9 @@ def crps_hersbach(obs, fcst_ens, remove_neg=False, remove_zero=False):
     p = np.linspace(0, m, m + 1)
     pi = p / m
 
-    crps = np.zeros(n)
-    # crpsAdj = np.zeros(n)
+    # Define the data arrays
+    crps_reliability = np.zeros(n)
+    crps_potential = np.zeros(n)
 
     # Matrices for alpha and beta in CRPS decomposition
     a_mat = np.zeros(shape=(n, m + 1))
@@ -711,19 +712,23 @@ def crps_hersbach(obs, fcst_ens, remove_neg=False, remove_zero=False):
         b_mat[i, :] = b
 
         # Calc crps for individual start times
-        crps[i] = ((a * pi ** 2) + (b * (1 - pi) ** 2)).sum()
+        crps_reliability[i] = np.sum(a * pi ** 2)
+        crps_potential[i] = np.sum((b * (1 - pi) ** 2))
 
     # Calc mean crps as simple mean across crps[i]
-    crps_mean_method1 = crps.mean()
+    crps = crps_reliability + crps_potential
+    crps_mean_method1 = np.mean(crps_reliability + crps_potential)
 
     # Calc mean crps across all start times from eqn. 28 in Hersbach (2000)
     abar = np.mean(a_mat, 0)
     bbar = np.mean(b_mat, 0)
     crps_mean_method2 = ((abar * pi ** 2) + (bbar * (1 - pi) ** 2)).sum()
 
+    # Sump the quantities for output
     # Output array as a dictionary
     output = {'crps': crps, 'crpsMean1': crps_mean_method1,
-              'crpsMean2': crps_mean_method2}
+              'crpsMean2': crps_mean_method2, 'reliability': np.sum(crps_reliability),
+              'potential': np.sum(crps_potential)}
 
     return output
 
