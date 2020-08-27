@@ -8,3 +8,4 @@ For full documentation, see https://waderoberts123.github.io/Hydrostats/
 """
 from hydrostats.metrics import *
 from hydrostats.analyze import *
+__version__ = '0.79'
