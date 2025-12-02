@@ -473,29 +473,33 @@ def ens_crps(
     >>> noise = np.random.normal(scale=1, size=(15, 52))
     >>> x = np.linspace(1, 10, 15)
     >>> observed_array = np.sin(x) + 10
-    >>> ensemble_array_noise = (np.ones((15, 52)).T * observed_array).T + noise  # 52 Ensembles
+    >>> ensemble_array_noise = (
+    ...     np.ones((15, 52)).T * observed_array
+    ... ).T + noise  # 52 Ensembles
 
     Computing the crps values between the ensemble mean and the observed data with the
     random data. Note that the crps is relatively high because it is random.
 
     >>> crps_dictionary_rand = em.ens_crps(obs_array_random, ens_array_random)
-    >>> print(crps_dictionary_rand['crps'])
+    >>> print(crps_dictionary_rand["crps"])
     [ 7.73360237  9.59248626 34.46719655 30.10271075  7.451665   16.07882352
      14.59543529  8.55181637 15.4833089   8.32422363 16.55108154 19.20821296
       8.39452279 12.59949378 27.82543302]
-    >>> crps_dictionary_rand['crpsMean']
+    >>> crps_dictionary_rand["crpsMean"]
     15.797334183277709
 
     Computing the crps values between the ensemble mean and the observed data with noise
     in the ensemble data. Note that the crps values are better because the forecast is closer to
     observed values.
 
-    >>> crps_dictionary_noise = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array_noise)
-    >>> print(crps_dictionary_noise['crps'])
+    >>> crps_dictionary_noise = em.ens_crps(
+    ...     obs=observed_array, fcst_ens=ensemble_array_noise
+    ... )
+    >>> print(crps_dictionary_noise["crps"])
     [0.26921152 0.21388687 0.24927151 0.26047667 0.30234843 0.1996493
      0.2779844  0.29478927 0.275383   0.25682693 0.21485236 0.22824711
      0.2813889  0.21264652 0.18141063]
-    >>> crps_dictionary_noise['crpsMean']
+    >>> crps_dictionary_noise["crpsMean"]
     0.24789156041214638
 
     References
@@ -653,7 +657,10 @@ def python_crps(
 
 
 def crps_hersbach(
-    obs: np.ndarray, fcst_ens: np.ndarray, remove_neg: bool = False, remove_zero: bool = False
+    obs: np.ndarray,
+    fcst_ens: np.ndarray,
+    remove_neg: bool = False,
+    remove_zero: bool = False,
 ) -> Dict[str, Union[np.ndarray, float]]:
     """Calculate the the continuous ranked probability score (CRPS) as per equation 25-27 in
     Hersbach et al. (2000).
@@ -721,26 +728,28 @@ def crps_hersbach(
     random data.
 
     >>> crps_dictionary_rand = em.crps_hersbach(obs_array_random, ens_array_random)
-    >>> print(crps_dictionary_rand['crps'])
+    >>> print(crps_dictionary_rand["crps"])
     [ 7.73360237  9.59248626 34.46719655 30.10271075  7.451665   16.07882352
      14.59543529  8.55181637 15.4833089   8.32422363 16.55108154 19.20821296
       8.39452279 12.59949378 27.82543302]
-    >>> crps_dictionary_rand['crpsMean1']
+    >>> crps_dictionary_rand["crpsMean1"]
     15.797334183277723
-    >>> crps_dictionary_rand['crpsMean2']
+    >>> crps_dictionary_rand["crpsMean2"]
     15.797334183277725
 
     Computing the Hersbach CRPS values between the ensemble mean and the observed data with noise
     in the ensemble data.
 
-    >>> crps_dictionary_noise = em.crps_hersbach(obs=observed_array, fcst_ens=ensemble_array_noise)
-    >>> print(crps_dictionary_noise['crps'])
+    >>> crps_dictionary_noise = em.crps_hersbach(
+    ...     obs=observed_array, fcst_ens=ensemble_array_noise
+    ... )
+    >>> print(crps_dictionary_noise["crps"])
     [0.26921152 0.21388687 0.24927151 0.26047667 0.30234843 0.1996493
      0.2779844  0.29478927 0.275383   0.25682693 0.21485236 0.22824711
      0.2813889  0.21264652 0.18141063]
-    >>> crps_dictionary_noise['crpsMean1']
+    >>> crps_dictionary_noise["crpsMean1"]
     0.24789156041214705
-    >>> crps_dictionary_noise['crpsMean2']
+    >>> crps_dictionary_noise["crpsMean2"]
     0.24789156041214705
 
     """
@@ -849,7 +858,10 @@ def crps_hersbach(
 
 
 def crps_kernel(
-    obs: np.ndarray, fcst_ens: np.ndarray, remove_neg: bool = False, remove_zero: bool = False
+    obs: np.ndarray,
+    fcst_ens: np.ndarray,
+    remove_neg: bool = False,
+    remove_zero: bool = False,
 ) -> Dict[str, Union[np.ndarray, float]]:
     """Compute the kernel representation of the continuous ranked probability score (CRPS).
 
@@ -920,34 +932,36 @@ def crps_kernel(
     random data.
 
     >>> crps_dictionary_rand = em.crps_kernel(obs_array_random, ens_array_random)
-    >>> print(crps_dictionary_rand['crps'])
+    >>> print(crps_dictionary_rand["crps"])
     [ 7.73360237  9.59248626 34.46719655 30.10271075  7.451665   16.07882352
      14.59543529  8.55181637 15.4833089   8.32422363 16.55108154 19.20821296
       8.39452279 12.59949378 27.82543302]
-    >>> print(crps_dictionary_rand['crpsAdjusted'])
+    >>> print(crps_dictionary_rand["crpsAdjusted"])
     [ 7.43000827  9.29100065 34.14067524 29.76359191  7.14776152 15.75147589
      14.25192856  8.23647876 15.19419171  8.05998301 16.26113448 18.90686679
       8.09725139 12.24021268 27.45673444]
-    >>> crps_dictionary_rand['crpsMean']
+    >>> crps_dictionary_rand["crpsMean"]
     15.797334183277723
-    >>> crps_dictionary_rand['crpsAdjustedMean']
+    >>> crps_dictionary_rand["crpsAdjustedMean"]
     15.481953018707593
 
     Computing the Hersbach CRPS values between the ensemble mean and the observed data with noise
     in the ensemble data.
 
-    >>> crps_dictionary_noise = em.crps_kernel(obs=observed_array, fcst_ens=ensemble_array_noise)
-    >>> print(crps_dictionary_noise['crps'])
+    >>> crps_dictionary_noise = em.crps_kernel(
+    ...     obs=observed_array, fcst_ens=ensemble_array_noise
+    ... )
+    >>> print(crps_dictionary_noise["crps"])
     [0.26921152 0.21388687 0.24927151 0.26047667 0.30234843 0.1996493
      0.2779844  0.29478927 0.275383   0.25682693 0.21485236 0.22824711
      0.2813889  0.21264652 0.18141063]
-    >>> print(crps_dictionary_noise['crpsAdjusted'])
+    >>> print(crps_dictionary_noise["crpsAdjusted"])
     [0.25850726 0.20482797 0.23908004 0.25032814 0.28996894 0.18961905
      0.2670867  0.2821429  0.2634554  0.24573507 0.20457832 0.21730326
      0.26951946 0.2034818  0.17198615]
-    >>> crps_dictionary_noise['crpsMean']
+    >>> crps_dictionary_noise["crpsMean"]
     0.2478915604121471
-    >>> crps_dictionary_noise['crpsAdjustedMean']
+    >>> crps_dictionary_noise["crpsAdjustedMean"]
     0.23717469718824744
 
     References
@@ -1088,7 +1102,9 @@ def ens_brier(
     [0.08321006 0.05325444 0.53402367 0.45303254 0.02995562 0.08321006
      0.08321006 0.03698225 0.02366864 0.0625     0.04474852 0.71597633
      0.04474852 0.04474852 0.09467456]
-    >>> np.mean(em.ens_brier(obs=observed_array, fcst_ens=ensemble_array, threshold=175))
+    >>> np.mean(
+    ...     em.ens_brier(obs=observed_array, fcst_ens=ensemble_array, threshold=175)
+    ... )
     0.15919625246548325
 
     When we manually create binary data we get the same result
@@ -1099,7 +1115,9 @@ def ens_brier(
     [0.08321006 0.05325444 0.53402367 0.45303254 0.02995562 0.08321006
      0.08321006 0.03698225 0.02366864 0.0625     0.04474852 0.71597633
      0.04474852 0.04474852 0.09467456]
-    >>> np.mean(em.ens_brier(obs_bin=observed_array_bin, fcst_ens_bin=ensemble_array_bin))
+    >>> np.mean(
+    ...     em.ens_brier(obs_bin=observed_array_bin, fcst_ens_bin=ensemble_array_bin)
+    ... )
     0.15919625246548325
 
     References

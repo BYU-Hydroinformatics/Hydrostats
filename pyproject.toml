@@ -41,3 +41,6 @@ hydrostats = "hydrostats:main"
 [build-system]
 requires = ["uv_build>=0.9.10,<0.10.0"]
 build-backend = "uv_build"
+
+[tool.ruff.format]
+docstring-code-format = true

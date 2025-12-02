@@ -142,16 +142,33 @@ def make_table(
     >>> from hydrostats.metrics import mae, r_squared, nse, kge_2012
     >>>
     >>> # Defining the URLs of the datasets
-    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
+    >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
+    >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
     >>> # Merging the data
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=("SFPT", "GLOFAS"))
 
     Here we make a table and print the results:
 
-    >>> my_metrics = [mae.abbr, r_squared.abbr, nse.abbr, kge_2012.abbr]  # HydroErr 1.24 or greater is required to use these properties
-    >>> seasonal = [['01-01', '03-31'], ['04-01', '06-30'], ['07-01', '09-30'], ['10-01', '12-31']]
-    >>> table = ha.make_table(merged_df, my_metrics, seasonal, remove_neg=True, remove_zero=True, location='Magdalena')
+    >>> my_metrics = [
+    ...     mae.abbr,
+    ...     r_squared.abbr,
+    ...     nse.abbr,
+    ...     kge_2012.abbr,
+    ... ]  # HydroErr 1.24 or greater is required to use these properties
+    >>> seasonal = [
+    ...     ["01-01", "03-31"],
+    ...     ["04-01", "06-30"],
+    ...     ["07-01", "09-30"],
+    ...     ["10-01", "12-31"],
+    ... ]
+    >>> table = ha.make_table(
+    ...     merged_df,
+    ...     my_metrics,
+    ...     seasonal,
+    ...     remove_neg=True,
+    ...     remove_zero=True,
+    ...     location="Magdalena",
+    ... )
     >>> table
                              Location          MAE     ...           NSE  KGE (2012)
     Full Time Series        Magdalena  1157.669988     ...      0.873684    0.872871
@@ -391,15 +408,18 @@ def time_lag(
     >>> from hydrostats.metrics import me, r_squared, rmse, kge_2012, nse, dr
     >>>
     >>> # Defining the URLs of the datasets
-    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
+    >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
+    >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
     >>> # Merging the data
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=("SFPT", "GLOFAS"))
 
     There are two dataframes that are returned as part of the analysis.
 
     >>> # Running the lag analysis, not that HydroErr > 1.24 must be used to access the .abbr property
-    >>> time_lag_df, summary_df = ha.time_lag(merged_df, metrics=[me.abbr, r_squared.abbr, rmse.abbr, kge_2012.abbr, nse.abbr])
+    >>> time_lag_df, summary_df = ha.time_lag(
+    ...     merged_df,
+    ...     metrics=[me.abbr, r_squared.abbr, rmse.abbr, kge_2012.abbr, nse.abbr],
+    ... )
     >>> summary_df
                         Max  Max Lag Number          Min  Min Lag Number
     ME           174.740510           -28.0   174.740510           -24.0
@@ -411,7 +431,9 @@ def time_lag(
     A plot can be created that visualizes the different metrics throughout the time lags. It can be
     saved using the savefig parameter as well if desired.
 
-    >>> _, _ = ha.time_lag(merged_df, metrics=[r_squared.abbr, kge_2012.abbr, dr.abbr], plot=True)
+    >>> _, _ = ha.time_lag(
+    ...     merged_df, metrics=[r_squared.abbr, kge_2012.abbr, dr.abbr], plot=True
+    ... )
 
     .. image:: /Figures/lag_plot1.png
 

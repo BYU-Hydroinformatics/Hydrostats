@@ -94,7 +94,9 @@ def julian_to_gregorian(dataframe, frequency=None, inplace=False):
     1980-01-01 09:00:00.000000	    0.137395	    0.201721
 
     >>> # Rounding can be applied due to floating point inaccuracy
-    >>> test_df_gregorian_rounded = julian_to_gregorian(test_df, frequency="H")  # Hourly Rounding Frequency
+    >>> test_df_gregorian_rounded = julian_to_gregorian(
+    ...     test_df, frequency="H"
+    ... )  # Hourly Rounding Frequency
     >>> test_df_gregorian_rounded
                          Simulated Data  Observed Data
     1980-01-01 00:00:00        0.309527       0.938991
@@ -243,9 +245,11 @@ def merge_data(
 
     The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
 
-    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
+    >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
+    >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
+    >>> merged_df = hd.merge_data(
+    ...     sfpt_url, glofas_url, column_names=("Streamflow Prediction Tool", "GLOFAS")
+    ... )
 
     """
     # Reading the data into dataframes if from file
@@ -410,9 +414,11 @@ def daily_average(df, rolling=False, **kwargs):
 
     The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
 
-    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
+    >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
+    >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
+    >>> merged_df = hd.merge_data(
+    ...     sfpt_url, glofas_url, column_names=("Streamflow Prediction Tool", "GLOFAS")
+    ... )
 
     >>> hd.daily_average(merged_df)
            Streamflow Prediction Tool       GLOFAS
@@ -473,9 +479,11 @@ def daily_std_error(merged_data):
 
     The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
 
-    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
+    >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
+    >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
+    >>> merged_df = hd.merge_data(
+    ...     sfpt_url, glofas_url, column_names=("Streamflow Prediction Tool", "GLOFAS")
+    ... )
 
     >>> hd.daily_std_error(merged_df)
            Streamflow Prediction Tool      GLOFAS
@@ -526,9 +534,11 @@ def daily_std_dev(merged_data):
 
     The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
 
-    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
+    >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
+    >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
+    >>> merged_df = hd.merge_data(
+    ...     sfpt_url, glofas_url, column_names=("Streamflow Prediction Tool", "GLOFAS")
+    ... )
 
     >>> hd.daily_std_dev(merged_df)
            Streamflow Prediction Tool       GLOFAS
@@ -579,9 +589,11 @@ def monthly_average(merged_data):
 
     The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
 
-    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
+    >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
+    >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
+    >>> merged_df = hd.merge_data(
+    ...     sfpt_url, glofas_url, column_names=("Streamflow Prediction Tool", "GLOFAS")
+    ... )
 
     >>> hd.monthly_average(merged_df)
             Streamflow Prediction Tool        GLOFAS
@@ -628,9 +640,11 @@ def monthly_std_error(merged_data):
 
     The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
 
-    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
+    >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
+    >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
+    >>> merged_df = hd.merge_data(
+    ...     sfpt_url, glofas_url, column_names=("Streamflow Prediction Tool", "GLOFAS")
+    ... )
 
     >>> hd.monthly_std_error(merged_df)
         Streamflow Prediction Tool      GLOFAS
@@ -677,9 +691,11 @@ def monthly_std_dev(merged_data):
 
     The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
 
-    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('Streamflow Prediction Tool', 'GLOFAS'))
+    >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
+    >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
+    >>> merged_df = hd.merge_data(
+    ...     sfpt_url, glofas_url, column_names=("Streamflow Prediction Tool", "GLOFAS")
+    ... )
 
     >>> hd.monthly_std_dev(merged_df)
         Streamflow Prediction Tool       GLOFAS
@@ -730,7 +746,9 @@ def remove_nan_df(merged_dataframe):
     >>> data[2, 0] = data[3, 1] = np.inf
     >>> data[4, 0] = data[5, 1] = 0
     >>> data[6, 0] = data[7, 1] = -0.1
-    >>> example_df = pd.DataFrame(data=data, index=pd.date_range('1980-01-01', periods=15))
+    >>> example_df = pd.DataFrame(
+    ...     data=data, index=pd.date_range("1980-01-01", periods=15)
+    ... )
     >>> example_df
                        0         1
     1980-01-01       NaN  0.358903
@@ -805,7 +823,11 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
 
     Here an example DataFrame is made with appx three years of data.
 
-    >>> example_df = pd.DataFrame(data=np.random.rand(1000, 2), index=pd.date_range('2000-01-01', periods=1000), columns=['Simulated', 'Observed'])
+    >>> example_df = pd.DataFrame(
+    ...     data=np.random.rand(1000, 2),
+    ...     index=pd.date_range("2000-01-01", periods=1000),
+    ...     columns=["Simulated", "Observed"],
+    ... )
                 Simulated  Observed
     2000-01-01   0.862726  0.056597
     2000-01-02   0.979643  0.915072
@@ -826,7 +848,7 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
 
     Using this function, a new dataframe containing only the data values in january is returned.
 
-    >>> seasonal_df_jan = hd.seasonal_period(example_df, ('01-01', '01-31'))
+    >>> seasonal_df_jan = hd.seasonal_period(example_df, ("01-01", "01-31"))
                 Simulated  Observed
     2000-01-01   0.862726  0.056597
     2000-01-02   0.979643  0.915072
@@ -847,7 +869,9 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
 
     We can also specify a time range if we only want the months of January in the year 2000 and 2001
 
-    >>> seasonal_df_jan = hd.seasonal_period(example_df, ('01-01', '01-31'), time_range=('2000-01-01', '2001-12-31'))
+    >>> seasonal_df_jan = hd.seasonal_period(
+    ...     example_df, ("01-01", "01-31"), time_range=("2000-01-01", "2001-12-31")
+    ... )
                 Simulated  Observed
     2000-01-01   0.862726  0.056597
     2000-01-02   0.979643  0.915072

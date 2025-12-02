@@ -132,13 +132,19 @@ def plot(
     >>> import hydrostats.visual as hv
     >>> import matplotlib.pyplot as plt
 
-    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
+    >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
+    >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
 
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
-    >>> seasonal_df = hd.seasonal_period(merged_df, ('04-01', '07-31'), time_range=('1986-01-01', '1992-12-31'))
-    >>> daily_avg_df = hd.daily_average(merged_data=merged_df)  # Seasonal Daily Averages
-    >>> daily_std_error = hd.daily_std_error(merged_data=merged_df)  # Seasonal Daily Standard Deviation
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=("SFPT", "GLOFAS"))
+    >>> seasonal_df = hd.seasonal_period(
+    ...     merged_df, ("04-01", "07-31"), time_range=("1986-01-01", "1992-12-31")
+    ... )
+    >>> daily_avg_df = hd.daily_average(
+    ...     merged_data=merged_df
+    ... )  # Seasonal Daily Averages
+    >>> daily_std_error = hd.daily_std_error(
+    ...     merged_data=merged_df
+    ... )  # Seasonal Daily Standard Deviation
 
     The entire timeseries is plotted below
 
@@ -380,9 +386,9 @@ def hist(
     >>> import hydrostats.visual as hv
     >>> import matplotlib.pyplot as plt
 
-    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
+    >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
+    >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=("SFPT", "GLOFAS"))
 
     The histogram with 100 bins is plotted below
 
@@ -584,9 +590,9 @@ def scatter(
     >>> import hydrostats.visual as hv
     >>> import matplotlib.pyplot as plt
 
-    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
+    >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
+    >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=("SFPT", "GLOFAS"))
 
     >>> sim_array = merged_df.iloc[:, 0].values
     >>> obs_array = merged_df.iloc[:, 1].values
@@ -782,9 +788,9 @@ def qqplot(
     >>> import hydrostats.visual as hv
     >>> import matplotlib.pyplot as plt
 
-    >>> sfpt_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv'
-    >>> glofas_url = r'https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv'
-    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=('SFPT', 'GLOFAS'))
+    >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
+    >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
+    >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=("SFPT", "GLOFAS"))
 
     >>> qqplot(merged_data_df=merged_df, title='Quantile-Quantile Plot of Data',
     >>>        xlabel='SFPT Data Quantiles', ylabel='GLOFAS Data Quantiles', legend=True,
