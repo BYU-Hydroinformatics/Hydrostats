@@ -25,7 +25,14 @@ classifiers = [
   "Programming Language :: Python :: 3.14",
   "Topic :: Scientific/Engineering :: Hydrology"
 ]
-dependencies = []
+dependencies = [
+    "hydroerr>=1.24",
+    "matplotlib~=3.10.7",
+    "numba~=0.62.1",
+    "numpy~=2.2.6",
+    "pandas~=2.3.3",
+    "scipy~=1.15.3",
+]
 
 [dependency-groups]
 dev = [
@@ -34,9 +41,6 @@ dev = [
 
 [project.urls]
 Homepage = "https://github.com/BYU-Hydroinformatics/Hydrostats"
-
-[project.scripts]
-hydrostats = "hydrostats:main"
 
 [build-system]
 requires = ["uv_build>=0.9.10,<0.10.0"]
