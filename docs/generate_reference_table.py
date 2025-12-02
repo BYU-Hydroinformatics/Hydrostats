@@ -16,11 +16,15 @@ metric_names_array = metric_names_array[sorting_indices]
 metric_abbr_array = metric_abbr_array[sorting_indices]
 function_names_array = function_names_array[sorting_indices]
 
-markdown_table = "|Full Metric Name|Abbreviation|Function Name|\n" \
-                 "|----------------|------------|-------------|\n"
+markdown_table = (
+    "|Full Metric Name|Abbreviation|Function Name|\n"
+    "|----------------|------------|-------------|\n"
+)
 
 for i in range(metric_names_array.shape[0]):
-    table_row = "|{}|{}|{}|\n".format(metric_names_array[i], metric_abbr_array[i], function_names_array[i])
+    table_row = "|{}|{}|{}|\n".format(
+        metric_names_array[i], metric_abbr_array[i], function_names_array[i]
+    )
 
     markdown_table += table_row
 
@@ -39,7 +43,7 @@ what metrics are available for use and their abbreviation name.
 
 """
 
-with open('ref_table.rst', 'w') as outfile:
+with open("ref_table.rst", "w") as outfile:
     outfile.write(intro_text)
     outfile.write(rst_table)
     outfile.write("\n")

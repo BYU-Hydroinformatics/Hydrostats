@@ -1,46 +1,62 @@
-# python 3.6
-# -*- coding: utf-8 -*-
+"""Contains all the metrics included in hydrostats that measure forecast skill.
+
+Each forecast metric is contained in a function, and every metric can treat missing values as well
+as remove zero and negative values from the timeseries data. Users will be warned which start dates
+have been removed in the warnings that display during the function execution.
 """
-The ens_metrics module contains all of the metrics included in hydrostats that measure forecast
-skill. Each forecast metric is contained in a function, and every metric has the ability to treat
-missing values as well as remove zero and negative values from the timeseries data. Users will be
-warned which start dates have been removed in the warnings that display during the function
-execution.
-"""
-from __future__ import division
+
+from typing import Dict, Optional, Sequence, Tuple, Union
+
 from hydrostats.metrics import pearson_r
 import numpy as np
 from numba import jit, prange
 import warnings
 
-__all__ = ["ens_me", "ens_mae", "ens_mse", "ens_rmse", "ens_pearson_r", "crps_hersbach",
-           "crps_kernel", "ens_crps", "ens_brier", "auroc", "skill_score"]
+__all__ = [
+    "ens_me",
+    "ens_mae",
+    "ens_mse",
+    "ens_rmse",
+    "ens_pearson_r",
+    "crps_hersbach",
+    "crps_kernel",
+    "ens_crps",
+    "ens_brier",
+    "auroc",
+    "skill_score",
+]
 
 
-def ens_me(obs, fcst_ens=None, remove_zero=False, remove_neg=False, reference='mean'):
+def ens_me(
+    obs: np.ndarray,
+    fcst_ens: Optional[np.ndarray] = None,
+    remove_zero: bool = False,
+    remove_neg: bool = False,
+    reference: str = "mean",
+) -> float:
     """Calculate the mean error between observed values and the ensemble mean.
 
     Parameters
     ----------
 
-    obs: 1D ndarray
+    obs
         Array of observations for each start date.
 
-    fcst_ens: 2D ndarray
+    fcst_ens
         Array of ensemble forecast of dimension n x M, where n = number of start dates and
         M = number of ensemble members.
 
-    remove_neg: bool
+    remove_neg
         If True, when a negative value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
 
-    remove_zero: bool
+    remove_zero
         If true, when a zero value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
 
-    reference: str
+    reference
         Determines the reference series against which to calculate the error. Choices are 'mean' and 'median'.
 
     Returns
@@ -68,15 +84,19 @@ def ens_me(obs, fcst_ens=None, remove_zero=False, remove_neg=False, reference='m
     """
 
     # Check that the user reference is understood
-    assert reference == 'mean' or reference == 'median', "Reference series is not understood."
+    assert reference == "mean" or reference == "median", (
+        "Reference series is not understood."
+    )
 
     # Treating data
-    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
+    obs, fcst_ens = treat_data(
+        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
+    )
 
     # Extract the reference dataset
-    if reference == 'mean':
+    if reference == "mean":
         fcst_ens_reference = np.mean(fcst_ens, axis=1)
-    elif reference == 'median':
+    elif reference == "median":
         fcst_ens_reference = np.median(fcst_ens, axis=1)
 
     # Difference the observation and the ensemble reference
@@ -85,29 +105,35 @@ def ens_me(obs, fcst_ens=None, remove_zero=False, remove_neg=False, reference='m
     return np.mean(error)
 
 
-def ens_mae(obs, fcst_ens=None, remove_zero=False, remove_neg=False, reference='mean'):
+def ens_mae(
+    obs: np.ndarray,
+    fcst_ens: Optional[np.ndarray] = None,
+    remove_zero: bool = False,
+    remove_neg: bool = False,
+    reference: str = "mean",
+) -> float:
     """Calculate the mean absolute error between observed values and the ensemble mean.
 
     Parameters
     ----------
-    obs: 1D ndarray
+    obs
         Array of observations for each start date.
 
-    fcst_ens: 2D ndarray
+    fcst_ens
         Array of ensemble forecast of dimension n x M, where n = number of start dates and
         M = number of ensemble members.
 
-    remove_neg: bool
+    remove_neg
         If True, when a negative value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
 
-    remove_zero: bool
+    remove_zero
         If true, when a zero value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
 
-    reference: str
+    reference
         Determines the reference series against which to calculate the error. Choices are 'mean' and 'median'.
 
     Returns
@@ -135,15 +161,19 @@ def ens_mae(obs, fcst_ens=None, remove_zero=False, remove_neg=False, reference='
     """
 
     # Check that the user reference is understood
-    assert reference == 'mean' or reference == 'median', "Reference series is not understood."
+    assert reference == "mean" or reference == "median", (
+        "Reference series is not understood."
+    )
 
     # Treating data
-    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
+    obs, fcst_ens = treat_data(
+        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
+    )
 
     # Extract the reference dataset
-    if reference == 'mean':
+    if reference == "mean":
         fcst_ens_reference = np.mean(fcst_ens, axis=1)
-    elif reference == 'median':
+    elif reference == "median":
         fcst_ens_reference = np.median(fcst_ens, axis=1)
 
     # Difference the observation and the ensemble reference
@@ -152,29 +182,35 @@ def ens_mae(obs, fcst_ens=None, remove_zero=False, remove_neg=False, reference='
     return np.mean(np.abs(error))
 
 
-def ens_mse(obs, fcst_ens=None, remove_zero=False, remove_neg=False, reference='mean'):
+def ens_mse(
+    obs: np.ndarray,
+    fcst_ens: Optional[np.ndarray] = None,
+    remove_zero: bool = False,
+    remove_neg: bool = False,
+    reference: str = "mean",
+) -> float:
     """Calculate the mean squared error between observed values and the ensemble mean.
 
     Parameters
     ----------
-    obs: 1D ndarray
+    obs
         Array of observations for each start date.
 
-    fcst_ens: 2D ndarray
+    fcst_ens
         Array of ensemble forecast of dimension n x M, where n = number of start dates and
         M = number of ensemble members.
 
-    remove_neg: bool
+    remove_neg
         If True, when a negative value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
 
-    remove_zero: bool
+    remove_zero
         If true, when a zero value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
 
-    reference: str
+    reference
         Determines the reference series against which to calculate the error. Choices are 'mean' and 'median'.
 
     Returns
@@ -201,46 +237,56 @@ def ens_mse(obs, fcst_ens=None, remove_zero=False, remove_neg=False, reference='
     """
 
     # Check that the user reference is understood
-    assert reference == 'mean' or reference == 'median', "Reference series is not understood."
+    assert reference == "mean" or reference == "median", (
+        "Reference series is not understood."
+    )
 
     # Treating data
-    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
+    obs, fcst_ens = treat_data(
+        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
+    )
 
     # Extract the reference dataset
-    if reference == 'mean':
+    if reference == "mean":
         fcst_ens_reference = np.mean(fcst_ens, axis=1)
-    elif reference == 'median':
+    elif reference == "median":
         fcst_ens_reference = np.median(fcst_ens, axis=1)
 
     # Difference the observation and the ensemble reference
     error = fcst_ens_reference - obs
 
-    return np.mean(error ** 2)
+    return np.mean(error**2)
 
 
-def ens_rmse(obs, fcst_ens=None, remove_zero=False, remove_neg=False, reference='mean'):
+def ens_rmse(
+    obs: np.ndarray,
+    fcst_ens: Optional[np.ndarray] = None,
+    remove_zero: bool = False,
+    remove_neg: bool = False,
+    reference: str = "mean",
+) -> float:
     """Calculate the root mean squared error between observed values and the ensemble mean.
 
     Parameters
     ----------
-    obs: 1D ndarray
+    obs
         Array of observations for each start date.
 
-    fcst_ens: 2D ndarray
+    fcst_ens
         Array of ensemble forecast of dimension n x M, where n = number of start dates and
         M = number of ensemble members.
 
-    remove_neg: bool
+    remove_neg
         If True, when a negative value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
 
-    remove_zero: bool
+    remove_zero
         If true, when a zero value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
 
-    reference: str
+    reference
         Determines the reference series against which to calculate the error. Choices are 'mean' and 'median'.
 
     Returns
@@ -267,46 +313,56 @@ def ens_rmse(obs, fcst_ens=None, remove_zero=False, remove_neg=False, reference=
     """
 
     # Check that the user reference is understood
-    assert reference == 'mean' or reference == 'median', "Reference series is not understood."
+    assert reference == "mean" or reference == "median", (
+        "Reference series is not understood."
+    )
 
     # Treating data
-    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
+    obs, fcst_ens = treat_data(
+        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
+    )
 
     # Extract the reference dataset
-    if reference == 'mean':
+    if reference == "mean":
         fcst_ens_reference = np.mean(fcst_ens, axis=1)
-    elif reference == 'median':
+    elif reference == "median":
         fcst_ens_reference = np.median(fcst_ens, axis=1)
 
     # Difference the observation and the ensemble reference
     error = fcst_ens_reference - obs
 
-    return np.sqrt(np.mean(error ** 2))
+    return np.sqrt(np.mean(error**2))
 
 
-def ens_pearson_r(obs, fcst_ens, remove_neg=False, remove_zero=False, reference='mean'):
+def ens_pearson_r(
+    obs: np.ndarray,
+    fcst_ens: np.ndarray,
+    remove_neg: bool = False,
+    remove_zero: bool = False,
+    reference: str = "mean",
+) -> float:
     """Calculate the pearson correlation coefficient between observed values and the ensemble mean.
 
     Parameters
     ----------
-    obs: 1D ndarray
+    obs
         Array of observations for each start date.
 
-    fcst_ens: 2D ndarray
+    fcst_ens
         Array of ensemble forecast of dimension n x M, where n = number of start dates and
         M = number of ensemble members.
 
-    remove_neg: bool
+    remove_neg
         If True, when a negative value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
 
-    remove_zero: bool
+    remove_zero
         If true, when a zero value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
 
-    reference: str
+    reference
         Determines the reference series against which to calculate the error. Choices are 'mean' and 'median'.
 
     Returns
@@ -334,49 +390,60 @@ def ens_pearson_r(obs, fcst_ens, remove_neg=False, remove_zero=False, reference=
     """
 
     # Check that the user reference is understood
-    assert reference == 'mean' or reference == 'median', "Reference series is not understood."
+    assert reference == "mean" or reference == "median", (
+        "Reference series is not understood."
+    )
 
     # Treating data
-    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
+    obs, fcst_ens = treat_data(
+        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
+    )
 
     # Extract the reference dataset
-    if reference == 'mean':
+    if reference == "mean":
         fcst_ens_reference = np.mean(fcst_ens, axis=1)
-    elif reference == 'median':
+    elif reference == "median":
         fcst_ens_reference = np.median(fcst_ens, axis=1)
 
     return pearson_r(fcst_ens_reference, obs)
 
 
-def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False, llvm=True):
+def ens_crps(
+    obs: np.ndarray,
+    fcst_ens: np.ndarray,
+    adj: float = np.nan,
+    remove_neg: bool = False,
+    remove_zero: bool = False,
+    llvm: bool = True,
+) -> Dict[str, Union[np.ndarray, float]]:
     """Calculate the ensemble-adjusted Continuous Ranked Probability Score (CRPS)
 
     Parameters
     ----------
-    obs: 1D ndarray
+    obs
         array of observations for each start date.
 
-    fcst_ens: 2D ndarray
+    fcst_ens
         Array of ensemble forecast of dimension n x M, where n = number of start dates and
         M = number of ensemble members.
 
-    adj: float or int
+    adj
         A positive number representing ensemble size for which the scores should be
         adjusted. If np.nan (default) scores will not be adjusted. This value can be ‘np.inf‘, in
         which case the adjusted (or fair) crps values will be calculated as per equation 6 in
         Leutbecher et al. (2018).
 
-    remove_neg: bool
+    remove_neg
         If True, when a negative value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
 
-    remove_zero: bool
+    remove_zero
         If true, when a zero value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
 
-    llvm: bool
+    llvm
         If true (default) the crps will be calculated using the numba module, which uses the LLVM compiler
         infrastructure for enhanced performance. If this is not wanted, then set it to false for a pure python
         implementation.
@@ -444,7 +511,9 @@ def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False, llv
       https://CRAN.R-project.org/package=SpecsVerification
     """
     # Treating the Data
-    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
+    obs, fcst_ens = treat_data(
+        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
+    )
 
     rows = obs.size
     cols = fcst_ens.shape[1]
@@ -456,30 +525,56 @@ def ens_crps(obs, fcst_ens, adj=np.nan, remove_neg=False, remove_zero=False, llv
 
     if llvm:
         crps = numba_crps(
-            fcst_ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps, np.float64(adj)
+            fcst_ens,
+            obs,
+            rows,
+            cols,
+            col_len_array,
+            sad_ens_half,
+            sad_obs,
+            crps,
+            np.float64(adj),
         )
     else:
         crps = python_crps(
-            fcst_ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps, np.float64(adj)
+            fcst_ens,
+            obs,
+            rows,
+            cols,
+            col_len_array,
+            sad_ens_half,
+            sad_obs,
+            crps,
+            np.float64(adj),
         )
 
     # Calc mean crps as simple mean across crps[i]
     crps_mean = np.mean(crps)
 
     # Output array as a dictionary
-    output = {'crps': crps, 'crpsMean': crps_mean}
+    output = {"crps": crps, "crpsMean": crps_mean}
 
     return output
 
 
 @jit(nopython=True, parallel=True)
-def numba_crps(ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps, adj):
+def numba_crps(
+    ens: np.ndarray,
+    obs: np.ndarray,
+    rows: int,
+    cols: int,
+    col_len_array: np.ndarray,
+    sad_ens_half: np.ndarray,
+    sad_obs: np.ndarray,
+    crps: np.ndarray,
+    adj: float,
+) -> np.ndarray:
     for i in prange(rows):
         the_obs = obs[i]
         the_ens = ens[i, :]
         the_ens = np.sort(the_ens)
-        sum_xj = 0.
-        sum_jxj = 0.
+        sum_xj = 0.0
+        sum_jxj = 0.0
 
         j = 0
         while j < cols:
@@ -492,12 +587,14 @@ def numba_crps(ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps,
 
     if np.isnan(adj):
         for i in range(rows):
-            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / \
-                      (col_len_array[i] * col_len_array[i])
+            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / (
+                col_len_array[i] * col_len_array[i]
+            )
     elif adj > 1:
         for i in range(rows):
-            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / \
-                      (col_len_array[i] * (col_len_array[i] - 1)) * (1 - 1 / adj)
+            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / (
+                col_len_array[i] * (col_len_array[i] - 1)
+            ) * (1 - 1 / adj)
     elif adj == 1:
         for i in range(rows):
             crps[i] = sad_obs[i] / col_len_array[i]
@@ -508,13 +605,23 @@ def numba_crps(ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps,
     return crps
 
 
-def python_crps(ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps, adj):
+def python_crps(
+    ens: np.ndarray,
+    obs: np.ndarray,
+    rows: int,
+    cols: int,
+    col_len_array: np.ndarray,
+    sad_ens_half: np.ndarray,
+    sad_obs: np.ndarray,
+    crps: np.ndarray,
+    adj: float,
+) -> np.ndarray:
     for i in prange(rows):
         the_obs = obs[i]
         the_ens = ens[i, :]
         the_ens = np.sort(the_ens)
-        sum_xj = 0.
-        sum_jxj = 0.
+        sum_xj = 0.0
+        sum_jxj = 0.0
 
         j = 0
         while j < cols:
@@ -527,12 +634,14 @@ def python_crps(ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps
 
     if np.isnan(adj):
         for i in range(rows):
-            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / \
-                      (col_len_array[i] * col_len_array[i])
+            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / (
+                col_len_array[i] * col_len_array[i]
+            )
     elif adj > 1:
         for i in range(rows):
-            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / \
-                      (col_len_array[i] * (col_len_array[i] - 1)) * (1 - 1 / adj)
+            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / (
+                col_len_array[i] * (col_len_array[i] - 1)
+            ) * (1 - 1 / adj)
     elif adj == 1:
         for i in range(rows):
             crps[i] = sad_obs[i] / col_len_array[i]
@@ -543,7 +652,9 @@ def python_crps(ens, obs, rows, cols, col_len_array, sad_ens_half, sad_obs, crps
     return crps
 
 
-def crps_hersbach(obs, fcst_ens, remove_neg=False, remove_zero=False):
+def crps_hersbach(
+    obs: np.ndarray, fcst_ens: np.ndarray, remove_neg: bool = False, remove_zero: bool = False
+) -> Dict[str, Union[np.ndarray, float]]:
     """Calculate the the continuous ranked probability score (CRPS) as per equation 25-27 in
     Hersbach et al. (2000).
 
@@ -553,18 +664,18 @@ def crps_hersbach(obs, fcst_ens, remove_neg=False, remove_zero=False):
 
     Parameters
     ----------
-    obs: 1D ndarry
+    obs
         Array of observations for each start date
-    fcst_ens: 2D ndarray
+    fcst_ens
         Array of ensemble forecast of dimension n x M, where n = number of start dates and
         M = number of ensemble members.
 
-    remove_neg: bool
+    remove_neg
         If True, when a negative value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
 
-    remove_zero: bool
+    remove_zero
         If true, when a zero value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
@@ -635,7 +746,9 @@ def crps_hersbach(obs, fcst_ens, remove_neg=False, remove_zero=False):
     """
 
     # Treating the Data
-    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
+    obs, fcst_ens = treat_data(
+        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
+    )
 
     # Set parameters
     n = fcst_ens.shape[0]  # number of forecast start dates
@@ -655,7 +768,6 @@ def crps_hersbach(obs, fcst_ens, remove_neg=False, remove_zero=False):
 
     # Loop fcst start times
     for i in range(n):
-
         # Initialise vectors for storing output
         a = np.zeros(m - 1)
         b = np.zeros(m - 1)
@@ -668,7 +780,6 @@ def crps_hersbach(obs, fcst_ens, remove_neg=False, remove_zero=False):
 
         # Deal with 0 < i < m [So, will loop 50 times for m = 51]
         for j in range(m - 1):
-
             # Rule 1
             if xa > x[j + 1]:
                 a[j] = x[j + 1] - x[j]
@@ -712,7 +823,7 @@ def crps_hersbach(obs, fcst_ens, remove_neg=False, remove_zero=False):
         b_mat[i, :] = b
 
         # Calc crps for individual start times
-        crps_reliability[i] = np.sum(a * pi ** 2)
+        crps_reliability[i] = np.sum(a * pi**2)
         crps_potential[i] = np.sum((b * (1 - pi) ** 2))
 
     # Calc mean crps as simple mean across crps[i]
@@ -722,18 +833,24 @@ def crps_hersbach(obs, fcst_ens, remove_neg=False, remove_zero=False):
     # Calc mean crps across all start times from eqn. 28 in Hersbach (2000)
     abar = np.mean(a_mat, 0)
     bbar = np.mean(b_mat, 0)
-    crps_mean_method2 = ((abar * pi ** 2) + (bbar * (1 - pi) ** 2)).sum()
+    crps_mean_method2 = ((abar * pi**2) + (bbar * (1 - pi) ** 2)).sum()
 
     # Sump the quantities for output
     # Output array as a dictionary
-    output = {'crps': crps, 'crpsMean1': crps_mean_method1,
-              'crpsMean2': crps_mean_method2, 'reliability': np.sum(crps_reliability),
-              'potential': np.sum(crps_potential)}
+    output = {
+        "crps": crps,
+        "crpsMean1": crps_mean_method1,
+        "crpsMean2": crps_mean_method2,
+        "reliability": np.sum(crps_reliability),
+        "potential": np.sum(crps_potential),
+    }
 
     return output
 
 
-def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
+def crps_kernel(
+    obs: np.ndarray, fcst_ens: np.ndarray, remove_neg: bool = False, remove_zero: bool = False
+) -> Dict[str, Union[np.ndarray, float]]:
     """Compute the kernel representation of the continuous ranked probability score (CRPS).
 
     Calculates the kernel representation of the continuous ranked probability score (CRPS) as per
@@ -842,7 +959,9 @@ def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
     """
 
     # Treatment of data
-    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
+    obs, fcst_ens = treat_data(
+        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
+    )
 
     # Set parameters
     n = fcst_ens.shape[0]  # number of forecast start dates
@@ -856,7 +975,6 @@ def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
 
     # Loop through start dates
     for i in range(n):
-
         t1[i] = abs(fcst_ens[i] - obs[i]).sum()
 
         # Initialise a vec for storing absolute errors for each ensemble pair
@@ -872,23 +990,38 @@ def crps_kernel(obs, fcst_ens, remove_neg=False, remove_zero=False):
         # First term (t1) is the MAE of the ensemble members; Second term (t2)
         # is ensemble spread in terms of absolute difference between all pairs
         # of members
-        crps[i] = (1. / m * t1[i]) - (1. / (2 * (m ** 2)) * t2[i])  # kernel representation of crps
-        crps_adj[i] = (1. / m * t1[i]) - (
-                1. / (2 * m * (m - 1)) * t2[i])  # kernel representation of adjusted crps
+        crps[i] = (1.0 / m * t1[i]) - (
+            1.0 / (2 * (m**2)) * t2[i]
+        )  # kernel representation of crps
+        crps_adj[i] = (1.0 / m * t1[i]) - (
+            1.0 / (2 * m * (m - 1)) * t2[i]
+        )  # kernel representation of adjusted crps
 
     # Calculate mean crps
     crps_mean = crps.mean()
     crps_adj_mean = crps_adj.mean()
 
     # Output two arrays as a dictionary
-    output = {'crps': crps, 'crpsAdjusted': crps_adj, 'crpsMean': crps_mean,
-              'crpsAdjustedMean': crps_adj_mean}
+    output = {
+        "crps": crps,
+        "crpsAdjusted": crps_adj,
+        "crpsMean": crps_mean,
+        "crpsAdjustedMean": crps_adj_mean,
+    }
 
     return output
 
 
-def ens_brier(fcst_ens=None, obs=None, threshold=None, ens_threshold=None, obs_threshold=None, fcst_ens_bin=None,
-              obs_bin=None, adj=None):
+def ens_brier(
+    fcst_ens: Optional[np.ndarray] = None,
+    obs: Optional[np.ndarray] = None,
+    threshold: Optional[float] = None,
+    ens_threshold: Optional[float] = None,
+    obs_threshold: Optional[float] = None,
+    fcst_ens_bin: Optional[np.ndarray] = None,
+    obs_bin: Optional[np.ndarray] = None,
+    adj: Optional[float] = None,
+) -> np.ndarray:
     """
     Calculate the ensemble-adjusted Brier Score.
 
@@ -896,33 +1029,33 @@ def ens_brier(fcst_ens=None, obs=None, threshold=None, ens_threshold=None, obs_t
 
     Parameters
     ----------
-    obs: 1D ndarray
+    obs
         Array of observations for each start date.
 
-    fcst_ens: 2D ndarray
+    fcst_ens
         Array of ensemble forecast of dimension n x M, where n = number of start dates and
         M = number of ensemble members.
 
-    threshold: float
+    threshold
         The threshold for an event (e.g. if the event is a 100 year flood, the streamflow value
         that a 100 year flood would have to exceed.
 
-    ens_threshold: float
+    ens_threshold
         If different threshholds for the ensemble forecast and the observed data is desired, then this parameter can be
         set along with the 'obs_threshold' parameter to set different thresholds.
 
-    obs_threshold: float
+    obs_threshold
         If different threshholds for the ensemble forecast and the observed data is desired, then this parameter can be
         set along with the 'ens_threshold' parameter to set different thresholds.
 
-    fcst_ens_bin: 1D ndarray
+    fcst_ens_bin
         Binary array of observations for each start date. 1 for an event and 0 for a non-event.
 
-    obs_bin: 2D ndarray
+    obs_bin
         Binary array of ensemble forecast of dimension n x M, where n = number of start dates and
         M = number of ensemble members. 1 for an event and 0 for a non-event.
 
-    adj: float or int
+    adj
         A positive number representing ensemble size for which the scores should be
         adjusted. If None (default) scores will not be adjusted. This value can be ‘np.inf‘, in
         which case the adjusted (or fair) Brier scores will be calculated.
@@ -979,34 +1112,55 @@ def ens_brier(fcst_ens=None, obs=None, threshold=None, ens_threshold=None, obs_t
     """
 
     # User supplied the binary matrices
-    if obs_bin is not None and fcst_ens_bin is not None and fcst_ens is None and obs is None \
-            and threshold is None and ens_threshold is None and obs_threshold is None:
-
+    if (
+        obs_bin is not None
+        and fcst_ens_bin is not None
+        and fcst_ens is None
+        and obs is None
+        and threshold is None
+        and ens_threshold is None
+        and obs_threshold is None
+    ):
         pass
 
     # User supplied normal matrices with a threshold value to apply to each of them
-    elif obs_bin is None and fcst_ens_bin is None and fcst_ens is not None and obs is not None \
-            and threshold is not None and ens_threshold is None and obs_threshold is None:
-
+    elif (
+        obs_bin is None
+        and fcst_ens_bin is None
+        and fcst_ens is not None
+        and obs is not None
+        and threshold is not None
+        and ens_threshold is None
+        and obs_threshold is None
+    ):
         # Convert the observed data and forecast data to binary data
         obs_bin = (obs > threshold).astype(np.int)
         fcst_ens_bin = (fcst_ens > threshold).astype(np.int)
 
     # User supplied normal matrices with different thresholds for the forecast ensemble and the observed data
-    elif obs_bin is None and fcst_ens_bin is None and fcst_ens is not None and obs is not None \
-            and threshold is None and ens_threshold is not None and obs_threshold is not None:
-
+    elif (
+        obs_bin is None
+        and fcst_ens_bin is None
+        and fcst_ens is not None
+        and obs is not None
+        and threshold is None
+        and ens_threshold is not None
+        and obs_threshold is not None
+    ):
         # Convert the observed data and forecast data to binary data
         obs_bin = (obs > obs_threshold).astype(np.int)
         fcst_ens_bin = (fcst_ens > ens_threshold).astype(np.int)
 
     else:
-        raise RuntimeError(" You must either supply fcst_ens, obs, and threshold (or obs_threshold and ens_threshold "
-                           "if there are different thresholds) or you must supply fcst_ens_bin and obs_bin.")
+        raise RuntimeError(
+            " You must either supply fcst_ens, obs, and threshold (or obs_threshold and ens_threshold "
+            "if there are different thresholds) or you must supply fcst_ens_bin and obs_bin."
+        )
 
     # Treat missing data and warn users of columns being removed
-    obs_bin, fcst_ens_bin = treat_data(obs_bin, fcst_ens_bin, remove_neg=False,
-                                       remove_zero=False)
+    obs_bin, fcst_ens_bin = treat_data(
+        obs_bin, fcst_ens_bin, remove_neg=False, remove_zero=False
+    )
 
     # Count number of ensemble members that predict the event
     i = np.sum(fcst_ens_bin, axis=1)
@@ -1019,15 +1173,23 @@ def ens_brier(fcst_ens=None, obs=None, threshold=None, ens_threshold=None, obs_t
         adj = num_cols
 
     # calculate ensemble-adjusted brier scores
-    br = (i / num_cols - obs_bin) ** 2 - i * (num_cols - i) / num_cols / \
-         (num_cols - 1) * (1 / num_cols - 1 / adj)
+    br = (i / num_cols - obs_bin) ** 2 - i * (num_cols - i) / num_cols / (
+        num_cols - 1
+    ) * (1 / num_cols - 1 / adj)
 
     # return the vector of brier scores
     return br
 
 
-def auroc(fcst_ens=None, obs=None, threshold=None, ens_threshold=None, obs_threshold=None,
-          fcst_ens_bin=None, obs_bin=None):
+def auroc(
+    fcst_ens: Optional[np.ndarray] = None,
+    obs: Optional[np.ndarray] = None,
+    threshold: Optional[float] = None,
+    ens_threshold: Optional[float] = None,
+    obs_threshold: Optional[float] = None,
+    fcst_ens_bin: Optional[np.ndarray] = None,
+    obs_bin: Optional[np.ndarray] = None,
+) -> np.ndarray:
     """
     Calculates Area Under the Relative Operating Characteristic curve (AUROC)
     for a forecast and its verifying binary observation, and estimates the variance of the AUROC
@@ -1036,29 +1198,29 @@ def auroc(fcst_ens=None, obs=None, threshold=None, ens_threshold=None, obs_thres
 
     Parameters
     ----------
-    obs: 1D ndarray
+    obs
         Array of observations for each start date.
 
-    fcst_ens: 2D ndarray
+    fcst_ens
         Array of ensemble forecast of dimension n x M, where n = number of start dates and
         M = number of ensemble members.
 
-    threshold: float
+    threshold
         The threshold for an event (e.g. if the event is a 100 year flood, the streamflow value
         that a 100 year flood would have to exceed.
 
-    ens_threshold: float
+    ens_threshold
         If different threshholds for the ensemble forecast and the observed data is desired, then this parameter can be
         set along with the 'obs_threshold' parameter to set different thresholds.
 
-    obs_threshold: float
+    obs_threshold
         If different threshholds for the ensemble forecast and the observed data is desired, then this parameter can be
         set along with the 'ens_threshold' parameter to set different thresholds.
 
-    fcst_ens_bin: 1D ndarray
+    fcst_ens_bin
         Binary array of observations for each start date. 1 for an event and 0 for a non-event.
 
-    obs_bin: 2D ndarray
+    obs_bin
         Binary array of ensemble forecast of dimension n x M, where n = number of start dates and
         M = number of ensemble members. 1 for an event and 0 for a non-event.
 
@@ -1117,36 +1279,65 @@ def auroc(fcst_ens=None, obs=None, threshold=None, ens_threshold=None, obs_thres
 
     """
     # User supplied the binary matrices
-    if obs_bin is not None and fcst_ens_bin is not None and fcst_ens is None and obs is None \
-            and threshold is None and ens_threshold is None and obs_threshold is None:
-
+    if (
+        obs_bin is not None
+        and fcst_ens_bin is not None
+        and fcst_ens is None
+        and obs is None
+        and threshold is None
+        and ens_threshold is None
+        and obs_threshold is None
+    ):
         pass
 
     # User supplied normal matrices with a threshold value to apply to each of them
-    elif obs_bin is None and fcst_ens_bin is None and fcst_ens is not None and obs is not None \
-            and threshold is not None and ens_threshold is None and obs_threshold is None:
-
+    elif (
+        obs_bin is None
+        and fcst_ens_bin is None
+        and fcst_ens is not None
+        and obs is not None
+        and threshold is not None
+        and ens_threshold is None
+        and obs_threshold is None
+    ):
         # Convert the observed data and forecast data to binary data
         obs_bin = (obs > threshold).astype(np.int)
         fcst_ens_bin = (fcst_ens > threshold).astype(np.int)
 
     # User supplied normal matrices with different thresholds for the forecast ensemble and the observed data
-    elif obs_bin is None and fcst_ens_bin is None and fcst_ens is not None and obs is not None \
-            and threshold is None and ens_threshold is not None and obs_threshold is not None:
-
+    elif (
+        obs_bin is None
+        and fcst_ens_bin is None
+        and fcst_ens is not None
+        and obs is not None
+        and threshold is None
+        and ens_threshold is not None
+        and obs_threshold is not None
+    ):
         # Convert the observed data and forecast data to binary data
         obs_bin = (obs > obs_threshold).astype(np.int)
         fcst_ens_bin = (fcst_ens > ens_threshold).astype(np.int)
 
     else:
-        raise RuntimeError(" You must either supply fcst_ens, obs, and threshold (or obs_threshold and ens_threshold "
-                           "if there are different thresholds) or you must supply fcst_ens_bin and obs_bin.")
+        raise RuntimeError(
+            " You must either supply fcst_ens, obs, and threshold (or obs_threshold and ens_threshold "
+            "if there are different thresholds) or you must supply fcst_ens_bin and obs_bin."
+        )
 
-    obs_bin, fcst_ens_bin = treat_data(obs_bin, fcst_ens_bin, remove_neg=False, remove_zero=False)
+    obs_bin, fcst_ens_bin = treat_data(
+        obs_bin, fcst_ens_bin, remove_neg=False, remove_zero=False
+    )
 
-    if np.all(fcst_ens_bin == 0) or np.all(fcst_ens_bin == 1) or np.all(obs_bin == 0) or np.all(obs_bin == 1):
-        raise RuntimeError("Both arrays need at least one event and one non-event, otherwise, "
-                           "division by zero will occur!")
+    if (
+        np.all(fcst_ens_bin == 0)
+        or np.all(fcst_ens_bin == 1)
+        or np.all(obs_bin == 0)
+        or np.all(obs_bin == 1)
+    ):
+        raise RuntimeError(
+            "Both arrays need at least one event and one non-event, otherwise, "
+            "division by zero will occur!"
+        )
 
     ens_forecast_means = np.mean(fcst_ens_bin, axis=1)
 
@@ -1156,15 +1347,15 @@ def auroc(fcst_ens=None, obs=None, threshold=None, ens_threshold=None, obs_thres
 
 
 @jit(nopython=True)
-def auroc_numba(fcst, obs):
+def auroc_numba(fcst: np.ndarray, obs: np.ndarray) -> np.ndarray:
     num_start_dates = obs.size
 
     i_ord = fcst.argsort()
 
-    sum_v = 0.
-    sum_v2 = 0.
-    sum_w = 0.
-    sum_w2 = 0.
+    sum_v = 0.0
+    sum_v2 = 0.0
+    sum_w = 0.0
+    sum_w2 = 0.0
     n = 0
     m = 0
     i = 0
@@ -1205,26 +1396,32 @@ def auroc_numba(fcst, obs):
     return np.array([theta, sd_auc])
 
 
-def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_nan_inf=False):
+def skill_score(
+    scores: Union[float, np.ndarray],
+    bench_scores: Union[float, np.ndarray],
+    perf_score: Union[int, float],
+    eff_sample_size: Optional[float] = None,
+    remove_nan_inf: bool = False,
+) -> Dict[str, Union[float, np.ndarray]]:
     """Calculate the skill score of the given function.
 
     Parameters
     ----------
 
-    scores: float or ndarray
+    scores
         The verification scores, or the mean of the verification scores in an ndarray (float).
 
-    bench_scores: float or ndarray
+    bench_scores
         The reference or benchmark verification scores, or the mean of the benchmark scores (float).
 
-    perf_score: int or float
+    perf_score
         The perfect score of the score, typically 1 or 0.
 
-    eff_sample_size: float
+    eff_sample_size
         The effective sample size of the data to be used when estimating the sampling uncertainty. Default is None,
         which will set the eff_sample_size to the length of scores.
 
-    remove_nan_inf: bool
+    remove_nan_inf
         If True, removes NaN and Inf values in the scores if they exist, pairwise. If False (default), the function
         will raise an exception.
 
@@ -1245,13 +1442,16 @@ def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_n
 
     """
     # Check data
-    assert np.isfinite(perf_score), 'The perfect score is not finite.'
+    assert np.isfinite(perf_score), "The perfect score is not finite."
     if eff_sample_size is not None:
-        assert eff_sample_size > 0 and np.isfinite(eff_sample_size), 'The effective sample size must be finite and ' \
-                                                                     'greater than 0.'
+        assert eff_sample_size > 0 and np.isfinite(eff_sample_size), (
+            "The effective sample size must be finite and greater than 0."
+        )
 
     if isinstance(scores, np.ndarray) and isinstance(bench_scores, np.ndarray):
-        assert scores.size == bench_scores.size, 'The scores and benchmark scores are not the same length'
+        assert scores.size == bench_scores.size, (
+            "The scores and benchmark scores are not the same length"
+        )
 
         # Making a copy to avoid altering original scores
         scores_copy = np.copy(scores)
@@ -1259,31 +1459,34 @@ def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_n
 
         # Removing NaN and Inf if requested
         if remove_nan_inf:
-
             all_treatment_array = np.ones(scores_copy.size, dtype=bool)
 
             if np.any(np.isnan(scores_copy)) or np.any(np.isnan(bench_scores_copy)):
                 nan_indices_fcst = ~np.isnan(scores_copy)
                 nan_indices_obs = ~np.isnan(bench_scores_copy)
                 all_nan_indices = np.logical_and(nan_indices_fcst, nan_indices_obs)
-                all_treatment_array = np.logical_and(all_treatment_array, all_nan_indices)
+                all_treatment_array = np.logical_and(
+                    all_treatment_array, all_nan_indices
+                )
 
                 warnings.warn(
                     "Row(s) {} contained NaN values and the row(s) have been removed for the calculation (Rows are "
                     "zero indexed).".format(np.where(~all_nan_indices)[0]),
-                    UserWarning
+                    UserWarning,
                 )
 
             if np.any(np.isinf(scores_copy)) or np.any(np.isinf(bench_scores_copy)):
                 inf_indices_fcst = ~(np.isinf(scores_copy))
                 inf_indices_obs = ~np.isinf(bench_scores_copy)
                 all_inf_indices = np.logical_and(inf_indices_fcst, inf_indices_obs)
-                all_treatment_array = np.logical_and(all_treatment_array, all_inf_indices)
+                all_treatment_array = np.logical_and(
+                    all_treatment_array, all_inf_indices
+                )
 
                 warnings.warn(
                     "Row(s) {} contained Inf or -Inf values and the row(s) have been removed for the calculation (Rows "
                     "are zero indexed).".format(np.where(~all_inf_indices)[0]),
-                    UserWarning
+                    UserWarning,
                 )
 
             scores_copy = scores_copy[all_treatment_array]
@@ -1295,16 +1498,21 @@ def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_n
                 nan_indices_obs = ~np.isnan(bench_scores_copy)
                 all_nan_indices = np.logical_and(nan_indices_fcst, nan_indices_obs)
 
-                raise RuntimeError("Row(s) {} contained NaN values "
-                                   "(Rows are zero indexed).".format(np.where(~all_nan_indices)[0]))
+                raise RuntimeError(
+                    "Row(s) {} contained NaN values (Rows are zero indexed).".format(
+                        np.where(~all_nan_indices)[0]
+                    )
+                )
 
             if np.any(np.isinf(scores_copy)) or np.any(np.isinf(bench_scores_copy)):
                 inf_indices_fcst = ~(np.isinf(scores_copy))
                 inf_indices_obs = ~np.isinf(bench_scores_copy)
                 all_inf_indices = np.logical_and(inf_indices_fcst, inf_indices_obs)
 
-                raise RuntimeError("Row(s) {} contained Inf or -Inf values "
-                                   "(Rows are zero indexed).".format(np.where(~all_inf_indices)[0]))
+                raise RuntimeError(
+                    "Row(s) {} contained Inf or -Inf values "
+                    "(Rows are zero indexed).".format(np.where(~all_inf_indices)[0])
+                )
 
         # Handle effective sample size
         if eff_sample_size is None:
@@ -1317,8 +1525,10 @@ def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_n
         if bench_score == 0.0:
             skillscore = np.nan
             skillscore_sigma = np.nan
-            warnings.warn("The difference between the perfect score and benchmark score is zero, setting the skill"
-                          " score value and standard deviation to NaN.")
+            warnings.warn(
+                "The difference between the perfect score and benchmark score is zero, setting the skill"
+                " score value and standard deviation to NaN."
+            )
         else:
             # calculate skill score
             skillscore = 1 - score / bench_score
@@ -1336,8 +1546,9 @@ def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_n
                 return np.sqrt(z)
 
             sqrt_na_val = sqrt_na(
-                var_score / bench_score ** 2 + var_bench_score * score ** 2 / bench_score ** 4 - 2 * cov_score *
-                score / bench_score ** 3
+                var_score / bench_score**2
+                + var_bench_score * score**2 / bench_score**4
+                - 2 * cov_score * score / bench_score**3
             )
 
             skillscore_sigma = (1 / np.sqrt(eff_sample_size)) * sqrt_na_val
@@ -1347,15 +1558,16 @@ def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_n
                 skillscore_sigma = np.nan
 
     elif isinstance(scores, float) and isinstance(bench_scores, float):
-
         # shift mean scores by perfect score
         score = scores - perf_score
         bench_score = bench_scores - perf_score
 
         if bench_score == 0.0:
             skillscore = np.nan
-            warnings.warn("The difference between the perfect score and benchmark score is zero, setting the skill"
-                          " score value to NaN.")
+            warnings.warn(
+                "The difference between the perfect score and benchmark score is zero, setting the skill"
+                " score value to NaN."
+            )
         else:
             # calculate skill score
             skillscore = 1 - score / bench_score
@@ -1363,26 +1575,30 @@ def skill_score(scores, bench_scores, perf_score, eff_sample_size=None, remove_n
         skillscore_sigma = np.nan
 
     else:
-        raise RuntimeError("The scores and benchmark_scores must either both be ndarrays or both be floats.")
+        raise RuntimeError(
+            "The scores and benchmark_scores must either both be ndarrays or both be floats."
+        )
 
-    return_dict = {
-        'skillScore': skillscore,
-        'standardDeviation': skillscore_sigma
-    }
+    return_dict = {"skillScore": skillscore, "standardDeviation": skillscore_sigma}
 
     return return_dict
 
 
-def treat_data(obs, fcst_ens, remove_zero, remove_neg):
+def treat_data(
+    obs: np.ndarray, fcst_ens: np.ndarray, remove_zero: bool, remove_neg: bool
+) -> Tuple[np.ndarray, np.ndarray]:
     assert obs.ndim == 1, "obs is not a 1D numpy array."
     assert fcst_ens.ndim == 2, "fcst_ens is not a 2D numpy array."
-    assert obs.size == fcst_ens[:, 0].size, "obs and fcst_ens do not have the same amount " \
-                                            "of start dates."
+    assert obs.size == fcst_ens[:, 0].size, (
+        "obs and fcst_ens do not have the same amount of start dates."
+    )
 
     # Give user warning, but let run, if eith obs or fcst are all zeros
     if obs.sum() == 0 or fcst_ens.sum() == 0:
-        warnings.warn("All zero values in either 'obs' or 'fcst', "
-                      "function might run, but check if data OK.")
+        warnings.warn(
+            "All zero values in either 'obs' or 'fcst', "
+            "function might run, but check if data OK."
+        )
 
     all_treatment_array = np.ones(obs.size, dtype=bool)
 
@@ -1393,8 +1609,10 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
         all_nan_indices = np.logical_and(nan_indices_fcst, nan_indices_obs)
         all_treatment_array = np.logical_and(all_treatment_array, all_nan_indices)
 
-        warnings.warn("Row(s) {} contained NaN values and the row(s) have been "
-                      "removed (zero indexed).".format(np.where(~all_nan_indices)[0]))
+        warnings.warn(
+            "Row(s) {} contained NaN values and the row(s) have been "
+            "removed (zero indexed).".format(np.where(~all_nan_indices)[0])
+        )
 
     if np.any(np.isinf(obs)) or np.any(np.isinf(fcst_ens)):
         inf_indices_fcst = ~(np.any(np.isinf(fcst_ens), axis=1))
@@ -1402,8 +1620,10 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
         all_inf_indices = np.logical_and(inf_indices_fcst, inf_indices_obs)
         all_treatment_array = np.logical_and(all_treatment_array, all_inf_indices)
 
-        warnings.warn("Row(s) {} contained Inf or -Inf values and the row(s) have been "
-                      "removed (zero indexed).".format(np.where(~all_inf_indices)[0]))
+        warnings.warn(
+            "Row(s) {} contained Inf or -Inf values and the row(s) have been "
+            "removed (zero indexed).".format(np.where(~all_inf_indices)[0])
+        )
 
     # Treat zero data in obs and fcst_ens, rows in fcst_ens or obs that contain zero values
     if remove_zero:
@@ -1413,13 +1633,15 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
             all_zero_indices = np.logical_and(zero_indices_fcst, zero_indices_obs)
             all_treatment_array = np.logical_and(all_treatment_array, all_zero_indices)
 
-            warnings.warn("Row(s) {} contained zero values and the row(s) have been "
-                          "removed (zero indexed).".format(np.where(~all_zero_indices)[0]))
+            warnings.warn(
+                "Row(s) {} contained zero values and the row(s) have been "
+                "removed (zero indexed).".format(np.where(~all_zero_indices)[0])
+            )
 
     # Treat negative data in obs and fcst_ens, rows in fcst_ens or obs that contain negative values
     # warnings.filterwarnings("ignore")  # Ignore Runtime warnings for comparison
     if remove_neg:
-        with np.errstate(invalid='ignore'):
+        with np.errstate(invalid="ignore"):
             obs_bool = obs < 0
             fcst_ens_bool = fcst_ens < 0
         if obs_bool.any() or fcst_ens_bool.any():
@@ -1430,8 +1652,10 @@ def treat_data(obs, fcst_ens, remove_zero, remove_neg):
 
             # warnings.filterwarnings("always")  # Turn warnings back on
 
-            warnings.warn("Row(s) {} contained negative values and the row(s) have been "
-                          "removed (zero indexed).".format(np.where(~all_neg_indices)[0]))
+            warnings.warn(
+                "Row(s) {} contained negative values and the row(s) have been "
+                "removed (zero indexed).".format(np.where(~all_neg_indices)[0])
+            )
         else:
             pass  # warnings.filterwarnings("always")  # Turn warnings back on
     else:

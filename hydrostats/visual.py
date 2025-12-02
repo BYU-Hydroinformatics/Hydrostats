@@ -1,27 +1,42 @@
-# python 3.6
-# -*- coding: utf-8 -*-
 """
 The visual module contains different plotting functions for time series visualization. It allows
 users to plot hydrographs, scatter plots, histograms, and quantile-quantile (qq) plots to visualize
 time series data. In some of the visualization functions, metrics can be added to the plots for a
 more complete summary of the data.
 """
-from __future__ import division
+
 from hydrostats.metrics import function_list, metric_abbr
 from HydroErr.HydroErr import treat_values
 import numpy as np
 import matplotlib.pyplot as plt
 import calendar
 from pandas.plotting import register_matplotlib_converters
+
 register_matplotlib_converters()
 
-__all__ = ['plot', 'hist', 'scatter', 'qqplot']
+__all__ = ["plot", "hist", "scatter", "qqplot"]
 
 
-def plot(merged_data_df, legend=('Simulated Data', 'Observed Data'), metrics=None, grid=False, title=None,
-         x_season=False, labels=None, linestyles=('ro', 'b^'), tight_xlim=False, fig_size=(10, 6),
-         text_adjust=(-0.35, 0.75), plot_adjust=0.27, transparency=0.5, ebars=None, ecolor=None,
-         markersize=2, errorevery=1, markevery=1):
+def plot(
+    merged_data_df,
+    legend=("Simulated Data", "Observed Data"),
+    metrics=None,
+    grid=False,
+    title=None,
+    x_season=False,
+    labels=None,
+    linestyles=("ro", "b^"),
+    tight_xlim=False,
+    fig_size=(10, 6),
+    text_adjust=(-0.35, 0.75),
+    plot_adjust=0.27,
+    transparency=0.5,
+    ebars=None,
+    ecolor=None,
+    markersize=2,
+    errorevery=1,
+    markevery=1,
+):
     """
     Create a comparison time series line plot of simulated and observed time series data.
 
@@ -156,7 +171,7 @@ def plot(merged_data_df, legend=('Simulated Data', 'Observed Data'), metrics=Non
     .. image:: /Figures/plot_seasonal.png
 
     """
-    fig = plt.figure(figsize=fig_size, facecolor='w', edgecolor='k')
+    fig = plt.figure(figsize=fig_size, facecolor="w", edgecolor="k")
     ax = fig.add_subplot(111)
 
     # Setting Variable for the simulated data, observed data, and time stamps
@@ -166,18 +181,50 @@ def plot(merged_data_df, legend=('Simulated Data', 'Observed Data'), metrics=Non
 
     # Plotting the Data
     if ebars is None:
-        plt.plot(time, sim, linestyles[0], markersize=markersize,
-                 label=legend[0], alpha=transparency, markevery=markevery)
-        plt.plot(time, obs, linestyles[1], markersize=markersize,
-                 label=legend[1], alpha=transparency, markevery=markevery)
+        plt.plot(
+            time,
+            sim,
+            linestyles[0],
+            markersize=markersize,
+            label=legend[0],
+            alpha=transparency,
+            markevery=markevery,
+        )
+        plt.plot(
+            time,
+            obs,
+            linestyles[1],
+            markersize=markersize,
+            label=legend[1],
+            alpha=transparency,
+            markevery=markevery,
+        )
         plt.legend(fontsize=14)
     elif ebars is not None:
-        plt.errorbar(x=time, y=sim, yerr=ebars.iloc[:, 0].values,
-                     fmt=linestyles[0], markersize=markersize, label=legend[0], alpha=transparency, ecolor=ecolor[0],
-                     markevery=markevery, errorevery=errorevery)
-        plt.errorbar(x=time, y=obs, yerr=ebars.iloc[:, 1].values,
-                     fmt=linestyles[1], markersize=markersize, label=legend[1], alpha=transparency, ecolor=ecolor[1],
-                     markevery=markevery, errorevery=errorevery)
+        plt.errorbar(
+            x=time,
+            y=sim,
+            yerr=ebars.iloc[:, 0].values,
+            fmt=linestyles[0],
+            markersize=markersize,
+            label=legend[0],
+            alpha=transparency,
+            ecolor=ecolor[0],
+            markevery=markevery,
+            errorevery=errorevery,
+        )
+        plt.errorbar(
+            x=time,
+            y=obs,
+            yerr=ebars.iloc[:, 1].values,
+            fmt=linestyles[1],
+            markersize=markersize,
+            label=legend[1],
+            alpha=transparency,
+            ecolor=ecolor[1],
+            markevery=markevery,
+            errorevery=errorevery,
+        )
         plt.legend(fontsize=14)
 
     # Adjusting the plot if user wants tight x axis limits
@@ -204,11 +251,12 @@ def plot(merged_data_df, legend=('Simulated Data', 'Observed Data'), metrics=Non
         plt.xlabel(labels[0], fontsize=18)
         plt.ylabel(labels[1], fontsize=18)
     if title:
-        title_dict = {'family': 'sans-serif',
-                      'color': 'black',
-                      'weight': 'normal',
-                      'size': 20,
-                      }
+        title_dict = {
+            "family": "sans-serif",
+            "color": "black",
+            "weight": "normal",
+            "size": 20,
+        }
         ax.set_title(label=title, fontdict=title_dict, pad=25)
 
     # Placing a grid if requested
@@ -234,26 +282,42 @@ def plot(merged_data_df, legend=('Simulated Data', 'Observed Data'), metrics=Non
         selected_metrics = []
         for i in index:
             selected_metrics.append(
-                function_list_str[i] + '=' + str(round(function_list[i](sim, obs), 3)))
+                function_list_str[i] + "=" + str(round(function_list[i](sim, obs), 3))
+            )
 
-        formatted_selected_metrics = ''
+        formatted_selected_metrics = ""
         for i in selected_metrics:
-            formatted_selected_metrics += i + '\n'
+            formatted_selected_metrics += i + "\n"
 
-        font = {'family': 'sans-serif',
-                'weight': 'normal',
-                'size': 14}
-        plt.text(text_adjust[0], text_adjust[1], formatted_selected_metrics, ha='left', va='center',
-                 transform=ax.transAxes, fontdict=font)
+        font = {"family": "sans-serif", "weight": "normal", "size": 14}
+        plt.text(
+            text_adjust[0],
+            text_adjust[1],
+            formatted_selected_metrics,
+            ha="left",
+            va="center",
+            transform=ax.transAxes,
+            fontdict=font,
+        )
 
         plt.subplots_adjust(left=plot_adjust)
 
     return fig
 
 
-def hist(merged_data_df=None, sim_array=None, obs_array=None, num_bins=100, z_norm=False,
-         legend=('Simulated', 'Observed'), grid=False, title=None, labels=None, prob_dens=False,
-         figsize=(12, 6)):
+def hist(
+    merged_data_df=None,
+    sim_array=None,
+    obs_array=None,
+    num_bins=100,
+    z_norm=False,
+    legend=("Simulated", "Observed"),
+    grid=False,
+    title=None,
+    labels=None,
+    prob_dens=False,
+    figsize=(12, 6),
+):
     """Plots a histogram comparing simulated and observed data.
 
     The histogram plot is a function that is available for comparing the histograms of two time
@@ -351,13 +415,13 @@ def hist(merged_data_df=None, sim_array=None, obs_array=None, num_bins=100, z_no
         sim_mean = np.mean(sim)
         sim_std_dev = np.std(sim)
         # The z scores override sim from before because we are plotting the Z scores
-        sim = ((sim - sim_mean) / sim_std_dev)
+        sim = (sim - sim_mean) / sim_std_dev
 
         # Calculating the Z Scores for the observed data
         obs_mean = np.mean(obs)
         obs_std_dev = np.std(obs)
         # The z scores override obs from before because we are plotting the Z scores
-        obs = ((obs - obs_mean) / obs_std_dev)
+        obs = (obs - obs_mean) / obs_std_dev
 
         # Finding the maximum and minimum Z scores
         sim_max = np.max(sim)
@@ -385,12 +449,32 @@ def hist(merged_data_df=None, sim_array=None, obs_array=None, num_bins=100, z_no
 
     if legend is None:
         # Plotting the data without the legend
-        ax1.hist(sim, bins, alpha=0.5, edgecolor='black', linewidth=0.5, density=prob_dens)
-        ax1.hist(obs, bins, alpha=0.5, edgecolor='black', linewidth=0.5, density=prob_dens)
+        ax1.hist(
+            sim, bins, alpha=0.5, edgecolor="black", linewidth=0.5, density=prob_dens
+        )
+        ax1.hist(
+            obs, bins, alpha=0.5, edgecolor="black", linewidth=0.5, density=prob_dens
+        )
     else:
         # Plotting the data with the legend
-        ax1.hist(sim, bins, alpha=0.5, label=legend[0], edgecolor='black', linewidth=0.5, density=prob_dens)
-        ax1.hist(obs, bins, alpha=0.5, label=legend[1], edgecolor='black', linewidth=0.5, density=prob_dens)
+        ax1.hist(
+            sim,
+            bins,
+            alpha=0.5,
+            label=legend[0],
+            edgecolor="black",
+            linewidth=0.5,
+            density=prob_dens,
+        )
+        ax1.hist(
+            obs,
+            bins,
+            alpha=0.5,
+            label=legend[1],
+            edgecolor="black",
+            linewidth=0.5,
+            density=prob_dens,
+        )
         ax1.legend(framealpha=1)
 
     # Setting the x and y tick size
@@ -403,11 +487,12 @@ def hist(merged_data_df=None, sim_array=None, obs_array=None, num_bins=100, z_no
 
     # Creating a title
     if title:
-        title_dict = {'family': 'sans-serif',
-                      'color': 'black',
-                      'weight': 'normal',
-                      'size': 20,
-                      }
+        title_dict = {
+            "family": "sans-serif",
+            "color": "black",
+            "weight": "normal",
+            "size": 20,
+        }
         ax1.set_title(label=title, fontdict=title_dict, pad=15)
 
     # Creating x and y axis labels
@@ -421,8 +506,20 @@ def hist(merged_data_df=None, sim_array=None, obs_array=None, num_bins=100, z_no
     return fig
 
 
-def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, title=None, labels=None, best_fit=False,
-            marker_style='ko', metrics=None, log_scale=False, line45=False, figsize=(12, 8)):
+def scatter(
+    merged_data_df=None,
+    sim_array=None,
+    obs_array=None,
+    grid=False,
+    title=None,
+    labels=None,
+    best_fit=False,
+    marker_style="ko",
+    metrics=None,
+    log_scale=False,
+    line45=False,
+    figsize=(12, 8),
+):
     """Creates a scatter plot of the observed and simulated data.
 
     Parameters
@@ -509,7 +606,7 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
     .. image:: /Figures/scatterlog.png
 
     """
-    fig = plt.figure(figsize=figsize, facecolor='w', edgecolor='k')
+    fig = plt.figure(figsize=figsize, facecolor="w", edgecolor="k")
     ax = fig.add_subplot(111)
 
     if merged_data_df is not None and sim_array is None and obs_array is None:
@@ -530,7 +627,12 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
         plt.loglog(sim, obs, marker_style)
 
     if line45:
-        plt.plot(np.arange(0, int(max_both) + 1), np.arange(0, int(max_both) + 1), 'r--', label='45$^\circ$ Line')
+        plt.plot(
+            np.arange(0, int(max_both) + 1),
+            np.arange(0, int(max_both) + 1),
+            "r--",
+            label="45$^\circ$ Line",
+        )
 
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
@@ -558,7 +660,7 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
         equation = "{} x + {}".format(np.round(p[0], 4), np.round(p[1], 4))
 
         # Plotting the best fit line with the equation as a legend in latex
-        plt.plot(x_new, y_new, 'k', label="${}$".format(equation))
+        plt.plot(x_new, y_new, "k", label="${}$".format(equation))
 
     if line45 or best_fit:
         plt.legend(fontsize=12)
@@ -574,23 +676,42 @@ def scatter(merged_data_df=None, sim_array=None, obs_array=None, grid=False, tit
             index.append(function_list_str.index(metric))
         selected_metrics = []
         for i in index:
-            selected_metrics.append(function_list_str[i] + '=' +
-                                    str(round(function_list[i](sim, obs), 3)))
-        formatted_selected_metrics = ''
+            selected_metrics.append(
+                function_list_str[i] + "=" + str(round(function_list[i](sim, obs), 3))
+            )
+        formatted_selected_metrics = ""
         for i in selected_metrics:
-            formatted_selected_metrics += i + '\n'
-        font = {'family': 'sans-serif',
-                'weight': 'normal',
-                'size': 14}
-        plt.text(-0.35, 0.75, formatted_selected_metrics, ha='left', va='center', transform=ax.transAxes, fontdict=font)
+            formatted_selected_metrics += i + "\n"
+        font = {"family": "sans-serif", "weight": "normal", "size": 14}
+        plt.text(
+            -0.35,
+            0.75,
+            formatted_selected_metrics,
+            ha="left",
+            va="center",
+            transform=ax.transAxes,
+            fontdict=font,
+        )
         plt.subplots_adjust(left=0.25)
 
     return fig
 
 
-def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='linear', title=None,
-           xlabel='Simulated Data Quantiles', ylabel='Observed Data Quantiles', legend=False, replace_nan=None,
-           replace_inf=None, remove_neg=False, remove_zero=False, figsize=(12, 8)):
+def qqplot(
+    merged_data_df=None,
+    sim_array=None,
+    obs_array=None,
+    interpolate="linear",
+    title=None,
+    xlabel="Simulated Data Quantiles",
+    ylabel="Observed Data Quantiles",
+    legend=False,
+    replace_nan=None,
+    replace_inf=None,
+    remove_neg=False,
+    remove_zero=False,
+    figsize=(12, 8),
+):
     """Plots a Quantile-Quantile plot of the simulated and observed data.
 
     Useful for comparing to see whether the two datasets come from the same distribution.
@@ -674,7 +795,7 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
 
     """
 
-    fig = plt.figure(figsize=figsize, facecolor='w', edgecolor='k')
+    fig = plt.figure(figsize=figsize, facecolor="w", edgecolor="k")
 
     if merged_data_df is not None and sim_array is None and obs_array is None:
         # Creating a simulated and observed data array
@@ -686,8 +807,14 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
     else:
         raise RuntimeError("You must either pass in a dataframe or two arrays.")
 
-    sim, obs = treat_values(sim, obs, replace_nan=replace_nan, replace_inf=replace_inf, remove_neg=remove_neg,
-                            remove_zero=remove_zero)
+    sim, obs = treat_values(
+        sim,
+        obs,
+        replace_nan=replace_nan,
+        replace_inf=replace_inf,
+        remove_neg=remove_neg,
+        remove_zero=remove_zero,
+    )
 
     # Finding the size of n and creating a percentile vector:
     n = sim.size
@@ -719,13 +846,21 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
     mobs = np.array([minobs, maxobs])
 
     if not legend:
-        plt.plot(sim_perc, obs_perc, 'b^', markersize=2)
-        plt.plot(msim, mobs, 'r-.', lw=1)
-        plt.plot(quant_sim, quant_obs, 'r-', marker='o', mfc='k', lw=2)
+        plt.plot(sim_perc, obs_perc, "b^", markersize=2)
+        plt.plot(msim, mobs, "r-.", lw=1)
+        plt.plot(quant_sim, quant_obs, "r-", marker="o", mfc="k", lw=2)
     else:
-        plt.plot(sim_perc, obs_perc, 'b^', markersize=2, label='Quantiles')
-        plt.plot(msim, mobs, 'r-.', lw=1, label='Entire Range of Quantiles')
-        plt.plot(quant_sim, quant_obs, 'r-', marker='o', mfc='w', lw=2, label='Inter-Quartile Range')
+        plt.plot(sim_perc, obs_perc, "b^", markersize=2, label="Quantiles")
+        plt.plot(msim, mobs, "r-.", lw=1, label="Entire Range of Quantiles")
+        plt.plot(
+            quant_sim,
+            quant_obs,
+            "r-",
+            marker="o",
+            mfc="w",
+            lw=2,
+            label="Inter-Quartile Range",
+        )
         plt.legend(fontsize=14)
 
     if title is not None:
@@ -739,33 +874,3 @@ def qqplot(merged_data_df=None, sim_array=None, obs_array=None, interpolate='lin
     plt.tight_layout()
 
     return fig
-
-
-if __name__ == "__main__":
-    pass
-
-    # import pandas as pd
-    #
-    # merged_df = pd.read_pickle("tests/Files_for_tests/merged_df.pkl")
-    #
-    # plot(merged_data_df=merged_df,
-    #      title='Hydrograph of Entire Time Series',
-    #      linestyles=['r-', 'k-'],
-    #      legend=('SFPT', 'GLOFAS'),
-    #      labels=['Datetime', 'Streamflow (cfs)'],
-    #      metrics=['ME', 'NSE', 'SA'],
-    #      grid=True)
-    #
-    # plt.savefig(r"tests/baseline_images/plot_tests/plot_full1_test.png")
-    #
-    # plot(merged_data_df=daily_avg_df,
-    #         title='Daily Average Streamflow (Standard Error)',
-    #         legend=('SFPT', 'GLOFAS'),
-    #         x_season=True,
-    #         labels=['Datetime', 'Streamflow (csm)'],
-    #         linestyles=['r-', 'k-'],
-    #         fig_size=(14, 8),
-    #         ebars=daily_std_error,
-    #         ecolor=('r', 'k'),
-    #         tight_xlim=True
-    #         )
