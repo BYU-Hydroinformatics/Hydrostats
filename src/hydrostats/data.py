@@ -5,6 +5,8 @@ daily and monthly summary statistics, and get seasonal periods of a time series.
 
 """
 
+from typing import Any, Literal
+
 import numpy as np
 import pandas as pd
 from numpy import inf, nan
@@ -24,7 +26,11 @@ __all__ = [
 ]
 
 
-def julian_to_gregorian(dataframe, frequency=None, inplace=False):  # noqa: FBT002
+def julian_to_gregorian(
+    dataframe: pd.DataFrame,
+    frequency: str | None = None,
+    inplace: bool = False,  # noqa: FBT001, FBT002
+) -> pd.DataFrame | None:
     """Convert the index of the dataframe from julian float values to gregorian datetime values.
 
     Parameters
@@ -37,7 +43,7 @@ def julian_to_gregorian(dataframe, frequency=None, inplace=False):  # noqa: FBT0
         due to the inability of computers to store floats as perfect decimals. Providing the
         frequency will automatically attempt to round the dates. A list of all the frequencies
         pandas provides is found
-        `here <http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases/>`_.
+        `here <https://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases/>`_.
         Common frequencies include daily ("D") and hourly ("H").
 
     inplace: bool
@@ -94,20 +100,21 @@ def julian_to_gregorian(dataframe, frequency=None, inplace=False):  # noqa: FBT0
     >>> test_df_gregorian = hd.julian_to_gregorian(test_df)
     >>> test_df_gregorian
                               Simulated Data   Observed Data
-    1980-01-01 00:00:00.000000	    0.585454	    0.457238
-    1980-01-01 01:00:00.028800	    0.524764	    0.083464
-    1980-01-01 01:59:59.971200	    0.516821	    0.416683
-    1980-01-01 03:00:00.000000	    0.948483	    0.553874
-    1980-01-01 04:00:00.028800	    0.492280	    0.232901
-    1980-01-01 04:59:59.971200	    0.527967	    0.296395
-    1980-01-01 06:00:00.000000	    0.650018	    0.212802
-    1980-01-01 07:00:00.028800	    0.585592	    0.802971
-    1980-01-01 07:59:59.971200	    0.448243	    0.665814
-    1980-01-01 09:00:00.000000	    0.137395	    0.201721
+    1980-01-01 00:00:00.000000      0.585454        0.457238
+    1980-01-01 01:00:00.028800      0.524764        0.083464
+    1980-01-01 01:59:59.971200      0.516821        0.416683
+    1980-01-01 03:00:00.000000      0.948483        0.553874
+    1980-01-01 04:00:00.028800      0.492280        0.232901
+    1980-01-01 04:59:59.971200      0.527967        0.296395
+    1980-01-01 06:00:00.000000      0.650018        0.212802
+    1980-01-01 07:00:00.028800      0.585592        0.802971
+    1980-01-01 07:59:59.971200      0.448243        0.665814
+    1980-01-01 09:00:00.000000      0.137395        0.201721
 
     >>> # Rounding can be applied due to floating point inaccuracy
     >>> test_df_gregorian_rounded = julian_to_gregorian(
-        test_df, frequency="H")  # Hourly Rounding Frequency
+    ...     test_df, frequency="H"
+    ... )  # Hourly Rounding Frequency
     >>> test_df_gregorian_rounded
                          Simulated Data  Observed Data
     1980-01-01 00:00:00        0.309527       0.938991
@@ -158,19 +165,19 @@ def julian_to_gregorian(dataframe, frequency=None, inplace=False):  # noqa: FBT0
 
 
 def merge_data(  # noqa: C901,PLR0912
-    sim_fpath=None,
-    obs_fpath=None,
-    sim_df=None,
-    obs_df=None,
-    interpolate=None,
-    column_names=("Simulated", "Observed"),
-    simulated_tz=None,
-    observed_tz=None,
-    interp_type="pchip",
-    return_tz="Etc/UTC",
-    julian=False,  # noqa: FBT002
-    julian_freq=None,
-):
+    sim_fpath: str | None = None,
+    obs_fpath: str | None = None,
+    sim_df: pd.DataFrame | None = None,
+    obs_df: pd.DataFrame | None = None,
+    interpolate: Literal["observed", "simulated"] | None = None,
+    column_names: tuple[str, str] = ("Simulated", "Observed"),
+    simulated_tz: str | None = None,
+    observed_tz: str | None = None,
+    interp_type: str = "pchip",
+    return_tz: str = "Etc/UTC",
+    julian: bool = False,  # noqa: FBT001, FBT002
+    julian_freq: str | None = None,
+) -> pd.DataFrame | None:
     """Merge two dataframes or csv files, depending on the input.
 
     Parameters
@@ -386,7 +393,11 @@ def merge_data(  # noqa: C901,PLR0912
     return None
 
 
-def daily_average(df, rolling=False, **kwargs):  # noqa: FBT002
+def daily_average(
+    df: pd.DataFrame,
+    rolling: bool = False,  # noqa: FBT001, FBT002
+    **kwargs: Any,  # noqa: ANN401
+) -> pd.DataFrame:
     """Calculate daily seasonal averages of the timeseries data in a DataFrame.
 
     Parameters
@@ -455,7 +466,7 @@ def daily_average(df, rolling=False, **kwargs):  # noqa: FBT002
     return daily_averages
 
 
-def daily_std_error(merged_data):
+def daily_std_error(merged_data: pd.DataFrame) -> pd.DataFrame:
     """Calculate daily seasonal standard error of the timeseries data in a DataFrame.
 
     Parameters
@@ -509,7 +520,7 @@ def daily_std_error(merged_data):
     return a.sem()
 
 
-def daily_std_dev(merged_data):
+def daily_std_dev(merged_data: pd.DataFrame) -> pd.DataFrame:
     """Calculate daily seasonal standard deviation of the timeseries data in a DataFrame.
 
     Parameters
@@ -563,7 +574,7 @@ def daily_std_dev(merged_data):
     return a.std()
 
 
-def monthly_average(merged_data):
+def monthly_average(merged_data: pd.DataFrame) -> pd.DataFrame:
     """Calculate monthly seasonal averages of the timeseries data in a DataFrame.
 
     Parameters
@@ -613,7 +624,7 @@ def monthly_average(merged_data):
     return a.mean()
 
 
-def monthly_std_error(merged_data):
+def monthly_std_error(merged_data: pd.DataFrame) -> pd.DataFrame:
     """Calculate monthly seasonal standard error of the timeseries data in a DataFrame.
 
     Parameters
@@ -663,7 +674,7 @@ def monthly_std_error(merged_data):
     return a.sem()
 
 
-def monthly_std_dev(merged_data):
+def monthly_std_dev(merged_data: pd.DataFrame) -> pd.DataFrame:
     """Calculate monthly seasonal standard deviation of the timeseries data in a DataFrame.
 
     Parameters
@@ -713,7 +724,7 @@ def monthly_std_dev(merged_data):
     return a.std()
 
 
-def remove_nan_df(merged_dataframe):
+def remove_nan_df(merged_dataframe: pd.DataFrame) -> pd.DataFrame:
     """Drop rows with NaN, zero, negative, and inf values from a pandas dataframe.
 
     Parameters
