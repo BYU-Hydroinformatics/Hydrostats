@@ -5,31 +5,31 @@ as remove zero and negative values from the timeseries data. Users will be warne
 have been removed in the warnings that display during the function execution.
 """
 
-from typing import Dict, Optional, Sequence, Tuple, Union
-
-from hydrostats.metrics import pearson_r
-import numpy as np
-from numba import jit, prange
 import warnings
 
+import numpy as np
+from numba import jit, prange
+
+from hydrostats.metrics import pearson_r
+
 __all__ = [
-    "ens_me",
-    "ens_mae",
-    "ens_mse",
-    "ens_rmse",
-    "ens_pearson_r",
+    "auroc",
     "crps_hersbach",
     "crps_kernel",
-    "ens_crps",
     "ens_brier",
-    "auroc",
+    "ens_crps",
+    "ens_mae",
+    "ens_me",
+    "ens_mse",
+    "ens_pearson_r",
+    "ens_rmse",
     "skill_score",
 ]
 
 
 def ens_me(
     obs: np.ndarray,
-    fcst_ens: Optional[np.ndarray] = None,
+    fcst_ens: np.ndarray | None = None,
     remove_zero: bool = False,
     remove_neg: bool = False,
     reference: str = "mean",
@@ -38,7 +38,6 @@ def ens_me(
 
     Parameters
     ----------
-
     obs
         Array of observations for each start date.
 
@@ -82,7 +81,6 @@ def ens_me(
     -2.5217349574908074
 
     """
-
     # Check that the user reference is understood
     assert reference == "mean" or reference == "median", "Reference series is not understood."
 
@@ -103,7 +101,7 @@ def ens_me(
 
 def ens_mae(
     obs: np.ndarray,
-    fcst_ens: Optional[np.ndarray] = None,
+    fcst_ens: np.ndarray | None = None,
     remove_zero: bool = False,
     remove_neg: bool = False,
     reference: str = "mean",
@@ -155,7 +153,6 @@ def ens_mae(
     26.35428724003365
 
     """
-
     # Check that the user reference is understood
     assert reference == "mean" or reference == "median", "Reference series is not understood."
 
@@ -176,7 +173,7 @@ def ens_mae(
 
 def ens_mse(
     obs: np.ndarray,
-    fcst_ens: Optional[np.ndarray] = None,
+    fcst_ens: np.ndarray | None = None,
     remove_zero: bool = False,
     remove_neg: bool = False,
     reference: str = "mean",
@@ -227,7 +224,6 @@ def ens_mse(
     910.5648405687582
 
     """
-
     # Check that the user reference is understood
     assert reference == "mean" or reference == "median", "Reference series is not understood."
 
@@ -248,7 +244,7 @@ def ens_mse(
 
 def ens_rmse(
     obs: np.ndarray,
-    fcst_ens: Optional[np.ndarray] = None,
+    fcst_ens: np.ndarray | None = None,
     remove_zero: bool = False,
     remove_neg: bool = False,
     reference: str = "mean",
@@ -299,7 +295,6 @@ def ens_rmse(
     30.17556694693172
 
     """
-
     # Check that the user reference is understood
     assert reference == "mean" or reference == "median", "Reference series is not understood."
 
@@ -372,7 +367,6 @@ def ens_pearson_r(
     -0.13236871294739733
 
     """
-
     # Check that the user reference is understood
     assert reference == "mean" or reference == "median", "Reference series is not understood."
 
@@ -395,7 +389,7 @@ def ens_crps(
     remove_neg: bool = False,
     remove_zero: bool = False,
     llvm: bool = True,
-) -> Dict[str, Union[np.ndarray, float]]:
+) -> dict[str, np.ndarray | float]:
     """Calculate the ensemble-adjusted Continuous Ranked Probability Score (CRPS)
 
     Parameters
@@ -438,7 +432,6 @@ def ens_crps(
 
     Examples
     --------
-
     >>> import numpy as np
     >>> import hydrostats.ens_metrics as em
     >>> np.random.seed(3849590438)
@@ -635,7 +628,7 @@ def crps_hersbach(
     fcst_ens: np.ndarray,
     remove_neg: bool = False,
     remove_zero: bool = False,
-) -> Dict[str, Union[np.ndarray, float]]:
+) -> dict[str, np.ndarray | float]:
     """Calculate the the continuous ranked probability score (CRPS) as per equation 25-27 in
     Hersbach et al. (2000).
 
@@ -681,7 +674,6 @@ def crps_hersbach(
 
     Examples
     --------
-
     >>> import numpy as np
     >>> import hydrostats.ens_metrics as em
     >>> np.random.seed(3849590438)
@@ -725,7 +717,6 @@ def crps_hersbach(
     0.24789156041214705
 
     """
-
     # Treating the Data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
@@ -803,7 +794,7 @@ def crps_hersbach(
 
         # Calc crps for individual start times
         crps_reliability[i] = np.sum(a * pi**2)
-        crps_potential[i] = np.sum((b * (1 - pi) ** 2))
+        crps_potential[i] = np.sum(b * (1 - pi) ** 2)
 
     # Calc mean crps as simple mean across crps[i]
     crps = crps_reliability + crps_potential
@@ -832,7 +823,7 @@ def crps_kernel(
     fcst_ens: np.ndarray,
     remove_neg: bool = False,
     remove_zero: bool = False,
-) -> Dict[str, Union[np.ndarray, float]]:
+) -> dict[str, np.ndarray | float]:
     """Compute the kernel representation of the continuous ranked probability score (CRPS).
 
     Calculates the kernel representation of the continuous ranked probability score (CRPS) as per
@@ -881,7 +872,6 @@ def crps_kernel(
 
     Examples
     --------
-
     >>> import numpy as np
     >>> import hydrostats.ens_metrics as em
     >>> np.random.seed(3849590438)
@@ -939,7 +929,6 @@ def crps_kernel(
     - Leutbecher, M. (2018) Ensemble size: How suboptimal is less than infinity?,
       Q. J. R. Meteorol., Accepted.
     """
-
     # Treatment of data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
@@ -991,14 +980,14 @@ def crps_kernel(
 
 
 def ens_brier(
-    fcst_ens: Optional[np.ndarray] = None,
-    obs: Optional[np.ndarray] = None,
-    threshold: Optional[float] = None,
-    ens_threshold: Optional[float] = None,
-    obs_threshold: Optional[float] = None,
-    fcst_ens_bin: Optional[np.ndarray] = None,
-    obs_bin: Optional[np.ndarray] = None,
-    adj: Optional[float] = None,
+    fcst_ens: np.ndarray | None = None,
+    obs: np.ndarray | None = None,
+    threshold: float | None = None,
+    ens_threshold: float | None = None,
+    obs_threshold: float | None = None,
+    fcst_ens_bin: np.ndarray | None = None,
+    obs_bin: np.ndarray | None = None,
+    adj: float | None = None,
 ) -> np.ndarray:
     """
     Calculate the ensemble-adjusted Brier Score.
@@ -1088,7 +1077,6 @@ def ens_brier(
       Ensemble Forecasts of Weather and Climate. R package version 0.5-2.
       https://CRAN.R-project.org/package=SpecsVerification
     """
-
     # User supplied the binary matrices
     if (
         obs_bin is not None
@@ -1112,8 +1100,8 @@ def ens_brier(
         and obs_threshold is None
     ):
         # Convert the observed data and forecast data to binary data
-        obs_bin = (obs > threshold).astype(np.int)
-        fcst_ens_bin = (fcst_ens > threshold).astype(np.int)
+        obs_bin = (obs > threshold).astype(int)
+        fcst_ens_bin = (fcst_ens > threshold).astype(int)
 
     # User supplied normal matrices with different thresholds for the forecast ensemble and the observed data
     elif (
@@ -1126,8 +1114,8 @@ def ens_brier(
         and obs_threshold is not None
     ):
         # Convert the observed data and forecast data to binary data
-        obs_bin = (obs > obs_threshold).astype(np.int)
-        fcst_ens_bin = (fcst_ens > ens_threshold).astype(np.int)
+        obs_bin = (obs > obs_threshold).astype(int)
+        fcst_ens_bin = (fcst_ens > ens_threshold).astype(int)
 
     else:
         raise RuntimeError(
@@ -1158,13 +1146,13 @@ def ens_brier(
 
 
 def auroc(
-    fcst_ens: Optional[np.ndarray] = None,
-    obs: Optional[np.ndarray] = None,
-    threshold: Optional[float] = None,
-    ens_threshold: Optional[float] = None,
-    obs_threshold: Optional[float] = None,
-    fcst_ens_bin: Optional[np.ndarray] = None,
-    obs_bin: Optional[np.ndarray] = None,
+    fcst_ens: np.ndarray | None = None,
+    obs: np.ndarray | None = None,
+    threshold: float | None = None,
+    ens_threshold: float | None = None,
+    obs_threshold: float | None = None,
+    fcst_ens_bin: np.ndarray | None = None,
+    obs_bin: np.ndarray | None = None,
 ) -> np.ndarray:
     """
     Calculates Area Under the Relative Operating Characteristic curve (AUROC)
@@ -1213,7 +1201,6 @@ def auroc(
 
     Examples
     --------
-
     >>> import numpy as np
     >>> import hydrostats.ens_metrics as em
     >>> np.random.seed(3849590438)
@@ -1277,8 +1264,8 @@ def auroc(
         and obs_threshold is None
     ):
         # Convert the observed data and forecast data to binary data
-        obs_bin = (obs > threshold).astype(np.int)
-        fcst_ens_bin = (fcst_ens > threshold).astype(np.int)
+        obs_bin = (obs > threshold).astype(int)
+        fcst_ens_bin = (fcst_ens > threshold).astype(int)
 
     # User supplied normal matrices with different thresholds for the forecast ensemble and the observed data
     elif (
@@ -1291,8 +1278,8 @@ def auroc(
         and obs_threshold is not None
     ):
         # Convert the observed data and forecast data to binary data
-        obs_bin = (obs > obs_threshold).astype(np.int)
-        fcst_ens_bin = (fcst_ens > ens_threshold).astype(np.int)
+        obs_bin = (obs > obs_threshold).astype(int)
+        fcst_ens_bin = (fcst_ens > ens_threshold).astype(int)
 
     else:
         raise RuntimeError(
@@ -1371,17 +1358,16 @@ def auroc_numba(fcst: np.ndarray, obs: np.ndarray) -> np.ndarray:
 
 
 def skill_score(
-    scores: Union[float, np.ndarray],
-    bench_scores: Union[float, np.ndarray],
-    perf_score: Union[int, float],
-    eff_sample_size: Optional[float] = None,
+    scores: float | np.ndarray,
+    bench_scores: float | np.ndarray,
+    perf_score: float,
+    eff_sample_size: float | None = None,
     remove_nan_inf: bool = False,
-) -> Dict[str, Union[float, np.ndarray]]:
+) -> dict[str, float | np.ndarray]:
     """Calculate the skill score of the given function.
 
     Parameters
     ----------
-
     scores
         The verification scores, or the mean of the verification scores in an ndarray (float).
 
@@ -1442,8 +1428,8 @@ def skill_score(
                 all_treatment_array = np.logical_and(all_treatment_array, all_nan_indices)
 
                 warnings.warn(
-                    "Row(s) {} contained NaN values and the row(s) have been removed for the calculation (Rows are "
-                    "zero indexed).".format(np.where(~all_nan_indices)[0]),
+                    f"Row(s) {np.where(~all_nan_indices)[0]} contained NaN values and the row(s) have been removed for the calculation (Rows are "
+                    "zero indexed).",
                     UserWarning,
                 )
 
@@ -1454,8 +1440,8 @@ def skill_score(
                 all_treatment_array = np.logical_and(all_treatment_array, all_inf_indices)
 
                 warnings.warn(
-                    "Row(s) {} contained Inf or -Inf values and the row(s) have been removed for the calculation (Rows "
-                    "are zero indexed).".format(np.where(~all_inf_indices)[0]),
+                    f"Row(s) {np.where(~all_inf_indices)[0]} contained Inf or -Inf values and the row(s) have been removed for the calculation (Rows "
+                    "are zero indexed).",
                     UserWarning,
                 )
 
@@ -1469,9 +1455,7 @@ def skill_score(
                 all_nan_indices = np.logical_and(nan_indices_fcst, nan_indices_obs)
 
                 raise RuntimeError(
-                    "Row(s) {} contained NaN values (Rows are zero indexed).".format(
-                        np.where(~all_nan_indices)[0]
-                    )
+                    f"Row(s) {np.where(~all_nan_indices)[0]} contained NaN values (Rows are zero indexed)."
                 )
 
             if np.any(np.isinf(scores_copy)) or np.any(np.isinf(bench_scores_copy)):
@@ -1480,9 +1464,7 @@ def skill_score(
                 all_inf_indices = np.logical_and(inf_indices_fcst, inf_indices_obs)
 
                 raise RuntimeError(
-                    "Row(s) {} contained Inf or -Inf values (Rows are zero indexed).".format(
-                        np.where(~all_inf_indices)[0]
-                    )
+                    f"Row(s) {np.where(~all_inf_indices)[0]} contained Inf or -Inf values (Rows are zero indexed)."
                 )
 
         # Handle effective sample size
@@ -1557,7 +1539,7 @@ def skill_score(
 
 def treat_data(
     obs: np.ndarray, fcst_ens: np.ndarray, remove_zero: bool, remove_neg: bool
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray]:
     assert obs.ndim == 1, "obs is not a 1D numpy array."
     assert fcst_ens.ndim == 2, "fcst_ens is not a 2D numpy array."
     assert obs.size == fcst_ens[:, 0].size, (
@@ -1580,8 +1562,8 @@ def treat_data(
         all_treatment_array = np.logical_and(all_treatment_array, all_nan_indices)
 
         warnings.warn(
-            "Row(s) {} contained NaN values and the row(s) have been "
-            "removed (zero indexed).".format(np.where(~all_nan_indices)[0])
+            f"Row(s) {np.where(~all_nan_indices)[0]} contained NaN values and the row(s) have been "
+            "removed (zero indexed)."
         )
 
     if np.any(np.isinf(obs)) or np.any(np.isinf(fcst_ens)):
@@ -1591,8 +1573,8 @@ def treat_data(
         all_treatment_array = np.logical_and(all_treatment_array, all_inf_indices)
 
         warnings.warn(
-            "Row(s) {} contained Inf or -Inf values and the row(s) have been "
-            "removed (zero indexed).".format(np.where(~all_inf_indices)[0])
+            f"Row(s) {np.where(~all_inf_indices)[0]} contained Inf or -Inf values and the row(s) have been "
+            "removed (zero indexed)."
         )
 
     # Treat zero data in obs and fcst_ens, rows in fcst_ens or obs that contain zero values
@@ -1604,8 +1586,8 @@ def treat_data(
             all_treatment_array = np.logical_and(all_treatment_array, all_zero_indices)
 
             warnings.warn(
-                "Row(s) {} contained zero values and the row(s) have been "
-                "removed (zero indexed).".format(np.where(~all_zero_indices)[0])
+                f"Row(s) {np.where(~all_zero_indices)[0]} contained zero values and the row(s) have been "
+                "removed (zero indexed)."
             )
 
     # Treat negative data in obs and fcst_ens, rows in fcst_ens or obs that contain negative values
@@ -1623,8 +1605,8 @@ def treat_data(
             # warnings.filterwarnings("always")  # Turn warnings back on
 
             warnings.warn(
-                "Row(s) {} contained negative values and the row(s) have been "
-                "removed (zero indexed).".format(np.where(~all_neg_indices)[0])
+                f"Row(s) {np.where(~all_neg_indices)[0]} contained negative values and the row(s) have been "
+                "removed (zero indexed)."
             )
         else:
             pass  # warnings.filterwarnings("always")  # Turn warnings back on
