@@ -107,7 +107,9 @@ def test_ens_crps(files_for_tests, ensemble_array, observed_array):
     assert np.all(np.isclose(expected_crps, crps_python))
 
     crps_mean_numba = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array)["crpsMean"]
-    crps_mean_python = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array, llvm=False)["crpsMean"]
+    crps_mean_python = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array, llvm=False)[
+        "crpsMean"
+    ]
     assert np.isclose(expected_mean_crps, crps_mean_numba)
     assert np.isclose(expected_mean_crps, crps_mean_python)
 
@@ -117,7 +119,9 @@ def test_ens_pearson_r(ensemble_array, observed_array, ensemble_array_bad, obser
     test_pearson_r = em.ens_pearson_r(obs=observed_array, fcst_ens=ensemble_array)
     assert np.isclose(expected_pearson_r, test_pearson_r)
 
-    expected_pearson_r_bad_data = em.ens_pearson_r(obs=observed_array[8:], fcst_ens=ensemble_array[8:, :])
+    expected_pearson_r_bad_data = em.ens_pearson_r(
+        obs=observed_array[8:], fcst_ens=ensemble_array[8:, :]
+    )
     test_pearson_r_bad_data = em.ens_pearson_r(
         obs=observed_array_bad,
         fcst_ens=ensemble_array_bad,
@@ -191,7 +195,9 @@ def test_skill_score():
     assert expected_std == pytest.approx(skill_score_test["standardDeviation"])
 
     nan_skill_score = em.skill_score(0.0, 0.0, 0)
-    assert np.isnan(nan_skill_score["skillScore"]) and np.isnan(nan_skill_score["standardDeviation"])
+    assert np.isnan(nan_skill_score["skillScore"]) and np.isnan(
+        nan_skill_score["standardDeviation"]
+    )
 
 
 def test_skill_score_floats():

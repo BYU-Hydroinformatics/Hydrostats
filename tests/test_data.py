@@ -99,7 +99,5 @@ def test_remove_nan_df():
     test_df = hd.remove_nan_df(
         pd.DataFrame(data=data, index=pd.date_range("1980-01-01", periods=15))
     )
-    original_df = pd.DataFrame(
-        data=data[8:, :], index=pd.date_range("1980-01-09", periods=7)
-    )
+    original_df = pd.DataFrame(data=data[8:, :], index=pd.date_range("1980-01-09", periods=7))
     pd.testing.assert_frame_equal(original_df, test_df)

@@ -47,5 +47,17 @@ Homepage = "https://github.com/BYU-Hydroinformatics/Hydrostats"
 requires = ["uv_build>=0.9.10,<0.10.0"]
 build-backend = "uv_build"
 
+[tool.ruff]
+line-length = 100
+target-version = "py310" # Set this to the lowest supported version
+output-format = "concise"
+
+[tool.ruff.lint]
+select = ["ALL"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
 [tool.ruff.format]
 docstring-code-format = true
+docstring-code-line-length = 100

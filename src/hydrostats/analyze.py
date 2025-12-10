@@ -252,9 +252,7 @@ def make_table(
 
             complete_metric_list.append(seasonal_metric_list)
 
-    table_df_final = pd.DataFrame(
-        complete_metric_list, index=index_array, columns=metrics
-    )
+    table_df_final = pd.DataFrame(complete_metric_list, index=index_array, columns=metrics)
 
     if location is not None:
         col_values = [location for i in range(table_df_final.shape[0])]
@@ -431,9 +429,7 @@ def time_lag(
     A plot can be created that visualizes the different metrics throughout the time lags. It can be
     saved using the savefig parameter as well if desired.
 
-    >>> _, _ = ha.time_lag(
-    ...     merged_df, metrics=[r_squared.abbr, kge_2012.abbr, dr.abbr], plot=True
-    ... )
+    >>> _, _ = ha.time_lag(merged_df, metrics=[r_squared.abbr, kge_2012.abbr, dr.abbr], plot=True)
 
     .. image:: /Figures/lag_plot1.png
 
@@ -525,9 +521,7 @@ def time_lag(
     min_lag_indices = np.argmin(final_array, 0)
     min_lag_locations = lag_array[min_lag_indices]
 
-    data = np.column_stack(
-        (max_lag_array, max_lag_locations, min_lag_array, min_lag_locations)
-    )
+    data = np.column_stack((max_lag_array, max_lag_locations, min_lag_array, min_lag_locations))
 
     summary_df = pd.DataFrame(
         data=data,

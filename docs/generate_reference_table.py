@@ -17,8 +17,7 @@ metric_abbr_array = metric_abbr_array[sorting_indices]
 function_names_array = function_names_array[sorting_indices]
 
 markdown_table = (
-    "|Full Metric Name|Abbreviation|Function Name|\n"
-    "|----------------|------------|-------------|\n"
+    "|Full Metric Name|Abbreviation|Function Name|\n|----------------|------------|-------------|\n"
 )
 
 for i in range(metric_names_array.shape[0]):

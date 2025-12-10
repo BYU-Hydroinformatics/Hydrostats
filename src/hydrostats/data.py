@@ -94,9 +94,7 @@ def julian_to_gregorian(dataframe, frequency=None, inplace=False):
     1980-01-01 09:00:00.000000	    0.137395	    0.201721
 
     >>> # Rounding can be applied due to floating point inaccuracy
-    >>> test_df_gregorian_rounded = julian_to_gregorian(
-    ...     test_df, frequency="H"
-    ... )  # Hourly Rounding Frequency
+    >>> test_df_gregorian_rounded = julian_to_gregorian(test_df, frequency="H")  # Hourly Rounding Frequency
     >>> test_df_gregorian_rounded
                          Simulated Data  Observed Data
     1980-01-01 00:00:00        0.309527       0.938991
@@ -291,9 +289,7 @@ def merge_data(
         if not isinstance(sim_df.index, pd.DatetimeIndex) and not isinstance(
             obs_df.index, pd.DatetimeIndex
         ):
-            raise RuntimeError(
-                "Both the obs_df and the sim_df need to have a datetime index."
-            )
+            raise RuntimeError("Both the obs_df and the sim_df need to have a datetime index.")
 
         # Copying the user supplied DataFrame objects
         sim_df_copy = sim_df.copy()
@@ -338,9 +334,7 @@ def merge_data(
             obs_df_copy = obs_df_copy.resample("15min").interpolate(interp_type)
 
         else:
-            raise RuntimeError(
-                "The interpolate argument must be either 'simulated' or 'observed'."
-            )
+            raise RuntimeError("The interpolate argument must be either 'simulated' or 'observed'.")
 
         # Merging and joining the two DataFrames
         merged_df = pd.DataFrame.join(sim_df_copy, obs_df_copy).dropna()
@@ -348,18 +342,12 @@ def merge_data(
 
         return merged_df
 
-    elif (
-        simulated_tz is not None and observed_tz is not None and interpolate is not None
-    ):
+    elif simulated_tz is not None and observed_tz is not None and interpolate is not None:
         # Scenario 3
 
         # Convert the DateTime Index of both DataFrames to User Specified Timezones
-        sim_df_copy.index = sim_df_copy.index.tz_localize(simulated_tz).tz_convert(
-            return_tz
-        )
-        obs_df_copy.index = obs_df_copy.index.tz_localize(observed_tz).tz_convert(
-            return_tz
-        )
+        sim_df_copy.index = sim_df_copy.index.tz_localize(simulated_tz).tz_convert(return_tz)
+        obs_df_copy.index = obs_df_copy.index.tz_localize(observed_tz).tz_convert(return_tz)
 
         if interpolate == "simulated":
             # Resampling the simulated DataFrame to 15 minute time increments, then interpolating
@@ -746,9 +734,7 @@ def remove_nan_df(merged_dataframe):
     >>> data[2, 0] = data[3, 1] = np.inf
     >>> data[4, 0] = data[5, 1] = 0
     >>> data[6, 0] = data[7, 1] = -0.1
-    >>> example_df = pd.DataFrame(
-    ...     data=data, index=pd.date_range("1980-01-01", periods=15)
-    ... )
+    >>> example_df = pd.DataFrame(data=data, index=pd.date_range("1980-01-01", periods=15))
     >>> example_df
                        0         1
     1980-01-01       NaN  0.358903
@@ -899,9 +885,7 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
         merged_df_copy = merged_df_copy.loc[time_range[0] : time_range[1]]
 
     # Setting a placeholder for the datetime string values
-    merged_df_copy.insert(
-        loc=0, column="placeholder", value=merged_df_copy.index.strftime("%m-%d")
-    )
+    merged_df_copy.insert(loc=0, column="placeholder", value=merged_df_copy.index.strftime("%m-%d"))
 
     # getting the start and end of the seasonal period
     start = daily_period[0]
@@ -910,13 +894,11 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
     # Getting the seasonal period
     if start < end:
         merged_df_copy = merged_df_copy.loc[
-            (merged_df_copy["placeholder"] >= start)
-            & (merged_df_copy["placeholder"] <= end)
+            (merged_df_copy["placeholder"] >= start) & (merged_df_copy["placeholder"] <= end)
         ]
     else:
         merged_df_copy = merged_df_copy.loc[
-            (merged_df_copy["placeholder"] >= start)
-            | (merged_df_copy["placeholder"] <= end)
+            (merged_df_copy["placeholder"] >= start) | (merged_df_copy["placeholder"] <= end)
         ]
     # Dropping the placeholder
     merged_df_copy = merged_df_copy.drop(columns=["placeholder"])

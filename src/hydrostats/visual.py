@@ -139,12 +139,8 @@ def plot(
     >>> seasonal_df = hd.seasonal_period(
     ...     merged_df, ("04-01", "07-31"), time_range=("1986-01-01", "1992-12-31")
     ... )
-    >>> daily_avg_df = hd.daily_average(
-    ...     merged_data=merged_df
-    ... )  # Seasonal Daily Averages
-    >>> daily_std_error = hd.daily_std_error(
-    ...     merged_data=merged_df
-    ... )  # Seasonal Daily Standard Deviation
+    >>> daily_avg_df = hd.daily_average(merged_data=merged_df)  # Seasonal Daily Averages
+    >>> daily_std_error = hd.daily_std_error(merged_data=merged_df)  # Seasonal Daily Standard Deviation
 
     The entire timeseries is plotted below
 
@@ -455,12 +451,8 @@ def hist(
 
     if legend is None:
         # Plotting the data without the legend
-        ax1.hist(
-            sim, bins, alpha=0.5, edgecolor="black", linewidth=0.5, density=prob_dens
-        )
-        ax1.hist(
-            obs, bins, alpha=0.5, edgecolor="black", linewidth=0.5, density=prob_dens
-        )
+        ax1.hist(sim, bins, alpha=0.5, edgecolor="black", linewidth=0.5, density=prob_dens)
+        ax1.hist(obs, bins, alpha=0.5, edgecolor="black", linewidth=0.5, density=prob_dens)
     else:
         # Plotting the data with the legend
         ax1.hist(

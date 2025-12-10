@@ -84,14 +84,10 @@ def ens_me(
     """
 
     # Check that the user reference is understood
-    assert reference == "mean" or reference == "median", (
-        "Reference series is not understood."
-    )
+    assert reference == "mean" or reference == "median", "Reference series is not understood."
 
     # Treating data
-    obs, fcst_ens = treat_data(
-        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
-    )
+    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
     # Extract the reference dataset
     if reference == "mean":
@@ -161,14 +157,10 @@ def ens_mae(
     """
 
     # Check that the user reference is understood
-    assert reference == "mean" or reference == "median", (
-        "Reference series is not understood."
-    )
+    assert reference == "mean" or reference == "median", "Reference series is not understood."
 
     # Treating data
-    obs, fcst_ens = treat_data(
-        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
-    )
+    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
     # Extract the reference dataset
     if reference == "mean":
@@ -237,14 +229,10 @@ def ens_mse(
     """
 
     # Check that the user reference is understood
-    assert reference == "mean" or reference == "median", (
-        "Reference series is not understood."
-    )
+    assert reference == "mean" or reference == "median", "Reference series is not understood."
 
     # Treating data
-    obs, fcst_ens = treat_data(
-        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
-    )
+    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
     # Extract the reference dataset
     if reference == "mean":
@@ -313,14 +301,10 @@ def ens_rmse(
     """
 
     # Check that the user reference is understood
-    assert reference == "mean" or reference == "median", (
-        "Reference series is not understood."
-    )
+    assert reference == "mean" or reference == "median", "Reference series is not understood."
 
     # Treating data
-    obs, fcst_ens = treat_data(
-        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
-    )
+    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
     # Extract the reference dataset
     if reference == "mean":
@@ -390,14 +374,10 @@ def ens_pearson_r(
     """
 
     # Check that the user reference is understood
-    assert reference == "mean" or reference == "median", (
-        "Reference series is not understood."
-    )
+    assert reference == "mean" or reference == "median", "Reference series is not understood."
 
     # Treating data
-    obs, fcst_ens = treat_data(
-        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
-    )
+    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
     # Extract the reference dataset
     if reference == "mean":
@@ -473,9 +453,7 @@ def ens_crps(
     >>> noise = np.random.normal(scale=1, size=(15, 52))
     >>> x = np.linspace(1, 10, 15)
     >>> observed_array = np.sin(x) + 10
-    >>> ensemble_array_noise = (
-    ...     np.ones((15, 52)).T * observed_array
-    ... ).T + noise  # 52 Ensembles
+    >>> ensemble_array_noise = (np.ones((15, 52)).T * observed_array).T + noise  # 52 Ensembles
 
     Computing the crps values between the ensemble mean and the observed data with the
     random data. Note that the crps is relatively high because it is random.
@@ -492,9 +470,7 @@ def ens_crps(
     in the ensemble data. Note that the crps values are better because the forecast is closer to
     observed values.
 
-    >>> crps_dictionary_noise = em.ens_crps(
-    ...     obs=observed_array, fcst_ens=ensemble_array_noise
-    ... )
+    >>> crps_dictionary_noise = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array_noise)
     >>> print(crps_dictionary_noise["crps"])
     [0.26921152 0.21388687 0.24927151 0.26047667 0.30234843 0.1996493
      0.2779844  0.29478927 0.275383   0.25682693 0.21485236 0.22824711
@@ -515,9 +491,7 @@ def ens_crps(
       https://CRAN.R-project.org/package=SpecsVerification
     """
     # Treating the Data
-    obs, fcst_ens = treat_data(
-        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
-    )
+    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
     rows = obs.size
     cols = fcst_ens.shape[1]
@@ -740,9 +714,7 @@ def crps_hersbach(
     Computing the Hersbach CRPS values between the ensemble mean and the observed data with noise
     in the ensemble data.
 
-    >>> crps_dictionary_noise = em.crps_hersbach(
-    ...     obs=observed_array, fcst_ens=ensemble_array_noise
-    ... )
+    >>> crps_dictionary_noise = em.crps_hersbach(obs=observed_array, fcst_ens=ensemble_array_noise)
     >>> print(crps_dictionary_noise["crps"])
     [0.26921152 0.21388687 0.24927151 0.26047667 0.30234843 0.1996493
      0.2779844  0.29478927 0.275383   0.25682693 0.21485236 0.22824711
@@ -755,9 +727,7 @@ def crps_hersbach(
     """
 
     # Treating the Data
-    obs, fcst_ens = treat_data(
-        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
-    )
+    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
     # Set parameters
     n = fcst_ens.shape[0]  # number of forecast start dates
@@ -948,9 +918,7 @@ def crps_kernel(
     Computing the Hersbach CRPS values between the ensemble mean and the observed data with noise
     in the ensemble data.
 
-    >>> crps_dictionary_noise = em.crps_kernel(
-    ...     obs=observed_array, fcst_ens=ensemble_array_noise
-    ... )
+    >>> crps_dictionary_noise = em.crps_kernel(obs=observed_array, fcst_ens=ensemble_array_noise)
     >>> print(crps_dictionary_noise["crps"])
     [0.26921152 0.21388687 0.24927151 0.26047667 0.30234843 0.1996493
      0.2779844  0.29478927 0.275383   0.25682693 0.21485236 0.22824711
@@ -973,9 +941,7 @@ def crps_kernel(
     """
 
     # Treatment of data
-    obs, fcst_ens = treat_data(
-        obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero
-    )
+    obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
     # Set parameters
     n = fcst_ens.shape[0]  # number of forecast start dates
@@ -1004,9 +970,7 @@ def crps_kernel(
         # First term (t1) is the MAE of the ensemble members; Second term (t2)
         # is ensemble spread in terms of absolute difference between all pairs
         # of members
-        crps[i] = (1.0 / m * t1[i]) - (
-            1.0 / (2 * (m**2)) * t2[i]
-        )  # kernel representation of crps
+        crps[i] = (1.0 / m * t1[i]) - (1.0 / (2 * (m**2)) * t2[i])  # kernel representation of crps
         crps_adj[i] = (1.0 / m * t1[i]) - (
             1.0 / (2 * m * (m - 1)) * t2[i]
         )  # kernel representation of adjusted crps
@@ -1102,9 +1066,7 @@ def ens_brier(
     [0.08321006 0.05325444 0.53402367 0.45303254 0.02995562 0.08321006
      0.08321006 0.03698225 0.02366864 0.0625     0.04474852 0.71597633
      0.04474852 0.04474852 0.09467456]
-    >>> np.mean(
-    ...     em.ens_brier(obs=observed_array, fcst_ens=ensemble_array, threshold=175)
-    ... )
+    >>> np.mean(em.ens_brier(obs=observed_array, fcst_ens=ensemble_array, threshold=175))
     0.15919625246548325
 
     When we manually create binary data we get the same result
@@ -1115,9 +1077,7 @@ def ens_brier(
     [0.08321006 0.05325444 0.53402367 0.45303254 0.02995562 0.08321006
      0.08321006 0.03698225 0.02366864 0.0625     0.04474852 0.71597633
      0.04474852 0.04474852 0.09467456]
-    >>> np.mean(
-    ...     em.ens_brier(obs_bin=observed_array_bin, fcst_ens_bin=ensemble_array_bin)
-    ... )
+    >>> np.mean(em.ens_brier(obs_bin=observed_array_bin, fcst_ens_bin=ensemble_array_bin))
     0.15919625246548325
 
     References
@@ -1176,9 +1136,7 @@ def ens_brier(
         )
 
     # Treat missing data and warn users of columns being removed
-    obs_bin, fcst_ens_bin = treat_data(
-        obs_bin, fcst_ens_bin, remove_neg=False, remove_zero=False
-    )
+    obs_bin, fcst_ens_bin = treat_data(obs_bin, fcst_ens_bin, remove_neg=False, remove_zero=False)
 
     # Count number of ensemble members that predict the event
     i = np.sum(fcst_ens_bin, axis=1)
@@ -1191,9 +1149,9 @@ def ens_brier(
         adj = num_cols
 
     # calculate ensemble-adjusted brier scores
-    br = (i / num_cols - obs_bin) ** 2 - i * (num_cols - i) / num_cols / (
-        num_cols - 1
-    ) * (1 / num_cols - 1 / adj)
+    br = (i / num_cols - obs_bin) ** 2 - i * (num_cols - i) / num_cols / (num_cols - 1) * (
+        1 / num_cols - 1 / adj
+    )
 
     # return the vector of brier scores
     return br
@@ -1342,9 +1300,7 @@ def auroc(
             "if there are different thresholds) or you must supply fcst_ens_bin and obs_bin."
         )
 
-    obs_bin, fcst_ens_bin = treat_data(
-        obs_bin, fcst_ens_bin, remove_neg=False, remove_zero=False
-    )
+    obs_bin, fcst_ens_bin = treat_data(obs_bin, fcst_ens_bin, remove_neg=False, remove_zero=False)
 
     if (
         np.all(fcst_ens_bin == 0)
@@ -1483,9 +1439,7 @@ def skill_score(
                 nan_indices_fcst = ~np.isnan(scores_copy)
                 nan_indices_obs = ~np.isnan(bench_scores_copy)
                 all_nan_indices = np.logical_and(nan_indices_fcst, nan_indices_obs)
-                all_treatment_array = np.logical_and(
-                    all_treatment_array, all_nan_indices
-                )
+                all_treatment_array = np.logical_and(all_treatment_array, all_nan_indices)
 
                 warnings.warn(
                     "Row(s) {} contained NaN values and the row(s) have been removed for the calculation (Rows are "
@@ -1497,9 +1451,7 @@ def skill_score(
                 inf_indices_fcst = ~(np.isinf(scores_copy))
                 inf_indices_obs = ~np.isinf(bench_scores_copy)
                 all_inf_indices = np.logical_and(inf_indices_fcst, inf_indices_obs)
-                all_treatment_array = np.logical_and(
-                    all_treatment_array, all_inf_indices
-                )
+                all_treatment_array = np.logical_and(all_treatment_array, all_inf_indices)
 
                 warnings.warn(
                     "Row(s) {} contained Inf or -Inf values and the row(s) have been removed for the calculation (Rows "
@@ -1528,8 +1480,9 @@ def skill_score(
                 all_inf_indices = np.logical_and(inf_indices_fcst, inf_indices_obs)
 
                 raise RuntimeError(
-                    "Row(s) {} contained Inf or -Inf values "
-                    "(Rows are zero indexed).".format(np.where(~all_inf_indices)[0])
+                    "Row(s) {} contained Inf or -Inf values (Rows are zero indexed).".format(
+                        np.where(~all_inf_indices)[0]
+                    )
                 )
 
         # Handle effective sample size
@@ -1614,8 +1567,7 @@ def treat_data(
     # Give user warning, but let run, if eith obs or fcst are all zeros
     if obs.sum() == 0 or fcst_ens.sum() == 0:
         warnings.warn(
-            "All zero values in either 'obs' or 'fcst', "
-            "function might run, but check if data OK."
+            "All zero values in either 'obs' or 'fcst', function might run, but check if data OK."
         )
 
     all_treatment_array = np.ones(obs.size, dtype=bool)

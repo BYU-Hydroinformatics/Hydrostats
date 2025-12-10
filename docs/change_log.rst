@@ -4,6 +4,19 @@ Release Notes
 This is the list of changes to Hydrostats between each release. For full details, see the commit logs at
 https://github.com/BYU-Hydroinformatics/Hydrostats.
 
+Version 2.0.0rc1
+^^^^^^^^^^^^^^^^
+
+Breaking Changes:
+
+- Drop support for Python 2.7, 3.6 and 3.7. Minimum Python version is now 3.10.
+
+Other Changes:
+
+- Add type hints throughout the codebase for better developer experience.
+- More modern documentation theme (Furo) for better readability.
+- Add ruff as a linter to the development workflow for improved code quality.
+
 Version 0.78
 ^^^^^^^^^^^^
 - Added the ability to use different thresholds for the ensemble forecast for the observed and ensemble forecast data in
