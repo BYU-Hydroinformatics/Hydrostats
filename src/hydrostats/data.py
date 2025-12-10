@@ -24,7 +24,7 @@ __all__ = [
 ]
 
 
-def julian_to_gregorian(dataframe, frequency=None, inplace=False):
+def julian_to_gregorian(dataframe, frequency=None, inplace=False):  # noqa: FBT002
     """Convert the index of the dataframe from julian float values to gregorian datetime values.
 
     Parameters
@@ -168,7 +168,7 @@ def merge_data(
     observed_tz=None,
     interp_type="pchip",
     return_tz="Etc/UTC",
-    julian=False,
+    julian=False,  # noqa: FBT002
     julian_freq=None,
 ):
     """Merge two dataframes or csv files, depending on the input.
@@ -386,7 +386,7 @@ def merge_data(
     return None
 
 
-def daily_average(df, rolling=False, **kwargs):
+def daily_average(df, rolling=False, **kwargs):  # noqa: FBT002
     """Calculate daily seasonal averages of the timeseries data in a DataFrame.
 
     Parameters
@@ -783,7 +783,7 @@ def seasonal_period(
     merged_dataframe: pd.DataFrame,
     daily_period: tuple[str, str],
     time_range: tuple[str, str] | None = None,
-    numpy: bool = False,
+    numpy: bool = False,  # noqa: FBT001, FBT002
 ) -> pd.DataFrame | tuple[NDArray[np.floating], NDArray[np.floating]]:
     """Create a dataframe with a specified seasonal period.
 
