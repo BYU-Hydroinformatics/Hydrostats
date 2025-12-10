@@ -5,8 +5,10 @@ daily and monthly summary statistics, and get seasonal periods of a time series.
 
 """
 
+import numpy as np
 import pandas as pd
 from numpy import inf, nan
+from numpy.typing import NDArray
 
 __all__ = [
     "daily_average",
@@ -23,9 +25,7 @@ __all__ = [
 
 
 def julian_to_gregorian(dataframe, frequency=None, inplace=False):
-    """
-    Converts the index of the merged dataframe from julian float values to gregorian datetime
-    values.
+    """Convert the index of the dataframe from julian float values to gregorian datetime values.
 
     Parameters
     ----------
@@ -35,9 +35,10 @@ def julian_to_gregorian(dataframe, frequency=None, inplace=False):
     frequency: string
         Optional. Sometimes when converting from julian to gregorian there will be rounding errors
         due to the inability of computers to store floats as perfect decimals. Providing the
-        frequency will automatically attempt to round the dates. A list of all the frequencies pandas provides is found
-        `here <http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases/>`_. Common frequencies
-        include daily ("D") and hourly ("H").
+        frequency will automatically attempt to round the dates. A list of all the frequencies
+        pandas provides is found
+        `here <http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases/>`_.
+        Common frequencies include daily ("D") and hourly ("H").
 
     inplace: bool
         Default False. If True, will modify the index of the dataframe in place rather than
@@ -56,13 +57,26 @@ def julian_to_gregorian(dataframe, frequency=None, inplace=False):
     >>> import numpy as np
 
     >>> # The julian dates in an array
-    >>> julian_dates = np.array([2444239.5, 2444239.5416666665, 2444239.5833333335, 2444239.625,
-    >>>                          2444239.6666666665, 2444239.7083333335, 2444239.75,
-    >>>                          2444239.7916666665, 2444239.8333333335, 2444239.875])
+    >>> julian_dates = np.array(
+    ...     [
+    ...         2444239.5,
+    ...         2444239.5416666665,
+    ...         2444239.5833333335,
+    ...         2444239.625,
+    ...         2444239.6666666665,
+    ...         2444239.7083333335,
+    ...         2444239.75,
+    ...         2444239.7916666665,
+    ...         2444239.8333333335,
+    ...         2444239.875,
+    ...     ]
+    ... )
     >>> # Creating a test dataframe
-    >>> test_df = pd.DataFrame(data=np.random.rand(10, 2),  # Random data in the columns
-    >>>                        columns=("Simulated Data", "Observed Data"),
-    >>>                        index=julian_dates)
+    >>> test_df = pd.DataFrame(
+    ...     data=np.random.rand(10, 2),
+    ...     columns=("Simulated Data", "Observed Data"),
+    ...     index=julian_dates,
+    ... )  # Random data in the columns
     >>> test_df
                   Simulated Data  Observed Data
     2.444240e+06        0.764719       0.126610
@@ -92,7 +106,8 @@ def julian_to_gregorian(dataframe, frequency=None, inplace=False):
     1980-01-01 09:00:00.000000	    0.137395	    0.201721
 
     >>> # Rounding can be applied due to floating point inaccuracy
-    >>> test_df_gregorian_rounded = julian_to_gregorian(test_df, frequency="H")  # Hourly Rounding Frequency
+    >>> test_df_gregorian_rounded = julian_to_gregorian(
+        test_df, frequency="H")  # Hourly Rounding Frequency
     >>> test_df_gregorian_rounded
                          Simulated Data  Observed Data
     1980-01-01 00:00:00        0.309527       0.938991
@@ -156,7 +171,7 @@ def merge_data(
     julian=False,
     julian_freq=None,
 ):
-    """Merges two dataframes or csv files, depending on the input.
+    """Merge two dataframes or csv files, depending on the input.
 
     Parameters
     ----------
@@ -201,28 +216,30 @@ def merge_data(
         http://pandas.pydata.org/pandas-docs/version/0.16.2/generated/pandas.DataFrame.interpolate.html
 
     return_tz: str
-        What timezone the merged dataframe's index should be returned as. Default is 'Etc/UTC', which is recommended
-        for simplicity.
+        What timezone the merged dataframe's index should be returned as. Default is 'Etc/UTC',
+        which is recommended for simplicity.
 
     julian: bool
-        If True, will parse the first column of the file to a datetime index from julian floating point time
-        representation, this is only valid when supplying the sim_fpath and obs_fpath parameters. Users supplying two
-        DataFrame objects must convert the index from Julian to Gregorian using the julian_to_gregorian function in this
-        module
+        If True, will parse the first column of the file to a datetime index from julian floating
+        point time representation, this is only valid when supplying the sim_fpath and obs_fpath
+        parameters. Users supplying two DataFrame objects must convert the index from Julian to
+        Gregorian using the julian_to_gregorian function in this module
 
     julian_freq: str
-        A string representing the frequency of the julian dates so that they can be rounded. See examples for usage.
+        A string representing the frequency of the julian dates so that they can be rounded. See
+        examples for usage.
 
     Notes
     -----
-    The only acceptable time frequencies in the data are 15min, 30min, 45min, and any number of hours or
-    days in between.
+    The only acceptable time frequencies in the data are 15min, 30min, 45min, and any number of
+    hours or days in between.
 
     There are three scenarios to consider when merging your data:
 
     1. The first scenario is that the timezones and the spacing of the time series matches
        (eg. 1 Day). In this case, you will want to leave the simulated_tz, observed_tz, and
-       interpolate arguments empty, and the function will simply join the two csv's into a dataframe.
+       interpolate arguments empty, and the function will simply join the two csv's into a
+       dataframe.
     2. The second scenario is that you have two time series with matching time zones but not
        matching spacing. In this case you will want to leave the simulated_tz and observed_tz empty,
        and use the interpolate argument to tell the function which time series you would like to
@@ -238,7 +255,8 @@ def merge_data(
     >>> import pandas as pd
     >>> pd.options.display.max_rows = 15
 
-    The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
+    The data URLs contain streamflow data from two different models, and are provided from the
+    Hydrostats Github page
 
     >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
     >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
@@ -282,7 +300,8 @@ def merge_data(
             )
 
     elif sim_df is not None and obs_df is not None:
-        # Checking to make sure that both dataframes have datetime indices if they are not read from file.
+        # Checking to make sure that both dataframes have datetime indices if they are not read from
+        # file.
         if not isinstance(sim_df.index, pd.DatetimeIndex) and not isinstance(
             obs_df.index, pd.DatetimeIndex
         ):
@@ -305,8 +324,8 @@ def merge_data(
 
     if simulated_tz is not None and observed_tz is not None and interpolate is None:
         raise RuntimeError(
-            "You must specify with the interpolate parameter whether to interpolate the 'simulated' "
-            "or 'observed' data."
+            "You must specify with the interpolate parameter whether to interpolate the"
+            " 'simulated' or 'observed' data."
         )
 
     if simulated_tz is None and observed_tz is None and interpolate is None:
@@ -368,7 +387,7 @@ def merge_data(
 
 
 def daily_average(df, rolling=False, **kwargs):
-    """Calculates daily seasonal averages of the timeseries data in a DataFrame.
+    """Calculate daily seasonal averages of the timeseries data in a DataFrame.
 
     Parameters
     ----------
@@ -379,15 +398,15 @@ def daily_average(df, rolling=False, **kwargs):
         If True, will calculate the rolling seasonal average.
 
     **kwargs: pandas.DataFrame.rolling() properties, optional
-        Options for how to compute the rolling averages. If not provided, the default is to use the following
-        parameters: {window=6, min_periods=1, center=True, closed="right"}. Specifying **kwargs will clear the
-        defaults, however.
+        Options for how to compute the rolling averages. If not provided, the default is to use the
+        following parameters: {window=6, min_periods=1, center=True, closed="right"}. Specifying
+        **kwargs will clear the defaults, however.
 
     Returns
     -------
     DataFrame
-        A pandas dataframe with a string type index of date representations and the daily seasonal averages as
-        float values in the columns.
+        A pandas dataframe with a string type index of date representations and the daily seasonal
+        averages as float values in the columns.
 
     Examples
     --------
@@ -395,7 +414,8 @@ def daily_average(df, rolling=False, **kwargs):
     >>> import pandas as pd
     >>> pd.options.display.max_rows = 15
 
-    The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
+    The data URLs contain streamflow data from two different models, and are provided from the
+    Hydrostats Github page
 
     >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
     >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
@@ -436,7 +456,7 @@ def daily_average(df, rolling=False, **kwargs):
 
 
 def daily_std_error(merged_data):
-    """Calculates daily seasonal standard error of the timeseries data in a DataFrame.
+    """Calculate daily seasonal standard error of the timeseries data in a DataFrame.
 
     Parameters
     ----------
@@ -446,8 +466,8 @@ def daily_std_error(merged_data):
     Returns
     -------
     DataFrame
-        A pandas dataframe with a string type index of date representations and the daily seasonal standard error as
-        float values in the columns.
+        A pandas dataframe with a string type index of date representations and the daily seasonal
+        standard error as float values in the columns.
 
     Examples
     --------
@@ -455,7 +475,8 @@ def daily_std_error(merged_data):
     >>> import pandas as pd
     >>> pd.options.display.max_rows = 15
 
-    The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
+    The data URLs contain streamflow data from two different models, and are provided from the
+    Hydrostats Github page
 
     >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
     >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
@@ -489,7 +510,7 @@ def daily_std_error(merged_data):
 
 
 def daily_std_dev(merged_data):
-    """Calculates daily seasonal standard deviation of the timeseries data in a DataFrame.
+    """Calculate daily seasonal standard deviation of the timeseries data in a DataFrame.
 
     Parameters
     ----------
@@ -499,8 +520,8 @@ def daily_std_dev(merged_data):
     Returns
     -------
     DataFrame
-        A pandas dataframe with a string type index of date representations and the daily seasonal standard deviation as
-        float values in the columns.
+        A pandas dataframe with a string type index of date representations and the daily seasonal
+        standard deviation as float values in the columns.
 
     Examples
     --------
@@ -508,7 +529,8 @@ def daily_std_dev(merged_data):
     >>> import pandas as pd
     >>> pd.options.display.max_rows = 15
 
-    The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
+    The data URLs contain streamflow data from two different models, and are provided from the
+    Hydrostats Github page
 
     >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
     >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
@@ -542,7 +564,7 @@ def daily_std_dev(merged_data):
 
 
 def monthly_average(merged_data):
-    """Calculates monthly seasonal averages of the timeseries data in a DataFrame.
+    """Calculate monthly seasonal averages of the timeseries data in a DataFrame.
 
     Parameters
     ----------
@@ -552,8 +574,8 @@ def monthly_average(merged_data):
     Returns
     -------
     DataFrame
-        A pandas dataframe with a string type index of date representations and the monthly seasonal averages as
-        float values in the columns.
+        A pandas dataframe with a string type index of date representations and the monthly seasonal
+        averages as float values in the columns.
 
     Examples
     --------
@@ -561,7 +583,8 @@ def monthly_average(merged_data):
     >>> import pandas as pd
     >>> pd.options.display.max_rows = 15
 
-    The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
+    The data URLs contain streamflow data from two different models, and are provided from the
+    Hydrostats Github page
 
     >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
     >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
@@ -591,7 +614,7 @@ def monthly_average(merged_data):
 
 
 def monthly_std_error(merged_data):
-    """Calculates monthly seasonal standard error of the timeseries data in a DataFrame.
+    """Calculate monthly seasonal standard error of the timeseries data in a DataFrame.
 
     Parameters
     ----------
@@ -601,8 +624,8 @@ def monthly_std_error(merged_data):
     Returns
     -------
     DataFrame
-        A pandas dataframe with a string type index of date representations and the monthly seasonal standard error as
-        float values in the columns.
+        A pandas dataframe with a string type index of date representations and the monthly seasonal
+        standard error as float values in the columns.
 
     Examples
     --------
@@ -610,7 +633,8 @@ def monthly_std_error(merged_data):
     >>> import pandas as pd
     >>> pd.options.display.max_rows = 15
 
-    The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
+    The data URLs contain streamflow data from two different models, and are provided from the
+    Hydrostats Github page
 
     >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
     >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
@@ -640,7 +664,7 @@ def monthly_std_error(merged_data):
 
 
 def monthly_std_dev(merged_data):
-    """Calculates monthly seasonal standard deviation of the timeseries data in a DataFrame.
+    """Calculate monthly seasonal standard deviation of the timeseries data in a DataFrame.
 
     Parameters
     ----------
@@ -650,8 +674,8 @@ def monthly_std_dev(merged_data):
     Returns
     -------
     DataFrame
-        A pandas dataframe with a string type index of date representations and the monthly seasonal standard deviation
-        as float values in the columns.
+        A pandas dataframe with a string type index of date representations and the monthly seasonal
+        standard deviation as float values in the columns.
 
     Examples
     --------
@@ -659,7 +683,8 @@ def monthly_std_dev(merged_data):
     >>> import pandas as pd
     >>> pd.options.display.max_rows = 15
 
-    The data URLs contain streamflow data from two different models, and are provided from the Hydrostats Github page
+    The data URLs contain streamflow data from two different models, and are provided from the
+    Hydrostats Github page
 
     >>> sfpt_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/sfpt_data/magdalena-calamar_interim_data.csv"
     >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
@@ -689,7 +714,7 @@ def monthly_std_dev(merged_data):
 
 
 def remove_nan_df(merged_dataframe):
-    """Drops rows with NaN, zero, negative, and inf values from a pandas dataframe.
+    """Drop rows with NaN, zero, negative, and inf values from a pandas dataframe.
 
     Parameters
     ----------
@@ -754,9 +779,13 @@ def remove_nan_df(merged_dataframe):
     return merged_dataframe.dropna()
 
 
-
-def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False):
-    """Creates a dataframe with a specified seasonal period.
+def seasonal_period(
+    merged_dataframe: pd.DataFrame,
+    daily_period: tuple[str, str],
+    time_range: tuple[str, str] | None = None,
+    numpy: bool = False,
+) -> pd.DataFrame | tuple[NDArray[np.floating], NDArray[np.floating]]:
+    """Create a dataframe with a specified seasonal period.
 
     Parameters
     ----------
@@ -764,11 +793,12 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
         A pandas DataFrame with a datetime index and columns containing float type values.
 
     daily_period: tuple of str
-        A list of length two with strings representing the start and end dates of the seasonal period (e.g.
-        (01-01, 01-31) for Jan 1 to Jan 31.
+        A list of length two with strings representing the start and end dates of the seasonal
+        period (e.g. (01-01, 01-31) for Jan 1 to Jan 31).
 
     time_range: tuple of str
-        A tuple of string values representing the start and end dates of the time range. Format is YYYY-MM-DD.
+        A tuple of string values representing the start and end dates of the time range. Format is
+        YYYY-MM-DD.
 
     numpy: bool
         If True, two numpy arrays will be returned instead of a pandas dataframe
@@ -776,7 +806,8 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
     Returns
     -------
     DataFrame
-        Pandas dataframe that has been truncated to fit the parameters specified for the seasonal period.
+        Pandas dataframe that has been truncated to fit the parameters specified for the seasonal
+        period.
 
     Examples
     --------
@@ -810,7 +841,7 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
     2002-09-26   0.787526  0.887288
     [1000 rows x 2 columns]
 
-    Using this function, a new dataframe containing only the data values in january is returned.
+    Using this function, a new dataframe containing only the data values in January is returned.
 
     >>> seasonal_df_jan = hd.seasonal_period(example_df, ("01-01", "01-31"))
                 Simulated  Observed
@@ -831,7 +862,8 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
     2002-01-31   0.158595  0.311630
     [93 rows x 2 columns]
 
-    We can also specify a time range if we only want the months of January in the year 2000 and 2001
+    It is also possible to specify a time range to extract only the months of January from the years
+    2000 and 2001.
 
     >>> seasonal_df_jan = hd.seasonal_period(
     ...     example_df, ("01-01", "01-31"), time_range=("2000-01-01", "2001-12-31")
@@ -882,7 +914,7 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
     merged_df_copy = merged_df_copy.drop(columns=["placeholder"])
 
     if numpy:
-        return merged_df_copy.iloc[:, 0].values, merged_df_copy.iloc[:, 1].values
+        return merged_df_copy.iloc[:, 0].to_numpy(), merged_df_copy.iloc[:, 1].to_numpy()
     return merged_df_copy
 
 

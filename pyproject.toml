@@ -83,4 +83,4 @@ convention = "numpy"
 
 [tool.ruff.format]
 docstring-code-format = true
-docstring-code-line-length = 100
+docstring-code-line-length = 92
