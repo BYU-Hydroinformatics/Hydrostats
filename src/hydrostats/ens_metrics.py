@@ -82,7 +82,7 @@ def ens_me(
 
     """
     # Check that the user reference is understood
-    assert reference == "mean" or reference == "median", "Reference series is not understood."
+    assert reference in {"mean", "median"}, "Reference series is not understood."
 
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
@@ -154,7 +154,7 @@ def ens_mae(
 
     """
     # Check that the user reference is understood
-    assert reference == "mean" or reference == "median", "Reference series is not understood."
+    assert reference in {"mean", "median"}, "Reference series is not understood."
 
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
@@ -225,7 +225,7 @@ def ens_mse(
 
     """
     # Check that the user reference is understood
-    assert reference == "mean" or reference == "median", "Reference series is not understood."
+    assert reference in {"mean", "median"}, "Reference series is not understood."
 
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
@@ -296,7 +296,7 @@ def ens_rmse(
 
     """
     # Check that the user reference is understood
-    assert reference == "mean" or reference == "median", "Reference series is not understood."
+    assert reference in {"mean", "median"}, "Reference series is not understood."
 
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
@@ -368,7 +368,7 @@ def ens_pearson_r(
 
     """
     # Check that the user reference is understood
-    assert reference == "mean" or reference == "median", "Reference series is not understood."
+    assert reference in {"mean", "median"}, "Reference series is not understood."
 
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
@@ -390,7 +390,7 @@ def ens_crps(
     remove_zero: bool = False,
     llvm: bool = True,
 ) -> dict[str, np.ndarray | float]:
-    """Calculate the ensemble-adjusted Continuous Ranked Probability Score (CRPS)
+    """Calculate the ensemble-adjusted Continuous Ranked Probability Score (CRPS).
 
     Parameters
     ----------
@@ -523,9 +523,7 @@ def ens_crps(
     crps_mean = np.mean(crps)
 
     # Output array as a dictionary
-    output = {"crps": crps, "crpsMean": crps_mean}
-
-    return output
+    return {"crps": crps, "crpsMean": crps_mean}
 
 
 @jit(nopython=True, parallel=True)
@@ -807,15 +805,13 @@ def crps_hersbach(
 
     # Sump the quantities for output
     # Output array as a dictionary
-    output = {
+    return {
         "crps": crps,
         "crpsMean1": crps_mean_method1,
         "crpsMean2": crps_mean_method2,
         "reliability": np.sum(crps_reliability),
         "potential": np.sum(crps_potential),
     }
-
-    return output
 
 
 def crps_kernel(
@@ -969,14 +965,12 @@ def crps_kernel(
     crps_adj_mean = crps_adj.mean()
 
     # Output two arrays as a dictionary
-    output = {
+    return {
         "crps": crps,
         "crpsAdjusted": crps_adj,
         "crpsMean": crps_mean,
         "crpsAdjustedMean": crps_adj_mean,
     }
-
-    return output
 
 
 def ens_brier(
@@ -1136,13 +1130,10 @@ def ens_brier(
     if adj is None:
         adj = num_cols
 
-    # calculate ensemble-adjusted brier scores
-    br = (i / num_cols - obs_bin) ** 2 - i * (num_cols - i) / num_cols / (num_cols - 1) * (
+    # calculate ensemble-adjusted brier scores and return the vector of brier scores
+    return (i / num_cols - obs_bin) ** 2 - i * (num_cols - i) / num_cols / (num_cols - 1) * (
         1 / num_cols - 1 / adj
     )
-
-    # return the vector of brier scores
-    return br
 
 
 def auroc(
@@ -1156,7 +1147,7 @@ def auroc(
 ) -> np.ndarray:
     """
     Calculates Area Under the Relative Operating Characteristic curve (AUROC)
-    for a forecast and its verifying binary observation, and estimates the variance of the AUROC
+    for a forecast and its verifying binary observation, and estimates the variance of the AUROC.
 
     Range: 0 ≤ AUROC ≤ 1, Higher is better.
 
@@ -1302,9 +1293,7 @@ def auroc(
 
     ens_forecast_means = np.mean(fcst_ens_bin, axis=1)
 
-    results = auroc_numba(ens_forecast_means, obs_bin)
-
-    return results
+    return auroc_numba(ens_forecast_means, obs_bin)
 
 
 @jit(nopython=True)
@@ -1431,6 +1420,7 @@ def skill_score(
                     f"Row(s) {np.where(~all_nan_indices)[0]} contained NaN values and the row(s) have been removed for the calculation (Rows are "
                     "zero indexed).",
                     UserWarning,
+                    stacklevel=2,
                 )
 
             if np.any(np.isinf(scores_copy)) or np.any(np.isinf(bench_scores_copy)):
@@ -1443,6 +1433,7 @@ def skill_score(
                     f"Row(s) {np.where(~all_inf_indices)[0]} contained Inf or -Inf values and the row(s) have been removed for the calculation (Rows "
                     "are zero indexed).",
                     UserWarning,
+                    stacklevel=2,
                 )
 
             scores_copy = scores_copy[all_treatment_array]
@@ -1454,18 +1445,16 @@ def skill_score(
                 nan_indices_obs = ~np.isnan(bench_scores_copy)
                 all_nan_indices = np.logical_and(nan_indices_fcst, nan_indices_obs)
 
-                raise RuntimeError(
-                    f"Row(s) {np.where(~all_nan_indices)[0]} contained NaN values (Rows are zero indexed)."
-                )
+                msg = f"Row(s) {np.where(~all_nan_indices)[0]} contained NaN values (Rows are zero indexed)."
+                raise RuntimeError(msg)
 
             if np.any(np.isinf(scores_copy)) or np.any(np.isinf(bench_scores_copy)):
                 inf_indices_fcst = ~(np.isinf(scores_copy))
                 inf_indices_obs = ~np.isinf(bench_scores_copy)
                 all_inf_indices = np.logical_and(inf_indices_fcst, inf_indices_obs)
 
-                raise RuntimeError(
-                    f"Row(s) {np.where(~all_inf_indices)[0]} contained Inf or -Inf values (Rows are zero indexed)."
-                )
+                msg = f"Row(s) {np.where(~all_inf_indices)[0]} contained Inf or -Inf values (Rows are zero indexed)."
+                raise RuntimeError(msg)
 
         # Handle effective sample size
         if eff_sample_size is None:
@@ -1480,7 +1469,8 @@ def skill_score(
             skillscore_sigma = np.nan
             warnings.warn(
                 "The difference between the perfect score and benchmark score is zero, setting the skill"
-                " score value and standard deviation to NaN."
+                " score value and standard deviation to NaN.",
+                stacklevel=2,
             )
         else:
             # calculate skill score
@@ -1519,7 +1509,8 @@ def skill_score(
             skillscore = np.nan
             warnings.warn(
                 "The difference between the perfect score and benchmark score is zero, setting the skill"
-                " score value to NaN."
+                " score value to NaN.",
+                stacklevel=2,
             )
         else:
             # calculate skill score
@@ -1532,9 +1523,7 @@ def skill_score(
             "The scores and benchmark_scores must either both be ndarrays or both be floats."
         )
 
-    return_dict = {"skillScore": skillscore, "standardDeviation": skillscore_sigma}
-
-    return return_dict
+    return {"skillScore": skillscore, "standardDeviation": skillscore_sigma}
 
 
 def treat_data(
@@ -1549,7 +1538,8 @@ def treat_data(
     # Give user warning, but let run, if eith obs or fcst are all zeros
     if obs.sum() == 0 or fcst_ens.sum() == 0:
         warnings.warn(
-            "All zero values in either 'obs' or 'fcst', function might run, but check if data OK."
+            "All zero values in either 'obs' or 'fcst', function might run, but check if data OK.",
+            stacklevel=2,
         )
 
     all_treatment_array = np.ones(obs.size, dtype=bool)
@@ -1563,7 +1553,8 @@ def treat_data(
 
         warnings.warn(
             f"Row(s) {np.where(~all_nan_indices)[0]} contained NaN values and the row(s) have been "
-            "removed (zero indexed)."
+            "removed (zero indexed).",
+            stacklevel=2,
         )
 
     if np.any(np.isinf(obs)) or np.any(np.isinf(fcst_ens)):
@@ -1574,7 +1565,8 @@ def treat_data(
 
         warnings.warn(
             f"Row(s) {np.where(~all_inf_indices)[0]} contained Inf or -Inf values and the row(s) have been "
-            "removed (zero indexed)."
+            "removed (zero indexed).",
+            stacklevel=2,
         )
 
     # Treat zero data in obs and fcst_ens, rows in fcst_ens or obs that contain zero values
@@ -1587,7 +1579,8 @@ def treat_data(
 
             warnings.warn(
                 f"Row(s) {np.where(~all_zero_indices)[0]} contained zero values and the row(s) have been "
-                "removed (zero indexed)."
+                "removed (zero indexed).",
+                stacklevel=2,
             )
 
     # Treat negative data in obs and fcst_ens, rows in fcst_ens or obs that contain negative values
@@ -1606,7 +1599,8 @@ def treat_data(
 
             warnings.warn(
                 f"Row(s) {np.where(~all_neg_indices)[0]} contained negative values and the row(s) have been "
-                "removed (zero indexed)."
+                "removed (zero indexed).",
+                stacklevel=2,
             )
         else:
             pass  # warnings.filterwarnings("always")  # Turn warnings back on
