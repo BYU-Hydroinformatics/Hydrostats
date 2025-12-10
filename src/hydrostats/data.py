@@ -139,6 +139,7 @@ def julian_to_gregorian(dataframe, frequency=None, inplace=False):
             return_df.index = return_df.index.round(frequency)
 
         return return_df
+    return None
 
 
 def merge_data(
@@ -363,10 +364,11 @@ def merge_data(
         merged_df.columns = column_names
 
         return merged_df
+    return None
 
 
 def daily_average(df, rolling=False, **kwargs):
-    """Calculates daily seasonal averages of the timeseries data in a DataFrame
+    """Calculates daily seasonal averages of the timeseries data in a DataFrame.
 
     Parameters
     ----------
@@ -434,7 +436,7 @@ def daily_average(df, rolling=False, **kwargs):
 
 
 def daily_std_error(merged_data):
-    """Calculates daily seasonal standard error of the timeseries data in a DataFrame
+    """Calculates daily seasonal standard error of the timeseries data in a DataFrame.
 
     Parameters
     ----------
@@ -487,7 +489,7 @@ def daily_std_error(merged_data):
 
 
 def daily_std_dev(merged_data):
-    """Calculates daily seasonal standard deviation of the timeseries data in a DataFrame
+    """Calculates daily seasonal standard deviation of the timeseries data in a DataFrame.
 
     Parameters
     ----------
@@ -540,7 +542,7 @@ def daily_std_dev(merged_data):
 
 
 def monthly_average(merged_data):
-    """Calculates monthly seasonal averages of the timeseries data in a DataFrame
+    """Calculates monthly seasonal averages of the timeseries data in a DataFrame.
 
     Parameters
     ----------
@@ -589,7 +591,7 @@ def monthly_average(merged_data):
 
 
 def monthly_std_error(merged_data):
-    """Calculates monthly seasonal standard error of the timeseries data in a DataFrame
+    """Calculates monthly seasonal standard error of the timeseries data in a DataFrame.
 
     Parameters
     ----------
@@ -638,7 +640,7 @@ def monthly_std_error(merged_data):
 
 
 def monthly_std_dev(merged_data):
-    """Calculates monthly seasonal standard deviation of the timeseries data in a DataFrame
+    """Calculates monthly seasonal standard deviation of the timeseries data in a DataFrame.
 
     Parameters
     ----------
@@ -687,7 +689,7 @@ def monthly_std_dev(merged_data):
 
 
 def remove_nan_df(merged_dataframe):
-    """Drops rows with NaN, zero, negative, and inf values from a pandas dataframe
+    """Drops rows with NaN, zero, negative, and inf values from a pandas dataframe.
 
     Parameters
     ----------
@@ -749,13 +751,12 @@ def remove_nan_df(merged_dataframe):
     # Replaces infinites with nans
     merged_dataframe = merged_dataframe.replace([inf, -inf], nan)
     # Drops Nan
-    merged_dataframe = merged_dataframe.dropna()
+    return merged_dataframe.dropna()
 
-    return merged_dataframe
 
 
 def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False):
-    """Creates a dataframe with a specified seasonal period
+    """Creates a dataframe with a specified seasonal period.
 
     Parameters
     ----------
