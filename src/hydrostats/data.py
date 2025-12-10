@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
+"""Tools for preprocessing data.
 
 The data module contains tools for preprocessing data. It allows users to merge timeseries, compute
 daily and monthly summary statistics, and get seasonal periods of a time series.
@@ -10,14 +9,14 @@ import pandas as pd
 from numpy import inf, nan
 
 __all__ = [
+    "daily_average",
+    "daily_std_dev",
+    "daily_std_error",
     "julian_to_gregorian",
     "merge_data",
-    "daily_average",
-    "daily_std_error",
-    "daily_std_dev",
     "monthly_average",
-    "monthly_std_error",
     "monthly_std_dev",
+    "monthly_std_error",
     "remove_nan_df",
     "seasonal_period",
 ]
@@ -52,7 +51,6 @@ def julian_to_gregorian(dataframe, frequency=None, inplace=False):
 
     Examples
     --------
-
     >>> import pandas as pd
     >>> import hydrostats.data as hd
     >>> import numpy as np
@@ -124,7 +122,6 @@ def julian_to_gregorian(dataframe, frequency=None, inplace=False):
     1980-01-01 09:00:00        0.273430       0.443980
 
     """
-
     if inplace:
         dataframe.index = pd.to_datetime(dataframe.index, origin="julian", unit="D")
 
@@ -236,7 +233,6 @@ def merge_data(
 
     Examples
     --------
-
     >>> import hydrostats.data as hd
     >>> import pandas as pd
     >>> pd.options.display.max_rows = 15
@@ -301,19 +297,18 @@ def merge_data(
         )
 
     # Checking to see if the necessary arguments in the function are fulfilled
-    if simulated_tz is None and observed_tz is not None:
+    if (simulated_tz is None and observed_tz is not None) or (
+        simulated_tz is not None and observed_tz is None
+    ):
         raise RuntimeError("Either Both Timezones are required or neither")
 
-    elif simulated_tz is not None and observed_tz is None:
-        raise RuntimeError("Either Both Timezones are required or neither")
-
-    elif simulated_tz is not None and observed_tz is not None and interpolate is None:
+    if simulated_tz is not None and observed_tz is not None and interpolate is None:
         raise RuntimeError(
             "You must specify with the interpolate parameter whether to interpolate the 'simulated' "
             "or 'observed' data."
         )
 
-    elif simulated_tz is None and observed_tz is None and interpolate is None:
+    if simulated_tz is None and observed_tz is None and interpolate is None:
         # Scenario 1
 
         # Merging and joining the two DataFrames
@@ -322,7 +317,7 @@ def merge_data(
 
         return merged_df
 
-    elif simulated_tz is None and observed_tz is None and interpolate is not None:
+    if simulated_tz is None and observed_tz is None and interpolate is not None:
         # Scenario 2
 
         if interpolate == "simulated":
@@ -342,7 +337,7 @@ def merge_data(
 
         return merged_df
 
-    elif simulated_tz is not None and observed_tz is not None and interpolate is not None:
+    if simulated_tz is not None and observed_tz is not None and interpolate is not None:
         # Scenario 3
 
         # Convert the DateTime Index of both DataFrames to User Specified Timezones
@@ -375,7 +370,6 @@ def daily_average(df, rolling=False, **kwargs):
 
     Parameters
     ----------
-
     df: DataFrame
         A pandas DataFrame with a datetime index and columns containing float type values.
 
@@ -395,7 +389,6 @@ def daily_average(df, rolling=False, **kwargs):
 
     Examples
     --------
-
     >>> import hydrostats.data as hd
     >>> import pandas as pd
     >>> pd.options.display.max_rows = 15
@@ -430,15 +423,12 @@ def daily_average(df, rolling=False, **kwargs):
     # Calculating the daily average from the database
     if not rolling:
         daily_averages = df.groupby(df.index.strftime("%m/%d")).mean()
+    elif kwargs:
+        rolling_averages = df.rolling(**kwargs).mean()
+        daily_averages = daily_average(rolling_averages, rolling=False)
     else:
-        if kwargs:
-            rolling_averages = df.rolling(**kwargs).mean()
-            daily_averages = daily_average(rolling_averages, rolling=False)
-        else:
-            rolling_averages = df.rolling(
-                window=6, min_periods=1, center=True, closed="right"
-            ).mean()
-            daily_averages = daily_average(rolling_averages, rolling=False)
+        rolling_averages = df.rolling(window=6, min_periods=1, center=True, closed="right").mean()
+        daily_averages = daily_average(rolling_averages, rolling=False)
 
     return daily_averages
 
@@ -448,7 +438,6 @@ def daily_std_error(merged_data):
 
     Parameters
     ----------
-
     merged_data: DataFrame
         A pandas DataFrame with a datetime index and columns containing float type values.
 
@@ -460,7 +449,6 @@ def daily_std_error(merged_data):
 
     Examples
     --------
-
     >>> import hydrostats.data as hd
     >>> import pandas as pd
     >>> pd.options.display.max_rows = 15
@@ -503,7 +491,6 @@ def daily_std_dev(merged_data):
 
     Parameters
     ----------
-
     merged_data: DataFrame
         A pandas DataFrame with a datetime index and columns containing float type values.
 
@@ -515,7 +502,6 @@ def daily_std_dev(merged_data):
 
     Examples
     --------
-
     >>> import hydrostats.data as hd
     >>> import pandas as pd
     >>> pd.options.display.max_rows = 15
@@ -558,7 +544,6 @@ def monthly_average(merged_data):
 
     Parameters
     ----------
-
     merged_data: DataFrame
         A pandas DataFrame with a datetime index and columns containing float type values.
 
@@ -570,7 +555,6 @@ def monthly_average(merged_data):
 
     Examples
     --------
-
     >>> import hydrostats.data as hd
     >>> import pandas as pd
     >>> pd.options.display.max_rows = 15
@@ -609,7 +593,6 @@ def monthly_std_error(merged_data):
 
     Parameters
     ----------
-
     merged_data: DataFrame
         A pandas DataFrame with a datetime index and columns containing float type values.
 
@@ -621,7 +604,6 @@ def monthly_std_error(merged_data):
 
     Examples
     --------
-
     >>> import hydrostats.data as hd
     >>> import pandas as pd
     >>> pd.options.display.max_rows = 15
@@ -660,7 +642,6 @@ def monthly_std_dev(merged_data):
 
     Parameters
     ----------
-
     merged_data: DataFrame
         A pandas DataFrame with a datetime index and columns containing float type values.
 
@@ -672,7 +653,6 @@ def monthly_std_dev(merged_data):
 
     Examples
     --------
-
     >>> import hydrostats.data as hd
     >>> import pandas as pd
     >>> pd.options.display.max_rows = 15
@@ -711,7 +691,6 @@ def remove_nan_df(merged_dataframe):
 
     Parameters
     ----------
-
     merged_dataframe: DataFrame
         A pandas DataFrame with a datetime index and columns containing float type values.
 
@@ -722,7 +701,6 @@ def remove_nan_df(merged_dataframe):
 
     Examples
     --------
-
     >>> import pandas as pd
     >>> import numpy as np
     >>> import hydrostats.data as hd
@@ -781,7 +759,6 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
 
     Parameters
     ----------
-
     merged_dataframe: DataFrame
         A pandas DataFrame with a datetime index and columns containing float type values.
 
@@ -905,8 +882,7 @@ def seasonal_period(merged_dataframe, daily_period, time_range=None, numpy=False
 
     if numpy:
         return merged_df_copy.iloc[:, 0].values, merged_df_copy.iloc[:, 1].values
-    else:
-        return merged_df_copy
+    return merged_df_copy
 
 
 if __name__ == "__main__":
