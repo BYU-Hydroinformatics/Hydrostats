@@ -157,7 +157,7 @@ def julian_to_gregorian(dataframe, frequency=None, inplace=False):  # noqa: FBT0
     return None
 
 
-def merge_data(
+def merge_data(  # noqa: C901,PLR0912
     sim_fpath=None,
     obs_fpath=None,
     sim_df=None,
