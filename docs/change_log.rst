@@ -10,6 +10,8 @@ Version 2.0.0rc1
 Breaking Changes:
 
 - Drop support for Python 2.7, 3.6 and 3.7. Minimum Python version is now 3.10.
+- Raise a ValueError instead of a RuntimeError for interpolation in "analyze.time_lag".
+
 
 Other Changes:
 

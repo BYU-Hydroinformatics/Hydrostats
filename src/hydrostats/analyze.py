@@ -1,18 +1,20 @@
-"""
-The analyze module contains functions that perform a more complex analysis of simulated and observed
-time series data. It allows users to make tables with metrics that they choose as well as different
-date ranges. It also allows users to run a time lag analysis of two time series.
+"""Functions for complex analysis of simulated and observed time series data.
+
+The "analyze" module contains functions that perform a more complex analysis of simulated and
+observed time series data. It allows users to make tables with metrics that they choose as well as
+different date ranges. It also allows users to run a time lag analysis of two time series.
 """
 
-from typing import Optional, Sequence, Tuple, Union
-
-from hydrostats.metrics import list_of_metrics
-from HydroErr.HydroErr import treat_values
-import pandas as pd
-from hydrostats.data import seasonal_period
 import calendar
-import numpy as np
+from collections.abc import Sequence
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from HydroErr.HydroErr import treat_values
+
+from hydrostats.data import seasonal_period
+from hydrostats.metrics import list_of_metrics
 
 __all__ = ["make_table", "time_lag"]
 
@@ -20,22 +22,22 @@ __all__ = ["make_table", "time_lag"]
 def make_table(
     merged_dataframe: pd.DataFrame,
     metrics: Sequence[str],
-    seasonal_periods: Optional[Sequence[Sequence[str]]] = None,
+    seasonal_periods: Sequence[Sequence[str]] | None = None,
     mase_m: int = 1,
-    dmod_j: Union[int, float] = 1,
-    nse_mod_j: Union[int, float] = 1,
-    h6_mhe_k: Union[int, float] = 1,
-    h6_ahe_k: Union[int, float] = 1,
-    h6_rmshe_k: Union[int, float] = 1,
-    d1_p_obs_bar_p: Optional[float] = None,
-    lm_x_obs_bar_p: Optional[float] = None,
-    kge2009_s: Tuple[float, float, float] = (1, 1, 1),
-    kge2012_s: Tuple[float, float, float] = (1, 1, 1),
-    replace_nan: Optional[float] = None,
-    replace_inf: Optional[float] = None,
-    remove_neg: bool = False,
-    remove_zero: bool = False,
-    location: Optional[str] = None,
+    dmod_j: float = 1,
+    nse_mod_j: float = 1,
+    h6_mhe_k: float = 1,
+    h6_ahe_k: float = 1,
+    h6_rmshe_k: float = 1,
+    d1_p_obs_bar_p: float | None = None,
+    lm_x_obs_bar_p: float | None = None,
+    kge2009_s: tuple[float, float, float] = (1, 1, 1),
+    kge2012_s: tuple[float, float, float] = (1, 1, 1),
+    replace_nan: float | None = None,
+    replace_inf: float | None = None,
+    remove_neg: bool = False,  # noqa: FBT001, FBT002
+    remove_zero: bool = False,  # noqa: FBT001, FBT002
+    location: str | None = None,
 ) -> pd.DataFrame:
     """Create a table of user selected metrics with optional seasonal analysis.
 
@@ -52,9 +54,9 @@ def make_table(
 
     metrics
         A list of all the metrics that the user wants to calculate. The metrics abbreviations must
-        be used (e.g. the abbreviation for the mean error is "ME". Each function has an attribute with the name
-        and abbreviation, so this can be used instead (see example). Also, strings can be typed and found in the
-        quick reference table in this documentation.
+        be used (e.g. the abbreviation for the mean error is "ME". Each function has an attribute
+        with the name and abbreviation, so this can be used instead (see example). Also, strings can
+        be typed and found in the quick reference table in this documentation.
 
     seasonal_periods
         If given, specifies the seasonal periods that the user wants to analyze (e.g. [['06-01',
@@ -87,12 +89,12 @@ def make_table(
         Parameter for the Lagate McCabe Efficiency Index (lm_index).
 
     kge2009_s
-        A tuple of floats of length three signifying how to weight the three values used in the Kling Gupta (2009)
-        metric.
+        A tuple of floats of length three signifying how to weight the three values used in the
+        Kling Gupta (2009) metric.
 
     kge2012_s
-        A tuple of floats of length three signifying how to weight the three values used in the Kling Gupta (2012)
-        metric.
+        A tuple of floats of length three signifying how to weight the three values used in the
+        Kling Gupta (2012) metric.
 
     replace_nan
         If given, indicates which value to replace NaN values with in the two arrays. If None, when
@@ -126,15 +128,15 @@ def make_table(
 
     Notes
     -----
-    If desired, users can export the tables to a CSV or Excel Workbook. This can be done using the built in methods
-    of pandas. A link to CSV method can be found at
-    `<https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_csv.html>`_ and a link to the Excel
-    method can be found at
+    If desired, users can export the tables to a CSV or Excel Workbook. This can be done using the
+    built in methods of pandas. A link to CSV method can be found at
+    `<https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_csv.html>`_, and a
+    link to the Excel method can be found at
     `<https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_excel.html>`_
 
     Examples
     --------
-    First we need to get some data. The data here is pulled from the Streamflow Predication Tool
+     First, we need to get some data. The data here is pulled from the Streamflow Predication Tool
     model and the ECMWF forecasting model. We are comparing the two models in this example.
 
     >>> import hydrostats.analyze as ha
@@ -178,8 +180,7 @@ def make_table(
     October-01:December-31  Magdalena  1410.852917     ...      0.793927    0.791257
 
     """
-
-    # Creating a list for all of the metrics for all of the seasons
+    # Creating a list for all the metrics for all the seasons
     complete_metric_list = []
 
     # Creating an index list
@@ -194,8 +195,8 @@ def make_table(
         index_array.extend(seasonal_periods_names)
 
     # Creating arrays for sim and obs with all the values if a merged dataframe is given
-    sim_array = merged_dataframe.iloc[:, 0].values
-    obs_array = merged_dataframe.iloc[:, 1].values
+    sim_array = merged_dataframe.iloc[:, 0].to_numpy()
+    obs_array = merged_dataframe.iloc[:, 1].to_numpy()
 
     # Getting a list of the full time series
     full_time_series_list = list_of_metrics(
@@ -226,8 +227,8 @@ def make_table(
     if seasonal_periods is not None:
         for time in seasonal_periods:
             temp_df = seasonal_period(merged_dataframe, time)
-            sim_array = temp_df.iloc[:, 0].values
-            obs_array = temp_df.iloc[:, 1].values
+            sim_array = temp_df.iloc[:, 0].to_numpy()
+            obs_array = temp_df.iloc[:, 1].to_numpy()
 
             seasonal_metric_list = list_of_metrics(
                 metrics=metrics,
@@ -266,31 +267,31 @@ def time_lag(
     metrics: Sequence[str],
     interp_freq: str = "6H",
     interp_type: str = "pchip",
-    shift_range: Tuple[int, int] = (-30, 30),
+    shift_range: tuple[int, int] = (-30, 30),
     mase_m: int = 1,
-    dmod_j: Union[int, float] = 1,
-    nse_mod_j: Union[int, float] = 1,
-    h6_mhe_k: Union[int, float] = 1,
-    h6_ahe_k: Union[int, float] = 1,
-    h6_rmshe_k: Union[int, float] = 1,
-    d1_p_obs_bar_p: Optional[float] = None,
-    lm_x_obs_bar_p: Optional[float] = None,
-    replace_nan: Optional[float] = None,
-    replace_inf: Optional[float] = None,
-    remove_neg: bool = False,
-    remove_zero: bool = False,
-    plot: bool = False,
+    dmod_j: float = 1,
+    nse_mod_j: float = 1,
+    h6_mhe_k: float = 1,
+    h6_ahe_k: float = 1,
+    h6_rmshe_k: float = 1,
+    d1_p_obs_bar_p: float | None = None,
+    lm_x_obs_bar_p: float | None = None,
+    replace_nan: float | None = None,
+    replace_inf: float | None = None,
+    remove_neg: bool = False,  # noqa: FBT001, FBT002
+    remove_zero: bool = False,  # noqa: FBT001, FBT002
+    plot: bool = False,  # noqa: FBT001, FBT002
     plot_title: str = "Metric Values as Different Lags",
     ylabel: str = "Metric Value",
     xlabel: str = "Number of Lags",
-    save_fig: Optional[str] = None,
-    figsize: Tuple[int, int] = (10, 6),
-    station: Optional[str] = None,
-) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    save_fig: str | None = None,
+    figsize: tuple[int, int] = (10, 6),
+    station: str | None = None,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Check metric values between simulated and observed data at different time lags.
 
-    Runs a time lag analysis to check for potential timing errors in the simulated data. Can also create a
-    plot using matplotlib of the metric values at different shifts.
+    Runs a time lag analysis to check for potential timing errors in the simulated data. Can also
+    create a plot using matplotlib of the metric values at different shifts.
 
     Parameters
     ----------
@@ -299,8 +300,8 @@ def time_lag(
         with a datetime index.
 
     metrics
-        Metric abbreviations that the user would like to use in their lag analysis. Each metric function has a property
-        that contains their abbreviation for convenience (see example).
+        Metric abbreviations that the user would like to use in their lag analysis. Each metric
+        function has a property that contains their abbreviation for convenience (see example).
 
     interp_freq
         Frequency of the interpolation for both the simulated and observed time series.
@@ -382,10 +383,10 @@ def time_lag(
 
     Notes
     -----
-    If desired, users can export the tables to a CSV or Excel Workbook. This can be done using the built in methods
-    of pandas. A link to CSV method can be found at
-    `<https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_csv.html>`_ and a link to the Excel
-    method can be found at
+    If desired, users can export the tables to a CSV or Excel Workbook. This can be done using the
+    built in methods of pandas. A link to CSV method can be found at
+    `<https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_csv.html>`_, and a
+    link to the Excel method can be found at
     `<https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_excel.html>`_
 
     Returns
@@ -397,7 +398,6 @@ def time_lag(
 
     Examples
     --------
-
     Using data from the Streamflow prediction tool RAPID model and the ECMWF model, we can conpare
     the two at different time lags
 
@@ -413,7 +413,8 @@ def time_lag(
 
     There are two dataframes that are returned as part of the analysis.
 
-    >>> # Running the lag analysis, not that HydroErr > 1.24 must be used to access the .abbr property
+    >>> # Running the lag analysis, not that HydroErr > 1.24 must be used to access the .abbr
+    ... # property
     >>> time_lag_df, summary_df = ha.time_lag(
     ...     merged_df,
     ...     metrics=[me.abbr, r_squared.abbr, rmse.abbr, kge_2012.abbr, nse.abbr],
@@ -434,10 +435,11 @@ def time_lag(
     .. image:: /Figures/lag_plot1.png
 
     """
-
     # Making a new time index to be able to interpolate the time series to the required input
     new_index = pd.date_range(
-        merged_dataframe.index[0], merged_dataframe.index[-1], freq=interp_freq
+        merged_dataframe.index[0],
+        merged_dataframe.index[-1],
+        freq=interp_freq,
     )
 
     # Reindexing the dataframe and interpolating it
@@ -445,14 +447,14 @@ def time_lag(
         merged_dataframe = merged_dataframe.reindex(new_index)
         merged_dataframe = merged_dataframe.interpolate(interp_type)
     except Exception as e:
-        raise RuntimeError(
+        raise ValueError(
             "Error while interpolating, please make sure that you don't have "
-            "duplicate dates in your time series data."
-        )
+            "duplicate dates in your time series data.",
+        ) from e
 
     # Making arrays to compare the metric value at different time steps
-    sim_array = merged_dataframe.iloc[:, 0].values
-    obs_array = merged_dataframe.iloc[:, 1].values
+    sim_array = merged_dataframe.iloc[:, 0].to_numpy()
+    obs_array = merged_dataframe.iloc[:, 1].to_numpy()
 
     sim_array, obs_array = treat_values(
         sim_array,
