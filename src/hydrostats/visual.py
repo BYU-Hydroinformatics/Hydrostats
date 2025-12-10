@@ -140,34 +140,39 @@ def plot(
     ...     merged_df, ("04-01", "07-31"), time_range=("1986-01-01", "1992-12-31")
     ... )
     >>> daily_avg_df = hd.daily_average(merged_data=merged_df)  # Seasonal Daily Averages
-    >>> daily_std_error = hd.daily_std_error(merged_data=merged_df)  # Seasonal Daily Standard Deviation
+    >>> daily_std_error = hd.daily_std_error(
+    ...     merged_data=merged_df
+    ... )  # Seasonal Daily Standard Deviation
 
     The entire timeseries is plotted below
 
-    >>> plot(merged_data_df=merged_df,
-    >>>      title='Hydrograph of Entire Time Series',
-    >>>      linestyles=['r-', 'k-'],
-    >>>      legend=('SFPT', 'GLOFAS'),
-    >>>      labels=['Datetime', 'Streamflow (cfs)'],
-    >>>      metrics=['ME', 'NSE', 'SA'],
-    >>>      grid=True)
+    >>> plot(
+    ...     merged_data_df=merged_df,
+    ...     title="Hydrograph of Entire Time Series",
+    ...     linestyles=["r-", "k-"],
+    ...     legend=("SFPT", "GLOFAS"),
+    ...     labels=["Datetime", "Streamflow (cfs)"],
+    ...     metrics=["ME", "NSE", "SA"],
+    ...     grid=True,
+    ... )
     >>> plt.show()
 
     .. image:: /Figures/plot_full1.png
 
     The seasonal averages with standard error bars is plotted below
 
-    >>> plot(merged_data_df=daily_avg_df,
-    >>>      title='Daily Average Streamflow (Standard Error)',
-    >>>      legend=('SFPT', 'GLOFAS'),
-    >>>      x_season=True,
-    >>>      labels=['Datetime', 'Streamflow (csm)'],
-    >>>      linestyles=['r-', 'k-'],
-    >>>      fig_size=(14, 8),
-    >>>      ebars=daily_std_error,
-    >>>      ecolor=('r', 'k'),
-    >>>      tight_xlim=True
-    >>>      )
+    >>> plot(
+    ...     merged_data_df=daily_avg_df,
+    ...     title="Daily Average Streamflow (Standard Error)",
+    ...     legend=("SFPT", "GLOFAS"),
+    ...     x_season=True,
+    ...     labels=["Datetime", "Streamflow (csm)"],
+    ...     linestyles=["r-", "k-"],
+    ...     fig_size=(14, 8),
+    ...     ebars=daily_std_error,
+    ...     ecolor=("r", "k"),
+    ...     tight_xlim=True,
+    ... )
     >>> plt.show()
 
     .. image:: /Figures/plot_seasonal.png
@@ -320,7 +325,7 @@ def hist(
     prob_dens=False,
     figsize=(12, 6),
 ):
-    """Plots a histogram comparing simulated and observed data.
+    """Plot a histogram comparing simulated and observed data.
 
     The histogram plot is a function that is available for comparing the histograms of two time
     series. Data can be Z-score normalized as well as fit in a probability density function.
@@ -388,12 +393,14 @@ def hist(
 
     The histogram with 100 bins is plotted below
 
-    >>> hist(merged_data_df=merged_df,
-    >>>      num_bins=100,
-    >>>      title='Histogram of Streamflows',
-    >>>      legend=('SFPT', 'GLOFAS'),
-    >>>      labels=('Bins', 'Frequency'),
-    >>>      grid=True)
+    >>> hist(
+    ...     merged_data_df=merged_df,
+    ...     num_bins=100,
+    ...     title="Histogram of Streamflows",
+    ...     legend=("SFPT", "GLOFAS"),
+    ...     labels=("Bins", "Frequency"),
+    ...     grid=True,
+    ... )
     >>> plt.show()
 
     .. image:: /Figures/hist1.png
@@ -518,7 +525,7 @@ def scatter(
     line45=False,
     figsize=(12, 8),
 ):
-    """Creates a scatter plot of the observed and simulated data.
+    """Create a scatter plot of the observed and simulated data.
 
     Parameters
     ----------
@@ -589,16 +596,28 @@ def scatter(
     >>> sim_array = merged_df.iloc[:, 0].values
     >>> obs_array = merged_df.iloc[:, 1].values
 
-    >>> scatter(merged_data_df=merged_df, grid=True, title='Scatter Plot (Normal Scale)',
-    >>>         labels=('SFPT', 'GLOFAS'), best_fit=True)
+    >>> scatter(
+    ...     merged_data_df=merged_df,
+    ...     grid=True,
+    ...     title="Scatter Plot (Normal Scale)",
+    ...     labels=("SFPT", "GLOFAS"),
+    ...     best_fit=True,
+    ... )
     >>> plt.show()
 
     .. image:: /Figures/scatter.png
 
     Arrays can be used as well in the parameters, as demonstrated below.
 
-    >>> scatter(sim_array=sim_array, obs_array=obs_array, grid=True, title='Scatter Plot (Log-Log Scale)',
-    >>>         labels=('SFPT', 'GLOFAS'), line45=True, metrics=['ME', 'KGE (2012)'])
+    >>> scatter(
+    ...     sim_array=sim_array,
+    ...     obs_array=obs_array,
+    ...     grid=True,
+    ...     title="Scatter Plot (Log-Log Scale)",
+    ...     labels=("SFPT", "GLOFAS"),
+    ...     line45=True,
+    ...     metrics=["ME", "KGE (2012)"],
+    ... )
     >>> plt.show()
 
     .. image:: /Figures/scatterlog.png
@@ -710,7 +729,7 @@ def qqplot(
     remove_zero=False,
     figsize=(12, 8),
 ):
-    """Plots a Quantile-Quantile plot of the simulated and observed data.
+    """Plot a Quantile-Quantile plot of the simulated and observed data.
 
     Useful for comparing to see whether the two datasets come from the same distribution.
 
@@ -784,9 +803,14 @@ def qqplot(
     >>> glofas_url = r"https://github.com/waderoberts123/Hydrostats/raw/master/Sample_data/GLOFAS_Data/magdalena-calamar_ECMWF_data.csv"
     >>> merged_df = hd.merge_data(sfpt_url, glofas_url, column_names=("SFPT", "GLOFAS"))
 
-    >>> qqplot(merged_data_df=merged_df, title='Quantile-Quantile Plot of Data',
-    >>>        xlabel='SFPT Data Quantiles', ylabel='GLOFAS Data Quantiles', legend=True,
-    >>>        figsize=(8, 6))
+    >>> qqplot(
+    ...     merged_data_df=merged_df,
+    ...     title="Quantile-Quantile Plot of Data",
+    ...     xlabel="SFPT Data Quantiles",
+    ...     ylabel="GLOFAS Data Quantiles",
+    ...     legend=True,
+    ...     figsize=(8, 6),
+    ... )
     >>> plt.show()
 
     .. image:: /Figures/qqplot.png
