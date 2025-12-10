@@ -1,14 +1,14 @@
-"""
-The metrics module contains all of the metrics included in the HydroErr package. These metrics measure hydrologic skill.
-Each metric is contained in function, and every metric has the ability to treat missing values as
-well as remove zero and negative values from the timeseries data.
+"""Contains all the metrics included in the HydroErr package.
+
+These metrics measure hydrologic skill. Each metric is contained in function, and every metric can
+treat missing values as well as remove zero and negative values from the timeseries data.
 """
 
-from typing import Iterable, List, Sequence, Tuple, Union
+from collections.abc import Sequence
 
 import numpy as np
 from HydroErr import *
-from HydroErr.HydroErr import metric_names, metric_abbr, function_list
+from HydroErr.HydroErr import function_list, metric_abbr, metric_names
 
 
 def list_of_metrics(
@@ -17,20 +17,20 @@ def list_of_metrics(
     obs_array: np.ndarray,
     abbr: bool = False,
     mase_m: int = 1,
-    dmod_j: Union[int, float] = 1,
-    nse_mod_j: Union[int, float] = 1,
-    h6_mhe_k: Union[int, float] = 1,
-    h6_ahe_k: Union[int, float] = 1,
-    h6_rmshe_k: Union[int, float] = 1,
-    d1_p_obs_bar_p: Union[int, float, None] = None,
-    lm_x_obs_bar_p: Union[int, float, None] = None,
-    kge2009_s: Tuple[float, float, float] = (1, 1, 1),
-    kge2012_s: Tuple[float, float, float] = (1, 1, 1),
-    replace_nan: Union[float, None] = None,
-    replace_inf: Union[float, None] = None,
+    dmod_j: float = 1,
+    nse_mod_j: float = 1,
+    h6_mhe_k: float = 1,
+    h6_ahe_k: float = 1,
+    h6_rmshe_k: float = 1,
+    d1_p_obs_bar_p: float | None = None,
+    lm_x_obs_bar_p: float | None = None,
+    kge2009_s: tuple[float, float, float] = (1, 1, 1),
+    kge2012_s: tuple[float, float, float] = (1, 1, 1),
+    replace_nan: float | None = None,
+    replace_inf: float | None = None,
     remove_neg: bool = False,
     remove_zero: bool = False,
-) -> List[float]:
+) -> list[float]:
     if sim_array.ndim != 1 or obs_array.ndim != 1:
         raise RuntimeError("One or both of the ndarrays are not 1 dimensional.")
     if sim_array.size != obs_array.size:
