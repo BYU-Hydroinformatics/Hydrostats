@@ -30,8 +30,8 @@ __all__ = [
 def ens_me(
     obs: np.ndarray,
     fcst_ens: np.ndarray | None = None,
-    remove_zero: bool = False,
-    remove_neg: bool = False,
+    remove_zero: bool = False,  # noqa: FBT001, FBT002
+    remove_neg: bool = False,  # noqa: FBT001, FBT002
     reference: str = "mean",
 ) -> float:
     """Calculate the mean error between observed values and the ensemble mean.
@@ -102,8 +102,8 @@ def ens_me(
 def ens_mae(
     obs: np.ndarray,
     fcst_ens: np.ndarray | None = None,
-    remove_zero: bool = False,
-    remove_neg: bool = False,
+    remove_zero: bool = False,  # noqa: FBT001, FBT002
+    remove_neg: bool = False,  # noqa: FBT001, FBT002
     reference: str = "mean",
 ) -> float:
     """Calculate the mean absolute error between observed values and the ensemble mean.
@@ -174,8 +174,8 @@ def ens_mae(
 def ens_mse(
     obs: np.ndarray,
     fcst_ens: np.ndarray | None = None,
-    remove_zero: bool = False,
-    remove_neg: bool = False,
+    remove_zero: bool = False,  # noqa: FBT001, FBT002
+    remove_neg: bool = False,  # noqa: FBT001, FBT002
     reference: str = "mean",
 ) -> float:
     """Calculate the mean squared error between observed values and the ensemble mean.
@@ -245,8 +245,8 @@ def ens_mse(
 def ens_rmse(
     obs: np.ndarray,
     fcst_ens: np.ndarray | None = None,
-    remove_zero: bool = False,
-    remove_neg: bool = False,
+    remove_zero: bool = False,  # noqa: FBT001, FBT002
+    remove_neg: bool = False,  # noqa: FBT001, FBT002
     reference: str = "mean",
 ) -> float:
     """Calculate the root mean squared error between observed values and the ensemble mean.
@@ -316,8 +316,8 @@ def ens_rmse(
 def ens_pearson_r(
     obs: np.ndarray,
     fcst_ens: np.ndarray,
-    remove_neg: bool = False,
-    remove_zero: bool = False,
+    remove_neg: bool = False,  # noqa: FBT001, FBT002
+    remove_zero: bool = False,  # noqa: FBT001, FBT002
     reference: str = "mean",
 ) -> float:
     """Calculate the pearson correlation coefficient between observed values and the ensemble mean.
@@ -386,9 +386,9 @@ def ens_crps(
     obs: np.ndarray,
     fcst_ens: np.ndarray,
     adj: float = np.nan,
-    remove_neg: bool = False,
-    remove_zero: bool = False,
-    llvm: bool = True,
+    remove_neg: bool = False,  # noqa: FBT001, FBT002
+    remove_zero: bool = False,  # noqa: FBT001, FBT002
+    llvm: bool = True,  # noqa: FBT001, FBT002
 ) -> dict[str, np.ndarray | float]:
     """Calculate the ensemble-adjusted Continuous Ranked Probability Score (CRPS).
 
@@ -624,8 +624,8 @@ def python_crps(
 def crps_hersbach(
     obs: np.ndarray,
     fcst_ens: np.ndarray,
-    remove_neg: bool = False,
-    remove_zero: bool = False,
+    remove_neg: bool = False,  # noqa: FBT001, FBT002
+    remove_zero: bool = False,  # noqa: FBT001, FBT002
 ) -> dict[str, np.ndarray | float]:
     """Calculate the the continuous ranked probability score (CRPS) as per equation 25-27 in
     Hersbach et al. (2000).
@@ -817,8 +817,8 @@ def crps_hersbach(
 def crps_kernel(
     obs: np.ndarray,
     fcst_ens: np.ndarray,
-    remove_neg: bool = False,
-    remove_zero: bool = False,
+    remove_neg: bool = False,  # noqa: FBT001, FBT002
+    remove_zero: bool = False,  # noqa: FBT001, FBT002
 ) -> dict[str, np.ndarray | float]:
     """Compute the kernel representation of the continuous ranked probability score (CRPS).
 
@@ -1351,7 +1351,7 @@ def skill_score(
     bench_scores: float | np.ndarray,
     perf_score: float,
     eff_sample_size: float | None = None,
-    remove_nan_inf: bool = False,
+    remove_nan_inf: bool = False,  # noqa: FBT001, FBT002
 ) -> dict[str, float | np.ndarray]:
     """Calculate the skill score of the given function.
 
@@ -1527,7 +1527,7 @@ def skill_score(
 
 
 def treat_data(
-    obs: np.ndarray, fcst_ens: np.ndarray, remove_zero: bool, remove_neg: bool
+    obs: np.ndarray, fcst_ens: np.ndarray, remove_zero: bool, remove_neg: bool  # noqa: FBT001
 ) -> tuple[np.ndarray, np.ndarray]:
     assert obs.ndim == 1, "obs is not a 1D numpy array."
     assert fcst_ens.ndim == 2, "fcst_ens is not a 2D numpy array."
