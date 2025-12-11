@@ -6,8 +6,8 @@ import matplotlib
 matplotlib.use("Agg")
 
 
-import pytest
 import pandas as pd
+import pytest
 
 
 @pytest.fixture(scope="session")

@@ -1,23 +1,22 @@
 from __future__ import annotations
 
 import numpy as np
-import pandas as pd
 import pytest
 
 import hydrostats.metrics as he
 
 
-@pytest.fixture()
+@pytest.fixture
 def sim():
     return np.array([5, 7, 9, 2, 4.5, 6.7])
 
 
-@pytest.fixture()
+@pytest.fixture
 def obs():
     return np.array([4.7, 6, 10, 2.5, 4, 6.8])
 
 
-@pytest.fixture()
+@pytest.fixture
 def sim_bad_data():
     return np.array(
         [
@@ -41,7 +40,7 @@ def sim_bad_data():
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def obs_bad_data():
     return np.array(
         [

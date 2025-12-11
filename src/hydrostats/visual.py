@@ -5,16 +5,18 @@ time series data. In some of the visualization functions, metrics can be added t
 more complete summary of the data.
 """
 
-from hydrostats.metrics import function_list, metric_abbr
-from HydroErr.HydroErr import treat_values
-import numpy as np
-import matplotlib.pyplot as plt
 import calendar
+
+import matplotlib.pyplot as plt
+import numpy as np
+from HydroErr.HydroErr import treat_values
 from pandas.plotting import register_matplotlib_converters
+
+from hydrostats.metrics import function_list, metric_abbr
 
 register_matplotlib_converters()
 
-__all__ = ["plot", "hist", "scatter", "qqplot"]
+__all__ = ["hist", "plot", "qqplot", "scatter"]
 
 
 def plot(
@@ -125,7 +127,6 @@ def plot(
 
     Examples
     --------
-
     In this example two models are compared.
 
     >>> import hydrostats.data as hd
@@ -380,7 +381,6 @@ def hist(
 
     Examples
     --------
-
     In this example the histograms of two models are compared to check their distributions
 
     >>> import hydrostats.data as hd
@@ -582,7 +582,6 @@ def scatter(
 
     Examples
     --------
-
     A scatter plot is created in this example comparing two models.
 
     >>> import hydrostats.data as hd
@@ -648,7 +647,7 @@ def scatter(
             np.arange(0, int(max_both) + 1),
             np.arange(0, int(max_both) + 1),
             "r--",
-            label="45$^\circ$ Line",
+            label=r"45$^\circ$ Line",
         )
 
     plt.xticks(fontsize=14)
@@ -674,10 +673,10 @@ def scatter(
         y_new = f(x_new)
 
         # Formatting the best fit equation to be able to display in latex
-        equation = "{} x + {}".format(np.round(p[0], 4), np.round(p[1], 4))
+        equation = f"{np.round(p[0], 4)} x + {np.round(p[1], 4)}"
 
         # Plotting the best fit line with the equation as a legend in latex
-        plt.plot(x_new, y_new, "k", label="${}$".format(equation))
+        plt.plot(x_new, y_new, "k", label=f"${equation}$")
 
     if line45 or best_fit:
         plt.legend(fontsize=12)
@@ -794,7 +793,6 @@ def qqplot(
 
     Examples
     --------
-
     >>> import hydrostats.data as hd
     >>> import hydrostats.visual as hv
     >>> import matplotlib.pyplot as plt
@@ -816,7 +814,6 @@ def qqplot(
     .. image:: /Figures/qqplot.png
 
     """
-
     fig = plt.figure(figsize=figsize, facecolor="w", edgecolor="k")
 
     if merged_data_df is not None and sim_array is None and obs_array is None:

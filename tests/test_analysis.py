@@ -1,9 +1,10 @@
 from pathlib import Path
 
+import pandas as pd
+
 import hydrostats.analyze as ha
 import hydrostats.data as hd
 import hydrostats.metrics as he
-import pandas as pd
 
 
 def test_make_table(merged_df: pd.DataFrame):

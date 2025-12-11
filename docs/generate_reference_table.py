@@ -1,6 +1,6 @@
-import pypandoc as pdoc
 import numpy as np
-from HydroErr.HydroErr import metric_names, metric_abbr, function_list
+import pypandoc as pdoc
+from HydroErr.HydroErr import function_list, metric_abbr, metric_names
 
 function_names = [i.__name__ for i in function_list]
 
@@ -21,9 +21,7 @@ markdown_table = (
 )
 
 for i in range(metric_names_array.shape[0]):
-    table_row = "|{}|{}|{}|\n".format(
-        metric_names_array[i], metric_abbr_array[i], function_names_array[i]
-    )
+    table_row = f"|{metric_names_array[i]}|{metric_abbr_array[i]}|{function_names_array[i]}|\n"
 
     markdown_table += table_row
 

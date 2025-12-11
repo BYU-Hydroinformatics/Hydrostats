@@ -9,9 +9,9 @@ add these directories to sys.path here. If the directory is relative to the
 documentation root, use os.path.abspath to make it absolute, like shown here.
 """
 
+import datetime
 import os
 import sys
-import datetime
 from unittest.mock import MagicMock
 
 
@@ -39,7 +39,7 @@ sys.path.insert(0, os.path.abspath("."))
 
 project = "hydrostats"
 author = "Wade Roberts"
-copyright = "{}, {}".format(datetime.datetime.now().year, author)
+copyright = f"{datetime.datetime.now().year}, {author}"
 
 # The short X.Y version
 version = ""

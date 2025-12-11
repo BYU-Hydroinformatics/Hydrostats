@@ -3,14 +3,14 @@ from __future__ import annotations
 from io import BytesIO
 from pathlib import Path
 
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pytest
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 
-import hydrostats.visual as hv
 import hydrostats.data as hd
+import hydrostats.visual as hv
 
 
 def _png_from_current_figure() -> np.ndarray:
