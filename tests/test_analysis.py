@@ -7,7 +7,7 @@ import hydrostats.data as hd
 import hydrostats.metrics as he
 
 
-def test_make_table(merged_df: pd.DataFrame):
+def test_make_table(merged_df: pd.DataFrame) -> None:
     my_metrics = ["MAE", "r2", "NSE", "KGE (2012)"]
     seasonal = [["01-01", "03-31"], ["04-01", "06-30"], ["07-01", "09-30"], ["10-01", "12-31"]]
 
@@ -29,8 +29,8 @@ def test_make_table(merged_df: pd.DataFrame):
     for season in all_seasons:
         temp_list: list[float] = []
         for metric in metric_functions:
-            sim = season.iloc[:, 0].values
-            obs = season.iloc[:, 1].values
+            sim = season.iloc[:, 0].to_numpy()
+            obs = season.iloc[:, 1].to_numpy()
             temp_list.append(metric(sim, obs, remove_neg=True, remove_zero=True))
         test_list.append(temp_list)
 
@@ -49,7 +49,7 @@ def test_make_table(merged_df: pd.DataFrame):
     pd.testing.assert_frame_equal(test_table, table)
 
 
-def test_lag_analysis(merged_df: pd.DataFrame, comparison_files: Path):
+def test_lag_analysis(merged_df: pd.DataFrame, comparison_files: Path) -> None:
     # Running the lag analysis
     time_lag_df, summary_df = ha.time_lag(
         merged_df, metrics=["ME", "r2", "RMSE", "KGE (2012)", "NSE"]

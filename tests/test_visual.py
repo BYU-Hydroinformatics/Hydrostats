@@ -1,16 +1,18 @@
-from __future__ import annotations
-
 from io import BytesIO
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import pytest
 
 import hydrostats.data as hd
 import hydrostats.visual as hv
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    import pandas as pd
 
 
 def _png_from_current_figure() -> np.ndarray:
@@ -22,7 +24,7 @@ def _png_from_current_figure() -> np.ndarray:
     return img
 
 
-def test_plot_full1(merged_df: pd.DataFrame, baseline_plots: Path):
+def test_plot_full1(merged_df: pd.DataFrame, baseline_plots: Path) -> None:
     hv.plot(
         merged_data_df=merged_df,
         title="Hydrograph of Entire Time Series",
@@ -37,7 +39,7 @@ def test_plot_full1(merged_df: pd.DataFrame, baseline_plots: Path):
     assert np.allclose(img_test, img_original)
 
 
-def test_plot_seasonal(merged_df: pd.DataFrame, baseline_plots: Path):
+def test_plot_seasonal(merged_df: pd.DataFrame, baseline_plots: Path) -> None:
     daily_avg_df = hd.daily_average(df=merged_df)
     daily_std_error = hd.daily_std_error(merged_data=merged_df)
 
@@ -58,7 +60,7 @@ def test_plot_seasonal(merged_df: pd.DataFrame, baseline_plots: Path):
     assert np.allclose(img_test, img_original)
 
 
-def test_hist_df(merged_df: pd.DataFrame, baseline_plots: Path):
+def test_hist_df(merged_df: pd.DataFrame, baseline_plots: Path) -> None:
     hv.hist(
         merged_data_df=merged_df,
         num_bins=100,
@@ -72,9 +74,9 @@ def test_hist_df(merged_df: pd.DataFrame, baseline_plots: Path):
     assert np.allclose(img_test, img_original)
 
 
-def test_hist_arrays(merged_df: pd.DataFrame, baseline_plots: Path):
-    sim_array = merged_df.iloc[:, 0].values
-    obs_array = merged_df.iloc[:, 1].values
+def test_hist_arrays(merged_df: pd.DataFrame, baseline_plots: Path) -> None:
+    sim_array = merged_df.iloc[:, 0].to_numpy()
+    obs_array = merged_df.iloc[:, 1].to_numpy()
 
     hv.hist(
         sim_array=sim_array,
@@ -90,7 +92,7 @@ def test_hist_arrays(merged_df: pd.DataFrame, baseline_plots: Path):
     assert np.allclose(img_test, img_original)
 
 
-def test_hist_znorm(merged_df: pd.DataFrame, baseline_plots: Path):
+def test_hist_znorm(merged_df: pd.DataFrame, baseline_plots: Path) -> None:
     hv.hist(
         merged_data_df=merged_df,
         num_bins=100,
@@ -106,13 +108,13 @@ def test_hist_znorm(merged_df: pd.DataFrame, baseline_plots: Path):
     assert np.allclose(img_test, img_original)
 
 
-def test_hist_error(merged_df: pd.DataFrame):
-    sim_array = merged_df.iloc[:, 0].values
+def test_hist_error(merged_df: pd.DataFrame) -> None:
+    sim_array = merged_df.iloc[:, 0].to_numpy()
     with pytest.raises(RuntimeError):
         hv.hist(merged_data_df=merged_df, sim_array=sim_array)
 
 
-def test_scatter(merged_df: pd.DataFrame, baseline_plots: Path):
+def test_scatter(merged_df: pd.DataFrame, baseline_plots: Path) -> None:
     hv.scatter(
         merged_data_df=merged_df,
         grid=True,
@@ -125,9 +127,9 @@ def test_scatter(merged_df: pd.DataFrame, baseline_plots: Path):
     assert np.allclose(img_test, img_original)
 
 
-def test_scatterlog(merged_df: pd.DataFrame, baseline_plots: Path):
-    sim_array = merged_df.iloc[:, 0].values
-    obs_array = merged_df.iloc[:, 1].values
+def test_scatterlog(merged_df: pd.DataFrame, baseline_plots: Path) -> None:
+    sim_array = merged_df.iloc[:, 0].to_numpy()
+    obs_array = merged_df.iloc[:, 1].to_numpy()
     hv.scatter(
         sim_array=sim_array,
         obs_array=obs_array,
@@ -143,7 +145,7 @@ def test_scatterlog(merged_df: pd.DataFrame, baseline_plots: Path):
     assert np.allclose(img_test, img_original)
 
 
-def test_qq_plot(merged_df: pd.DataFrame, baseline_plots: Path):
+def test_qq_plot(merged_df: pd.DataFrame, baseline_plots: Path) -> None:
     hv.qqplot(
         merged_data_df=merged_df,
         title="Quantile-Quantile Plot of Data",
@@ -157,9 +159,9 @@ def test_qq_plot(merged_df: pd.DataFrame, baseline_plots: Path):
     assert np.allclose(img_test, img_original)
 
 
-def test_qq_plot2(merged_df: pd.DataFrame, baseline_plots: Path):
-    sim_array = merged_df.iloc[:, 0].values
-    obs_array = merged_df.iloc[:, 1].values
+def test_qq_plot2(merged_df: pd.DataFrame, baseline_plots: Path) -> None:
+    sim_array = merged_df.iloc[:, 0].to_numpy()
+    obs_array = merged_df.iloc[:, 1].to_numpy()
     hv.qqplot(
         sim_array=sim_array,
         obs_array=obs_array,

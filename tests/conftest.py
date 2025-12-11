@@ -1,9 +1,9 @@
 from pathlib import Path
 
-import matplotlib
+import matplotlib as mpl
 
 # Use non-interactive backend for image tests
-matplotlib.use("Agg")
+mpl.use("Agg")
 
 
 import pandas as pd

@@ -1,23 +1,22 @@
-from __future__ import annotations
-
 import numpy as np
 import pytest
+from numpy.typing import NDArray
 
 import hydrostats.metrics as he
 
 
 @pytest.fixture
-def sim():
+def sim() -> NDArray[np.floating]:
     return np.array([5, 7, 9, 2, 4.5, 6.7])
 
 
 @pytest.fixture
-def obs():
+def obs() -> NDArray[np.floating]:
     return np.array([4.7, 6, 10, 2.5, 4, 6.8])
 
 
 @pytest.fixture
-def sim_bad_data():
+def sim_bad_data() -> NDArray[np.floating]:
     return np.array(
         [
             6,
@@ -41,7 +40,7 @@ def sim_bad_data():
 
 
 @pytest.fixture
-def obs_bad_data():
+def obs_bad_data() -> NDArray[np.floating]:
     return np.array(
         [
             np.nan,
@@ -64,7 +63,7 @@ def obs_bad_data():
     )
 
 
-def test_list_of_metrics(sim, obs):
+def test_list_of_metrics(sim: NDArray[np.floating], obs: NDArray[np.floating]) -> None:
     expected_list = [func(sim, obs) for func in he.function_list]
 
     test_list_without_abbr = he.list_of_metrics(he.metric_names, sim, obs)
@@ -159,7 +158,9 @@ def test_list_of_metrics(sim, obs):
     assert expected_list_with_params == test_list_with_abbr_params
 
 
-def test_list_of_metrics_raises_for_bad_inputs(sim, obs):
+def test_list_of_metrics_raises_for_bad_inputs(
+    sim: NDArray[np.floating], obs: NDArray[np.floating]
+) -> None:
     unequal_length_sim = np.array([5, 7, 9, 2, 4.5])
     with pytest.raises(Exception) as context:
         he.list_of_metrics(he.metric_names, unequal_length_sim, obs)

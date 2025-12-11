@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import numpy as np
 import pytest
 
@@ -36,7 +34,7 @@ def obs_bin(files_for_tests):
     return np.load(files_for_tests / "obs_bin.npy")
 
 
-def test_ens_me(ensemble_array, observed_array, ensemble_array_bad, observed_array_bad):
+def test_ens_me(ensemble_array, observed_array, ensemble_array_bad, observed_array_bad) -> None:
     expected_value = -2.5217349574908074
     test_value = em.ens_me(obs=observed_array, fcst_ens=ensemble_array)
     assert np.isclose(expected_value, test_value)
@@ -51,7 +49,7 @@ def test_ens_me(ensemble_array, observed_array, ensemble_array_bad, observed_arr
     assert np.isclose(expected_value_bad_data, test_value_bad_data)
 
 
-def test_ens_mae(ensemble_array, observed_array, ensemble_array_bad, observed_array_bad):
+def test_ens_mae(ensemble_array, observed_array, ensemble_array_bad, observed_array_bad) -> None:
     expected_value = 26.35428724003365
     test_value = em.ens_mae(obs=observed_array, fcst_ens=ensemble_array)
     assert np.isclose(expected_value, test_value)
@@ -66,7 +64,7 @@ def test_ens_mae(ensemble_array, observed_array, ensemble_array_bad, observed_ar
     assert np.isclose(expected_value_bad_data, test_value_bad_data)
 
 
-def test_ens_mse(ensemble_array, observed_array, ensemble_array_bad, observed_array_bad):
+def test_ens_mse(ensemble_array, observed_array, ensemble_array_bad, observed_array_bad) -> None:
     expected_value = 910.5648405687582
     test_value = em.ens_mse(obs=observed_array, fcst_ens=ensemble_array)
     assert np.isclose(expected_value, test_value)
@@ -81,7 +79,7 @@ def test_ens_mse(ensemble_array, observed_array, ensemble_array_bad, observed_ar
     assert np.isclose(expected_value_bad_data, test_value_bad_data)
 
 
-def test_ens_rmse(ensemble_array, observed_array, ensemble_array_bad, observed_array_bad):
+def test_ens_rmse(ensemble_array, observed_array, ensemble_array_bad, observed_array_bad) -> None:
     expected_value = 30.17556694693172
     test_value = em.ens_rmse(obs=observed_array, fcst_ens=ensemble_array)
     assert np.isclose(expected_value, test_value)
@@ -96,7 +94,7 @@ def test_ens_rmse(ensemble_array, observed_array, ensemble_array_bad, observed_a
     assert np.isclose(expected_value_bad_data, test_value_bad_data)
 
 
-def test_ens_crps(files_for_tests, ensemble_array, observed_array):
+def test_ens_crps(files_for_tests, ensemble_array, observed_array) -> None:
     expected_crps = np.load(files_for_tests / "expected_crps.npy")
     expected_mean_crps = 17.735507981502494
 
@@ -114,7 +112,7 @@ def test_ens_crps(files_for_tests, ensemble_array, observed_array):
     assert np.isclose(expected_mean_crps, crps_mean_python)
 
 
-def test_ens_pearson_r(ensemble_array, observed_array, ensemble_array_bad, observed_array_bad):
+def test_ens_pearson_r(ensemble_array, observed_array, ensemble_array_bad, observed_array_bad) -> None:
     expected_pearson_r = 0.9624026713489114
     test_pearson_r = em.ens_pearson_r(obs=observed_array, fcst_ens=ensemble_array)
     assert np.isclose(expected_pearson_r, test_pearson_r)
@@ -131,7 +129,7 @@ def test_ens_pearson_r(ensemble_array, observed_array, ensemble_array_bad, obser
     assert np.isclose(expected_pearson_r_bad_data, test_pearson_r_bad_data)
 
 
-def test_crps_hersbach(files_for_tests, ensemble_array, observed_array):
+def test_crps_hersbach(files_for_tests, ensemble_array, observed_array) -> None:
     expected_crps = np.load(files_for_tests / "expected_crps.npy")
     expected_mean_crps = 17.735507981502494
     crps_dictionary_test = em.crps_hersbach(obs=observed_array, fcst_ens=ensemble_array)
@@ -141,7 +139,7 @@ def test_crps_hersbach(files_for_tests, ensemble_array, observed_array):
     assert np.all(np.isclose(expected_mean_crps, crps_dictionary_test["crpsMean2"]))
 
 
-def test_crps_kernel(files_for_tests, ensemble_array, observed_array):
+def test_crps_kernel(files_for_tests, ensemble_array, observed_array) -> None:
     expected_crps = np.load(files_for_tests / "expected_crps.npy")
     expected_mean_crps = 17.735507981502494
     crps_dictionary_test = em.crps_kernel(obs=observed_array, fcst_ens=ensemble_array)
@@ -149,7 +147,7 @@ def test_crps_kernel(files_for_tests, ensemble_array, observed_array):
     assert np.all(np.isclose(expected_mean_crps, crps_dictionary_test["crpsMean"]))
 
 
-def test_ens_brier(files_for_tests, ensemble_array, observed_array, ens_bin, obs_bin):
+def test_ens_brier(files_for_tests, ensemble_array, observed_array, ens_bin, obs_bin) -> None:
     expected_scores_bin = np.load(files_for_tests / "expected_brier_bin.npy")
     expected_mean_score_bin = 0.26351701183431947
     brier_scores_test_bin = em.ens_brier(fcst_ens_bin=ens_bin, obs_bin=obs_bin)
@@ -173,7 +171,7 @@ def test_ens_brier(files_for_tests, ensemble_array, observed_array, ens_bin, obs
     assert expected_scores_diff_thresh_mean == pytest.approx(brier_scores_test_diff_thresh.mean())
 
 
-def test_auroc(ens_bin, obs_bin, files_for_tests):
+def test_auroc(ens_bin, obs_bin, files_for_tests) -> None:
     auroc_expected = np.load(files_for_tests / "expected_brier_bin.npy")
     auroc_expected_diff_thresh = np.load(files_for_tests / "expected_brier.npy")
     auroc_expected_bin = np.load(files_for_tests / "expected_brier_bin.npy")
@@ -187,7 +185,7 @@ def test_auroc(ens_bin, obs_bin, files_for_tests):
     np.testing.assert_allclose(auroc_expected_bin, auroc_test_bin)
 
 
-def test_skill_score():
+def test_skill_score() -> None:
     expected_skill_score = 0.9969802250063856
     expected_std = 0.05392719857907347
     skill_score_test = em.skill_score(20, 18, 15)
@@ -195,12 +193,13 @@ def test_skill_score():
     assert expected_std == pytest.approx(skill_score_test["standardDeviation"])
 
     nan_skill_score = em.skill_score(0.0, 0.0, 0)
-    assert np.isnan(nan_skill_score["skillScore"]) and np.isnan(
+    assert np.isnan(nan_skill_score["skillScore"])
+    assert np.isnan(
         nan_skill_score["standardDeviation"]
     )
 
 
-def test_skill_score_floats():
+def test_skill_score_floats() -> None:
     expected_skill_score = 0.9969802250063856
     test_skill_score = em.skill_score(20.0, 18.0, 15)
     assert expected_skill_score == pytest.approx(test_skill_score["skillScore"])
