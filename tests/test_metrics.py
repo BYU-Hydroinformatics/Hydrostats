@@ -17,49 +17,13 @@ def obs() -> NDArray[np.floating]:
 
 @pytest.fixture
 def sim_bad_data() -> NDArray[np.floating]:
-    return np.array(
-        [
-            6,
-            np.nan,
-            100,
-            np.inf,
-            200,
-            -np.inf,
-            300,
-            0,
-            400,
-            -0.1,
-            5,
-            7,
-            9,
-            2,
-            4.5,
-            6.7,
-        ]
-    )
+    return np.array([6, np.nan, 100, np.inf, 200, -np.inf, 300, 0, 400, -0.1, 5, 7, 9, 2, 4.5, 6.7])
 
 
 @pytest.fixture
 def obs_bad_data() -> NDArray[np.floating]:
     return np.array(
-        [
-            np.nan,
-            100,
-            np.inf,
-            200,
-            -np.inf,
-            300,
-            0,
-            400,
-            -0.1,
-            500,
-            4.7,
-            6,
-            10,
-            2.5,
-            4,
-            6.8,
-        ]
+        [np.nan, 100, np.inf, 200, -np.inf, 300, 0, 400, -0.1, 500, 4.7, 6, 10, 2.5, 4, 6.8]
     )
 
 
@@ -122,36 +86,36 @@ def test_list_of_metrics(sim: NDArray[np.floating], obs: NDArray[np.floating]) -
     ]
 
     test_list_without_abbr_params = he.list_of_metrics(
-        list_of_metric_names,
-        sim,
-        obs,
-        mase_m,
-        d_mod_j,
-        nse_mod_j,
-        h6_mhe_k,
-        h6_ahe_k,
-        h6_rmshe_k,
-        d1_p_obs_bar_p,
-        lm_x_obs_bar_p,
-        kge2009_s,
-        kge2012_s,
+        metrics=list_of_metric_names,
+        sim_array=sim,
+        obs_array=obs,
+        mase_m=mase_m,
+        dmod_j=d_mod_j,
+        nse_mod_j=nse_mod_j,
+        h6_mhe_k=h6_mhe_k,
+        h6_ahe_k=h6_ahe_k,
+        h6_rmshe_k=h6_rmshe_k,
+        d1_p_obs_bar_p=d1_p_obs_bar_p,
+        lm_x_obs_bar_p=lm_x_obs_bar_p,
+        kge2009_s=kge2009_s,
+        kge2012_s=kge2012_s,
     )
 
     test_list_with_abbr_params = he.list_of_metrics(
-        list_of_metric_abbr,
-        sim,
-        obs,
-        mase_m,
-        d_mod_j,
-        nse_mod_j,
-        h6_mhe_k,
-        h6_ahe_k,
-        h6_rmshe_k,
-        d1_p_obs_bar_p,
-        lm_x_obs_bar_p,
-        kge2009_s,
-        kge2012_s,
+        metrics=list_of_metric_abbr,
+        sim_array=sim,
+        obs_array=obs,
         abbr=True,
+        mase_m=mase_m,
+        dmod_j=d_mod_j,
+        nse_mod_j=nse_mod_j,
+        h6_mhe_k=h6_mhe_k,
+        h6_ahe_k=h6_ahe_k,
+        h6_rmshe_k=h6_rmshe_k,
+        d1_p_obs_bar_p=d1_p_obs_bar_p,
+        lm_x_obs_bar_p=lm_x_obs_bar_p,
+        kge2009_s=kge2009_s,
+        kge2012_s=kge2012_s,
     )
 
     assert expected_list_with_params == test_list_without_abbr_params
@@ -162,25 +126,17 @@ def test_list_of_metrics_raises_for_bad_inputs(
     sim: NDArray[np.floating], obs: NDArray[np.floating]
 ) -> None:
     unequal_length_sim = np.array([5, 7, 9, 2, 4.5])
-    with pytest.raises(Exception) as context:
+    with pytest.raises(ValueError, match=r"^The two ndarrays are not the same size."):
         he.list_of_metrics(he.metric_names, unequal_length_sim, obs)
-    assert "The two ndarrays are not the same size." in str(context.value)
-    assert isinstance(context.value, RuntimeError)
 
     unequal_length_obs = np.array([4.7, 6, 10, 2.5, 4])
-    with pytest.raises(Exception) as context:
+    with pytest.raises(ValueError, match=r"^The two ndarrays are not the same size."):
         he.list_of_metrics(he.metric_names, sim, unequal_length_obs)
-    assert "The two ndarrays are not the same size." in str(context.value)
-    assert isinstance(context.value, RuntimeError)
 
     unequal_dim_sim = np.array([[5, 7], [9, 2], [4.5, 6.7]])
-    with pytest.raises(Exception) as context:
+    with pytest.raises(ValueError, match=r"not 1 dimensional"):
         he.list_of_metrics(he.metric_names, unequal_dim_sim, obs)
-    assert "not 1 dimensional" in str(context.value)
-    assert isinstance(context.value, RuntimeError)
 
     unequal_dim_obs = np.array([[4.7, 6], [10, 2.5], [4, 6.8]])
-    with pytest.raises(Exception) as context:
+    with pytest.raises(ValueError, match=r"not 1 dimensional"):
         he.list_of_metrics(he.metric_names, sim, unequal_dim_obs)
-    assert "not 1 dimensional" in str(context.value)
-    assert isinstance(context.value, RuntimeError)

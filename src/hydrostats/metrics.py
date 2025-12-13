@@ -32,9 +32,9 @@ def list_of_metrics(
     remove_zero: bool = False,
 ) -> list[float]:
     if sim_array.ndim != 1 or obs_array.ndim != 1:
-        raise RuntimeError("One or both of the ndarrays are not 1 dimensional.")
+        raise ValueError("One or both of the ndarrays are not 1 dimensional.")
     if sim_array.size != obs_array.size:
-        raise RuntimeError("The two ndarrays are not the same size.")
+        raise ValueError("The two ndarrays are not the same size.")
 
     metrics_list = []
 
