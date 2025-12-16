@@ -1,6 +1,6 @@
 [project]
 name = "hydrostats"
-version = "1.0.0"
+version = "1.0.0rc1"
 description = "Tools for use in comparison studies, specifically for use in the field of hydrology"
 readme = "README.md"
 authors = [
@@ -41,6 +41,10 @@ dev = [
     "pandas-stubs>=2.3.3",
     "ty>=0.0.1a33",
 ]
+docs = [
+    "furo>=2025.9.25",
+    "sphinx-automodapi>=0.22.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/BYU-Hydroinformatics/Hydrostats"
@@ -76,6 +80,11 @@ ignore = [
 "tests/*" = [
     "D",
     "S101",
+]
+"docs/*" = [
+    "A001",
+    "ERA001",
+    "INP001",
 ]
 
 [tool.ruff.lint.pydocstyle]
