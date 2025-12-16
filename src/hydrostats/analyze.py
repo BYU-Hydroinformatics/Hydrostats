@@ -39,12 +39,12 @@ def make_table(
     remove_zero: bool = False,  # noqa: FBT001, FBT002
     location: str | None = None,
 ) -> pd.DataFrame:
-    """Create a table of user selected metrics with optional seasonal analysis.
+    """Create a table of user-selected metrics with optional seasonal analysis.
 
     Creates a table with metrics as specified by the user. Seasonal periods can also be
-    specified in order to compare different seasons and how well the simulated data matches the
-    observed data. Has options to save the table to either a csv or an excel workbook. Also has
-    an option to add a column for the location of the data.
+    specified to compare different seasons and how well the simulated data matches the
+    observed data. Has options to save the table to either a csv or an Excel workbook. Can Also
+    add a column for the location of the data.
 
     Parameters
     ----------
@@ -129,7 +129,7 @@ def make_table(
     Notes
     -----
     If desired, users can export the tables to a CSV or Excel Workbook. This can be done using the
-    built in methods of pandas. A link to CSV method can be found at
+    built-in methods of pandas. A link to the CSV method can be found at
     `<https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_csv.html>`_, and a
     link to the Excel method can be found at
     `<https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_excel.html>`_
