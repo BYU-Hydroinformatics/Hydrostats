@@ -408,10 +408,10 @@ def daily_average(
     rolling: bool
         If True, will calculate the rolling seasonal average.
 
-    **kwargs: pandas.DataFrame.rolling() properties, optional
+    ``**kwargs``: pandas.DataFrame.rolling() properties, optional
         Options for how to compute the rolling averages. If not provided, the default is to use the
         following parameters: {window=6, min_periods=1, center=True, closed="right"}. Specifying
-        **kwargs will clear the defaults, however.
+        ``**kwargs`` will clear the defaults.
 
     Returns
     -------
