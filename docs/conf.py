@@ -1,50 +1,26 @@
-"""Configuration file for the Sphinx documentation builder.
+"""Configuration file for the Sphinx documentation builder."""
 
-This file does only contain a selection of the most common options. For a
-full list see the documentation: https://www.sphinx-doc.org/en/master/config
+# This file does only contain a selection of the most common options. For a
+# full list see the documentation: https://www.sphinx-doc.org/en/master/config
 
--- Path setup --------------------------------------------------------------
-If extensions (or modules to document with autodoc) are in another directory,
-add these directories to sys.path here. If the directory is relative to the
-documentation root, use os.path.abspath to make it absolute, like shown here.
-"""
+# -- Path setup --------------------------------------------------------------
 
-import datetime
-import os
-import sys
-from unittest.mock import MagicMock
+# If extensions (or modules to document with autodoc) are in another directory,
+# add these directories to sys.path here. If the directory is relative to the
+# documentation root, use os.path.abspath to make it absolute, like shown here.
 
-
-class Mock(MagicMock):
-    @classmethod
-    def __getattr__(cls, name):
-        return MagicMock()
-
-
-# Don't need these for documentation
-MOCK_MODULES = [
-    "pandas",
-    "numba",
-    "matplotlib",
-    "matplotlib.pyplot",
-    "pandas.plotting",
-]
-
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
-
-sys.path.insert(0, os.path.abspath(".."))
-sys.path.insert(0, os.path.abspath("."))
+import hydrostats
 
 # -- Project information -----------------------------------------------------
 
 project = "hydrostats"
 author = "Wade Roberts"
-copyright = f"{datetime.datetime.now().year}, {author}"
+copyright = f"2019-%Y, {author}"
 
-# The short X.Y version
-version = ""
-# The full version, including alpha/beta/rc tags
-release = "0.78"
+# From the docs: "If your project does not draw a meaningful distinction between a "full"
+# and "major" version, set both version and release to the same value.
+version = hydrostats.__version__
+release = hydrostats.__version__
 
 # -- General configuration ---------------------------------------------------
 
@@ -70,7 +46,7 @@ templates_path = ["_templates"]
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = ".rst"
+source_suffix = {".rst": "restructuredtext"}
 
 # The master toctree document.
 master_doc = "index"
@@ -80,7 +56,7 @@ master_doc = "index"
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -96,7 +72,7 @@ pygments_style = "sphinx"
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "default"
+html_theme = "furo"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -117,7 +93,7 @@ html_static_path = []
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
 #
-# html_sidebars = {'**': ['globaltoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html']}
+# html_sidebars = {}
 
 
 # -- Options for HTMLHelp output ---------------------------------------------
@@ -128,7 +104,7 @@ htmlhelp_basename = "hydrostatsdoc"
 
 # -- Options for LaTeX output ------------------------------------------------
 
-latex_elements = {
+latex_elements: dict[str, str] = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
@@ -177,3 +153,8 @@ texinfo_documents = [
 
 
 # -- Extension configuration -------------------------------------------------
+
+# -- Options for intersphinx extension ---------------------------------------
+
+# Example configuration for intersphinx: refer to the Python standard library.
+intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
