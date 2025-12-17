@@ -134,9 +134,9 @@ def test_list_of_metrics_raises_for_bad_inputs(
         he.list_of_metrics(he.metric_names, sim, unequal_length_obs)
 
     unequal_dim_sim = np.array([[5, 7], [9, 2], [4.5, 6.7]])
-    with pytest.raises(ValueError, match=r"not 1 dimensional"):
+    with pytest.raises(ValueError, match=r"The simulated array is not one dimensional."):
         he.list_of_metrics(he.metric_names, unequal_dim_sim, obs)
 
     unequal_dim_obs = np.array([[4.7, 6], [10, 2.5], [4, 6.8]])
-    with pytest.raises(ValueError, match=r"not 1 dimensional"):
+    with pytest.raises(ValueError, match=r"The observed array is not one dimensional."):
         he.list_of_metrics(he.metric_names, sim, unequal_dim_obs)
