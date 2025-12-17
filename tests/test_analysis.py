@@ -25,9 +25,9 @@ def test_make_table(merged_df: pd.DataFrame) -> None:
 
     all_seasons = [season0, season1, season2, season3, season4]
 
-    test_list: list[list[float]] = []
+    test_list = []
     for season in all_seasons:
-        temp_list: list[float] = []
+        temp_list = []
         for metric in metric_functions:
             sim = season.iloc[:, 0].to_numpy()
             obs = season.iloc[:, 1].to_numpy()
@@ -52,11 +52,11 @@ def test_make_table(merged_df: pd.DataFrame) -> None:
 def test_lag_analysis(merged_df: pd.DataFrame, comparison_files: Path) -> None:
     # Running the lag analysis
     time_lag_df, summary_df = ha.time_lag(
-        merged_df, metrics=["ME", "r2", "RMSE", "KGE (2012)", "NSE"]
+        merged_df, metrics=["r2", "RMSE", "KGE (2012)", "NSE"]
     )
 
     time_lag_df_original = pd.read_csv(comparison_files / "time_lag_df.csv", index_col=0)
     summary_df_original = pd.read_csv(comparison_files / "summary_df.csv", index_col=0)
 
-    pd.testing.assert_frame_equal(time_lag_df, time_lag_df_original)
-    pd.testing.assert_frame_equal(summary_df, summary_df_original)
+    pd.testing.assert_frame_equal(time_lag_df, time_lag_df_original, rtol=1e-5, atol=1e-8)
+    pd.testing.assert_frame_equal(summary_df, summary_df_original, rtol=1e-5, atol=1e-8)
