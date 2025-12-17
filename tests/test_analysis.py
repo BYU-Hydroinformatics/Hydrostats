@@ -50,7 +50,6 @@ def test_make_table(merged_df: pd.DataFrame) -> None:
 
 
 def test_lag_analysis(merged_df: pd.DataFrame, comparison_files: Path) -> None:
-    # Running the lag analysis
     time_lag_df, summary_df = ha.time_lag(
         merged_df, metrics=["r2", "RMSE", "KGE (2012)", "NSE"]
     )
