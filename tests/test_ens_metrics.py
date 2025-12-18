@@ -264,3 +264,55 @@ def test_skill_score_floats() -> None:
     nan_skill_score = em.skill_score(0.0, 0.0, 0)
     assert np.isnan(nan_skill_score["skillScore"])
     assert np.isnan(nan_skill_score["standardDeviation"])
+
+
+@pytest.mark.parametrize("func_name", ["ens_me", "ens_mae", "ens_mse", "ens_rmse", "ens_pearson_r"])
+def test_ens_metric_invalid_reference(func_name, observed_array, ensemble_array):
+    func = getattr(em, func_name)
+    with pytest.raises(ValueError, match="Reference series is not understood"):
+        func(obs=observed_array, fcst_ens=ensemble_array, reference="invalid")
+
+
+def test_treat_data_invalid_obs_dim(ensemble_array):
+    obs = np.ones((10, 2))
+    with pytest.raises(ValueError, match="obs is not a 1D numpy array"):
+        em.treat_data(obs, ensemble_array, remove_zero=False, remove_neg=False)
+
+
+def test_treat_data_invalid_fcst_ens_dim(observed_array):
+    fcst_ens = np.ones((10,))
+    with pytest.raises(ValueError, match="fcst_ens is not a 2D numpy array"):
+        em.treat_data(observed_array, fcst_ens, remove_zero=False, remove_neg=False)
+
+
+def test_treat_data_length_mismatch(observed_array):
+    fcst_ens = np.ones((5, 2))
+    with pytest.raises(
+        ValueError, match="obs and fcst_ens do not have the same amount of start dates"
+    ):
+        em.treat_data(observed_array, fcst_ens, remove_zero=False, remove_neg=False)
+
+
+def test_skill_score_nonfinite_perf_score():
+    arr = np.array([0.1, 0.2, 0.3])
+    with pytest.raises(ValueError, match="The perfect score is not finite"):
+        em.skill_score(arr, arr, np.nan)
+
+
+def test_skill_score_invalid_eff_sample_size():
+    arr = np.array([0.1, 0.2, 0.3])
+    with pytest.raises(
+        ValueError, match="The effective sample size must be finite and greater than 0"
+    ):
+        em.skill_score(arr, arr, 0, eff_sample_size=-1)
+    with pytest.raises(
+        ValueError, match="The effective sample size must be finite and greater than 0"
+    ):
+        em.skill_score(arr, arr, 0, eff_sample_size=np.nan)
+
+
+def test_skill_score_length_mismatch():
+    arr1 = np.array([0.1, 0.2, 0.3])
+    arr2 = np.array([0.1, 0.2])
+    with pytest.raises(ValueError, match="The scores and benchmark scores are not the same length"):
+        em.skill_score(arr1, arr2, 0)

@@ -13,6 +13,13 @@ Breaking Changes:
 - Raise a ValueError instead of a RuntimeError for bad input in the following functions:
    - analyze.time_lag
    - metrics.list_of_metrics
+   - ens_metrics.ens_me
+   - ens_metrics.ens_mae
+   - ens_metrics.ens_mse
+   - ens_metrics.ens_rmse
+   - ens_metrics.ens_pearson_r
+   - ens_metrics.skill_score
+   - ens_metrics.treat_data
 
 Other Changes:
 

@@ -84,7 +84,8 @@ def ens_me(
 
     """
     # Check that the user reference is understood
-    assert reference in {"mean", "median"}, "Reference series is not understood."
+    if reference not in {"mean", "median"}:
+        raise ValueError("Reference series is not understood.")
 
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
@@ -157,7 +158,8 @@ def ens_mae(
 
     """
     # Check that the user reference is understood
-    assert reference in {"mean", "median"}, "Reference series is not understood."
+    if reference not in {"mean", "median"}:
+        raise ValueError("Reference series is not understood.")
 
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
@@ -229,7 +231,8 @@ def ens_mse(
 
     """
     # Check that the user reference is understood
-    assert reference in {"mean", "median"}, "Reference series is not understood."
+    if reference not in {"mean", "median"}:
+        raise ValueError("Reference series is not understood.")
 
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
@@ -301,7 +304,8 @@ def ens_rmse(
 
     """
     # Check that the user reference is understood
-    assert reference in {"mean", "median"}, "Reference series is not understood."
+    if reference not in {"mean", "median"}:
+        raise ValueError("Reference series is not understood.")
 
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
@@ -374,7 +378,8 @@ def ens_pearson_r(
 
     """
     # Check that the user reference is understood
-    assert reference in {"mean", "median"}, "Reference series is not understood."
+    if reference not in {"mean", "median"}:
+        raise ValueError("Reference series is not understood.")
 
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
@@ -1405,16 +1410,14 @@ def skill_score(
 
     """
     # Check data
-    assert np.isfinite(perf_score), "The perfect score is not finite."
-    if eff_sample_size is not None:
-        assert eff_sample_size > 0 and np.isfinite(eff_sample_size), (
-            "The effective sample size must be finite and greater than 0."
-        )
+    if not np.isfinite(perf_score):
+        raise ValueError("The perfect score is not finite.")
+    if eff_sample_size is not None and not (eff_sample_size > 0 and np.isfinite(eff_sample_size)):
+        raise ValueError("The effective sample size must be finite and greater than 0.")
 
     if isinstance(scores, np.ndarray) and isinstance(bench_scores, np.ndarray):
-        assert scores.size == bench_scores.size, (
-            "The scores and benchmark scores are not the same length"
-        )
+        if scores.size != bench_scores.size:
+            raise ValueError("The scores and benchmark scores are not the same length")
 
         # Making a copy to avoid altering original scores
         scores_copy = np.copy(scores)
@@ -1554,14 +1557,15 @@ def skill_score(
 def treat_data(
     obs: np.ndarray,
     fcst_ens: np.ndarray,
-    remove_zero: bool,
+    remove_zero: bool,  # noqa: FBT001
     remove_neg: bool,  # noqa: FBT001
 ) -> tuple[np.ndarray, np.ndarray]:
-    assert obs.ndim == 1, "obs is not a 1D numpy array."
-    assert fcst_ens.ndim == 2, "fcst_ens is not a 2D numpy array."
-    assert obs.size == fcst_ens[:, 0].size, (
-        "obs and fcst_ens do not have the same amount of start dates."
-    )
+    if obs.ndim != 1:
+        raise ValueError("obs is not a 1D numpy array.")
+    if fcst_ens.ndim != 2:  # noqa: PLR2004
+        raise ValueError("fcst_ens is not a 2D numpy array.")
+    if obs.size != fcst_ens[:, 0].size:
+        raise ValueError("obs and fcst_ens do not have the same amount of start dates.")
 
     # Give user warning, but let run, if eith obs or fcst are all zeros
     if obs.sum() == 0 or fcst_ens.sum() == 0:
