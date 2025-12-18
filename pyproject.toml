@@ -38,8 +38,9 @@ dependencies = [
 dev = [
     "ruff>=0.14.7",
     "pytest>=8.0",
+    "pytest-mpl>=0.17.0",
     "pandas-stubs>=2.3.3",
-    "ty>=0.0.1a33",
+    "ty>=0.0.2",
 ]
 docs = [
     "furo>=2025.9.25",
@@ -93,3 +94,6 @@ convention = "numpy"
 [tool.ruff.format]
 docstring-code-format = true
 docstring-code-line-length = 92
+
+[tool.pytest.ini_options]
+addopts = ["--mpl", "--mpl-baseline-path=tests/baseline_images"]
