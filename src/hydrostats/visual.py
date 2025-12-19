@@ -1,15 +1,17 @@
-"""
-The visual module contains different plotting functions for time series visualization. It allows
-users to plot hydrographs, scatter plots, histograms, and quantile-quantile (qq) plots to visualize
-time series data. In some of the visualization functions, metrics can be added to the plots for a
-more complete summary of the data.
+"""Contains different plotting functions for time series visualization.
+
+It allows users to plot hydrographs, scatter plots, histograms, and quantile-quantile (qq) plots to
+visualize time series data. In some of the visualization functions, metrics can be added to the
+plots for a more complete summary of the data.
 """
 
 import calendar
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from HydroErr.HydroErr import treat_values
+from matplotlib.figure import Figure
 from pandas.plotting import register_matplotlib_converters
 
 from hydrostats.metrics import function_list, metric_abbr
@@ -20,25 +22,25 @@ __all__ = ["hist", "plot", "qqplot", "scatter"]
 
 
 def plot(
-    merged_data_df,
-    legend=("Simulated Data", "Observed Data"),
-    metrics=None,
-    grid=False,
-    title=None,
-    x_season=False,
-    labels=None,
-    linestyles=("ro", "b^"),
-    tight_xlim=False,
-    fig_size=(10, 6),
-    text_adjust=(-0.35, 0.75),
-    plot_adjust=0.27,
-    transparency=0.5,
-    ebars=None,
-    ecolor=None,
-    markersize=2,
-    errorevery=1,
-    markevery=1,
-):
+    merged_data_df: pd.DataFrame,
+    legend: tuple[str, str] = ("Simulated Data", "Observed Data"),
+    metrics: list[str] | None = None,
+    grid: bool = False,
+    title: str | None = None,
+    x_season: bool = False,
+    labels: list[str] | None = None,
+    linestyles: tuple[str, str] = ("ro", "b^"),
+    tight_xlim: bool = False,
+    fig_size: tuple[float, float] = (10, 6),
+    text_adjust: tuple[float, float] = (-0.35, 0.75),
+    plot_adjust: float = 0.27,
+    transparency: float = 0.5,
+    ebars: pd.DataFrame | None = None,
+    ecolor: tuple[str, str] | None = None,
+    markersize: float = 2,
+    errorevery: int = 1,
+    markevery: int = 1,
+) -> Figure:
     """
     Create a comparison time series line plot of simulated and observed time series data.
 
@@ -53,8 +55,8 @@ def plot(
         The left columns must be simulated data and the right column observed data.
 
     legend: tuple of str
-        Adds a Legend in the 'best' location determined by matplotlib. The entries in the tuple describe the left and
-        right columns of the merged_data_df data.
+        Adds a Legend in the 'best' location determined by matplotlib. The entries in the tuple
+        describe the left and right columns of the merged_data_df data.
 
     metrics: list of str
         Adds Metrics to the left side of the plot. Any metric from the Hydrostats library can
@@ -122,8 +124,8 @@ def plot(
 
     Returns
     -------
-    fig : Matplotlib figure instance
-        A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show() command.
+    A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show()
+    command.
 
     Examples
     --------
@@ -183,9 +185,9 @@ def plot(
     ax = fig.add_subplot(111)
 
     # Setting Variable for the simulated data, observed data, and time stamps
-    sim = merged_data_df.iloc[:, 0].values
-    obs = merged_data_df.iloc[:, 1].values
-    time = merged_data_df.index.values
+    sim = merged_data_df.iloc[:, 0].to_numpy()
+    obs = merged_data_df.iloc[:, 1].to_numpy()
+    time = merged_data_df.index.to_numpy()
 
     # Plotting the Data
     if ebars is None:
@@ -246,7 +248,7 @@ def plot(
         day_month_cum = np.cumsum(day_month)
         fractions = day_month_cum[:11] / 366
         fractions = np.insert(fractions, 0, 0)
-        index = np.rint(fractions * len(time)).astype(np.integer)
+        index = np.rint(fractions * len(time)).astype(int)
         plt.xticks(time[index], seasons, fontsize=14, rotation=45)
     else:
         plt.xticks(fontsize=14, rotation=45)
@@ -283,15 +285,10 @@ def plot(
         for metric in metrics:
             assert metric in function_list_str
 
-        index = []
-        for metric in metrics:
-            index.append(function_list_str.index(metric))
-
-        selected_metrics = []
-        for i in index:
-            selected_metrics.append(
-                function_list_str[i] + "=" + str(round(function_list[i](sim, obs), 3))
-            )
+        index = [function_list_str.index(metric) for metric in metrics]
+        selected_metrics = [
+            function_list_str[i] + "=" + str(round(function_list[i](sim, obs), 3)) for i in index
+        ]
 
         formatted_selected_metrics = ""
         for i in selected_metrics:
@@ -314,18 +311,18 @@ def plot(
 
 
 def hist(
-    merged_data_df=None,
-    sim_array=None,
-    obs_array=None,
-    num_bins=100,
-    z_norm=False,
-    legend=("Simulated", "Observed"),
-    grid=False,
-    title=None,
-    labels=None,
-    prob_dens=False,
-    figsize=(12, 6),
-):
+    merged_data_df: pd.DataFrame | None = None,
+    sim_array: np.ndarray | None = None,
+    obs_array: np.ndarray | None = None,
+    num_bins: int = 100,
+    z_norm: bool = False,
+    legend: tuple[str, str] | None = ("Simulated", "Observed"),
+    grid: bool = False,
+    title: str | None = None,
+    labels: tuple[str, str] | None = None,
+    prob_dens: bool = False,
+    figsize: tuple[float, float] = (12, 6),
+) -> Figure:
     """Plot a histogram comparing simulated and observed data.
 
     The histogram plot is a function that is available for comparing the histograms of two time
@@ -376,8 +373,8 @@ def hist(
 
     Returns
     -------
-    fig : Matplotlib figure instance
-        A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show() command.
+    A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show()
+    command.
 
     Examples
     --------
@@ -411,8 +408,8 @@ def hist(
 
     if merged_data_df is not None and sim_array is None and obs_array is None:
         # Creating a simulated and observed data array
-        sim = merged_data_df.iloc[:, 0].values
-        obs = merged_data_df.iloc[:, 1].values
+        sim = merged_data_df.iloc[:, 0].to_numpy()
+        obs = merged_data_df.iloc[:, 1].to_numpy()
     elif sim_array is not None and obs_array is not None and merged_data_df is None:
         sim = sim_array
         obs = obs_array
@@ -512,19 +509,19 @@ def hist(
 
 
 def scatter(
-    merged_data_df=None,
-    sim_array=None,
-    obs_array=None,
-    grid=False,
-    title=None,
-    labels=None,
-    best_fit=False,
-    marker_style="ko",
-    metrics=None,
-    log_scale=False,
-    line45=False,
-    figsize=(12, 8),
-):
+    merged_data_df: pd.DataFrame | None = None,
+    sim_array: np.ndarray | None = None,
+    obs_array: np.ndarray | None = None,
+    grid: bool = False,
+    title: str | None = None,
+    labels: tuple[str, str] | None = None,
+    best_fit: bool = False,
+    marker_style: str = "ko",
+    metrics: list[str] | None = None,
+    log_scale: bool = False,
+    line45: bool = False,
+    figsize: tuple[float, float] = (12, 8),
+) -> Figure:
     """Create a scatter plot of the observed and simulated data.
 
     Parameters
@@ -576,9 +573,8 @@ def scatter(
 
     Returns
     -------
-    fig : Matplotlib figure instance
-        A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show() command.
-
+    A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show()
+    command.
 
     Examples
     --------
@@ -627,8 +623,8 @@ def scatter(
 
     if merged_data_df is not None and sim_array is None and obs_array is None:
         # Creating a simulated and observed data array
-        sim = merged_data_df.iloc[:, 0].values
-        obs = merged_data_df.iloc[:, 1].values
+        sim = merged_data_df.iloc[:, 0].to_numpy()
+        obs = merged_data_df.iloc[:, 1].to_numpy()
     elif sim_array is not None and obs_array is not None and merged_data_df is None:
         sim = sim_array
         obs = obs_array
@@ -687,14 +683,10 @@ def scatter(
         assert isinstance(metrics, list)
         for metric in metrics:
             assert metric in function_list_str
-        index = []
-        for metric in metrics:
-            index.append(function_list_str.index(metric))
-        selected_metrics = []
-        for i in index:
-            selected_metrics.append(
-                function_list_str[i] + "=" + str(round(function_list[i](sim, obs), 3))
-            )
+        index = [function_list_str.index(metric) for metric in metrics]
+        selected_metrics = [
+            function_list_str[i] + "=" + str(round(function_list[i](sim, obs), 3)) for i in index
+        ]
         formatted_selected_metrics = ""
         for i in selected_metrics:
             formatted_selected_metrics += i + "\n"
@@ -714,20 +706,20 @@ def scatter(
 
 
 def qqplot(
-    merged_data_df=None,
-    sim_array=None,
-    obs_array=None,
-    interpolate="linear",
-    title=None,
-    xlabel="Simulated Data Quantiles",
-    ylabel="Observed Data Quantiles",
-    legend=False,
-    replace_nan=None,
-    replace_inf=None,
-    remove_neg=False,
-    remove_zero=False,
-    figsize=(12, 8),
-):
+    merged_data_df: pd.DataFrame | None = None,
+    sim_array: np.ndarray | None = None,
+    obs_array: np.ndarray | None = None,
+    interpolate: str = "linear",
+    title: str | None = None,
+    xlabel: str = "Simulated Data Quantiles",
+    ylabel: str = "Observed Data Quantiles",
+    legend: bool = False,
+    replace_nan: float | None = None,
+    replace_inf: float | None = None,
+    remove_neg: bool = False,
+    remove_zero: bool = False,
+    figsize: tuple[float, float] = (12, 8),
+) -> Figure:
     """Plot a Quantile-Quantile plot of the simulated and observed data.
 
     Useful for comparing to see whether the two datasets come from the same distribution.
@@ -748,7 +740,9 @@ def qqplot(
         be given.
 
     interpolate: str
-        Specifies the interpolation type when computing quantiles.
+        Specifies the interpolation type when computing quantiles. Available options can be found
+        at https://numpy.org/doc/stable/reference/generated/numpy.percentile.html#numpy-percentile.
+        See the "method" argument.
 
     title: str
         If given, sets the title of the plot.
@@ -788,8 +782,8 @@ def qqplot(
 
     Returns
     -------
-    fig : Matplotlib figure instance
-        A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show() command.
+    A matplotlib figure handle is returned, which can be viewed with the matplotlib.pyplot.show()
+    command.
 
     Examples
     --------
@@ -818,8 +812,8 @@ def qqplot(
 
     if merged_data_df is not None and sim_array is None and obs_array is None:
         # Creating a simulated and observed data array
-        sim = merged_data_df.iloc[:, 0].values
-        obs = merged_data_df.iloc[:, 1].values
+        sim = merged_data_df.iloc[:, 0].to_numpy()
+        obs = merged_data_df.iloc[:, 1].to_numpy()
     elif sim_array is not None and obs_array is not None and merged_data_df is None:
         sim = sim_array
         obs = obs_array
@@ -840,14 +834,14 @@ def qqplot(
 
     pvec = 100 * ((np.arange(1, n + 1) - 0.5) / n)
 
-    sim_perc = np.percentile(sim, pvec, interpolation=interpolate)
-    obs_perc = np.percentile(obs, pvec, interpolation=interpolate)
+    sim_perc = np.percentile(sim, pvec, method=interpolate)
+    obs_perc = np.percentile(obs, pvec, method=interpolate)
 
     # Finding the interquartile range to plot the best fit line
-    quant_1_sim = np.percentile(sim, 25, interpolation=interpolate)
-    quant_3_sim = np.percentile(sim, 75, interpolation=interpolate)
-    quant_1_obs = np.percentile(obs, 25, interpolation=interpolate)
-    quant_3_obs = np.percentile(obs, 75, interpolation=interpolate)
+    quant_1_sim = np.percentile(sim, 25, method=interpolate)
+    quant_3_sim = np.percentile(sim, 75, method=interpolate)
+    quant_1_obs = np.percentile(obs, 25, method=interpolate)
+    quant_3_obs = np.percentile(obs, 75, method=interpolate)
     quant_sim = np.array([quant_1_sim, quant_3_sim])
     quant_obs = np.array([quant_1_obs, quant_3_obs])
 

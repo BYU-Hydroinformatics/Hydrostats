@@ -62,18 +62,15 @@ output-format = "concise"
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
+    "C901",
     "COM812",
     "D203",
     "D211",
     "D213",
     "EM101",
-#    "EM102",
-#    "FBT001",
-#    "FBT002",
-#    "N813",
-#    "N999",
+    "PLR0912",
     "PLR0913",
-#    "PLR0915",
+    "PLR0915",
     "TRY003",
 ]
 
