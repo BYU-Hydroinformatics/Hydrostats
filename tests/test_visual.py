@@ -87,7 +87,7 @@ def test_hist_znorm(merged_df: "pd.DataFrame") -> plt.Figure:
 
 def test_hist_error(merged_df: "pd.DataFrame") -> None:
     sim_array = merged_df.iloc[:, 0].to_numpy()
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ValueError, match=r"You must either pass in a dataframe or two arrays."):
         hv.hist(merged_data_df=merged_df, sim_array=sim_array)
 
 
