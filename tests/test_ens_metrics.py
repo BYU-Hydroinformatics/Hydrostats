@@ -1,48 +1,48 @@
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any
 
 import numpy as np
-import numpy.typing as npt
 import pytest
+from numpy.typing import NDArray
 
 import hydrostats.ens_metrics as em
 
 
 @pytest.fixture(scope="module")
-def ensemble_array(files_for_tests: Path) -> npt.NDArray[Any]:
+def ensemble_array(files_for_tests: Path) -> NDArray[np.float64]:
     return np.load(files_for_tests / "ensemble_array.npz")["arr_0.npy"]
 
 
 @pytest.fixture(scope="module")
-def observed_array(files_for_tests: Path) -> npt.NDArray[Any]:
+def observed_array(files_for_tests: Path) -> NDArray[np.float64]:
     return np.load(files_for_tests / "observed_array.npz")["arr_0.npy"]
 
 
 @pytest.fixture(scope="module")
-def ensemble_array_bad(files_for_tests: Path) -> npt.NDArray[Any]:
+def ensemble_array_bad(files_for_tests: Path) -> NDArray[np.float64]:
     return np.load(files_for_tests / "ensemble_array_bad_data.npz")["arr_0.npy"]
 
 
 @pytest.fixture(scope="module")
-def observed_array_bad(files_for_tests: Path) -> npt.NDArray[Any]:
+def observed_array_bad(files_for_tests: Path) -> NDArray[np.float64]:
     return np.load(files_for_tests / "observed_array_bad_data.npz")["arr_0.npy"]
 
 
 @pytest.fixture(scope="module")
-def ens_bin(files_for_tests: Path) -> npt.NDArray[Any]:
+def ens_bin(files_for_tests: Path) -> NDArray[np.int64]:
     return np.load(files_for_tests / "ens_bin.npy")
 
 
 @pytest.fixture(scope="module")
-def obs_bin(files_for_tests: Path) -> npt.NDArray[Any]:
+def obs_bin(files_for_tests: Path) -> NDArray[np.int64]:
     return np.load(files_for_tests / "obs_bin.npy")
 
 
 def test_ens_me(
-    ensemble_array: npt.NDArray[Any],
-    observed_array: npt.NDArray[Any],
-    ensemble_array_bad: npt.NDArray[Any],
-    observed_array_bad: npt.NDArray[Any],
+    ensemble_array: NDArray[np.float64],
+    observed_array: NDArray[np.float64],
+    ensemble_array_bad: NDArray[np.float64],
+    observed_array_bad: NDArray[np.float64],
 ) -> None:
     expected_value = -2.5217349574908074
     test_value = em.ens_me(obs=observed_array, fcst_ens=ensemble_array)
@@ -59,10 +59,10 @@ def test_ens_me(
 
 
 def test_ens_mae(
-    ensemble_array: npt.NDArray[Any],
-    observed_array: npt.NDArray[Any],
-    ensemble_array_bad: npt.NDArray[Any],
-    observed_array_bad: npt.NDArray[Any],
+    ensemble_array: NDArray[np.float64],
+    observed_array: NDArray[np.float64],
+    ensemble_array_bad: NDArray[np.float64],
+    observed_array_bad: NDArray[np.float64],
 ) -> None:
     expected_value = 26.35428724003365
     test_value = em.ens_mae(obs=observed_array, fcst_ens=ensemble_array)
@@ -79,10 +79,10 @@ def test_ens_mae(
 
 
 def test_ens_mse(
-    ensemble_array: npt.NDArray[Any],
-    observed_array: npt.NDArray[Any],
-    ensemble_array_bad: npt.NDArray[Any],
-    observed_array_bad: npt.NDArray[Any],
+    ensemble_array: NDArray[np.float64],
+    observed_array: NDArray[np.float64],
+    ensemble_array_bad: NDArray[np.float64],
+    observed_array_bad: NDArray[np.float64],
 ) -> None:
     expected_value = 910.5648405687582
     test_value = em.ens_mse(obs=observed_array, fcst_ens=ensemble_array)
@@ -99,10 +99,10 @@ def test_ens_mse(
 
 
 def test_ens_rmse(
-    ensemble_array: npt.NDArray[Any],
-    observed_array: npt.NDArray[Any],
-    ensemble_array_bad: npt.NDArray[Any],
-    observed_array_bad: npt.NDArray[Any],
+    ensemble_array: NDArray[np.float64],
+    observed_array: NDArray[np.float64],
+    ensemble_array_bad: NDArray[np.float64],
+    observed_array_bad: NDArray[np.float64],
 ) -> None:
     expected_value = 30.17556694693172
     test_value = em.ens_rmse(obs=observed_array, fcst_ens=ensemble_array)
@@ -119,7 +119,7 @@ def test_ens_rmse(
 
 
 def test_ens_crps(
-    files_for_tests: Path, ensemble_array: npt.NDArray[Any], observed_array: npt.NDArray[Any]
+    files_for_tests: Path, ensemble_array: NDArray[np.float64], observed_array: NDArray[np.float64]
 ) -> None:
     expected_crps = np.load(files_for_tests / "expected_crps.npy")
     expected_mean_crps = 17.735507981502494
@@ -139,10 +139,10 @@ def test_ens_crps(
 
 
 def test_ens_pearson_r(
-    ensemble_array: npt.NDArray[Any],
-    observed_array: npt.NDArray[Any],
-    ensemble_array_bad: npt.NDArray[Any],
-    observed_array_bad: npt.NDArray[Any],
+    ensemble_array: NDArray[np.float64],
+    observed_array: NDArray[np.float64],
+    ensemble_array_bad: NDArray[np.float64],
+    observed_array_bad: NDArray[np.float64],
 ) -> None:
     expected_pearson_r = -0.13236871294739733
     test_pearson_r = em.ens_pearson_r(obs=observed_array, fcst_ens=ensemble_array)
@@ -163,7 +163,7 @@ def test_ens_pearson_r(
 
 
 def test_crps_hersbach(
-    files_for_tests: Path, ensemble_array: npt.NDArray[Any], observed_array: npt.NDArray[Any]
+    files_for_tests: Path, ensemble_array: NDArray[np.float64], observed_array: NDArray[np.float64]
 ) -> None:
     expected_crps = np.load(files_for_tests / "expected_crps.npy")
     expected_mean_crps = 17.735507981502494
@@ -175,7 +175,7 @@ def test_crps_hersbach(
 
 
 def test_crps_kernel(
-    files_for_tests: Path, ensemble_array: npt.NDArray[Any], observed_array: npt.NDArray[Any]
+    files_for_tests: Path, ensemble_array: NDArray[np.float64], observed_array: NDArray[np.float64]
 ) -> None:
     expected_crps = np.load(files_for_tests / "expected_crps.npy")
     expected_mean_crps = 17.735507981502494
@@ -186,10 +186,10 @@ def test_crps_kernel(
 
 def test_ens_brier(
     files_for_tests: Path,
-    ensemble_array: npt.NDArray[Any],
-    observed_array: npt.NDArray[Any],
-    ens_bin: npt.NDArray[Any],
-    obs_bin: npt.NDArray[Any],
+    ensemble_array: NDArray[np.float64],
+    observed_array: NDArray[np.float64],
+    ens_bin: NDArray[np.int64],
+    obs_bin: NDArray[np.int64],
 ) -> None:
     expected_scores_bin = np.load(files_for_tests / "expected_brier_bin.npy")
     expected_mean_score_bin = 0.26351701183431947
@@ -216,10 +216,10 @@ def test_ens_brier(
 
 
 def test_auroc(
-    ensemble_array: npt.NDArray[Any],
-    observed_array: npt.NDArray[Any],
-    ens_bin: npt.NDArray[Any],
-    obs_bin: npt.NDArray[Any],
+    ensemble_array: NDArray[np.float64],
+    observed_array: NDArray[np.float64],
+    ens_bin: NDArray[np.int64],
+    obs_bin: NDArray[np.int64],
 ) -> None:
     auroc_expected = np.array([0.45599759, 0.07259804])
     auroc_expected_bin = np.array([0.43596949, 0.05864427])
@@ -266,26 +266,27 @@ def test_skill_score_floats() -> None:
     assert np.isnan(nan_skill_score["standardDeviation"])
 
 
-@pytest.mark.parametrize("func_name", ["ens_me", "ens_mae", "ens_mse", "ens_rmse", "ens_pearson_r"])
-def test_ens_metric_invalid_reference(func_name, observed_array, ensemble_array):
-    func = getattr(em, func_name)
+@pytest.mark.parametrize("func", [em.ens_me, em.ens_mae, em.ens_mse, em.ens_rmse, em.ens_pearson_r])
+def test_ens_metric_invalid_reference(
+    func: Callable, observed_array: NDArray[np.float64], ensemble_array: NDArray[np.float64]
+) -> None:
     with pytest.raises(ValueError, match="Reference series is not understood"):
         func(obs=observed_array, fcst_ens=ensemble_array, reference="invalid")
 
 
-def test_treat_data_invalid_obs_dim(ensemble_array):
+def test_treat_data_invalid_obs_dim(ensemble_array: NDArray[np.float64]) -> None:
     obs = np.ones((10, 2))
     with pytest.raises(ValueError, match="obs is not a 1D numpy array"):
         em.treat_data(obs, ensemble_array, remove_zero=False, remove_neg=False)
 
 
-def test_treat_data_invalid_fcst_ens_dim(observed_array):
+def test_treat_data_invalid_fcst_ens_dim(observed_array: NDArray[np.float64]) -> None:
     fcst_ens = np.ones((10,))
     with pytest.raises(ValueError, match="fcst_ens is not a 2D numpy array"):
         em.treat_data(observed_array, fcst_ens, remove_zero=False, remove_neg=False)
 
 
-def test_treat_data_length_mismatch(observed_array):
+def test_treat_data_length_mismatch(observed_array: NDArray[np.float64]) -> None:
     fcst_ens = np.ones((5, 2))
     with pytest.raises(
         ValueError, match="obs and fcst_ens do not have the same amount of start dates"
@@ -293,13 +294,13 @@ def test_treat_data_length_mismatch(observed_array):
         em.treat_data(observed_array, fcst_ens, remove_zero=False, remove_neg=False)
 
 
-def test_skill_score_nonfinite_perf_score():
+def test_skill_score_nonfinite_perf_score() -> None:
     arr = np.array([0.1, 0.2, 0.3])
     with pytest.raises(ValueError, match="The perfect score is not finite"):
         em.skill_score(arr, arr, np.nan)
 
 
-def test_skill_score_invalid_eff_sample_size():
+def test_skill_score_invalid_eff_sample_size() -> None:
     arr = np.array([0.1, 0.2, 0.3])
     with pytest.raises(
         ValueError, match="The effective sample size must be finite and greater than 0"
@@ -311,7 +312,7 @@ def test_skill_score_invalid_eff_sample_size():
         em.skill_score(arr, arr, 0, eff_sample_size=np.nan)
 
 
-def test_skill_score_length_mismatch():
+def test_skill_score_length_mismatch() -> None:
     arr1 = np.array([0.1, 0.2, 0.3])
     arr2 = np.array([0.1, 0.2])
     with pytest.raises(ValueError, match="The scores and benchmark scores are not the same length"):
