@@ -1,12 +1,9 @@
-from typing import TYPE_CHECKING
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 import hydrostats.data as hd
-
-if TYPE_CHECKING:
-    from pathlib import Path
 
 
 def test_julian_to_gregorian() -> None:
@@ -26,8 +23,10 @@ def test_julian_to_gregorian() -> None:
     )
     expected_dates = pd.date_range("1980-01-01", periods=10, freq="H")
 
+    rng = np.random.default_rng()
+    data = rng.random((10, 2))
     test_df = pd.DataFrame(
-        data=np.random.rand(10, 2),
+        data=data,
         columns=("Simulated Data", "Observed Data"),
         index=julian_dates,
     )
@@ -91,7 +90,8 @@ def test_monthly_std_error(merged_df: pd.DataFrame, comparison_files: Path) -> N
 
 
 def test_remove_nan_df() -> None:
-    data = np.random.rand(15, 2)
+    rng = np.random.default_rng()
+    data = rng.random((15, 2))
     data[0, 0] = data[1, 1] = np.nan
     data[2, 0] = data[3, 1] = np.inf
     data[4, 0] = data[5, 1] = 0
