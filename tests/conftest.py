@@ -32,4 +32,4 @@ def baseline_plots(tests_dir: Path) -> Path:
 
 @pytest.fixture(scope="session")
 def merged_df(files_for_tests: Path) -> pd.DataFrame:
-    return pd.read_pickle(files_for_tests / "merged_df.pkl")
+    return pd.read_pickle(files_for_tests / "merged_df.pkl")  # noqa: S301
