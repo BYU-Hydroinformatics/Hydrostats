@@ -271,7 +271,7 @@ def plot(
 
     # Placing a grid if requested
     if grid:
-        plt.grid(True)
+        plt.grid(visible=True)
 
     # Fixes issues with parts of plot being cut off
     plt.tight_layout()
@@ -280,10 +280,12 @@ def plot(
     if metrics:
         function_list_str = metric_abbr
 
-        assert isinstance(metrics, list)
+        if not isinstance(metrics, list):
+            raise ValueError("metrics must be a list")
 
         for metric in metrics:
-            assert metric in function_list_str
+            if metric not in function_list_str:
+                raise ValueError(f"metric '{metric}' is not a valid metric")
 
         index = [function_list_str.index(metric) for metric in metrics]
         selected_metrics = [
@@ -414,7 +416,7 @@ def hist(
         sim = sim_array
         obs = obs_array
     else:
-        raise RuntimeError("You must either pass in a dataframe or two arrays.")
+        raise ValueError("You must either pass in a dataframe or two arrays.")
 
     if z_norm:
         # Calculating the Z Scores for the simulated data
@@ -485,7 +487,7 @@ def hist(
 
     # Creating a grid
     if grid:
-        plt.grid(True)
+        plt.grid(visible=True)
 
     # Creating a title
     if title:
@@ -629,7 +631,7 @@ def scatter(
         sim = sim_array
         obs = obs_array
     else:
-        raise RuntimeError("You must either pass in a dataframe or two arrays.")
+        raise ValueError("You must either pass in a dataframe or two arrays.")
 
     max_both = max([np.max(sim), np.max(obs)])
 
@@ -650,7 +652,7 @@ def scatter(
     plt.yticks(fontsize=14)
 
     if grid:
-        plt.grid(True)
+        plt.grid(visible=True)
 
     if title:
         plt.title(title, fontsize=20)
@@ -680,9 +682,11 @@ def scatter(
     if metrics is not None:
         function_list_str = metric_abbr
 
-        assert isinstance(metrics, list)
+        if not isinstance(metrics, list):
+            raise ValueError("metrics must be a list")
         for metric in metrics:
-            assert metric in function_list_str
+            if metric not in function_list_str:
+                raise ValueError(f"metric '{metric}' is not a valid metric")
         index = [function_list_str.index(metric) for metric in metrics]
         selected_metrics = [
             function_list_str[i] + "=" + str(round(function_list[i](sim, obs), 3)) for i in index
@@ -818,7 +822,7 @@ def qqplot(
         sim = sim_array
         obs = obs_array
     else:
-        raise RuntimeError("You must either pass in a dataframe or two arrays.")
+        raise ValueError("You must either pass in a dataframe or two arrays.")
 
     sim, obs = treat_values(
         sim,

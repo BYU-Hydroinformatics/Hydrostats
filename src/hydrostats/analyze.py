@@ -35,8 +35,8 @@ def make_table(
     kge2012_s: tuple[float, float, float] = (1, 1, 1),
     replace_nan: float | None = None,
     replace_inf: float | None = None,
-    remove_neg: bool = False,  # noqa: FBT001, FBT002
-    remove_zero: bool = False,  # noqa: FBT001, FBT002
+    remove_neg: bool = False,
+    remove_zero: bool = False,
     location: str | None = None,
 ) -> pd.DataFrame:
     """Create a table of user-selected metrics with optional seasonal analysis.
@@ -278,9 +278,9 @@ def time_lag(
     lm_x_obs_bar_p: float | None = None,
     replace_nan: float | None = None,
     replace_inf: float | None = None,
-    remove_neg: bool = False,  # noqa: FBT001, FBT002
-    remove_zero: bool = False,  # noqa: FBT001, FBT002
-    plot: bool = False,  # noqa: FBT001, FBT002
+    remove_neg: bool = False,
+    remove_zero: bool = False,
+    plot: bool = False,
     plot_title: str = "Metric Values as Different Lags",
     ylabel: str = "Metric Value",
     xlabel: str = "Number of Lags",

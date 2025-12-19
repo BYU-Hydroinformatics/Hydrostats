@@ -300,7 +300,11 @@ def list_of_metrics(
     ...     kge2009_s=(1.2, 0.8, 0.6),
     ...     kge2012_s=(1.4, 0.7, 0.9),
     ... )
-    [he.mase(sim, obs, m=3), he.kge_2009(sim, obs, s=(1.2, 0.8, 0.6)), he.kge_2012(sim, obs, s=(1.4, 0.7, 0.9))]  # doctest: +ELLIPSIS
+    [
+        he.mase(sim, obs, m=3),
+        he.kge_2009(sim, obs, s=(1.2, 0.8, 0.6)),
+        he.kge_2012(sim, obs, s=(1.4, 0.7, 0.9))
+    ]
 
     """
     metrics_list = []

@@ -10,6 +10,7 @@ from typing import Literal
 
 import numpy as np
 from numba import jit, prange
+from numpy.typing import NDArray
 
 from hydrostats.metrics import pearson_r
 
@@ -31,8 +32,8 @@ __all__ = [
 def ens_me(
     obs: np.ndarray,
     fcst_ens: np.ndarray | None = None,
-    remove_zero: bool = False,  # noqa: FBT001, FBT002
-    remove_neg: bool = False,  # noqa: FBT001, FBT002
+    remove_zero: bool = False,
+    remove_neg: bool = False,
     reference: Literal["mean", "median"] = "mean",
 ) -> float:
     """Calculate the mean error between observed values and the ensemble mean.
@@ -105,8 +106,8 @@ def ens_me(
 def ens_mae(
     obs: np.ndarray,
     fcst_ens: np.ndarray | None = None,
-    remove_zero: bool = False,  # noqa: FBT001, FBT002
-    remove_neg: bool = False,  # noqa: FBT001, FBT002
+    remove_zero: bool = False,
+    remove_neg: bool = False,
     reference: str = "mean",
 ) -> float:
     """Calculate the mean absolute error between observed values and the ensemble mean.
@@ -179,8 +180,8 @@ def ens_mae(
 def ens_mse(
     obs: np.ndarray,
     fcst_ens: np.ndarray | None = None,
-    remove_zero: bool = False,  # noqa: FBT001, FBT002
-    remove_neg: bool = False,  # noqa: FBT001, FBT002
+    remove_zero: bool = False,
+    remove_neg: bool = False,
     reference: str = "mean",
 ) -> float:
     """Calculate the mean squared error between observed values and the ensemble mean.
@@ -252,8 +253,8 @@ def ens_mse(
 def ens_rmse(
     obs: np.ndarray,
     fcst_ens: np.ndarray | None = None,
-    remove_zero: bool = False,  # noqa: FBT001, FBT002
-    remove_neg: bool = False,  # noqa: FBT001, FBT002
+    remove_zero: bool = False,
+    remove_neg: bool = False,
     reference: str = "mean",
 ) -> float:
     """Calculate the root mean squared error between observed values and the ensemble mean.
@@ -325,8 +326,8 @@ def ens_rmse(
 def ens_pearson_r(
     obs: np.ndarray,
     fcst_ens: np.ndarray,
-    remove_neg: bool = False,  # noqa: FBT001, FBT002
-    remove_zero: bool = False,  # noqa: FBT001, FBT002
+    remove_neg: bool = False,
+    remove_zero: bool = False,
     reference: str = "mean",
 ) -> float:
     """Calculate the pearson correlation coefficient between observed values and the ensemble mean.
@@ -397,9 +398,9 @@ def ens_crps(
     obs: np.ndarray,
     fcst_ens: np.ndarray,
     adj: float = np.nan,
-    remove_neg: bool = False,  # noqa: FBT001, FBT002
-    remove_zero: bool = False,  # noqa: FBT001, FBT002
-    llvm: bool = True,  # noqa: FBT001, FBT002
+    remove_neg: bool = False,
+    remove_zero: bool = False,
+    llvm: bool = True,
 ) -> dict[str, np.ndarray | float]:
     """Calculate the ensemble-adjusted Continuous Ranked Probability Score (CRPS).
 
@@ -635,8 +636,8 @@ def python_crps(
 def crps_hersbach(
     obs: np.ndarray,
     fcst_ens: np.ndarray,
-    remove_neg: bool = False,  # noqa: FBT001, FBT002
-    remove_zero: bool = False,  # noqa: FBT001, FBT002
+    remove_neg: bool = False,
+    remove_zero: bool = False,
 ) -> dict[str, np.ndarray | float]:
     """Calculate the continuous ranked probability score (CRPS).
 
@@ -830,8 +831,8 @@ def crps_hersbach(
 def crps_kernel(
     obs: np.ndarray,
     fcst_ens: np.ndarray,
-    remove_neg: bool = False,  # noqa: FBT001, FBT002
-    remove_zero: bool = False,  # noqa: FBT001, FBT002
+    remove_neg: bool = False,
+    remove_zero: bool = False,
 ) -> dict[str, np.ndarray | float]:
     """Compute the kernel representation of the continuous ranked probability score (CRPS).
 
@@ -1127,7 +1128,7 @@ def ens_brier(
         fcst_ens_bin = (fcst_ens > ens_threshold).astype(int)
 
     else:
-        raise RuntimeError(
+        raise ValueError(
             " You must either supply fcst_ens, obs, and threshold (or obs_threshold and"
             " ens_threshold if there are different thresholds) or you must supply fcst_ens_bin and"
             " obs_bin."
@@ -1293,7 +1294,7 @@ def auroc(
         fcst_ens_bin = (fcst_ens > ens_threshold).astype(int)
 
     else:
-        raise RuntimeError(
+        raise ValueError(
             " You must either supply fcst_ens, obs, and threshold (or obs_threshold and"
             " ens_threshold if there are different thresholds) or you must supply fcst_ens_bin and"
             " obs_bin."
@@ -1307,7 +1308,7 @@ def auroc(
         or np.all(obs_bin == 0)
         or np.all(obs_bin == 1)
     ):
-        raise RuntimeError(
+        raise ValueError(
             "Both arrays need at least one event and one non-event, otherwise, "
             "division by zero will occur!"
         )
@@ -1372,7 +1373,7 @@ def skill_score(
     bench_scores: float | np.ndarray,
     perf_score: float,
     eff_sample_size: float | None = None,
-    remove_nan_inf: bool = False,  # noqa: FBT001, FBT002
+    remove_nan_inf: bool = False,
 ) -> dict[str, float | np.ndarray]:
     """Calculate the skill score of the given function.
 
@@ -1471,7 +1472,7 @@ def skill_score(
                     f"Row(s) {np.where(~all_nan_indices)[0]} contained NaN values (Rows are zero"
                     "indexed)."
                 )
-                raise RuntimeError(msg)
+                raise ValueError(msg)
 
             if np.any(np.isinf(scores_copy)) or np.any(np.isinf(bench_scores_copy)):
                 inf_indices_fcst = ~(np.isinf(scores_copy))
@@ -1482,7 +1483,7 @@ def skill_score(
                     f"Row(s) {np.where(~all_inf_indices)[0]} contained Inf or -Inf values (Rows"
                     "are zero indexed)."
                 )
-                raise RuntimeError(msg)
+                raise ValueError(msg)
 
         # Handle effective sample size
         if eff_sample_size is None:
@@ -1510,7 +1511,7 @@ def skill_score(
             cov_score = np.cov(scores_copy, bench_scores_copy)[0, 1]
 
             # Calculate skill score standard deviation by error propagation
-            def sqrt_na(z):
+            def sqrt_na(z: np.floating) -> NDArray:
                 if z < 0:
                     z = np.nan
 
@@ -1547,7 +1548,7 @@ def skill_score(
         skillscore_sigma = np.nan
 
     else:
-        raise RuntimeError(
+        raise TypeError(
             "The scores and benchmark_scores must either both be ndarrays or both be floats."
         )
 
@@ -1557,8 +1558,8 @@ def skill_score(
 def treat_data(
     obs: np.ndarray,
     fcst_ens: np.ndarray,
-    remove_zero: bool,  # noqa: FBT001
-    remove_neg: bool,  # noqa: FBT001
+    remove_zero: bool,
+    remove_neg: bool,
 ) -> tuple[np.ndarray, np.ndarray]:
     if obs.ndim != 1:
         raise ValueError("obs is not a 1D numpy array.")

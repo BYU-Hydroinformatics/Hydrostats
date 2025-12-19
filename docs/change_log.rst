@@ -10,16 +10,24 @@ Version 2.0.0rc1
 Breaking Changes:
 
 - Drop support for Python 2.7, 3.6 and 3.7. Minimum Python version is now 3.10.
-- Raise a ValueError instead of a RuntimeError for bad input in the following functions:
-   - analyze.time_lag
-   - metrics.list_of_metrics
-   - ens_metrics.ens_me
-   - ens_metrics.ens_mae
-   - ens_metrics.ens_mse
-   - ens_metrics.ens_rmse
-   - ens_metrics.ens_pearson_r
-   - ens_metrics.skill_score
-   - ens_metrics.treat_data
+- Raise a ValueError/TypeError instead of a RuntimeError/AssertionError for bad input in the
+  following functions:
+    - analyze.time_lag
+    - data.merge_data
+    - ens_metrics.auroc
+    - ens_metrics.ens_brier
+    - ens_metrics.ens_mae
+    - ens_metrics.ens_me
+    - ens_metrics.ens_mse
+    - ens_metrics.ens_pearson_r
+    - ens_metrics.ens_rmse
+    - ens_metrics.skill_score
+    - ens_metrics.treat_data
+    - metrics.list_of_metrics
+    - visual.hist
+    - visual.plot
+    - visual.qqplot
+    - visual.scatter
 
 Other Changes:
 

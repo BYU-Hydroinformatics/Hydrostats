@@ -29,7 +29,7 @@ __all__ = [
 def julian_to_gregorian(
     dataframe: pd.DataFrame,
     frequency: str | None = None,
-    inplace: bool = False,  # noqa: FBT001, FBT002
+    inplace: bool = False,
 ) -> pd.DataFrame | None:
     """Convert the index of the dataframe from julian float values to gregorian datetime values.
 
@@ -164,7 +164,7 @@ def julian_to_gregorian(
     return None
 
 
-def merge_data(  # noqa: C901,PLR0912
+def merge_data(
     sim_fpath: str | None = None,
     obs_fpath: str | None = None,
     sim_df: pd.DataFrame | None = None,
@@ -175,7 +175,7 @@ def merge_data(  # noqa: C901,PLR0912
     observed_tz: str | None = None,
     interp_type: str = "pchip",
     return_tz: str = "Etc/UTC",
-    julian: bool = False,  # noqa: FBT001, FBT002
+    julian: bool = False,
     julian_freq: str | None = None,
 ) -> pd.DataFrame | None:
     """Merge two dataframes or csv files, depending on the input.
@@ -281,7 +281,6 @@ def merge_data(  # noqa: C901,PLR0912
             header=None,
             names=[column_names[0]],
             index_col=0,
-            infer_datetime_format=True,
             skiprows=1,
         )
         obs_df_copy = pd.read_csv(
@@ -290,7 +289,6 @@ def merge_data(  # noqa: C901,PLR0912
             header=None,
             names=[column_names[1]],
             index_col=0,
-            infer_datetime_format=True,
             skiprows=1,
         )
 
@@ -299,12 +297,8 @@ def merge_data(  # noqa: C901,PLR0912
             julian_to_gregorian(sim_df_copy, frequency=julian_freq, inplace=True)
             julian_to_gregorian(obs_df_copy, frequency=julian_freq, inplace=True)
         else:
-            sim_df_copy.index = pd.to_datetime(
-                sim_df_copy.index, infer_datetime_format=True, errors="coerce"
-            )
-            obs_df_copy.index = pd.to_datetime(
-                obs_df_copy.index, infer_datetime_format=True, errors="coerce"
-            )
+            sim_df_copy.index = pd.to_datetime(sim_df_copy.index, errors="coerce")
+            obs_df_copy.index = pd.to_datetime(obs_df_copy.index, errors="coerce")
 
     elif sim_df is not None and obs_df is not None:
         # Checking to make sure that both dataframes have datetime indices if they are not read from
@@ -312,14 +306,14 @@ def merge_data(  # noqa: C901,PLR0912
         if not isinstance(sim_df.index, pd.DatetimeIndex) and not isinstance(
             obs_df.index, pd.DatetimeIndex
         ):
-            raise RuntimeError("Both the obs_df and the sim_df need to have a datetime index.")
+            raise ValueError("Both the obs_df and the sim_df need to have a datetime index.")
 
         # Copying the user supplied DataFrame objects
         sim_df_copy = sim_df.copy()
         obs_df_copy = obs_df.copy()
 
     else:
-        raise RuntimeError(
+        raise ValueError(
             "either sim_fpath and obs_fpath or sim_df and obs_df are required inputs."
         )
 
@@ -327,10 +321,10 @@ def merge_data(  # noqa: C901,PLR0912
     if (simulated_tz is None and observed_tz is not None) or (
         simulated_tz is not None and observed_tz is None
     ):
-        raise RuntimeError("Either Both Timezones are required or neither")
+        raise ValueError("Either Both Timezones are required or neither")
 
     if simulated_tz is not None and observed_tz is not None and interpolate is None:
-        raise RuntimeError(
+        raise ValueError(
             "You must specify with the interpolate parameter whether to interpolate the"
             " 'simulated' or 'observed' data."
         )
@@ -356,7 +350,7 @@ def merge_data(  # noqa: C901,PLR0912
             obs_df_copy = obs_df_copy.resample("15min").interpolate(interp_type)
 
         else:
-            raise RuntimeError("The interpolate argument must be either 'simulated' or 'observed'.")
+            raise ValueError("The interpolate argument must be either 'simulated' or 'observed'.")
 
         # Merging and joining the two DataFrames
         merged_df = pd.DataFrame.join(sim_df_copy, obs_df_copy).dropna()
@@ -380,7 +374,7 @@ def merge_data(  # noqa: C901,PLR0912
             obs_df_copy = obs_df_copy.resample("15min").interpolate(interp_type)
 
         else:
-            raise RuntimeError(
+            raise ValueError(
                 "You must specify the interpolation argument to be either 'simulated' or "
                 "'observed'."
             )
@@ -395,7 +389,7 @@ def merge_data(  # noqa: C901,PLR0912
 
 def daily_average(
     df: pd.DataFrame,
-    rolling: bool = False,  # noqa: FBT001, FBT002
+    rolling: bool = False,
     **kwargs: Any,  # noqa: ANN401
 ) -> pd.DataFrame:
     """Calculate daily seasonal averages of the timeseries data in a DataFrame.
@@ -794,7 +788,7 @@ def seasonal_period(
     merged_dataframe: pd.DataFrame,
     daily_period: tuple[str, str],
     time_range: tuple[str, str] | None = None,
-    numpy: bool = False,  # noqa: FBT001, FBT002
+    numpy: bool = False,
 ) -> pd.DataFrame | tuple[NDArray[np.floating], NDArray[np.floating]]:
     """Create a dataframe with a specified seasonal period.
 
