@@ -6,6 +6,7 @@ plots for a more complete summary of the data.
 """
 
 import calendar
+from typing import Literal
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -181,6 +182,9 @@ def plot(
     .. image:: /Figures/plot_seasonal.png
 
     """
+    if ecolor is None:
+        ecolor = ("r", "k")
+
     fig = plt.figure(figsize=fig_size, facecolor="w", edgecolor="k")
     ax = fig.add_subplot(111)
 
@@ -289,7 +293,8 @@ def plot(
 
         index = [function_list_str.index(metric) for metric in metrics]
         selected_metrics = [
-            function_list_str[i] + "=" + str(round(function_list[i](sim, obs), 3)) for i in index
+            function_list_str[i] + "=" + str(round(function_list[i](sim, obs), 3))  # ty:ignore[no-matching-overload]
+            for i in index
         ]
 
         formatted_selected_metrics = ""
@@ -689,7 +694,8 @@ def scatter(
                 raise ValueError(f"metric '{metric}' is not a valid metric")
         index = [function_list_str.index(metric) for metric in metrics]
         selected_metrics = [
-            function_list_str[i] + "=" + str(round(function_list[i](sim, obs), 3)) for i in index
+            function_list_str[i] + "=" + str(round(function_list[i](sim, obs), 3))  # ty:ignore[no-matching-overload]
+            for i in index
         ]
         formatted_selected_metrics = ""
         for i in selected_metrics:
@@ -713,7 +719,21 @@ def qqplot(
     merged_data_df: pd.DataFrame | None = None,
     sim_array: np.ndarray | None = None,
     obs_array: np.ndarray | None = None,
-    interpolate: str = "linear",
+    interpolate: Literal[
+        "inverted_cdf",
+        "averaged_inverted_cdf",
+        "closest_observation",
+        "interpolated_inverted_cdf",
+        "hazen",
+        "weibull",
+        "linear",
+        "median_unbiased",
+        "normal_unbiased",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+    ] = "linear",
     title: str | None = None,
     xlabel: str = "Simulated Data Quantiles",
     ylabel: str = "Observed Data Quantiles",

@@ -313,9 +313,7 @@ def merge_data(
         obs_df_copy = obs_df.copy()
 
     else:
-        raise ValueError(
-            "either sim_fpath and obs_fpath or sim_df and obs_df are required inputs."
-        )
+        raise ValueError("either sim_fpath and obs_fpath or sim_df and obs_df are required inputs.")
 
     # Checking to see if the necessary arguments in the function are fulfilled
     if (simulated_tz is None and observed_tz is not None) or (
@@ -922,7 +920,3 @@ def seasonal_period(
     if numpy:
         return merged_df_copy.iloc[:, 0].to_numpy(), merged_df_copy.iloc[:, 1].to_numpy()
     return merged_df_copy
-
-
-if __name__ == "__main__":
-    pass

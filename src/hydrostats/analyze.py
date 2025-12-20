@@ -527,11 +527,11 @@ def time_lag(
 
     summary_df = pd.DataFrame(
         data=data,
-        index=metrics,
+        index=np.array(metrics),
         columns=["Max", "Max Lag Number", "Min", "Min Lag Number"],
     )
 
-    lag_df = pd.DataFrame(final_array, columns=metrics, index=lag_array)
+    lag_df = pd.DataFrame(final_array, columns=np.array(metrics), index=lag_array)
     lag_df.index.name = "Lag Number"
 
     # Creating a row with the location name specified
@@ -540,7 +540,3 @@ def time_lag(
         summary_df.insert(loc=0, column="Station", value=np.array(col_values))
 
     return lag_df, summary_df
-
-
-if __name__ == "__main__":
-    pass

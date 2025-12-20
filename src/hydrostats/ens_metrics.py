@@ -1638,7 +1638,3 @@ def treat_data(
     fcst_ens = fcst_ens[all_treatment_array, :]
 
     return obs, fcst_ens
-
-
-if __name__ == "__main__":
-    pass
