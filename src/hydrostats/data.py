@@ -44,7 +44,7 @@ def julian_to_gregorian(
         frequency will automatically attempt to round the dates. A list of all the frequencies
         pandas provides is found
         `here <https://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases/>`_.
-        Common frequencies include daily ("D") and hourly ("H").
+        Common frequencies include daily ("d") and hourly ("h").
 
     inplace: bool
         Default False. If True, will modify the index of the dataframe in place rather than
@@ -113,7 +113,7 @@ def julian_to_gregorian(
 
     >>> # Rounding can be applied due to floating point inaccuracy
     >>> test_df_gregorian_rounded = julian_to_gregorian(
-    ...     test_df, frequency="H"
+    ...     test_df, frequency="h"
     ... )  # Hourly Rounding Frequency
     >>> test_df_gregorian_rounded
                          Simulated Data  Observed Data
@@ -129,7 +129,7 @@ def julian_to_gregorian(
     1980-01-01 09:00:00        0.273430       0.443980
 
     >>> # The DataFrame can also be modified in place, increasing efficiency with large time series
-    >>> julian_to_gregorian(test_df, inplace=True, frequency="H")
+    >>> julian_to_gregorian(test_df, inplace=True, frequency="h")
     >>> test_df
                          Simulated Data  Observed Data
     1980-01-01 00:00:00        0.309527       0.938991
@@ -177,7 +177,7 @@ def merge_data(
     return_tz: str = "Etc/UTC",
     julian: bool = False,
     julian_freq: str | None = None,
-) -> pd.DataFrame | None:
+) -> pd.DataFrame:
     """Merge two dataframes or csv files, depending on the input.
 
     Parameters
@@ -384,7 +384,8 @@ def merge_data(
         merged_df.columns = column_names
 
         return merged_df
-    return None
+
+    raise ValueError("Invalid function arguments were provided.")
 
 
 def daily_average(

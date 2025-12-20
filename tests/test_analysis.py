@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pandas as pd
+from pandas import DataFrame
 
 import hydrostats.analyze as ha
 import hydrostats.data as hd
@@ -9,7 +10,12 @@ import hydrostats.metrics as he
 
 def test_make_table(merged_df: pd.DataFrame) -> None:
     my_metrics = ["MAE", "r2", "NSE", "KGE (2012)"]
-    seasonal = [["01-01", "03-31"], ["04-01", "06-30"], ["07-01", "09-30"], ["10-01", "12-31"]]
+    seasonal = [
+        ("01-01", "03-31"),
+        ("04-01", "06-30"),
+        ("07-01", "09-30"),
+        ("10-01", "12-31"),
+    ]
 
     # Using the Function
     table = ha.make_table(merged_df, my_metrics, seasonal, remove_neg=True, remove_zero=True)
@@ -29,6 +35,7 @@ def test_make_table(merged_df: pd.DataFrame) -> None:
     for season in all_seasons:
         temp_list = []
         for metric in metric_functions:
+            assert isinstance(season, DataFrame)
             sim = season.iloc[:, 0].to_numpy()
             obs = season.iloc[:, 1].to_numpy()
             temp_list.append(metric(sim, obs, remove_neg=True, remove_zero=True))

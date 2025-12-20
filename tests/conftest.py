@@ -1,11 +1,5 @@
 from pathlib import Path
 
-import matplotlib as mpl
-
-# Use non-interactive backend for image tests
-mpl.use("Agg")
-
-
 import pandas as pd
 import pytest
 

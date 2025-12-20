@@ -6,7 +6,7 @@ have been removed in the warnings that display during the function execution.
 """
 
 import warnings
-from typing import Literal
+from typing import Any, Literal
 
 import numpy as np
 from numba import jit, prange
@@ -31,11 +31,11 @@ __all__ = [
 
 def ens_me(
     obs: np.ndarray,
-    fcst_ens: np.ndarray | None = None,
+    fcst_ens: np.ndarray,
     remove_zero: bool = False,
     remove_neg: bool = False,
     reference: Literal["mean", "median"] = "mean",
-) -> float:
+) -> np.floating[Any]:
     """Calculate the mean error between observed values and the ensemble mean.
 
     Parameters
@@ -105,7 +105,7 @@ def ens_me(
 
 def ens_mae(
     obs: np.ndarray,
-    fcst_ens: np.ndarray | None = None,
+    fcst_ens: np.ndarray,
     remove_zero: bool = False,
     remove_neg: bool = False,
     reference: str = "mean",
@@ -179,7 +179,7 @@ def ens_mae(
 
 def ens_mse(
     obs: np.ndarray,
-    fcst_ens: np.ndarray | None = None,
+    fcst_ens: np.ndarray,
     remove_zero: bool = False,
     remove_neg: bool = False,
     reference: str = "mean",
@@ -252,7 +252,7 @@ def ens_mse(
 
 def ens_rmse(
     obs: np.ndarray,
-    fcst_ens: np.ndarray | None = None,
+    fcst_ens: np.ndarray,
     remove_zero: bool = False,
     remove_neg: bool = False,
     reference: str = "mean",
@@ -329,7 +329,7 @@ def ens_pearson_r(
     remove_neg: bool = False,
     remove_zero: bool = False,
     reference: str = "mean",
-) -> float:
+) -> np.floating[Any]:
     """Calculate the pearson correlation coefficient between observed values and the ensemble mean.
 
     Parameters
@@ -378,10 +378,6 @@ def ens_pearson_r(
     -0.13236871294739733
 
     """
-    # Check that the user reference is understood
-    if reference not in {"mean", "median"}:
-        raise ValueError("Reference series is not understood.")
-
     # Treating data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
@@ -390,6 +386,8 @@ def ens_pearson_r(
         fcst_ens_reference = np.mean(fcst_ens, axis=1)
     elif reference == "median":
         fcst_ens_reference = np.median(fcst_ens, axis=1)
+    else:
+        raise ValueError("Reference series is not understood.")
 
     return pearson_r(fcst_ens_reference, obs)
 
@@ -550,7 +548,7 @@ def numba_crps(
     crps: np.ndarray,
     adj: float,
 ) -> np.ndarray:
-    for i in prange(rows):
+    for i in prange(rows):  # ty:ignore[not-iterable]
         the_obs = obs[i]
         the_ens = ens[i, :]
         the_ens = np.sort(the_ens)
@@ -597,7 +595,7 @@ def python_crps(
     crps: np.ndarray,
     adj: float,
 ) -> np.ndarray:
-    for i in prange(rows):
+    for i in prange(rows):  # ty:ignore[not-iterable]
         the_obs = obs[i]
         the_ens = ens[i, :]
         the_ens = np.sort(the_ens)
@@ -1511,7 +1509,7 @@ def skill_score(
             cov_score = np.cov(scores_copy, bench_scores_copy)[0, 1]
 
             # Calculate skill score standard deviation by error propagation
-            def sqrt_na(z: np.floating) -> NDArray:
+            def sqrt_na(z: float) -> NDArray:
                 if z < 0:
                     z = np.nan
 

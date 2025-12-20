@@ -21,7 +21,7 @@ def test_julian_to_gregorian() -> None:
             2444239.875,
         ]
     )
-    expected_dates = pd.date_range("1980-01-01", periods=10, freq="H")
+    expected_dates = pd.date_range("1980-01-01", periods=10, freq="h")
 
     rng = np.random.default_rng()
     data = rng.random((10, 2))
@@ -31,10 +31,11 @@ def test_julian_to_gregorian() -> None:
         index=julian_dates,
     )
 
-    test_df_gregorian = hd.julian_to_gregorian(test_df, frequency="H")
+    test_df_gregorian = hd.julian_to_gregorian(test_df, frequency="h")
+    assert test_df_gregorian is not None
     assert np.all(test_df_gregorian.index == expected_dates)
 
-    hd.julian_to_gregorian(test_df, inplace=True, frequency="H")
+    hd.julian_to_gregorian(test_df, inplace=True, frequency="h")
     assert np.all(test_df.index == expected_dates)
 
 

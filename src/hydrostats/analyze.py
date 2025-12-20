@@ -22,7 +22,7 @@ __all__ = ["make_table", "time_lag"]
 def make_table(
     merged_dataframe: pd.DataFrame,
     metrics: Sequence[str],
-    seasonal_periods: Sequence[Sequence[str]] | None = None,
+    seasonal_periods: Sequence[tuple[str, str]] | None = None,
     mase_m: int = 1,
     dmod_j: float = 1,
     nse_mod_j: float = 1,
@@ -265,7 +265,7 @@ def make_table(
 def time_lag(
     merged_dataframe: pd.DataFrame,
     metrics: Sequence[str],
-    interp_freq: str = "6H",
+    interp_freq: str = "6h",
     interp_type: str = "pchip",
     shift_range: tuple[int, int] = (-30, 30),
     mase_m: int = 1,

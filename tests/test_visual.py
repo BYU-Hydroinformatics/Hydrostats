@@ -15,7 +15,7 @@ def test_plot_full1(merged_df: "pd.DataFrame") -> plt.Figure:
     return hv.plot(
         merged_data_df=merged_df,
         title="Hydrograph of Entire Time Series",
-        linestyles=["r-", "k-"],
+        linestyles=("r-", "k-"),
         legend=("SFPT", "GLOFAS"),
         labels=["Datetime", "Streamflow (cfs)"],
         metrics=["ME", "NSE", "SA"],
@@ -34,7 +34,7 @@ def test_plot_seasonal(merged_df: "pd.DataFrame") -> plt.Figure:
         legend=("SFPT", "GLOFAS"),
         x_season=True,
         labels=["Datetime", "Streamflow (csm)"],
-        linestyles=["r-", "k-"],
+        linestyles=("r-", "k-"),
         fig_size=(14, 8),
         ebars=daily_std_error,
         ecolor=("r", "k"),

@@ -7,23 +7,23 @@ authors = [
     { name = "Wade Roberts", email = "wade.a.roberts@protonmail.com" }
 ]
 requires-python = ">=3.10,<=3.15"
-license = {text = "MIT"}
+license = { text = "MIT" }
 keywords = [
-  "hydrology",
-  "error",
-  "metrics",
-  "comparison",
-  "statistics",
-  "forecast",
-  "observed"
+    "hydrology",
+    "error",
+    "metrics",
+    "comparison",
+    "statistics",
+    "forecast",
+    "observed"
 ]
 classifiers = [
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: 3.14",
-  "Topic :: Scientific/Engineering :: Hydrology"
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Hydrology"
 ]
 dependencies = [
     "hydroerr~=2.0",
@@ -97,3 +97,6 @@ docstring-code-line-length = 92
 
 [tool.pytest.ini_options]
 addopts = ["--mpl", "--mpl-baseline-path=tests/baseline_images"]
+filterwarnings = [
+    "ignore::UserWarning",
+]

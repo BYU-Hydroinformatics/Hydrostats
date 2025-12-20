@@ -34,6 +34,7 @@ Other Changes:
 - Add type hints throughout the codebase for better developer experience.
 - More modern documentation theme (Furo) for better readability.
 - Add ruff as a linter to the development workflow for improved code quality.
+- Remove `None` defaults in some metrics in ens_metrics where the value is required
 
 Version 0.78
 ^^^^^^^^^^^^
