@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from pandas import DataFrame
 
@@ -43,14 +44,16 @@ def test_make_table(merged_df: pd.DataFrame) -> None:
 
     test_table = pd.DataFrame(
         test_list,
-        index=[
-            "Full Time Series",
-            "January-01:March-31",
-            "April-01:June-30",
-            "July-01:September-30",
-            "October-01:December-31",
-        ],
-        columns=["MAE", "r2", "NSE", "KGE (2012)"],
+        index=np.array(
+            [
+                "Full Time Series",
+                "January-01:March-31",
+                "April-01:June-30",
+                "July-01:September-30",
+                "October-01:December-31",
+            ]
+        ),
+        columns=np.array(["MAE", "r2", "NSE", "KGE (2012)"]),
     )
 
     pd.testing.assert_frame_equal(test_table, table)

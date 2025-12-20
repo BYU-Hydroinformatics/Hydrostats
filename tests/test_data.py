@@ -27,7 +27,7 @@ def test_julian_to_gregorian() -> None:
     data = rng.random((10, 2))
     test_df = pd.DataFrame(
         data=data,
-        columns=("Simulated Data", "Observed Data"),
+        columns=np.array(["Simulated Data", "Observed Data"]),
         index=julian_dates,
     )
 

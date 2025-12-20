@@ -7,6 +7,7 @@ different date ranges. It also allows users to run a time lag analysis of two ti
 
 import calendar
 from collections.abc import Sequence
+from typing import Literal
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -253,7 +254,11 @@ def make_table(
 
             complete_metric_list.append(seasonal_metric_list)
 
-    table_df_final = pd.DataFrame(complete_metric_list, index=index_array, columns=metrics)
+    table_df_final = pd.DataFrame(
+        complete_metric_list,
+        index=index_array,
+        columns=np.array(metrics),
+    )
 
     if location is not None:
         col_values = [location for i in range(table_df_final.shape[0])]
@@ -266,7 +271,26 @@ def time_lag(
     merged_dataframe: pd.DataFrame,
     metrics: Sequence[str],
     interp_freq: str = "6h",
-    interp_type: str = "pchip",
+    interp_type: Literal[
+        "linear",
+        "time",
+        "index",
+        "values",
+        "nearest",
+        "zero",
+        "slinear",
+        "quadratic",
+        "cubic",
+        "barycentric",
+        "polynomial",
+        "krogh",
+        "piecewise_polynomial",
+        "spline",
+        "pchip",
+        "akima",
+        "cubicspline",
+        "from_derivatives",
+    ] = "pchip",
     shift_range: tuple[int, int] = (-30, 30),
     mase_m: int = 1,
     dmod_j: float = 1,

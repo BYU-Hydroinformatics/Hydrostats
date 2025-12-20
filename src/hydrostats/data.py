@@ -5,7 +5,7 @@ daily and monthly summary statistics, and get seasonal periods of a time series.
 
 """
 
-from typing import Any, Literal
+from typing import Any, Literal, overload
 
 import numpy as np
 import pandas as pd
@@ -145,7 +145,9 @@ def julian_to_gregorian(
 
     """
     if inplace:
-        dataframe.index = pd.to_datetime(dataframe.index, origin="julian", unit="D")
+        dataframe.index: pd.DatetimeIndex = pd.to_datetime(
+            dataframe.index, origin="julian", unit="D"
+        )
 
         if frequency is not None:
             dataframe.index = dataframe.index.round(frequency)
@@ -155,7 +157,9 @@ def julian_to_gregorian(
         return_df = dataframe.copy()
 
         # Converting the dataframe index from julian to gregorian
-        return_df.index = pd.to_datetime(return_df.index, origin="julian", unit="D")
+        return_df.index: pd.DatetimeIndex = pd.to_datetime(
+            return_df.index, origin="julian", unit="D"
+        )
 
         if frequency is not None:
             return_df.index = return_df.index.round(frequency)
@@ -173,7 +177,26 @@ def merge_data(
     column_names: tuple[str, str] = ("Simulated", "Observed"),
     simulated_tz: str | None = None,
     observed_tz: str | None = None,
-    interp_type: str = "pchip",
+    interp_type: Literal[
+        "linear",
+        "time",
+        "index",
+        "values",
+        "nearest",
+        "zero",
+        "slinear",
+        "quadratic",
+        "cubic",
+        "barycentric",
+        "polynomial",
+        "krogh",
+        "piecewise_polynomial",
+        "spline",
+        "pchip",
+        "akima",
+        "cubicspline",
+        "from_derivatives",
+    ] = "pchip",
     return_tz: str = "Etc/UTC",
     julian: bool = False,
     julian_freq: str | None = None,
@@ -297,8 +320,8 @@ def merge_data(
             julian_to_gregorian(sim_df_copy, frequency=julian_freq, inplace=True)
             julian_to_gregorian(obs_df_copy, frequency=julian_freq, inplace=True)
         else:
-            sim_df_copy.index = pd.to_datetime(sim_df_copy.index, errors="coerce")
-            obs_df_copy.index = pd.to_datetime(obs_df_copy.index, errors="coerce")
+            sim_df_copy.index: pd.DatetimeIndex = pd.to_datetime(sim_df_copy.index, errors="coerce")
+            obs_df_copy.index: pd.DatetimeIndex = pd.to_datetime(obs_df_copy.index, errors="coerce")
 
     elif sim_df is not None and obs_df is not None:
         # Checking to make sure that both dataframes have datetime indices if they are not read from
@@ -360,6 +383,10 @@ def merge_data(
         # Scenario 3
 
         # Convert the DateTime Index of both DataFrames to User Specified Timezones
+        if not isinstance(sim_df_copy.index, pd.DatetimeIndex):
+            raise TypeError("sim_df must have a DatetimeIndex")
+        if not isinstance(obs_df_copy.index, pd.DatetimeIndex):
+            raise TypeError("obs_df must have a DatetimeIndex")
         sim_df_copy.index = sim_df_copy.index.tz_localize(simulated_tz).tz_convert(return_tz)
         obs_df_copy.index = obs_df_copy.index.tz_localize(observed_tz).tz_convert(return_tz)
 
@@ -446,6 +473,9 @@ def daily_average(
     12/31                 7656.042286  8041.918136
     [366 rows x 2 columns]
     """
+    if not isinstance(df.index, pd.DatetimeIndex):
+        raise TypeError("df must have a DatetimeIndex")
+
     # Calculating the daily average from the database
     if not rolling:
         daily_averages = df.groupby(df.index.strftime("%m/%d")).mean()
@@ -508,6 +538,9 @@ def daily_std_error(merged_data: pd.DataFrame) -> pd.DataFrame:
     [366 rows x 2 columns]
 
     """
+    if not isinstance(merged_data.index, pd.DatetimeIndex):
+        raise TypeError("merged_data must have a DatetimeIndex")
+
     # Calculating the daily average from the database
     a = merged_data.groupby(merged_data.index.strftime("%m/%d"))
     return a.sem()
@@ -562,6 +595,9 @@ def daily_std_dev(merged_data: pd.DataFrame) -> pd.DataFrame:
     [366 rows x 2 columns]
 
     """
+    if not isinstance(merged_data.index, pd.DatetimeIndex):
+        raise TypeError("merged_data must have a DatetimeIndex")
+
     # Calculating the daily average from the database
     a = merged_data.groupby(merged_data.index.strftime("%m/%d"))
     return a.std()
@@ -612,6 +648,9 @@ def monthly_average(merged_data: pd.DataFrame) -> pd.DataFrame:
     12                 9853.288608  10275.652887
 
     """
+    if not isinstance(merged_data.index, pd.DatetimeIndex):
+        raise TypeError("merged_data must have a DatetimeIndex")
+
     # Calculating the daily average from the database
     a = merged_data.groupby(merged_data.index.strftime("%m"))
     return a.mean()
@@ -662,6 +701,9 @@ def monthly_std_error(merged_data: pd.DataFrame) -> pd.DataFrame:
     12                  135.092750  117.958715
 
     """
+    if not isinstance(merged_data.index, pd.DatetimeIndex):
+        raise TypeError("merged_data must have a DatetimeIndex")
+
     # Calculating the daily average from the database
     a = merged_data.groupby(merged_data.index.strftime("%m"))
     return a.sem()
@@ -713,6 +755,9 @@ def monthly_std_dev(merged_data: pd.DataFrame) -> pd.DataFrame:
 
     """
     # Calculating the daily average from the database
+    if not isinstance(merged_data.index, pd.DatetimeIndex):
+        raise TypeError("merged_data must have a DatetimeIndex")
+
     a = merged_data.groupby(merged_data.index.strftime("%m"))
     return a.std()
 
@@ -783,6 +828,26 @@ def remove_nan_df(merged_dataframe: pd.DataFrame) -> pd.DataFrame:
     return merged_dataframe.dropna()
 
 
+@overload
+def seasonal_period(
+    merged_dataframe: pd.DataFrame,
+    daily_period: tuple[str, str],
+    time_range: tuple[str, str] | None = None,
+) -> pd.DataFrame: ...
+@overload
+def seasonal_period(
+    merged_dataframe: pd.DataFrame,
+    daily_period: tuple[str, str],
+    time_range: tuple[str, str] | None = None,
+    numpy: Literal[True] = ...,
+) -> tuple[NDArray[np.floating], NDArray[np.floating]]: ...
+@overload
+def seasonal_period(
+    merged_dataframe: pd.DataFrame,
+    daily_period: tuple[str, str],
+    time_range: tuple[str, str] | None = None,
+    numpy: Literal[False] = ...,
+) -> pd.DataFrame: ...
 def seasonal_period(
     merged_dataframe: pd.DataFrame,
     daily_period: tuple[str, str],
@@ -899,6 +964,8 @@ def seasonal_period(
         merged_df_copy = merged_df_copy.loc[time_range[0] : time_range[1]]
 
     # Setting a placeholder for the datetime string values
+    if not isinstance(merged_df_copy.index, pd.DatetimeIndex):
+        raise TypeError("merged_dataframe must have a DatetimeIndex.")
     merged_df_copy.insert(loc=0, column="placeholder", value=merged_df_copy.index.strftime("%m-%d"))
 
     # getting the start and end of the seasonal period

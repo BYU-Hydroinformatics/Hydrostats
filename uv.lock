@@ -488,7 +488,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "pandas-stubs", specifier = ">=2.3.3" },
+    { name = "pandas-stubs", specifier = ">=2.3.3.251219" },
     { name = "pytest", specifier = ">=8.0" },
     { name = "pytest-mpl", specifier = ">=0.17.0" },
     { name = "ruff", specifier = ">=0.14.7" },
