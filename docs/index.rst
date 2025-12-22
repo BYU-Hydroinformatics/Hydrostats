@@ -15,12 +15,16 @@ hydrology.
 
 See the examples folder in this repository for a Jupyter notebook highlighting some of the main features of Hydrostats.
 
+.. image:: https://github.com/BYU-Hydroinformatics/Hydrostats/actions/workflows/ci.yml/badge.svg?branch=master
+    :target: https://github.com/BYU-Hydroinformatics/Hydrostats/actions/workflows/ci.yml?query=branch:master
+.. image:: https://img.shields.io/pypi/v/hydrostats.svg
+    :target: https://pypi.python.org/pypi/hydrostats
+.. image:: https://img.shields.io/pypi/l/hydrostats.svg
+    :target: https://github.com/BYU-Hydroinformatics/Hydrostats/blob/master/LICENSE.txt
+.. image:: https://img.shields.io/pypi/pyversions/hydrostats.svg
+    :target: https://pypi.python.org/pypi/hydrostats
 .. image:: https://img.shields.io/badge/powered%20by-BYU%20HydroInformatics-blue.svg
     :target: http://worldwater.byu.edu/
-.. image:: https://travis-ci.org/BYU-Hydroinformatics/Hydrostats.svg?branch=master
-    :target: https://travis-ci.org/BYU-Hydroinformatics/Hydrostats
-.. image:: https://codecov.io/gh/BYU-Hydroinformatics/Hydrostats/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/BYU-Hydroinformatics/Hydrostats
 
 Contents
 ========
