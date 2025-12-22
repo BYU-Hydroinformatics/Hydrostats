@@ -29,6 +29,10 @@ jobs:
           uv --version
           uv sync --no-managed-python --only-dev
 
+      - name: Run prek hooks
+        run: |
+          uvx prek run --all-files
+
       - name: Lint
         run: |
           uv run --no-managed-python ruff check
