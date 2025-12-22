@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint_format:
+    name: Lint and Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.14
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install dev dependencies
+        run: |
+          uv --version
+          uv sync --no-managed-python --only-dev
+
+      - name: Lint
+        run: |
+          uv run --no-managed-python ruff check
+
+      - name: Format
+        run: |
+          uv run --no-managed-python ruff format --check
+
+      - name: Type Check
+        run: |
+          uv run --no-managed-python ty check
+
+  tests:
+    name: Tests (${{ matrix.os }} | Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install dependencies
+        run: |
+          uv --version
+          uv sync --no-managed-python --python ${{ matrix.python-version }}
+
+      - name: Run tests
+        run: |
+          uv run --no-managed-python --python ${{ matrix.python-version }} pytest -q
