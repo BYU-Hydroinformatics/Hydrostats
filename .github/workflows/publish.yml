@@ -3,6 +3,12 @@ name: Publish
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Git ref (tag/sha) to build'
+        required: false
+        default: ''
 
 jobs:
   deploy:
