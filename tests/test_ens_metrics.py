@@ -124,18 +124,13 @@ def test_ens_crps(
     expected_crps = np.load(files_for_tests / "expected_crps.npy")
     expected_mean_crps = 17.735507981502494
 
-    crps_numba = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array)["crps"]
-    crps_python = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array, llvm=False)["crps"]
+    crps_numba = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array)
+    crps_python = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array, llvm=False)
 
-    assert np.all(np.isclose(expected_crps, crps_numba))
-    assert np.all(np.isclose(expected_crps, crps_python))
-
-    crps_mean_numba = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array)["crpsMean"]
-    crps_mean_python = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array, llvm=False)[
-        "crpsMean"
-    ]
-    assert np.isclose(expected_mean_crps, crps_mean_numba)
-    assert np.isclose(expected_mean_crps, crps_mean_python)
+    assert np.all(np.isclose(expected_crps, crps_numba["crps"]))
+    assert np.all(np.isclose(expected_crps, crps_python["crps"]))
+    assert np.isclose(expected_mean_crps, crps_numba["crpsMean"])
+    assert np.isclose(expected_mean_crps, crps_python["crpsMean"])
 
 
 def test_ens_pearson_r(
