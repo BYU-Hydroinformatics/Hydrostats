@@ -1,5 +1,7 @@
-[![Build Status](https://travis-ci.org/BYU-Hydroinformatics/Hydrostats.svg?branch=master)](https://travis-ci.org/BYU-Hydroinformatics/Hydrostats)
-[![codecov](https://codecov.io/gh/BYU-Hydroinformatics/Hydrostats/branch/master/graph/badge.svg)](https://codecov.io/gh/BYU-Hydroinformatics/Hydrostats)
+[![CI](https://github.com/BYU-Hydroinformatics/Hydrostats/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/BYU-Hydroinformatics/Hydrostats/actions/workflows/ci.yml?query=branch:master)
+[![image](https://img.shields.io/pypi/v/hydrostats.svg)](https://pypi.python.org/pypi/hydrostats)
+[![image](https://img.shields.io/pypi/l/hydrostats.svg)](https://github.com/BYU-Hydroinformatics/Hydrostats/blob/master/LICENSE.txt)
+[![image](https://img.shields.io/pypi/pyversions/hydrostats.svg)](https://pypi.python.org/pypi/hydrostats)
 
 Tools for use in comparison studies, specifically for use in the field of hydrology
 
