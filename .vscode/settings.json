@@ -1,5 +1,19 @@
 {
 	"cSpell.words": [
-		"hydrostats"
+		"allclose",
+		"auroc",
+		"crps",
+		"ddof",
+		"fcst",
+		"figsize",
+		"glofas",
+		"Hersbach",
+		"hydrographs",
+		"hydrostats",
+		"nopython",
+		"prange",
+		"sfpt",
+		"skillscore",
+		"streamflow"
 	]
 }
