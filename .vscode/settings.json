@@ -1,19 +1,33 @@
 {
 	"cSpell.words": [
+		"akima",
 		"allclose",
 		"auroc",
 		"crps",
+		"cubicspline",
 		"ddof",
+		"ECMWF",
 		"fcst",
 		"figsize",
+		"fontsize",
 		"glofas",
 		"Hersbach",
 		"hydrographs",
 		"hydrostats",
+		"interp",
+		"krogh",
 		"nopython",
+		"pchip",
 		"prange",
+		"prek",
+		"pytest",
 		"sfpt",
 		"skillscore",
-		"streamflow"
+		"slinear",
+		"streamflow",
+		"xlabel",
+		"xticks",
+		"ylabel",
+		"yticks"
 	]
 }
