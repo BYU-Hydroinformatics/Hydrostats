@@ -123,9 +123,8 @@ def make_table(
 
     Returns
     -------
-    DataFrame
-        Dataframe with rows containing the metric values at the different time ranges, and columns
-        containing the metrics specified.
+    Dataframe with rows containing the metric values at the different time ranges, and columns
+    containing the metrics specified.
 
     Notes
     -----
@@ -137,7 +136,7 @@ def make_table(
 
     Examples
     --------
-     First, we need to get some data. The data here is pulled from the Streamflow Predication Tool
+    First, we need to get some data. The data here is pulled from the Streamflow Predication Tool
     model and the ECMWF forecasting model. We are comparing the two models in this example.
 
     >>> import hydrostats.analyze as ha
@@ -415,14 +414,13 @@ def time_lag(
 
     Returns
     -------
-    Tuple of DataFrames
-        The first DataFrame contains all of the metric values at different time lags, while the
-        second dataframe contains the maximum and minimum metric values throughout the time lag,
-        and the index of the maximum and minimum time lag values.
+    The first DataFrame contains all of the metric values at different time lags, while the
+    second dataframe contains the maximum and minimum metric values throughout the time lag,
+    and the index of the maximum and minimum time lag values.
 
     Examples
     --------
-    Using data from the Streamflow prediction tool RAPID model and the ECMWF model, we can conpare
+    Using data from the Streamflow prediction tool RAPID model and the ECMWF model, we can compare
     the two at different time lags
 
     >>> import hydrostats.analyze as ha
@@ -466,7 +464,7 @@ def time_lag(
         freq=interp_freq,
     )
 
-    # Reindexing the dataframe and interpolating it
+    # Re-indexing the dataframe and interpolating it
     try:
         merged_dataframe = merged_dataframe.reindex(new_index)
         merged_dataframe = merged_dataframe.interpolate(interp_type)

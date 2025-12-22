@@ -401,7 +401,7 @@ class EnsCrpsReturnValues(TypedDict):
 def ens_crps(
     obs: FloatArray,
     fcst_ens: FloatArray,
-    adj: float = np.float64(np.nan),
+    adj: float = np.nan,
     remove_neg: bool = False,
     remove_zero: bool = False,
     llvm: bool = True,
@@ -585,7 +585,7 @@ def numba_crps(
             crps[i] = sad_obs[i] / col_len_array[i]
     else:
         for i in range(rows):
-            crps[i] = np.float64(np.nan)
+            crps[i] = np.nan
 
     return crps
 
@@ -632,7 +632,7 @@ def python_crps(
             crps[i] = sad_obs[i] / col_len_array[i]
     else:
         for i in range(rows):
-            crps[i] = np.float64(np.nan)
+            crps[i] = np.nan
 
     return crps
 
@@ -1517,8 +1517,8 @@ def skill_score(
         bench_score = np.mean(bench_scores_copy) - perf_score
 
         if bench_score == 0.0:
-            skillscore = np.float64(np.nan)
-            skillscore_sigma = np.float64(np.nan)
+            skillscore = np.nan
+            skillscore_sigma = np.nan
             warnings.warn(
                 "The difference between the perfect score and benchmark score is zero,"
                 "setting the skill score value and standard deviation to NaN.",
@@ -1536,7 +1536,7 @@ def skill_score(
             # Calculate skill score standard deviation by error propagation
             def sqrt_na(z: float) -> NDArray:
                 if z < 0:
-                    z = np.float64(np.nan)
+                    z = np.nan
 
                 return np.sqrt(z)
 
@@ -1550,7 +1550,7 @@ def skill_score(
 
             # Set skillscore_sigma to NaN if not finite
             if not np.isfinite(skillscore_sigma):
-                skillscore_sigma = np.float64(np.nan)
+                skillscore_sigma = np.nan
 
     elif isinstance(scores, float) and isinstance(bench_scores, float):
         # shift mean scores by perfect score
@@ -1558,7 +1558,7 @@ def skill_score(
         bench_score = bench_scores - perf_score
 
         if bench_score == 0.0:
-            skillscore = np.float64(np.nan)
+            skillscore = np.nan
             warnings.warn(
                 "The difference between the perfect score and benchmark score is zero,"
                 "setting the skill score value to NaN.",
@@ -1568,7 +1568,7 @@ def skill_score(
             # calculate skill score
             skillscore = 1 - score / bench_score
 
-        skillscore_sigma = np.float64(np.nan)
+        skillscore_sigma = np.nan
 
     else:
         raise TypeError(

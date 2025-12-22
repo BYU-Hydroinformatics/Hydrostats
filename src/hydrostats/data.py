@@ -822,7 +822,7 @@ def remove_nan_df(merged_dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     # Drops Zeros and negatives
     merged_dataframe = merged_dataframe.loc[~(merged_dataframe <= 0).any(axis=1)]
-    # Replaces infinites with nans
+    # Replaces infinites with nan
     merged_dataframe = merged_dataframe.replace([inf, -inf], nan)
     # Drops Nan
     return merged_dataframe.dropna()
