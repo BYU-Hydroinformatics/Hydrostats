@@ -22,11 +22,13 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v7
 
-      - name: Set up Python
-        run: uv python install
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.14
 
       - name: Build package
-        run: uv build
+        run: uv build --no-managed-python
 
       - name: Publish to PyPI
-        run: uv publish
+        run: uv publish --no-managed-python
