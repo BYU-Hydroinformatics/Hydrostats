@@ -33,8 +33,11 @@ Other Changes:
 
 - Add type hints throughout the codebase for better developer experience.
 - More modern documentation theme (Furo) for better readability.
-- Add ruff as a linter to the development workflow for improved code quality.
 - Remove `None` defaults in some metrics in ens_metrics where the value is required
+- Add ruff as a linter to the development workflow for improved code quality.
+- Use uv for managing development environment.
+- Use ty for checking type hints in the codebase.
+- Use pytest as the testing framework.
 
 Version 0.78
 ^^^^^^^^^^^^
