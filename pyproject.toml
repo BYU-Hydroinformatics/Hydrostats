@@ -1,6 +1,6 @@
 [project]
 name = "hydrostats"
-version = "1.0.0rc1"
+version = "1.0.0"
 description = "Tools for use in comparison studies, specifically for use in the field of hydrology"
 readme = "README.md"
 authors = [

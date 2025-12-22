@@ -15,4 +15,4 @@ For full documentation, see https://hydrostats.readthedocs.io/en/stable/
 from hydrostats.analyze import *  # noqa: F403
 from hydrostats.metrics import *  # noqa: F403
 
-__version__ = "1.0.0rc1"
+__version__ = "1.0.0"
