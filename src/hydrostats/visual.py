@@ -16,6 +16,7 @@ from matplotlib.figure import Figure
 from pandas.plotting import register_matplotlib_converters
 
 from hydrostats.metrics import function_list, metric_abbr
+from hydrostats.typing_aliases import FloatArray, InputArray
 
 register_matplotlib_converters()
 
@@ -319,8 +320,8 @@ def plot(
 
 def hist(
     merged_data_df: pd.DataFrame | None = None,
-    sim_array: np.ndarray | None = None,
-    obs_array: np.ndarray | None = None,
+    sim_array: FloatArray | None = None,
+    obs_array: FloatArray | None = None,
     num_bins: int = 100,
     z_norm: bool = False,
     legend: tuple[str, str] | None = ("Simulated", "Observed"),
@@ -517,8 +518,8 @@ def hist(
 
 def scatter(
     merged_data_df: pd.DataFrame | None = None,
-    sim_array: np.ndarray | None = None,
-    obs_array: np.ndarray | None = None,
+    sim_array: FloatArray | None = None,
+    obs_array: FloatArray | None = None,
     grid: bool = False,
     title: str | None = None,
     labels: tuple[str, str] | None = None,
@@ -717,8 +718,8 @@ def scatter(
 
 def qqplot(
     merged_data_df: pd.DataFrame | None = None,
-    sim_array: np.ndarray | None = None,
-    obs_array: np.ndarray | None = None,
+    sim_array: InputArray | None = None,
+    obs_array: InputArray | None = None,
     interpolate: Literal[
         "inverted_cdf",
         "averaged_inverted_cdf",

@@ -6,13 +6,14 @@ have been removed in the warnings that display during the function execution.
 """
 
 import warnings
-from typing import Any, Literal
+from typing import Any, Literal, TypedDict
 
 import numpy as np
 from numba import jit, prange
 from numpy.typing import NDArray
 
 from hydrostats.metrics import pearson_r
+from hydrostats.typing_aliases import FloatArray
 
 __all__ = [
     "auroc",
@@ -30,8 +31,8 @@ __all__ = [
 
 
 def ens_me(
-    obs: np.ndarray,
-    fcst_ens: np.ndarray,
+    obs: FloatArray,
+    fcst_ens: FloatArray,
     remove_zero: bool = False,
     remove_neg: bool = False,
     reference: Literal["mean", "median"] = "mean",
@@ -104,12 +105,12 @@ def ens_me(
 
 
 def ens_mae(
-    obs: np.ndarray,
-    fcst_ens: np.ndarray,
+    obs: FloatArray,
+    fcst_ens: FloatArray,
     remove_zero: bool = False,
     remove_neg: bool = False,
-    reference: str = "mean",
-) -> float:
+    reference: Literal["mean", "median"] = "mean",
+) -> np.floating[Any]:
     """Calculate the mean absolute error between observed values and the ensemble mean.
 
     Parameters
@@ -178,12 +179,12 @@ def ens_mae(
 
 
 def ens_mse(
-    obs: np.ndarray,
-    fcst_ens: np.ndarray,
+    obs: FloatArray,
+    fcst_ens: FloatArray,
     remove_zero: bool = False,
     remove_neg: bool = False,
-    reference: str = "mean",
-) -> float:
+    reference: Literal["mean", "median"] = "mean",
+) -> np.floating[Any]:
     """Calculate the mean squared error between observed values and the ensemble mean.
 
     Parameters
@@ -251,12 +252,12 @@ def ens_mse(
 
 
 def ens_rmse(
-    obs: np.ndarray,
-    fcst_ens: np.ndarray,
+    obs: FloatArray,
+    fcst_ens: FloatArray,
     remove_zero: bool = False,
     remove_neg: bool = False,
     reference: str = "mean",
-) -> float:
+) -> np.floating[Any]:
     """Calculate the root mean squared error between observed values and the ensemble mean.
 
     Parameters
@@ -324,8 +325,8 @@ def ens_rmse(
 
 
 def ens_pearson_r(
-    obs: np.ndarray,
-    fcst_ens: np.ndarray,
+    obs: FloatArray,
+    fcst_ens: FloatArray,
     remove_neg: bool = False,
     remove_zero: bool = False,
     reference: str = "mean",
@@ -392,14 +393,19 @@ def ens_pearson_r(
     return pearson_r(fcst_ens_reference, obs)
 
 
+class EnsCrpsReturnValues(TypedDict):
+    crps: FloatArray
+    crpsMean: np.floating[Any]
+
+
 def ens_crps(
-    obs: np.ndarray,
-    fcst_ens: np.ndarray,
-    adj: float = np.nan,
+    obs: FloatArray,
+    fcst_ens: FloatArray,
+    adj: float = np.float64(np.nan),
     remove_neg: bool = False,
     remove_zero: bool = False,
     llvm: bool = True,
-) -> dict[str, np.ndarray | float]:
+) -> EnsCrpsReturnValues:
     """Calculate the ensemble-adjusted Continuous Ranked Probability Score (CRPS).
 
     Parameters
@@ -438,7 +444,7 @@ def ens_crps(
         Dictionary contains two keys, crps and crpsMean. The value of crps is a list of the crps
         values. Note that if the ensemble forecast or the observed values contained NaN or inf
         values, or negative or zero values if specified, these start dates will not show up in the
-        crps values. The crpsMean value is the arithmatic mean of the crps values.
+        crps values. The crpsMean value is the arithmetic mean of the crps values.
 
     Examples
     --------
@@ -484,7 +490,7 @@ def ens_crps(
     References
     ----------
     - Gneiting, T. and Raftery, A. E. (2007) Strictly proper scoring rules,
-      prediction and estimation, J. Amer. Stat. Asoc., 102, 359-378.
+      prediction and estimation, J. Amer. Stat. Assoc., 102, 359-378.
     - Leutbecher, M. (2018) Ensemble size: How suboptimal is less than infinity?,
       Q. J. R. Meteorol., Accepted.
     - Ferro CAT, Richardson SR, Weigel AP (2008) On the effect of ensemble size on the discrete and
@@ -538,16 +544,16 @@ def ens_crps(
 
 @jit(nopython=True, parallel=True)
 def numba_crps(
-    ens: np.ndarray,
-    obs: np.ndarray,
+    ens: FloatArray,
+    obs: FloatArray,
     rows: int,
     cols: int,
-    col_len_array: np.ndarray,
-    sad_ens_half: np.ndarray,
-    sad_obs: np.ndarray,
-    crps: np.ndarray,
+    col_len_array: FloatArray,
+    sad_ens_half: FloatArray,
+    sad_obs: FloatArray,
+    crps: FloatArray,
     adj: float,
-) -> np.ndarray:
+) -> FloatArray:
     for i in prange(rows):  # ty:ignore[not-iterable]
         the_obs = obs[i]
         the_ens = ens[i, :]
@@ -579,22 +585,22 @@ def numba_crps(
             crps[i] = sad_obs[i] / col_len_array[i]
     else:
         for i in range(rows):
-            crps[i] = np.nan
+            crps[i] = np.float64(np.nan)
 
     return crps
 
 
 def python_crps(
-    ens: np.ndarray,
-    obs: np.ndarray,
+    ens: FloatArray,
+    obs: FloatArray,
     rows: int,
     cols: int,
-    col_len_array: np.ndarray,
-    sad_ens_half: np.ndarray,
-    sad_obs: np.ndarray,
-    crps: np.ndarray,
+    col_len_array: FloatArray,
+    sad_ens_half: FloatArray,
+    sad_obs: FloatArray,
+    crps: FloatArray,
     adj: float,
-) -> np.ndarray:
+) -> FloatArray:
     for i in prange(rows):  # ty:ignore[not-iterable]
         the_obs = obs[i]
         the_ens = ens[i, :]
@@ -626,17 +632,25 @@ def python_crps(
             crps[i] = sad_obs[i] / col_len_array[i]
     else:
         for i in range(rows):
-            crps[i] = np.nan
+            crps[i] = np.float64(np.nan)
 
     return crps
 
 
+class EnsCrpsHersbachReturnValues(TypedDict):
+    crps: FloatArray
+    crpsMean1: np.floating[Any]
+    crpsMean2: np.floating[Any]
+    reliability: np.floating[Any]
+    potential: np.floating[Any]
+
+
 def crps_hersbach(
-    obs: np.ndarray,
-    fcst_ens: np.ndarray,
+    obs: FloatArray,
+    fcst_ens: FloatArray,
     remove_neg: bool = False,
     remove_zero: bool = False,
-) -> dict[str, np.ndarray | float]:
+) -> EnsCrpsHersbachReturnValues:
     """Calculate the continuous ranked probability score (CRPS).
 
     Calculate the continuous ranked probability score (CRPS) as per equation 25-27 in Hersbach et
@@ -679,7 +693,7 @@ def crps_hersbach(
 
     References
     ----------
-    - Hersbach, H. (2000) Decomposition of the Continuous Ranked Porbability Score
+    - Hersbach, H. (2000) Decomposition of the Continuous Ranked Probability Score
       for Ensemble Prediction Systems, Weather and Forecasting, 15, 559-570.
 
     Examples
@@ -784,7 +798,7 @@ def crps_hersbach(
             a1 = 0
             b1 = 0
 
-        # Upper outlier (rem m-1 is for last member m, but ptyhon is 0-based indexing)
+        # Upper outlier (rem m-1 is for last member m, but python is 0-based indexing)
         if xa > x[m - 1]:
             am = xa - x[m - 1]
             bm = 0
@@ -826,12 +840,19 @@ def crps_hersbach(
     }
 
 
+class EnsCrpsKernelReturnValues(TypedDict):
+    crps: FloatArray
+    crpsAdjusted: FloatArray
+    crpsMean: np.floating[Any]
+    crpsAdjustedMean: np.floating[Any]
+
+
 def crps_kernel(
-    obs: np.ndarray,
-    fcst_ens: np.ndarray,
+    obs: FloatArray,
+    fcst_ens: FloatArray,
     remove_neg: bool = False,
     remove_zero: bool = False,
-) -> dict[str, np.ndarray | float]:
+) -> EnsCrpsKernelReturnValues:
     """Compute the kernel representation of the continuous ranked probability score (CRPS).
 
     Calculates the kernel representation of the continuous ranked probability score (CRPS) as per
@@ -862,7 +883,6 @@ def crps_kernel(
         If true, when a zero value is found at the i-th position in the observed OR ensemble
         array, the i-th value of the observed AND ensemble array are removed before the
         computation.
-
 
     Returns
     -------
@@ -933,7 +953,7 @@ def crps_kernel(
     References
     ----------
     - Gneiting, T. and Raftery, A. E. (2007) Strictly proper scoring rules,
-      prediction and estimation, J. Amer. Stat. Asoc., 102, 359-378.
+      prediction and estimation, J. Amer. Stat. Assoc., 102, 359-378.
     - Leutbecher, M. (2018) Ensemble size: How suboptimal is less than infinity?,
       Q. J. R. Meteorol., Accepted.
     """
@@ -985,15 +1005,15 @@ def crps_kernel(
 
 
 def ens_brier(
-    fcst_ens: np.ndarray | None = None,
-    obs: np.ndarray | None = None,
+    fcst_ens: FloatArray | None = None,
+    obs: FloatArray | None = None,
     threshold: float | None = None,
     ens_threshold: float | None = None,
     obs_threshold: float | None = None,
-    fcst_ens_bin: np.ndarray | None = None,
-    obs_bin: np.ndarray | None = None,
+    fcst_ens_bin: FloatArray | None = None,
+    obs_bin: FloatArray | None = None,
     adj: float | None = None,
-) -> np.ndarray:
+) -> FloatArray:
     """
     Calculate the ensemble-adjusted Brier Score.
 
@@ -1013,12 +1033,12 @@ def ens_brier(
         that a 100 year flood would have to exceed.
 
     ens_threshold
-        If different threshholds for the ensemble forecast and the observed data is desired, then
+        If different thresholds for the ensemble forecast and the observed data is desired, then
         this parameter can be set along with the 'obs_threshold' parameter to set different
         thresholds.
 
     obs_threshold
-        If different threshholds for the ensemble forecast and the observed data is desired, then
+        If different thresholds for the ensemble forecast and the observed data is desired, then
         this parameter can be set along with the 'ens_threshold' parameter to set different
         thresholds.
 
@@ -1152,14 +1172,14 @@ def ens_brier(
 
 
 def auroc(
-    fcst_ens: np.ndarray | None = None,
-    obs: np.ndarray | None = None,
+    fcst_ens: FloatArray | None = None,
+    obs: FloatArray | None = None,
     threshold: float | None = None,
     ens_threshold: float | None = None,
     obs_threshold: float | None = None,
-    fcst_ens_bin: np.ndarray | None = None,
-    obs_bin: np.ndarray | None = None,
-) -> np.ndarray:
+    fcst_ens_bin: FloatArray | None = None,
+    obs_bin: FloatArray | None = None,
+) -> FloatArray:
     """Calculate Area Under the Relative Operating Characteristic curve (AUROC).
 
     Calculate the Area Under the Relative Operating Characteristic curve (AUROC) for a forecast and
@@ -1181,12 +1201,12 @@ def auroc(
         that a 100 year flood would have to exceed.
 
     ens_threshold
-        If different threshholds for the ensemble forecast and the observed data is desired, then
+        If different thresholds for the ensemble forecast and the observed data is desired, then
         this parameter can be set along with the 'obs_threshold' parameter to set different
         thresholds.
 
     obs_threshold
-        If different threshholds for the ensemble forecast and the observed data is desired, then
+        If different thresholds for the ensemble forecast and the observed data is desired, then
         this parameter can be set along with the 'ens_threshold' parameter to set different
         thresholds.
 
@@ -1317,7 +1337,7 @@ def auroc(
 
 
 @jit(nopython=True)
-def auroc_numba(fcst: np.ndarray, obs: np.ndarray) -> np.ndarray:
+def auroc_numba(fcst: FloatArray, obs: FloatArray) -> FloatArray:
     num_start_dates = obs.size
 
     i_ord = fcst.argsort()
@@ -1366,13 +1386,18 @@ def auroc_numba(fcst: np.ndarray, obs: np.ndarray) -> np.ndarray:
     return np.array([theta, sd_auc])
 
 
+class SkillScoreReturn(TypedDict):
+    skillScore: np.floating[Any] | float
+    standardDeviation: np.floating[Any] | float
+
+
 def skill_score(
-    scores: float | np.ndarray,
-    bench_scores: float | np.ndarray,
+    scores: float | FloatArray,
+    bench_scores: float | FloatArray,
     perf_score: float,
     eff_sample_size: float | None = None,
     remove_nan_inf: bool = False,
-) -> dict[str, float | np.ndarray]:
+) -> SkillScoreReturn:
     """Calculate the skill score of the given function.
 
     Parameters
@@ -1492,8 +1517,8 @@ def skill_score(
         bench_score = np.mean(bench_scores_copy) - perf_score
 
         if bench_score == 0.0:
-            skillscore = np.nan
-            skillscore_sigma = np.nan
+            skillscore = np.float64(np.nan)
+            skillscore_sigma = np.float64(np.nan)
             warnings.warn(
                 "The difference between the perfect score and benchmark score is zero,"
                 "setting the skill score value and standard deviation to NaN.",
@@ -1511,7 +1536,7 @@ def skill_score(
             # Calculate skill score standard deviation by error propagation
             def sqrt_na(z: float) -> NDArray:
                 if z < 0:
-                    z = np.nan
+                    z = np.float64(np.nan)
 
                 return np.sqrt(z)
 
@@ -1525,7 +1550,7 @@ def skill_score(
 
             # Set skillscore_sigma to NaN if not finite
             if not np.isfinite(skillscore_sigma):
-                skillscore_sigma = np.nan
+                skillscore_sigma = np.float64(np.nan)
 
     elif isinstance(scores, float) and isinstance(bench_scores, float):
         # shift mean scores by perfect score
@@ -1533,7 +1558,7 @@ def skill_score(
         bench_score = bench_scores - perf_score
 
         if bench_score == 0.0:
-            skillscore = np.nan
+            skillscore = np.float64(np.nan)
             warnings.warn(
                 "The difference between the perfect score and benchmark score is zero,"
                 "setting the skill score value to NaN.",
@@ -1543,7 +1568,7 @@ def skill_score(
             # calculate skill score
             skillscore = 1 - score / bench_score
 
-        skillscore_sigma = np.nan
+        skillscore_sigma = np.float64(np.nan)
 
     else:
         raise TypeError(
@@ -1554,11 +1579,11 @@ def skill_score(
 
 
 def treat_data(
-    obs: np.ndarray,
-    fcst_ens: np.ndarray,
+    obs: FloatArray,
+    fcst_ens: FloatArray,
     remove_zero: bool,
     remove_neg: bool,
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[FloatArray, FloatArray]:
     if obs.ndim != 1:
         raise ValueError("obs is not a 1D numpy array.")
     if fcst_ens.ndim != 2:  # noqa: PLR2004
@@ -1566,7 +1591,7 @@ def treat_data(
     if obs.size != fcst_ens[:, 0].size:
         raise ValueError("obs and fcst_ens do not have the same amount of start dates.")
 
-    # Give user warning, but let run, if eith obs or fcst are all zeros
+    # Give user warning, but let run, if either obs or fcst are all zeros
     if obs.sum() == 0 or fcst_ens.sum() == 0:
         warnings.warn(
             "All zero values in either 'obs' or 'fcst', function might run, but check if data OK.",
@@ -1629,10 +1654,6 @@ def treat_data(
                 " row(s) have been removed (zero indexed).",
                 stacklevel=2,
             )
-        else:
-            pass  # warnings.filterwarnings("always")  # Turn warnings back on
-    else:
-        pass  # warnings.filterwarnings("always")  # Turn warnings back on
 
     obs = obs[all_treatment_array]
     fcst_ens = fcst_ens[all_treatment_array, :]
