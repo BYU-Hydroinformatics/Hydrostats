@@ -4,6 +4,41 @@ Release Notes
 This is the list of changes to Hydrostats between each release. For full details, see the commit logs at
 https://github.com/BYU-Hydroinformatics/Hydrostats.
 
+Version 2.0.0rc1
+^^^^^^^^^^^^^^^^
+
+Breaking Changes:
+
+- Drop support for Python 2.7, 3.6 and 3.7. Minimum Python version is now 3.10.
+- Raise a ValueError/TypeError instead of a RuntimeError/AssertionError for bad input in the
+  following functions:
+    - analyze.time_lag
+    - data.merge_data
+    - ens_metrics.auroc
+    - ens_metrics.ens_brier
+    - ens_metrics.ens_mae
+    - ens_metrics.ens_me
+    - ens_metrics.ens_mse
+    - ens_metrics.ens_pearson_r
+    - ens_metrics.ens_rmse
+    - ens_metrics.skill_score
+    - ens_metrics.treat_data
+    - metrics.list_of_metrics
+    - visual.hist
+    - visual.plot
+    - visual.qqplot
+    - visual.scatter
+
+Other Changes:
+
+- Add type hints throughout the codebase for better developer experience.
+- More modern documentation theme (Furo) for better readability.
+- Remove `None` defaults in some metrics in ens_metrics where the value is required
+- Add ruff as a linter to the development workflow for improved code quality.
+- Use uv for managing development environment.
+- Use ty for checking type hints in the codebase.
+- Use pytest as the testing framework.
+
 Version 0.78
 ^^^^^^^^^^^^
 - Added the ability to use different thresholds for the ensemble forecast for the observed and ensemble forecast data in

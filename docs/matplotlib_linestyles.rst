@@ -10,6 +10,6 @@ be combined (e.g. 'r-' is a red solid line, 'r^' is red triangle up markers).
 - Linestyles_
 - `Marker Styles`_
 
-.. _Colors: https://matplotlib.org/2.0.2/api/colors_api.html#colors
-.. _Linestyles: https://matplotlib.org/gallery/lines_bars_and_markers/line_styles_reference.html#line-style-reference
-.. _Marker Styles: https://matplotlib.org/api/markers_api.html#markers
+.. _Colors: https://matplotlib.org/stable/api/colors_api.html
+.. _Linestyles: https://matplotlib.org/stable/gallery/lines_bars_and_markers/linestyles.html
+.. _Marker Styles: https://matplotlib.org/stable/api/markers_api.html#markers

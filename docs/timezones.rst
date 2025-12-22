@@ -3,7 +3,7 @@
 List of Timezones
 =================
 
-The list of timezones to use when applying timezones to your data. These timezones are baseod on
+The list of timezones to use when applying timezones to your data. These timezones are based on
 Olsen timezone database, using the python package pytz.
 
 - Africa/Abidjan (+00:00)

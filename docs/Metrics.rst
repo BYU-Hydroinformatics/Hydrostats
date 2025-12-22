@@ -1,15 +1,14 @@
 Metrics of Hydrological Skill (hydrostats.metrics)
 ==================================================
 
+HydroErr
+^^^^^^^^
+
 The metrics in Hydrostats are available through the HydroErr package. Below is a link to the HydroErr
 documentation page that lists all of the metrics contained in the package.
 
-Link
-^^^^
-https://hydroerr.readthedocs.io/en/stable/
+Link - https://hydroerr.readthedocs.io/en/stable/
 
-Examples
-^^^^^^^^
 The metrics can be imported into your scripts as part of the metrics module. An example is provided below showing how to
 use the metrics included in the package from HydroErr (if you would prefer to only use the Hydrostats package and not
 just import the HydroErr package).
@@ -25,3 +24,10 @@ just import the HydroErr package).
 
     mean_error = hm.me(sim, obs)
     print(mean_error)
+
+Functions
+^^^^^^^^^
+
+.. currentmodule:: hydrostats.metrics
+
+.. autofunction:: list_of_metrics

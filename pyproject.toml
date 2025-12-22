@@ -1,0 +1,103 @@
+[project]
+name = "hydrostats"
+version = "1.0.0rc1"
+description = "Tools for use in comparison studies, specifically for use in the field of hydrology"
+readme = "README.md"
+authors = [
+    { name = "Wade Roberts", email = "wade.a.roberts@protonmail.com" }
+]
+requires-python = ">=3.10,<=3.15"
+license = { text = "MIT" }
+keywords = [
+    "hydrology",
+    "error",
+    "metrics",
+    "comparison",
+    "statistics",
+    "forecast",
+    "observed"
+]
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Hydrology"
+]
+dependencies = [
+    "hydroerr~=2.0",
+    "matplotlib~=3.0",
+    "numba~=0.63.0",
+    "numpy~=2.0",
+    "pandas~=2.0",
+    "scipy~=1.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.7",
+    "pytest>=8.0",
+    "pytest-mpl>=0.17.0",
+    "ty>=0.0.2",
+    "pandas-stubs>=2.3.3.251219",
+    "pytest-cov>=7.0.0",
+]
+docs = [
+    "furo>=2025.9.25",
+    "sphinx-automodapi>=0.22.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/BYU-Hydroinformatics/Hydrostats"
+
+[build-system]
+requires = ["uv_build>=0.9.10,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310" # Set this to the lowest supported version
+output-format = "concise"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "C901",
+    "COM812",
+    "D203",
+    "D211",
+    "D213",
+    "EM101",
+    "EM102",
+    "FBT001",
+    "FBT002",
+    "PLR0912",
+    "PLR0913",
+    "PLR0915",
+    "TRY003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "D",
+    "S101",
+]
+"docs/*" = [
+    "A001",
+    "ERA001",
+    "INP001",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 92
+
+[tool.pytest.ini_options]
+addopts = ["--mpl", "--mpl-baseline-path=tests/baseline_images"]
+filterwarnings = [
+    "ignore::UserWarning",
+]
