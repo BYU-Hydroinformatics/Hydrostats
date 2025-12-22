@@ -31,7 +31,7 @@ jobs:
 
       - name: Run prek hooks
         run: |
-          uvx prek run --all-files
+          uvx prek run --all-files --skip no-commit-to-branch
 
       - name: Lint
         run: |
