@@ -135,5 +135,5 @@ typing-extensions==4.15.0
     # via beautifulsoup4
 tzdata==2025.3
     # via pandas
-urllib3==2.6.2
+urllib3==2.6.3
     # via requests
