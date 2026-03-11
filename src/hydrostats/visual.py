@@ -219,7 +219,7 @@ def plot(
         plt.errorbar(
             x=time,
             y=sim,
-            yerr=ebars.iloc[:, 0].values,
+            yerr=ebars.iloc[:, 0].to_numpy(),
             fmt=linestyles[0],
             markersize=markersize,
             label=legend[0],
@@ -231,7 +231,7 @@ def plot(
         plt.errorbar(
             x=time,
             y=obs,
-            yerr=ebars.iloc[:, 1].values,
+            yerr=ebars.iloc[:, 1].to_numpy(),
             fmt=linestyles[1],
             markersize=markersize,
             label=legend[1],
