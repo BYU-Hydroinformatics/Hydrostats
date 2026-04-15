@@ -11,7 +11,7 @@ beautifulsoup4==4.14.3
     # via furo
 certifi==2026.2.25
     # via requests
-charset-normalizer==3.4.6
+charset-normalizer==3.4.7
     # via requests
 colorama==0.4.6 ; sys_platform == 'win32'
     # via sphinx
@@ -64,16 +64,16 @@ numpy==2.3.5 ; python_full_version >= '3.11'
     #   numba
     #   pandas
     #   scipy
-packaging==26.0
+packaging==26.1
     # via
     #   matplotlib
     #   sphinx
     #   sphinx-automodapi
 pandas==2.3.3
     # via hydrostats
-pillow==12.1.1
+pillow==12.2.0
     # via matplotlib
-pygments==2.19.2
+pygments==2.20.0
     # via
     #   accessible-pygments
     #   furo
@@ -86,7 +86,7 @@ python-dateutil==2.9.0.post0
     #   pandas
 pytz==2026.1.post1
     # via pandas
-requests==2.33.0
+requests==2.33.1
     # via sphinx
 roman-numerals==4.1.0 ; python_full_version >= '3.11'
     # via sphinx
@@ -138,7 +138,7 @@ tomli==2.4.1 ; python_full_version < '3.11'
     # via sphinx
 typing-extensions==4.15.0
     # via beautifulsoup4
-tzdata==2025.3
+tzdata==2026.1
     # via pandas
 urllib3==2.6.3
     # via requests
