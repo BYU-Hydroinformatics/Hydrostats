@@ -9,7 +9,7 @@ babel==2.18.0
     # via sphinx
 beautifulsoup4==4.14.3
     # via furo
-certifi==2026.2.25
+certifi==2026.4.22
     # via requests
 charset-normalizer==3.4.7
     # via requests
@@ -30,7 +30,7 @@ fonttools==4.62.1
 furo==2025.12.19
 hydroerr==2.0.0
     # via hydrostats
-idna==3.11
+idna==3.14
     # via requests
 imagesize==2.0.0
     # via sphinx
@@ -42,7 +42,7 @@ llvmlite==0.46.0
     # via numba
 markupsafe==3.0.3
     # via jinja2
-matplotlib==3.10.8
+matplotlib==3.10.9
     # via hydrostats
 numba==0.63.1
     # via hydrostats
@@ -64,7 +64,7 @@ numpy==2.3.5 ; python_full_version >= '3.11'
     #   numba
     #   pandas
     #   scipy
-packaging==26.1
+packaging==26.2
     # via
     #   matplotlib
     #   sphinx
@@ -84,9 +84,9 @@ python-dateutil==2.9.0.post0
     # via
     #   matplotlib
     #   pandas
-pytz==2026.1.post1
+pytz==2026.2
     # via pandas
-requests==2.33.1
+requests==2.34.0
     # via sphinx
 roman-numerals==4.1.0 ; python_full_version >= '3.11'
     # via sphinx
@@ -138,7 +138,7 @@ tomli==2.4.1 ; python_full_version < '3.11'
     # via sphinx
 typing-extensions==4.15.0
     # via beautifulsoup4
-tzdata==2026.1
+tzdata==2026.2
     # via pandas
-urllib3==2.6.3
+urllib3==2.7.0
     # via requests
