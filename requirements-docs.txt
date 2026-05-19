@@ -30,7 +30,7 @@ fonttools==4.62.1
 furo==2025.12.19
 hydroerr==2.0.0
     # via hydrostats
-idna==3.14
+idna==3.15
     # via requests
 imagesize==2.0.0
     # via sphinx
