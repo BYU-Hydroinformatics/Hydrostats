@@ -36,15 +36,14 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "ruff>=0.14.7",
-    "pytest>=8.0",
-    "pytest-mpl>=0.17.0",
-    "ty>=0.0.2",
-    "pandas-stubs>=2.3.3.251219",
-    "pytest-cov>=7.0.0",
+    "ruff~=0.15.0",
+    "pytest~=9.0",
+    "pytest-mpl~=0.19.0",
+    "ty~=0.0.57",
+    "pytest-cov~=7.0",
 ]
 docs = [
-    "furo>=2025.9.25",
+    "furo>=2025.12.19",
     "sphinx-automodapi>=0.22.0",
 ]
 
@@ -100,7 +99,7 @@ docstring-code-format = true
 docstring-code-line-length = 92
 
 [tool.pytest.ini_options]
-addopts = ["--mpl", "--mpl-baseline-path=tests/baseline_images"]
+addopts = ["--mpl"]
 filterwarnings = [
     "ignore::UserWarning",
 ]

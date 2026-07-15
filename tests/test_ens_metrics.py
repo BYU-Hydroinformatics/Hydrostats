@@ -1,5 +1,6 @@
 from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pytest
@@ -8,34 +9,50 @@ from numpy.typing import NDArray
 import hydrostats.ens_metrics as em
 
 
+def _is_lfs_pointer(path: Path) -> bool:
+    try:
+        first_line = path.read_text(encoding="utf-8", errors="ignore").splitlines()[0]
+    except IndexError:
+        return False
+    return first_line.startswith("version https://git-lfs.github.com/spec/v1")
+
+
+def _load_numpy_or_skip(path: Path) -> Any:  # noqa: ANN401
+    if _is_lfs_pointer(path):
+        pytest.fail(
+            f"Missing Git LFS test data: install git-lfs and run 'git lfs pull' to fetch {path}."
+        )
+    return np.load(path)
+
+
 @pytest.fixture(scope="module")
 def ensemble_array(files_for_tests: Path) -> NDArray[np.float64]:
-    return np.load(files_for_tests / "ensemble_array.npz")["arr_0.npy"]
+    return _load_numpy_or_skip(files_for_tests / "ensemble_array.npz")["arr_0.npy"]
 
 
 @pytest.fixture(scope="module")
 def observed_array(files_for_tests: Path) -> NDArray[np.float64]:
-    return np.load(files_for_tests / "observed_array.npz")["arr_0.npy"]
+    return _load_numpy_or_skip(files_for_tests / "observed_array.npz")["arr_0.npy"]
 
 
 @pytest.fixture(scope="module")
 def ensemble_array_bad(files_for_tests: Path) -> NDArray[np.float64]:
-    return np.load(files_for_tests / "ensemble_array_bad_data.npz")["arr_0.npy"]
+    return _load_numpy_or_skip(files_for_tests / "ensemble_array_bad_data.npz")["arr_0.npy"]
 
 
 @pytest.fixture(scope="module")
 def observed_array_bad(files_for_tests: Path) -> NDArray[np.float64]:
-    return np.load(files_for_tests / "observed_array_bad_data.npz")["arr_0.npy"]
+    return _load_numpy_or_skip(files_for_tests / "observed_array_bad_data.npz")["arr_0.npy"]
 
 
 @pytest.fixture(scope="module")
 def ens_bin(files_for_tests: Path) -> NDArray[np.int64]:
-    return np.load(files_for_tests / "ens_bin.npy")
+    return _load_numpy_or_skip(files_for_tests / "ens_bin.npy")
 
 
 @pytest.fixture(scope="module")
 def obs_bin(files_for_tests: Path) -> NDArray[np.int64]:
-    return np.load(files_for_tests / "obs_bin.npy")
+    return _load_numpy_or_skip(files_for_tests / "obs_bin.npy")
 
 
 def test_ens_me(
@@ -121,7 +138,7 @@ def test_ens_rmse(
 def test_ens_crps(
     files_for_tests: Path, ensemble_array: NDArray[np.float64], observed_array: NDArray[np.float64]
 ) -> None:
-    expected_crps = np.load(files_for_tests / "expected_crps.npy")
+    expected_crps = _load_numpy_or_skip(files_for_tests / "expected_crps.npy")
     expected_mean_crps = 17.735507981502494
 
     crps_numba = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array)
@@ -160,7 +177,7 @@ def test_ens_pearson_r(
 def test_crps_hersbach(
     files_for_tests: Path, ensemble_array: NDArray[np.float64], observed_array: NDArray[np.float64]
 ) -> None:
-    expected_crps = np.load(files_for_tests / "expected_crps.npy")
+    expected_crps = _load_numpy_or_skip(files_for_tests / "expected_crps.npy")
     expected_mean_crps = 17.735507981502494
     crps_dictionary_test = em.crps_hersbach(obs=observed_array, fcst_ens=ensemble_array)
 
@@ -172,7 +189,7 @@ def test_crps_hersbach(
 def test_crps_kernel(
     files_for_tests: Path, ensemble_array: NDArray[np.float64], observed_array: NDArray[np.float64]
 ) -> None:
-    expected_crps = np.load(files_for_tests / "expected_crps.npy")
+    expected_crps = _load_numpy_or_skip(files_for_tests / "expected_crps.npy")
     expected_mean_crps = 17.735507981502494
     crps_dictionary_test = em.crps_kernel(obs=observed_array, fcst_ens=ensemble_array)
     assert np.all(np.isclose(expected_crps, crps_dictionary_test["crps"]))
@@ -186,19 +203,21 @@ def test_ens_brier(
     ens_bin: NDArray[np.int64],
     obs_bin: NDArray[np.int64],
 ) -> None:
-    expected_scores_bin = np.load(files_for_tests / "expected_brier_bin.npy")
+    expected_scores_bin = _load_numpy_or_skip(files_for_tests / "expected_brier_bin.npy")
     expected_mean_score_bin = 0.26351701183431947
     brier_scores_test_bin = em.ens_brier(fcst_ens_bin=ens_bin, obs_bin=obs_bin)
     np.testing.assert_allclose(expected_scores_bin, brier_scores_test_bin)
     np.testing.assert_almost_equal(expected_mean_score_bin, brier_scores_test_bin.mean())
 
-    expected_scores = np.load(files_for_tests / "expected_brier.npy")
+    expected_scores = _load_numpy_or_skip(files_for_tests / "expected_brier.npy")
     expected_mean_score = 0.17164571005917162
     brier_scores_test = em.ens_brier(ensemble_array, observed_array, 180)
     np.testing.assert_allclose(expected_scores, brier_scores_test)
     assert expected_mean_score == pytest.approx(brier_scores_test.mean())
 
-    expected_scores_diff_thresh = np.load(files_for_tests / "expected_brier_diff_thresh.npy")
+    expected_scores_diff_thresh = _load_numpy_or_skip(
+        files_for_tests / "expected_brier_diff_thresh.npy"
+    )
     expected_scores_diff_thresh_mean = 0.181926775147929
     brier_scores_test_diff_thresh = em.ens_brier(
         fcst_ens=ensemble_array,
