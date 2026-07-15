@@ -5,7 +5,9 @@ treat missing values as well as remove zero and negative values from the timeser
 """
 
 from collections.abc import Sequence
+from typing import Any
 
+import numpy as np
 from HydroErr import (
     acc,
     d,
@@ -186,7 +188,12 @@ def list_of_metrics(
     replace_inf: float | None = None,
     remove_neg: bool = False,
     remove_zero: bool = False,
-) -> list[float]:
+) -> list[
+    np.floating[Any]
+    | tuple[np.floating[Any], np.floating[Any], np.floating[Any], np.floating[Any]]
+    | int
+    | float
+]:
     """Compute multiple hydrologic skill metrics for paired simulated and observed series.
 
     Given a list of metric names or abbreviations, this function computes each metric for the

@@ -145,24 +145,24 @@ def julian_to_gregorian(
 
     """
     if inplace:
-        dataframe.index: pd.DatetimeIndex = pd.to_datetime(
-            dataframe.index, origin="julian", unit="D"
-        )
+        dt_index = pd.to_datetime(dataframe.index, origin="julian", unit="D")
 
         if frequency is not None:
-            dataframe.index = dataframe.index.round(frequency)
+            dt_index = dt_index.round(frequency)  # ty:ignore[invalid-argument-type]
+
+        dataframe.index = dt_index
 
     else:
         # Copying to avoid modifying the original dataframe
         return_df = dataframe.copy()
 
         # Converting the dataframe index from julian to gregorian
-        return_df.index: pd.DatetimeIndex = pd.to_datetime(
-            return_df.index, origin="julian", unit="D"
-        )
+        dt_index = pd.to_datetime(return_df.index, origin="julian", unit="D")
 
         if frequency is not None:
-            return_df.index = return_df.index.round(frequency)
+            dt_index = dt_index.round(frequency)  # ty:ignore[invalid-argument-type]
+
+        return_df.index = dt_index
 
         return return_df
     return None
@@ -320,8 +320,8 @@ def merge_data(
             julian_to_gregorian(sim_df_copy, frequency=julian_freq, inplace=True)
             julian_to_gregorian(obs_df_copy, frequency=julian_freq, inplace=True)
         else:
-            sim_df_copy.index: pd.DatetimeIndex = pd.to_datetime(sim_df_copy.index, errors="coerce")
-            obs_df_copy.index: pd.DatetimeIndex = pd.to_datetime(obs_df_copy.index, errors="coerce")
+            sim_df_copy.index = pd.to_datetime(sim_df_copy.index, errors="coerce")
+            obs_df_copy.index = pd.to_datetime(obs_df_copy.index, errors="coerce")
 
     elif sim_df is not None and obs_df is not None:
         # Checking to make sure that both dataframes have datetime indices if they are not read from

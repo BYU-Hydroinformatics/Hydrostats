@@ -255,8 +255,8 @@ def make_table(
 
     table_df_final = pd.DataFrame(
         complete_metric_list,
-        index=index_array,
-        columns=np.array(metrics),
+        index=pd.Index(index_array),
+        columns=pd.Index(metrics),
     )
 
     if location is not None:
@@ -549,8 +549,8 @@ def time_lag(
 
     summary_df = pd.DataFrame(
         data=data,
-        index=np.array(metrics),
-        columns=["Max", "Max Lag Number", "Min", "Min Lag Number"],
+        index=pd.Index(metrics),
+        columns=pd.Index(["Max", "Max Lag Number", "Min", "Min Lag Number"]),
     )
 
     lag_df = pd.DataFrame(final_array, columns=np.array(metrics), index=lag_array)
