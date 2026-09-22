@@ -45,6 +45,10 @@ jobs:
         run: |
           uv run --no-managed-python ty check
 
+      - name: Dependency Check
+        run: |
+          uv run --no-managed-python deptry .
+
   tests:
     name: Tests (${{ matrix.os }} | Python ${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}

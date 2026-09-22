@@ -31,16 +31,16 @@ dependencies = [
     "numba~=0.63.0",
     "numpy~=2.0",
     "pandas~=2.0",
-    "scipy~=1.0",
 ]
 
 [dependency-groups]
 dev = [
-    "ruff~=0.15.0",
+    "ruff~=0.16.0",
     "pytest~=9.0",
     "pytest-mpl~=0.19.0",
     "ty~=0.0.57",
     "pytest-cov~=7.0",
+    "deptry~=0.25.1",
 ]
 docs = [
     "furo>=2025.12.19",
@@ -67,6 +67,7 @@ select = ["ALL"]
 ignore = [
     "C901",
     "COM812",
+    "CPY001",
     "D203",
     "D211",
     "D213",
@@ -77,6 +78,7 @@ ignore = [
     "PLR0912",
     "PLR0913",
     "PLR0915",
+    "PLR0917",
     "TRY003",
 ]
 
@@ -103,3 +105,9 @@ addopts = ["--mpl"]
 filterwarnings = [
     "ignore::UserWarning",
 ]
+
+[tool.deptry]
+known_first_party = ["hydrostats"]
+
+[tool.deptry.package_module_name_map]
+hydroerr = "HydroErr"
