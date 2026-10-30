@@ -141,13 +141,37 @@ def test_ens_crps(
     expected_crps = _load_numpy_or_skip(files_for_tests / "expected_crps.npy")
     expected_mean_crps = 17.735507981502494
 
-    crps_numba = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array)
-    crps_python = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array, llvm=False)
+    crps_default = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array)
+    crps_compat = em.ens_crps(obs=observed_array, fcst_ens=ensemble_array, llvm=False)
 
-    assert np.all(np.isclose(expected_crps, crps_numba["crps"]))
-    assert np.all(np.isclose(expected_crps, crps_python["crps"]))
-    assert np.isclose(expected_mean_crps, crps_numba["crpsMean"])
-    assert np.isclose(expected_mean_crps, crps_python["crpsMean"])
+    assert np.all(np.isclose(expected_crps, crps_default["crps"]))
+    assert np.all(np.isclose(expected_crps, crps_compat["crps"]))
+    assert np.isclose(expected_mean_crps, crps_default["crpsMean"])
+    assert np.isclose(expected_mean_crps, crps_compat["crpsMean"])
+
+
+def test_ens_crps_adjustment(
+    files_for_tests: Path, ensemble_array: NDArray[np.float64], observed_array: NDArray[np.float64]
+) -> None:
+    ensemble_size = ensemble_array.shape[1]
+    expected_crps = _load_numpy_or_skip(files_for_tests / "expected_crps.npy")
+    mean_absolute_error = np.mean(np.abs(ensemble_array - observed_array[:, None]), axis=1)
+    pairwise_distance = np.sum(
+        np.abs(ensemble_array[:, :, None] - ensemble_array[:, None, :]), axis=(1, 2)
+    )
+    fair_spread = pairwise_distance / (2 * ensemble_size * (ensemble_size - 1))
+
+    crps_full_ensemble = em.ens_crps(observed_array, ensemble_array, adj=ensemble_size)["crps"]
+    crps_adjusted = em.ens_crps(observed_array, ensemble_array, adj=3.0)["crps"]
+    crps_observation_only = em.ens_crps(observed_array, ensemble_array, adj=1.0)["crps"]
+    crps_fair = em.ens_crps(observed_array, ensemble_array, adj=np.inf)["crps"]
+    crps_invalid = em.ens_crps(observed_array, ensemble_array, adj=0.5)["crps"]
+
+    np.testing.assert_allclose(crps_full_ensemble, expected_crps)
+    np.testing.assert_allclose(crps_adjusted, mean_absolute_error - fair_spread * (1 - 1 / 3))
+    np.testing.assert_allclose(crps_observation_only, mean_absolute_error)
+    np.testing.assert_allclose(crps_fair, mean_absolute_error - fair_spread)
+    assert np.isnan(crps_invalid).all()
 
 
 def test_ens_pearson_r(
@@ -251,6 +275,17 @@ def test_auroc(
     np.testing.assert_allclose(auroc_expected, auroc_test)
     np.testing.assert_allclose(auroc_expected_diff_thresh, auroc_test_diff_thresh)
     np.testing.assert_allclose(auroc_expected_bin, auroc_test_bin)
+
+
+def test_auroc_tied_forecasts() -> None:
+    fcst_ens_bin = np.array(
+        [[0, 0], [0, 1], [1, 0], [1, 1], [1, 1], [0, 1]],
+        dtype=np.int64,
+    )
+    obs_bin = np.array([0, 0, 1, 1, 0, 1], dtype=np.int64)
+    expected = np.array([0.61111111, 0.26643508])
+
+    np.testing.assert_allclose(em.auroc(fcst_ens_bin=fcst_ens_bin, obs_bin=obs_bin), expected)
 
 
 def test_skill_score() -> None:
