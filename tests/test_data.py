@@ -41,30 +41,29 @@ def test_julian_to_gregorian() -> None:
 
 def test_daily_average(merged_df: pd.DataFrame, comparison_files: Path) -> None:
     original_df = pd.read_csv(comparison_files / "daily_average.csv", index_col=0)
-    original_df.index = original_df.index.astype(object)
+    original_df.index = pd.Index(original_df.index, dtype="str")
     test_df = hd.daily_average(merged_df)
     pd.testing.assert_frame_equal(original_df, test_df)
 
 
 def test_daily_std_dev(merged_df: pd.DataFrame, comparison_files: Path) -> None:
     original_df = pd.read_csv(comparison_files / "daily_std_dev.csv", index_col=0)
-    original_df.index = original_df.index.astype(object)
+    original_df.index = pd.Index(original_df.index, dtype="str")
     test_df = hd.daily_std_dev(merged_df)
     pd.testing.assert_frame_equal(original_df, test_df)
 
 
 def test_daily_std_error(merged_df: pd.DataFrame, comparison_files: Path) -> None:
     original_df = pd.read_csv(comparison_files / "daily_std_error.csv", index_col=0)
-    original_df.index = original_df.index.astype(object)
+    original_df.index = pd.Index(original_df.index, dtype="str")
     test_df = hd.daily_std_error(merged_df)
     pd.testing.assert_frame_equal(original_df, test_df)
 
 
 def test_monthly_average(merged_df: pd.DataFrame, comparison_files: Path) -> None:
     original_df = pd.read_csv(comparison_files / "monthly_average.csv", index_col=0)
-    original_df.index = np.array(
-        ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
-        dtype=object,
+    original_df.index = pd.Index(
+        ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"], dtype="str"
     )
     test_df = hd.monthly_average(merged_df)
     pd.testing.assert_frame_equal(original_df, test_df)
@@ -72,9 +71,8 @@ def test_monthly_average(merged_df: pd.DataFrame, comparison_files: Path) -> Non
 
 def test_monthly_std_dev(merged_df: pd.DataFrame, comparison_files: Path) -> None:
     original_df = pd.read_csv(comparison_files / "monthly_std_dev.csv", index_col=0)
-    original_df.index = np.array(
-        ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
-        dtype=object,
+    original_df.index = pd.Index(
+        ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"], dtype="str"
     )
     test_df = hd.monthly_std_dev(merged_df)
     pd.testing.assert_frame_equal(original_df, test_df)
@@ -82,9 +80,8 @@ def test_monthly_std_dev(merged_df: pd.DataFrame, comparison_files: Path) -> Non
 
 def test_monthly_std_error(merged_df: pd.DataFrame, comparison_files: Path) -> None:
     original_df = pd.read_csv(comparison_files / "monthly_std_error.csv", index_col=0)
-    original_df.index = np.array(
-        ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
-        dtype=object,
+    original_df.index = pd.Index(
+        ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"], dtype="str"
     )
     test_df = hd.monthly_std_error(merged_df)
     pd.testing.assert_frame_equal(original_df, test_df)

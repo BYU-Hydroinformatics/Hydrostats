@@ -447,7 +447,7 @@ def hist(
         total_min = np.min([sim_min, obs_min])
 
         # Creating the bins based on the max and min
-        bins = np.linspace(total_min - 0.01, total_max + 0.01, num_bins)
+        bins = list(np.linspace(total_min - 0.01, total_max + 0.01, num_bins))
     else:
         # Calculating the max and min of both data sets
         sim_max = np.max(sim)
@@ -459,7 +459,7 @@ def hist(
         total_min = np.min([sim_min, obs_min])
 
         # Creating the bins based on the max and min
-        bins = np.linspace(total_min - 0.01, total_max + 0.01, num_bins)
+        bins = list(np.linspace(total_min - 0.01, total_max + 0.01, num_bins))
 
     if legend is None:
         # Plotting the data without the legend
@@ -673,7 +673,7 @@ def scatter(
         f = np.poly1d(p)
 
         # Calculating new x's and y's
-        x_new = np.linspace(0, sim.max(), sim.size)
+        x_new = np.linspace(0, np.max(sim), sim.size)
         y_new = f(x_new)
 
         # Formatting the best fit equation to be able to display in latex

@@ -24,6 +24,13 @@ hooks = [
 repo = "local"
 hooks = [
   {
+    id = "rumdl-check",
+    name = "rumdl check",
+    entry = "uv run rumdl check",
+    language = "system",
+    types = ["markdown"],
+  },
+  {
     id = "ruff-check",
     name = "Ruff Check",
     entry = "uv run ruff check",

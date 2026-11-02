@@ -1,12 +1,12 @@
 [project]
 name = "hydrostats"
-version = "1.0.0"
+version = "2.0.0rc1"
 description = "Tools for use in comparison studies, specifically for use in the field of hydrology"
 readme = "README.md"
 authors = [
     { name = "Wade Roberts", email = "wade.a.roberts@protonmail.com" }
 ]
-requires-python = ">=3.10,<=3.15"
+requires-python = ">=3.11,<3.16"
 license = { text = "MIT" }
 keywords = [
     "hydrology",
@@ -18,19 +18,18 @@ keywords = [
     "observed"
 ]
 classifiers = [
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Topic :: Scientific/Engineering :: Hydrology"
 ]
 dependencies = [
     "hydroerr~=2.0",
     "matplotlib~=3.0",
-    "numba~=0.63.0",
     "numpy~=2.0",
-    "pandas~=2.0",
+    "pandas~=3.0",
 ]
 
 [dependency-groups]
@@ -41,6 +40,7 @@ dev = [
     "ty~=0.0.57",
     "pytest-cov~=7.0",
     "deptry~=0.25.1",
+    "rumdl~=0.3.0",
 ]
 docs = [
     "furo>=2025.12.19",
@@ -59,7 +59,7 @@ exclude-newer = "1 week"
 
 [tool.ruff]
 line-length = 100
-target-version = "py310" # Set this to the lowest supported version
+target-version = "py311" # Set this to the lowest supported version
 output-format = "concise"
 
 [tool.ruff.lint]

@@ -9,7 +9,6 @@ import warnings
 from typing import Any, Literal, TypedDict
 
 import numpy as np
-from numba import jit, prange
 from numpy.typing import NDArray
 
 from hydrostats.metrics import pearson_r
@@ -434,9 +433,8 @@ def ens_crps(
         computation.
 
     llvm
-        If true (default) the crps will be calculated using the numba module, which uses the LLVM
-        compiler infrastructure for enhanced performance. If this is not wanted, then set it to
-        false for a pure python implementation.
+        Retained for backward compatibility. CRPS is now calculated with NumPy regardless of this
+        value.
 
     Returns
     -------
@@ -499,41 +497,12 @@ def ens_crps(
       Ensemble Forecasts of Weather and Climate. R package version 0.5-2.
       https://CRAN.R-project.org/package=SpecsVerification
     """
+    del llvm
+
     # Treating the Data
     obs, fcst_ens = treat_data(obs, fcst_ens, remove_neg=remove_neg, remove_zero=remove_zero)
 
-    rows = obs.size
-    cols = fcst_ens.shape[1]
-
-    col_len_array = np.ones(rows) * cols
-    sad_ens_half = np.zeros(rows)
-    sad_obs = np.zeros(rows)
-    crps = np.zeros(rows)
-
-    if llvm:
-        crps = numba_crps(
-            fcst_ens,
-            obs,
-            rows,
-            cols,
-            col_len_array,
-            sad_ens_half,
-            sad_obs,
-            crps,
-            np.float64(adj),
-        )
-    else:
-        crps = python_crps(
-            fcst_ens,
-            obs,
-            rows,
-            cols,
-            col_len_array,
-            sad_ens_half,
-            sad_obs,
-            crps,
-            np.float64(adj),
-        )
+    crps = _numpy_crps(fcst_ens, obs, np.float64(adj))
 
     # Calc mean crps as simple mean across crps[i]
     crps_mean = np.mean(crps)
@@ -542,97 +511,22 @@ def ens_crps(
     return {"crps": crps, "crpsMean": crps_mean}
 
 
-@jit(nopython=True, parallel=True)
-def numba_crps(
-    ens: FloatArray,
-    obs: FloatArray,
-    rows: int,
-    cols: int,
-    col_len_array: FloatArray,
-    sad_ens_half: FloatArray,
-    sad_obs: FloatArray,
-    crps: FloatArray,
-    adj: float,
-) -> FloatArray:
-    for i in prange(rows):  # ty:ignore[not-iterable]
-        the_obs = obs[i]
-        the_ens = ens[i, :]
-        the_ens = np.sort(the_ens)
-        sum_xj = 0.0
-        sum_jxj = 0.0
-
-        j = 0
-        while j < cols:
-            sad_obs[i] += np.abs(the_ens[j] - the_obs)
-            sum_xj += the_ens[j]
-            sum_jxj += (j + 1) * the_ens[j]
-            j += 1
-
-        sad_ens_half[i] = 2.0 * sum_jxj - (col_len_array[i] + 1) * sum_xj
+def _numpy_crps(ens: FloatArray, obs: FloatArray, adj: float) -> FloatArray:
+    cols = ens.shape[1]
+    sorted_ens = np.sort(ens, axis=1)
+    weights = 2 * np.arange(1, cols + 1, dtype=np.float64) - (cols + 1)
+    sad_ens_half = np.einsum("ij,j->i", sorted_ens, weights, optimize=False)
+    np.subtract(sorted_ens, obs[:, None], out=sorted_ens)
+    np.abs(sorted_ens, out=sorted_ens)
+    sad_obs = np.sum(sorted_ens, axis=1, dtype=np.float64)
+    crps = sad_obs / cols
 
     if np.isnan(adj):
-        for i in range(rows):
-            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / (
-                col_len_array[i] * col_len_array[i]
-            )
+        crps -= sad_ens_half / (cols * cols)
     elif adj > 1:
-        for i in range(rows):
-            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / (
-                col_len_array[i] * (col_len_array[i] - 1)
-            ) * (1 - 1 / adj)
-    elif adj == 1:
-        for i in range(rows):
-            crps[i] = sad_obs[i] / col_len_array[i]
-    else:
-        for i in range(rows):
-            crps[i] = np.nan
-
-    return crps
-
-
-def python_crps(
-    ens: FloatArray,
-    obs: FloatArray,
-    rows: int,
-    cols: int,
-    col_len_array: FloatArray,
-    sad_ens_half: FloatArray,
-    sad_obs: FloatArray,
-    crps: FloatArray,
-    adj: float,
-) -> FloatArray:
-    for i in prange(rows):  # ty:ignore[not-iterable]
-        the_obs = obs[i]
-        the_ens = ens[i, :]
-        the_ens = np.sort(the_ens)
-        sum_xj = 0.0
-        sum_jxj = 0.0
-
-        j = 0
-        while j < cols:
-            sad_obs[i] += np.abs(the_ens[j] - the_obs)
-            sum_xj += the_ens[j]
-            sum_jxj += (j + 1) * the_ens[j]
-            j += 1
-
-        sad_ens_half[i] = 2.0 * sum_jxj - (col_len_array[i] + 1) * sum_xj
-
-    if np.isnan(adj):
-        for i in range(rows):
-            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / (
-                col_len_array[i] * col_len_array[i]
-            )
-    elif adj > 1:
-        for i in range(rows):
-            crps[i] = sad_obs[i] / col_len_array[i] - sad_ens_half[i] / (
-                col_len_array[i] * (col_len_array[i] - 1)
-            ) * (1 - 1 / adj)
-    elif adj == 1:
-        for i in range(rows):
-            crps[i] = sad_obs[i] / col_len_array[i]
-    else:
-        for i in range(rows):
-            crps[i] = np.nan
+        crps -= sad_ens_half / (cols * (cols - 1)) * (1 - 1 / adj)
+    elif adj != 1:
+        crps.fill(np.nan)
 
     return crps
 
@@ -1333,55 +1227,33 @@ def auroc(
 
     ens_forecast_means = np.mean(fcst_ens_bin, axis=1)
 
-    return auroc_numba(ens_forecast_means, obs_bin)
+    return _numpy_auroc(ens_forecast_means, obs_bin)
 
 
-@jit(nopython=True)
-def auroc_numba(fcst: FloatArray, obs: FloatArray) -> FloatArray:
-    num_start_dates = obs.size
+def _numpy_auroc(fcst: FloatArray, obs: FloatArray) -> FloatArray:
+    order = np.argsort(fcst)
+    sorted_fcst = fcst[order]
+    sorted_obs = (obs[order] != 0).astype(np.int64, copy=False)
+    group_starts = np.r_[0, np.flatnonzero(sorted_fcst[1:] != sorted_fcst[:-1]) + 1]
+    group_pos = np.add.reduceat(sorted_obs, group_starts)
+    group_size = np.diff(np.r_[group_starts, fcst.size])
+    group_neg = group_size - group_pos
+    prior_pos = np.cumsum(group_pos) - group_pos
+    prior_neg = np.cumsum(group_neg) - group_neg
+    pos_rank = prior_neg + group_neg / 2.0
+    neg_rank = prior_pos + group_pos / 2.0
 
-    i_ord = fcst.argsort()
+    sum_v = np.sum(group_pos * pos_rank)
+    sum_w = np.sum(group_neg * neg_rank)
+    sum_v2 = np.sum(group_pos * pos_rank**2)
+    sum_w2 = np.sum(group_neg * neg_rank**2)
+    num_pos = np.sum(group_pos)
+    num_neg = np.sum(group_neg)
 
-    sum_v = 0.0
-    sum_v2 = 0.0
-    sum_w = 0.0
-    sum_w2 = 0.0
-    n = 0
-    m = 0
-    i = 0
-
-    x = 1
-    y = 0
-
-    while True:
-        nn = mm = 0
-        while x > y:
-            j = i_ord[i]
-            if obs[j]:
-                mm += 1
-            else:
-                nn += 1
-            if i == num_start_dates - 1:
-                break
-            jp1 = i_ord[i + 1]
-            if fcst[j] != fcst[jp1]:
-                break
-            i += 1
-        sum_w += nn * (m + mm / 2.0)
-        sum_w2 += nn * (m + mm / 2.0) * (m + mm / 2.0)
-        sum_v += mm * (n + nn / 2.0)
-        sum_v2 += mm * (n + nn / 2.0) * (n + nn / 2.0)
-        n += nn
-        m += mm
-        i += 1
-        if i >= num_start_dates:
-            break
-
-    theta = sum_v / (m * n)
-    v = sum_v2 / ((m - 1) * n * n) - sum_v * sum_v / (m * (m - 1) * n * n)
-    w = sum_w2 / ((n - 1) * m * m) - sum_w * sum_w / (n * (n - 1) * m * m)
-
-    sd_auc = np.sqrt(v / m + w / n)
+    theta = sum_v / (num_pos * num_neg)
+    v = sum_v2 / ((num_pos - 1) * num_neg**2) - sum_v**2 / (num_pos * (num_pos - 1) * num_neg**2)
+    w = sum_w2 / ((num_neg - 1) * num_pos**2) - sum_w**2 / (num_neg * (num_neg - 1) * num_pos**2)
+    sd_auc = np.sqrt(v / num_pos + w / num_neg)
 
     return np.array([theta, sd_auc])
 
