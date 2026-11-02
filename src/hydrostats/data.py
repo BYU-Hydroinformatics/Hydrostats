@@ -148,7 +148,7 @@ def julian_to_gregorian(
         dt_index = pd.to_datetime(dataframe.index, origin="julian", unit="D")
 
         if frequency is not None:
-            dt_index = dt_index.round(frequency)  # ty:ignore[invalid-argument-type]
+            dt_index = dt_index.round(frequency)
 
         dataframe.index = dt_index
 
@@ -160,7 +160,7 @@ def julian_to_gregorian(
         dt_index = pd.to_datetime(return_df.index, origin="julian", unit="D")
 
         if frequency is not None:
-            dt_index = dt_index.round(frequency)  # ty:ignore[invalid-argument-type]
+            dt_index = dt_index.round(frequency)
 
         return_df.index = dt_index
 

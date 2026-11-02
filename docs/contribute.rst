@@ -11,7 +11,7 @@ Before you begin, ensure you have the following installed:
 
 - `Git <https://git-scm.com/>`_
 - `Git LFS <https://git-lfs.com/>`_ (required for downloading large sample data and image files)
-- `Python 3.10+ <https://www.python.org/>`_
+- `Python 3.11+ <https://www.python.org/>`_
 - `uv <https://docs.astral.sh/uv/>`_
 
 Setting Up Your Development Environment
@@ -69,6 +69,17 @@ Development Workflow
 4. **Ensure Code Quality**
 
    - Follow PEP 8 style guidelines
+   - Run the applicable prek hooks after each coherent change:
+
+     .. code-block:: bash
+
+         uvx prek run --files <changed-paths>
+
+     Include new files in the paths. For staged changes, use ``uvx prek run``.
+     This checks file hygiene, Ruff linting and formatting, ty types, deptry
+     dependencies, and Markdown linting with the project's rumdl dev dependency.
+     If a hook changes files, review the changes and rerun the command until it
+     passes. Run on a feature branch so the protected-branch check passes.
    - Run the full test suite before committing
 
 5. **Commit and Push**

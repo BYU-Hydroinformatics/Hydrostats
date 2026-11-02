@@ -4,8 +4,27 @@ Release Notes
 This is the list of changes to Hydrostats between each release. For full details, see the commit logs at
 https://github.com/BYU-Hydroinformatics/Hydrostats.
 
-Version 2.0.0rc1
-^^^^^^^^^^^^^^^^
+2.0.0rc1
+^^^^^^^^^^
+
+Breaking Changes:
+
+- Require pandas 3.0 or newer. Seasonal summary indexes now use pandas' ``str`` dtype instead of
+  ``object``.
+
+Other Changes
+
+- Drop support for Python 3.10. Python 3.11 or newer is required.
+- Replace Numba ensemble kernels with NumPy, removing Numba and llvmlite dependencies. The
+  ``ens_crps(llvm=...)`` argument remains accepted for backward compatibility.
+
+Version 1.0.0
+^^^^^^^^^^^^^
+
+- Stable release; no code changes since 1.0.0.rc1.
+
+Version 1.0.0.rc1
+^^^^^^^^^^^^^^^^^
 
 Breaking Changes:
 
