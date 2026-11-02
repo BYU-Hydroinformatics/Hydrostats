@@ -4,7 +4,7 @@ Release Notes
 This is the list of changes to Hydrostats between each release. For full details, see the commit logs at
 https://github.com/BYU-Hydroinformatics/Hydrostats.
 
-Unreleased
+2.0.0rc1
 ^^^^^^^^^^
 
 Breaking Changes:
