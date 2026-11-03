@@ -5,6 +5,9 @@ import matplotlib as mpl
 import pandas as pd
 import pytest
 
+# Use a headless backend so tests never depend on Tk/Tcl being installed.
+mpl.use("Agg")
+
 
 def _mpl_baseline_dir(tests_dir: Path) -> Path:
     major_str, minor_str = mpl.__version__.split(".", maxsplit=2)[:2]
