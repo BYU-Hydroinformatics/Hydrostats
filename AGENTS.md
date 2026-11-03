@@ -4,6 +4,8 @@
 
 - Run inline Python snippets with `uv run python -c '...'` so they use the
   project's selected interpreter and environment.
+- Use `uv run` without `--no-managed-python` for local commands; that flag is
+  intended for CI.
 
 ## Validation After Changes
 
