@@ -30,7 +30,7 @@ Preview the draft details from the repository root:
 
 By default, the script targets ``HEAD``. Use ``--target <ref>`` to select a
 different local branch or commit. The selected commit must already be pushed
-to GitHub.
+to GitHub. Use ``--help`` (or ``-h``) to list all available options.
 
 When the preview is correct, create the draft:
 

@@ -1,19 +1,26 @@
 """Create a draft GitHub release using the version in pyproject.toml."""
 
-import argparse
 import json
 import re
 import shlex
 import subprocess
-import sys
 import tomllib
 from datetime import datetime
 from pathlib import Path
+from typing import Annotated
 from urllib.parse import urlparse
+
+# Release scripts use development dependencies.
+import typer  # deptry: ignore[DEP004]
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION_PATTERN = re.compile(r"\d+\.\d+\.\d+(?:(?:a|b|rc)\d+)?")
 GITHUB_REPOSITORY_PARTS = 2
+
+app = typer.Typer(
+    add_completion=False,
+    context_settings={"help_option_names": ["-h", "--help"]},
+)
 
 
 def run(*command: str) -> str:
@@ -97,28 +104,19 @@ def check_target(repo: str, version: str, target: str) -> None:
     run("gh", "api", f"repos/{repo}/commits/{target}", "--jq", ".sha")
 
 
-def main() -> int:
-    """Create a GitHub draft release, or preview it with --dry-run."""
-    parser = argparse.ArgumentParser(
-        description="Create a draft GitHub release from the project version.",
-    )
-    parser.add_argument(
-        "--target",
-        default="HEAD",
-        help="Local Git ref or commit to release (default: HEAD).",
-    )
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Show the release details without creating it.",
-    )
-    args = parser.parse_args()
-
+@app.command()
+def main(
+    target: Annotated[
+        str, typer.Option("--target", help="Local Git ref or commit to release.")
+    ] = "HEAD",
+    dry_run: Annotated[
+        bool, typer.Option("--dry-run", help="Show the release details without creating it.")
+    ] = False,
+) -> None:
+    """Create a draft GitHub release from the project version."""
     try:
         version, repo = project_metadata()
-        target = run(
-            "git", "rev-parse", "--verify", "--end-of-options", f"{args.target}^{{commit}}"
-        )
+        target = run("git", "rev-parse", "--verify", "--end-of-options", f"{target}^{{commit}}")
         check_target(repo, version, target)
         prior_tag = previous_release(repo, version)
         check_new_tag(repo, version)
@@ -151,7 +149,7 @@ def main() -> int:
         if is_prerelease:
             command.append("--prerelease")
 
-        if args.dry_run:
+        if dry_run:
             output = [
                 f"Repository: {repo}",
                 f"Version: {version}",
@@ -160,20 +158,18 @@ def main() -> int:
                 f"Notes:\n{notes}",
                 f"Command: {shlex.join(command)}",
             ]
-            sys.stdout.write("\n".join(output) + "\n")
-            return 0
+            typer.echo("\n".join(output))
+            return
 
-        sys.stdout.write(run(*command) + "\n")
+        typer.echo(run(*command))
     except (KeyError, OSError, ValueError, subprocess.CalledProcessError) as error:
         if isinstance(error, subprocess.CalledProcessError):
             detail = (error.stderr or "").strip() or str(error)
         else:
             detail = str(error)
-        sys.stderr.write(f"Could not create release: {detail}\n")
-        return 1
-
-    return 0
+        typer.echo(f"Could not create release: {detail}", err=True)
+        raise typer.Exit(code=1) from error
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    app()
