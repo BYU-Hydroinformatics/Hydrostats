@@ -31,6 +31,7 @@ Breaking Changes:
 - Drop support for Python 2.7, 3.6 and 3.7. Minimum Python version is now 3.10.
 - Raise a ValueError/TypeError instead of a RuntimeError/AssertionError for bad input in the
   following functions:
+
     - analyze.time_lag
     - data.merge_data
     - ens_metrics.auroc

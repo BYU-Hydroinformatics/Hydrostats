@@ -92,6 +92,9 @@ ignore = [
     "ERA001",
     "INP001",
 ]
+"scripts/*" = [
+    "INP001",
+]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"

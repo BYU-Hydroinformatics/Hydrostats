@@ -44,6 +44,7 @@ Contents
    matplotlib_linestyles
    change_log
    contribute
+   releasing
 
 Indices and tables
 ==================
