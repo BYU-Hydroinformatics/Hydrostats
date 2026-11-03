@@ -1,4 +1,5 @@
 import json
+import re
 import subprocess
 
 import pytest
@@ -126,15 +127,27 @@ def test_dry_run_does_not_create_release(
 
 
 @pytest.mark.parametrize("option", ["-h", "--help"])
+@pytest.mark.parametrize("force_color", [False, True])
 def test_help_lists_options_without_running_commands(
-    commands: FakeCommands, runner: CliRunner, option: str
+    commands: FakeCommands,
+    runner: CliRunner,
+    monkeypatch: pytest.MonkeyPatch,
+    option: str,
+    force_color: bool,
 ) -> None:
+    if force_color:
+        monkeypatch.setenv("FORCE_COLOR", "1")
+    else:
+        monkeypatch.delenv("FORCE_COLOR", raising=False)
+
     result = runner.invoke(create_release.app, [option])
+    # Rich can insert ANSI styling inside option names.
+    help_text = re.sub(r"\x1b\[[0-9;]*m", "", result.stdout)
 
     assert result.exit_code == 0, result.output
-    assert "--target" in result.stdout
-    assert "--dry-run" in result.stdout
-    assert "HEAD" in result.stdout
+    assert "--target" in help_text
+    assert "--dry-run" in help_text
+    assert "HEAD" in help_text
     assert commands.calls == []
 
 
